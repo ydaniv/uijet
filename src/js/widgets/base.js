@@ -25,12 +25,12 @@
         },
         wake            : function (context) {
             var that = this,
-                dfd;
+                dfrds;
             if ( this.awake ) return this;
             this.notify('pre_wake');
             this._setContext.apply(this, arguments);
-            dfd = this.wakeContained(context);
-            $.when.apply($, dfd).then(function () {
+            dfrds = this.wakeContained(context);
+            $.when.apply($, dfrds).then(function () {
                 that.render()
                     .bind()
                     .appear()
@@ -70,7 +70,8 @@
                     that.notify('post_fetch_data', response);
                 },
                 error   : function (response) {
-                    that.notify('update_error', response);
+                    var _publish = that.notify('update_error', response);
+                    _publish !== false && that.publish('update_error', response, true);
                 }
             });
         },
@@ -143,8 +144,11 @@
             this[topic] = handler;
             return this;
         },
-        notify          : function (topic, data) {
-            return this[topic] && this[topic](data);
+        notify          : function (topic) {
+            if ( this[topic] ) {
+                var args = Array.prototype.slice.call(arguments, 1);
+                return this[topic].apply(this, args);
+            }
         },
         subscribe       : function (topic, handler) {
             uijet.subscribe(topic, handler.bind(this));
@@ -214,7 +218,7 @@
             return this;
         },
         getDataUrl      : function () {
-            return this.substitute(this.options.data_url, this.context);
+            return this.substitute(this.options.data_url + Akashi.AUTH, this.context);
         },
         getTemplateUrl  : function () {
             return this.substitute(this.options.template_url, {});

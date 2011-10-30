@@ -1,11 +1,6 @@
 uijet.Widget('List', {
     options             : {
-        type_class  : 'uijet_list',
-        signals     : {
-            post_render : function () {
-                this.options.horizontal && this._prepareHorizontal();
-            }
-        }
+        type_class  : 'uijet_list'
     },
     destroy             : function () {
         this.setScrolling(false);

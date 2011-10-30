@@ -1,9 +1,18 @@
 (function (_window, undefined) {
 
-    var Object = _window.Object,
+    var Function = _window.Function,
+        Object = _window.Object,
         objToString = Object.prototype.toString,
         arraySlice = _window.Array.prototype.slice;
 
+    if ( typeof Function.bind != 'function' ) {
+        Function.prototype.bind = function (scope) {
+            var _self = this;
+            return function () {
+                return _self.apply(scope, arguments);
+            };
+        };
+    }
     function isObj(obj) {
         return objToString.call(obj) == '[object Object]';
     }

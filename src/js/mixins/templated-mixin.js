@@ -1,11 +1,11 @@
 uijet.Mixin('Templated', {
     wake            : function (context) {
-        var that = this, dfrd;
+        var that = this, dfrds;
         this.notify.call(this, 'pre_wake', arguments);
         this._setContext.apply(this, arguments);
         this.dfrd = $.Deferred();
-        dfrd = this.wakeContained(context);
-        $.when.apply($, dfrd).then(function () {
+        dfrds = this.wakeContained(context);
+        $.when.apply($, dfrds).then(function () {
             $.when( that.fetchTemplate(), that.update() ).then(function () {
                 $.when ( that.render() ).then(function () {
                     that.bind()
@@ -48,8 +48,9 @@ uijet.Mixin('Templated', {
         loadables = this.deferLoadables();
         $.when.apply($, loadables).then(function () {
             that._wrap()
-                .position()
-                .notify('post_render');
+                .position();
+            that._prepareHorizontal && that.options.horizontal && that._prepareHorizontal();
+            that.notify('post_render');
             dfrd.resolve();
         });
         return dfrd.promise();

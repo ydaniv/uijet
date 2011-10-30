@@ -16,27 +16,10 @@ uijet.Mixin('Transitioned', {
         this.notify('post_disappear');
         return this;
     },
-    //TODO: improve this method
     transit     : function () {
-        var that = this,
-            animation_type = this.options.animation_type,
-            dfrd_transit = $.Deferred(),
-            animation;
-        if ( false ) { //TODO: implement the reversing mechanism
-            animation_type = 'reverse';
-            this.$element.addClass('reverse');
-        }
-        switch (animation_type) {
-            case 'reverse':
-                animation = {left: '0%'};
-                break;
-            default:
-                animation = {right: '0%'};
-                break;
-        }
-        // TODO: replace with CSS transitions
-        that.$element.animate(animation, function () {
-            that.$element.removeClass('top');
+        var dfrd_transit = $.Deferred();
+        uijet.animate(this, function () {
+            this.$element.removeClass('top');
             dfrd_transit.resolve();
         });
         return dfrd_transit.promise();

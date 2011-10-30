@@ -47,6 +47,8 @@
         init            : function (options) {
             var k, _methods = {};
             this.options = options;
+            this.$element = $(options && options.element || 'body');
+            this.isiPad();
             if ( options ) {
                 if ( _methods = options.methods ) {
                     if ( options.methods_context ) {
@@ -57,10 +59,12 @@
                     Utils.extend(this, _methods);
                 }
                 if ( options.engine ) {
+                    //TODO: implement hacking into BaseWidget.prototype better
                     this.BaseWidget.prototype.generate = options.engine;
                 } else {
                     throw new Error('Template engine not specified');
                 }
+                this.options.animation_type = options.animation_type || 'slide';
                 if ( options.parse ) {
                     this.parse();
                 }
@@ -114,26 +118,27 @@
             }
             return this;
         },
-        //TODO: re-implement this since publish may vary depending on implementation
-        // e.g: in Sammy it won't publish before the start is running
-        startup         : function () {
+        //TODO: implement this if it's needed at all or remove
+        startup         : function () {},
+        getCurrentView  : function () {
+            var _current = null;
             for ( var v in views ) {
                 v = views[v];
                 if ( v.options.state == 'current' ) {
-                    this.publish('startup', v.getRoute());
+                    _current = v;
                     break;
                 }
             }
-            return this;
+            return _current;
         },
         parse           : function () {
-            $(this.options.element || 'body')
-                .find('[data-akashi-type]')
+            this.$element.find('[data-akashi-type]')
                 .each(function () {
                     var $this = $(this),
                         _type = $this.attr('data-akashi-type');
                     uijet.startWidget(_type, $this);
                 });
+            return this;
         },
         wakeContained   : function  (id, context) {
             var _contained = widgets[id].contained,
@@ -170,6 +175,48 @@
         },
         runRoute        : function (route, is_silent) {
             throw new Error('uijet.runRoute not implemented');
+        },
+        isiPad           : function () {
+            if ( ~ navigator.userAgent.search(/iPad/i) ) {
+                this.$element.addClass('ipad');
+                this.is_iPad = true;
+            }
+            $('body').attr('ontouchmove', "(function preventTouchMove(e){e.preventDefault();}(event));");
+            return this;
+        },
+        //TODO: remove views specific transition logic
+        animate         : function (widget, callback) {
+            var transit_type = widget.options.animation_type || this.options.animation_type,
+                animation;
+            if ( uijet.back_navigation ) {
+                uijet.back_navigation = false;
+                widget.$element.addClass('reverse');
+                transit_type += '_reverse';
+            }
+            switch ( transit_type ) {
+                case 'slide':
+                    animation = {right: this.is_iPad ? '0' : '0%'};
+                    break;
+                case 'slide_reverse':
+                    animation = {left: this.is_iPad ? '0' : '0%'};
+                    break;
+            }
+            widget.$element.animate(animation, function () {
+                if ( uijet.back_navigation === false ) {
+                    widget.$element.removeClass('reverse');
+                    delete uijet.back_navigation;
+                }
+                callback.call(widget);
+            });
+            return this;
+        },
+        switchView      : function (view) {
+            var _current = this.current_view;
+            if ( _current !== view ) {
+                _current && _current.sleep();
+                this.current_view = view;
+            }
+            return this;
         }
     };
 

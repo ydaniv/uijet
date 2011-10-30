@@ -1,16 +1,21 @@
 uijet.Widget('Form', {
-    options         : {
-        type_class  : 'uijet_form',
-        signals     : {
-            post_init   : function () {
-                this.render();
-            },
-            post_wake   : function () {
-                this.$element.find('input').eq(0).focus();
-            }
-        }
+    options     : {
+        type_class  : 'uijet_form'
     },
-    update          : function () {
+    init        : function (options) {
+        this.setOptions(options)
+            .setId()
+            .setElement()
+            ._setCloak(true)
+            .prepareElement()
+            .setInitOptions()
+            .register()
+            ._saveOriginal()
+            .render(); // that's the difference
+        this.notify('post_init');
+        return this;
+    },
+    update      : function () {
         var that = this;
         return $.ajax({
             url     : this.getDataUrl(),
@@ -29,10 +34,19 @@ uijet.Widget('Form', {
     },
     //TODO: re-implement the routing mechanism for submitting forms
     register    : function () {
-        uijet.Form(this.id, this);
+        Akashi.Form(this.id, this);
+        return this;
+    },
+    appear      : function () {
+        this._setCloak(false)
+            .$element.find('input').eq(0).focus();
         return this;
     },
     getDataUrl  : function () {
         return this.options.data_url;
+    },
+    clearErrors : function () {
+        this.$element.find('.error').empty();
+        return this;
     }
 });

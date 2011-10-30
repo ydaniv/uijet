@@ -23,5 +23,15 @@ uijet.Mixin('Routed', {
     },
     getRoute        : function () {
         return this.options.route;
+    },
+    run             : function (context) {
+        this.publish('pre_load', null, true)
+            .wake(context, true);
+        return this;
+    },
+    appear          : function () {
+        this._setCloak(false)
+            .publish('post_load', null, true);
+        return this;
     }
 });
