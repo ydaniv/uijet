@@ -3,10 +3,13 @@ uijet.Widget('Pane', {
         type_class  : 'uijet_pane'
     },
     wake            : function (context, by_route) {
-        var that = this, dfrds, args = ['pre_wake'].concat(Array.prototype.slice.call(arguments));
-        this.notify.apply(this, args);
+        var args;
         // if invoked by container widget and not a route then do a dry wake
         if ( ! by_route ) {
+            if ( this.awake ) return this;
+            // make sure we allow the user to check the state before we set this.container_context
+            args = ['pre_wake'].concat(Array.prototype.slice.call(arguments));
+            this.notify.apply(this, args);
             this.container_context = context;
             this.bind()
                 .appear()
@@ -14,17 +17,7 @@ uijet.Widget('Pane', {
             this.notify('post_wake');
             return {};
         }
-        if ( this.awake ) return this;
-        this.notify('pre_wake');
-        this._setContext.apply(this, arguments);
-        dfrds = this.wakeContained(context);
-        $.when.apply($, dfrds).then(function () {
-            that.render()
-                .bind()
-                .appear()
-                .awake = true;
-            that.notify('post_wake');
-        });
-        return this;
+        this.awake = false; // enable waking logic to run
+        return this._super(context, by_route);
     }
 }, ['Routed']);

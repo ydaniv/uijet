@@ -1,6 +1,8 @@
 uijet.Adapter('iScroll', {
-    setScrolling        : function (switch_on) {
-        var iS_ops = {};
+    setScrolling: function (switch_on) {
+        var iS_ops = {
+            bounce  : false
+        };
         if ( switch_on ) {
             this._wrap();
             if ( this.options.horizontal ) {
@@ -12,5 +14,8 @@ uijet.Adapter('iScroll', {
             this.iScroll && this.iScroll.destroy();
         }
         return this;
+    },
+    scrollTo    : function (element) {
+        this.iScroll && this.iScroll.scrollToElement(element);
     }
 });

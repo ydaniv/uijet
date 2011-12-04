@@ -1,51 +1,70 @@
 uijet.Widget('Form', {
-    options     : {
+    options         : {
         type_class  : 'uijet_form'
     },
-    init        : function (options) {
-        this.setOptions(options)
-            .setId()
-            .setElement()
-            ._setCloak(true)
-            .prepareElement()
-            .setInitOptions()
-            .register()
-            ._saveOriginal()
-            .render(); // that's the difference
-        this.notify('post_init');
-        return this;
-    },
-    update      : function () {
+    send            : function () {
         var that = this;
+        this.notify('pre_send');
+        if ( this.options.route_send ) {
+            this.runRoute(this.getSendUrl() + this.getSerialized(), true);
+            return this;
+        }
         return $.ajax({
-            url     : this.getDataUrl(),
-            type    : 'post',
-            data    : this.$element.serialize(),
+            url     : this.getSendUrl(),
+            type    : this.$element.attr('method'),
+            data    : this.getSerialized(),
             success : function (response) {
-                that.has_data = true;
-                that.data = response;
-                that.notify('post_fetch_data', response);
-                that.publish('post_fetch_data', that.data);
+                that.setData(response);
+                that.notify('post_send_data', response);
+                that.publish('post_send_data', that.data);
             },
-            error   : function (response) {
-                that.notify('update_error', response);
+            error   : function () {
+                that.notify.apply(that, ['send_error'].concat(Array.prototype.slice.call(arguments)));
             }
         });
     },
     //TODO: re-implement the routing mechanism for submitting forms
-    register    : function () {
-        Akashi.Form(this.id, this);
+    register        : function () {
+        var that = this;
+        if ( this.options.route_send ) {
+             this.$element.bind('submit', function (e) {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 that.send();
+             });
+        } else {
+           Akashi.Form(this.id, this);
+        }
+        this._super();
         return this;
     },
-    appear      : function () {
-        this._setCloak(false)
-            .$element.find('input').eq(0).focus();
+    appear          : function () {
+        var $inputs;
+        this._super();
+        // on iOS devices the element.focus() method is broken
+        if ( ! uijet.is_iPad ) {
+            $inputs = this.$element.find('input');
+            $inputs.length && $inputs.eq(0)[0].focus();
+        }
         return this;
     },
-    getDataUrl  : function () {
+    setInitOptions  : function () {
+        this._super();
+        if ( this.options.serializer ) {
+            this.getSerialized = this.options.serializer;
+        }
+        return this;
+    },
+    getDataUrl      : function () {
         return this.options.data_url;
     },
-    clearErrors : function () {
+    getSendUrl      : function () {
+        return this.options.send_url;
+    },
+    getSerialized   : function () {
+        return this.$element.serialize();
+    },
+    clearErrors     : function () {
         this.$element.find('.error').empty();
         return this;
     }

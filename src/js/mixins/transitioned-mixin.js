@@ -1,27 +1,56 @@
 uijet.Mixin('Transitioned', {
-    appear      : function () {
-        var that = this;
+    transitioned    : true,
+    prepareElement  : function () {
+        this.$element.addClass((this.options.animation_type || 'slide') + '_out');
+        this._super();
+        return this;
+    },
+    _wrap           : function () {
+        var class_name = (this.options.animation_type || 'slide') + '_out';
+        this._super();
+        this.$wrapper.addClass(class_name);
+        this.$element.removeClass(class_name);
+        return this;
+    },
+    appear          : function () {
+        var that = this, _super = this._super;
         this.notify('pre_appear');
         this.$element.addClass('current top');
         this._setCloak(false);
-        $.when( this.transit() ).then(function () {
-            that.publish('post_load', null, true);
+        $.when( this.transit('in') ).then(function () {
+            _super.call(that);
         });
         return this;
     },
-    disappear   : function () {
+    disappear       : function () {
+        var that = this,
+            _super = this._super; // caching super method for it later inside an async function
         this.$element.removeAttr('style');
-        this._setCloak(true);
-        this.$element.removeClass('current reverse');
-        this.notify('post_disappear');
+        $.when( this.transit('out') ).then(function () {
+            that._setCloak(true);
+            if ( that.$wrapper ) {
+                that.$wrapper.removeClass('reverse');
+                that.$element.removeClass('current');
+            } else {
+                that.$element.removeClass('current reverse');
+            }
+            _super.call(that);
+        }, function () {
+            (that.$wrapper || that.$element).unbind('transitionend webkitTransitionEnd');
+        });
         return this;
     },
-    transit     : function () {
-        var dfrd_transit = $.Deferred();
-        uijet.animate(this, function () {
+    transit         : function (dir) {
+        this.dfrd_transit = $.Deferred();
+        uijet.animate(this, dir, function () {
             this.$element.removeClass('top');
-            dfrd_transit.resolve();
+            this.dfrd_transit.resolve();
         });
-        return dfrd_transit.promise();
+        return this.dfrd_transit.promise();
+    },
+    unbind          : function () {
+        this.dfrd_transit && this.dfrd_transit.reject();
+        this._super();
+        return this;
     }
 });

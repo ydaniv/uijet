@@ -1,11 +1,17 @@
 uijet.Mixin('Routed', {
+    routed          : true,
     register        : function () {
         this.setRoute()
-            .registerRoute();
+            .registerRoute()
+            ._super();
         return this;
     },
     registerRoute   : function () {
+        var _aliases = this.options.alias_routes;
         uijet.setRoute(this);
+        if ( _aliases && _aliases.length ) {
+            for ( var i = 0, a; a = _aliases[i++]; ) uijet.setRoute(this, a);
+        }
         return this;
     },
     checkState      : function () {
@@ -25,13 +31,8 @@ uijet.Mixin('Routed', {
         return this.options.route;
     },
     run             : function (context) {
-        this.publish('pre_load', null, true)
-            .wake(context, true);
-        return this;
-    },
-    appear          : function () {
-        this._setCloak(false)
-            .publish('post_load', null, true);
+        this.notify('pre_run', context);
+        this.wake(context, true);
         return this;
     }
 });

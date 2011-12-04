@@ -26,7 +26,7 @@ a { text-decoration: none; color: whitesmoke; }
 a:visited { color: whitesmoke; }
 /*a:hover { color: #06e; }*/
 /*a:hover { color: #F68220; }*/
-a:focus { outline: thin dotted; }
+a:focus { outline: none; }
 a:hover, a:active { outline: 0; }
 
 abbr[title] { border-bottom: 1px dotted; }
@@ -69,7 +69,7 @@ input:invalid, textarea:invalid { background-color: #f0dddd; }
 
 table { border-collapse: collapse; border-spacing: 0; }
 td { vertical-align: top; }
-
+video:focus { outline: none; }
 
 /* ==|== primary styles =====================================================
    Author:
@@ -88,6 +88,14 @@ h1, h2, h3, h4, h5, p, ul {
     margin: 0;
     padding: 0;
 }
+.center {
+    display: table;
+    height: 100%;
+}
+.center > .centered {
+    display: table-cell;
+    vertical-align: middle;
+}
 .uijet_bar {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -96,25 +104,33 @@ h1, h2, h3, h4, h5, p, ul {
     background-image: -webkit-gradient(linear, left top, left bottom, from(#EBEBEB), to(#777));
     background-image: -moz-linear-gradient(top, #EBEBEB, #777);
     background-image: linear-gradient(top, #EBEBEB, #777);
+    /*-webkit-box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8);*/
+    -moz-box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8);
     box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8);
     border: 2px solid #666;
     border-radius: 5px;
 }
+.uijet_bar.vertical {
+    height: 100%;
+    background-image: -webkit-gradient(linear, left top, right top, from(#EBEBEB), to(#777));
+    background-image: -moz-linear-gradient(left, #EBEBEB, #777);
+    background-image: linear-gradient(left, #EBEBEB, #777);
+}
 .uijet_button, .uijet_form button, .uijet_form input[type=submit], .uijet_form input[type=button] {
     display: inline-block;
     padding: 1em;
-    border: none;
-    border-top: 1px solid #222;
-    border-bottom: 1px solid whitesmoke;
-    border-radius: 16px;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6), inset 0 -1px 1px 1px rgba(0, 0, 0, 0.3);
-    -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6), inset 0 -1px 1px 1px rgba(0, 0, 0, 0.3);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.6), inset 0 -1px 1px 1px rgba(0, 0, 0, 0.3);
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(240, 240, 240, 1)), to(rgba(122, 122, 122, 1)));
-    background-image: -moz-linear-gradient(top, rgba(240, 240, 240, 1), rgba(122, 122, 122, 1));
-    background-image: linear-gradient(top, rgba(240, 240, 240, 1), rgba(122, 122, 122, 1));
+    border: 1px solid #999;
+    /*border-top-color: #222;*/
+    /*border-bottom-color: whitesmoke;*/
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px #000, 0 0 0 1px #0f0f0f inset;
+    -moz-box-shadow: inset 0 0 5px #000, 0 0 0 1px #0f0f0f inset;
+    box-shadow: inset 0 0 5px #000, 0 0 0 1px #0f0f0f inset;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, rgba(255, 255, 255, 0.2)), color-stop(51%, transparent), to(transparent)), -webkit-gradient(linear, left top, left bottom, from(#F0F0F0), to( #505050));
+    background-image: -moz-linear-gradient(center top , transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), -moz-linear-gradient(center top , #F0F0F0, #505050);
+    background-image: linear-gradient(center top, transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), linear-gradient(center top , #F0F0F0, #505050);
     color: #222;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, .8);
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6);
     font-weight: bold;
     cursor: pointer;
 }
@@ -128,11 +144,7 @@ h1, h2, h3, h4, h5, p, ul {
     background-image: -moz-linear-gradient(top, rgba(210, 210, 210, 1), rgba(92, 92, 92, 1));
     background-image: linear-gradient(top, rgba(210, 210, 210, 1), rgba(92, 92, 92, 1));
 }
-.uijet_button.back {
-    float: left;
-}
 .uijet_form {
-    width: 60%;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
@@ -140,9 +152,14 @@ h1, h2, h3, h4, h5, p, ul {
     background-image: -webkit-gradient(linear, left top, left bottom, from(#EBEBEB), to(#777));
     background-image: -moz-linear-gradient(top, #EBEBEB, #777);
     background-image: linear-gradient(top, #EBEBEB, #777);
+    /*-webkit-box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8), 0 0 1px 3px rgba(150, 150, 150, 0.8);*/
+    -moz-box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8), 0 0 1px 3px rgba(150, 150, 150, 0.8);
     box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8), 0 0 1px 3px rgba(150, 150, 150, 0.8);
     border: 1px solid #666;
-    border-radius: 20px;
+    border-radius: 12px;
+}
+.uijet_form {
+    width: 60%;
 }
 .uijet_form label {
     display: block;
@@ -150,11 +167,8 @@ h1, h2, h3, h4, h5, p, ul {
     text-align: left;
     font-size: 1.4em;
     color: #222;
-    text-shadow: 0 1px 0 rgba(255, 255, 255, .8);
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6);
     font-weight: bold;
-}
-.uijet_form label:empty {
-    display: none;
 }
 .uijet_form label.error {
     margin-bottom: 0;
@@ -166,7 +180,7 @@ h1, h2, h3, h4, h5, p, ul {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     padding: 5px 3px;
-    border-radius: 16px;
+    border-radius: 6px;
     border: none;
     border-top: 1px solid gray;
     border-bottom: 1px solid lightgray;
@@ -179,37 +193,33 @@ h1, h2, h3, h4, h5, p, ul {
     list-style: none;
 }
 .uijet_list a {
-    display: inline-block;
-    width: 97%;
-    height: 97%;
-    padding: 1.5%;
+    display: table-cell;
+    width: 100%;
+    height: 100%;
+    vertical-align: middle;
 }
 .uijet_list li {
+    display: inline-table;
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
     border: 1px solid #777;
     cursor: pointer;
 }
 .uijet_list li:first-child {
-    border-radius: 12px 12px 0 0;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
 }
 .uijet_list li:last-child {
-    border-radius: 0 0 12px 12px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
 }
-.uijet_list li:hover {
+.uijet_list li.selected {
     background-color: #777;
 }
 .uijet_list li + li {
     border-top: none;
-}
-.uijet_list span {
-    display: inline-block;
-}
-.uijet_list .description {
-    width: 60%;
-    font-size: 1.7em;
-}
-.uijet_list .title {
-    font-size: 2em;
-    color: #F68220;
 }
 .uijet_list.horizontal {
     height: 99%;
@@ -219,12 +229,12 @@ h1, h2, h3, h4, h5, p, ul {
     border-radius: 12px;
 }
 .uijet_list.horizontal a {
-    text-align: left;
+    width: inherit;
+    text-align: center;
 }
 .uijet_list.horizontal li {
     float: left;
     height: 100%;
-    width: 300px;
 }
 .uijet_list.horizontal li:first-child {
     border-radius: 12px 0 0 12px;
@@ -236,45 +246,44 @@ h1, h2, h3, h4, h5, p, ul {
     border-top: 1px solid #777;
     border-left: none;
 }
-.uijet_list.horizontal .poster {
-    width: 100%;
-    height: 75%;
-    text-align: center;
-    background-repeat: no-repeat;
-    background-position: top center;
-    background-size: contain;
+.uijet_list.horizontal.align_center li {
+    float: none;
 }
-.uijet_list.horizontal .title {
-    clear: both;
-    width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: 1.8em;
-    text-align: center;
-    color: #0a0a0a;
-    text-shadow: 1px 1px 1px whitesmoke;
-    font-weight: bold;
+.uijet_list.horizontal.align_right li {
+    float: right;
 }
-.uijet_list.horizontal .description {
-    width: 100%;
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    font-size: 1.2em;
-}
-.uijet_pane, .uijet_content_pane {
+.uijet_pane, .uijet_content_pane, .uijet_routed_content_pane {
     width: 100%;
     height: 100%;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
 }
+.uijet_overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+.uijet_overlay.darken {
+    background-color: rgba(20,20,20,0.7);
+}
+.uijet_overlay.top, .uijet_overlay_wrapper.top {
+    z-index: 1000;
+}
+.uijet_overlay_wrapper.darken {
+    background-color: rgba(20,20,20,0.7);
+}
+.uijet_overlay_wrapper.darken .uijet_overlay.darken {
+    background-color: transparent;
+}
 .uijet_view {
+    visibility: hidden;
     position: absolute;
     top: 0;
     bottom: 0;
-    right: -100%;
+    /*right: -100%;*/
     width: 100%;
     height: 100%;
     -moz-box-sizing: border-box;
@@ -286,45 +295,25 @@ h1, h2, h3, h4, h5, p, ul {
 .uijet_view.current {
     z-index: 1;
 }
-.uijet_view.reverse {
-    right: auto;
-    left: -100%;
-}
 .uijet_view.top {
     z-index: 10;
 }
 .uijet_view_container {
     position: relative;
-    height: 91%;
     width: 100%;
 }
-.item_poster {
-    display: inline-block;
-    width: 34%;
+.uijet_video {
+    width: 100%;
     height: 100%;
-    margin-right: 1%;
-    background-repeat: no-repeat;
-    background-position: top center;
-    background-size: contain;
-}
-.item_data {
-    display: inline-block;
-    width: 64%;
-    vertical-align: top;
-    text-align: left;
-}
-.item_data .description {
-    font-size: 1.4em;
-}
-.item_data .title {
-    font-size: 2em;
-    color: #F68220;
 }
 .uijet_wrapper {
     position: relative;
     width: 100%;
     height: 100%;
     overflow: hidden;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 .uijet_wrapper.fixed, .uijet_widget.fixed {
     position: absolute;
@@ -332,10 +321,10 @@ h1, h2, h3, h4, h5, p, ul {
 .uijet_wrapper.bottom, .uijet_widget.bottom {
     bottom: 0;
 }
-.uijet_widget.left {
+.uijet_wrapper.left, .uijet_widget.left {
     left: 0;
 }
-.uijet_widget.right {
+.uijet_wrapper.right, .uijet_widget.right {
     right: 0;
 }
 .uijet_wrapper.center {
@@ -345,9 +334,7 @@ h1, h2, h3, h4, h5, p, ul {
     top: 0;
 }
 .uijet_wrapper > .uijet_widget {
-    position: absolute;
-    left: 0;
-    top: 0;
+    position: relative;
 }
 .uijet_center_wrapper {
     display: table-cell;
@@ -357,8 +344,39 @@ h1, h2, h3, h4, h5, p, ul {
     position: static;
     margin: auto;
 }
-.uijet_top_overlay {
-    z-index: 1000;
+.transitioned {
+    -webkit-transform: translateZ(0);
+    -webkit-transition: opacity .5s ease, -webkit-transform .5s ease;
+    -moz-transition: opacity .5s ease, -moz-transform .5s ease;
+    transition: opacity .5s ease, transform .5s ease;
+}
+.appear_out {
+    opacity: 0;
+    -webkit-transform: scale3d(.4, .4, .4);
+    -moz-transform: scale(.4);
+    transform: scale(.4);
+}
+.appear_in {
+    opacity: 1;
+    -webkit-transform: scale3d(1, 1, 1);
+    -moz-transform: scale(1);
+    transform: scale(1);
+}
+.slide_out {
+    position: absolute;
+    right: -100%;
+}
+.slide_in {
+    -webkit-transform: translate3d(-100%,0,0);
+    -moz-transform: translate(-100%,0);
+}
+.reverse.slide_out {
+    right: auto;
+    left: -100%;
+}
+.reverse.slide_in {
+    -webkit-transform: translate3d(100%,0,0);
+    -moz-transform: translate(100%,0);
 }
 #main {
     visibility: hidden;
@@ -372,6 +390,24 @@ h1, h2, h3, h4, h5, p, ul {
     padding-top: 20px;
 }
 
+.float {
+    position: absolute;
+    z-index: 200;
+    height: auto;
+}
+.float > .uijet_widget {
+    position: static;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    /*overflow: hidden;*/
+    background-color: #ccc;
+    -webkit-box-shadow: inset 0 0 8px 4px rgba(36, 36, 36, .9);
+    -moz-box-shadow: inset 0 0 8px 4px rgba(36, 36, 36, .9);
+    box-shadow: inset 0 0 8px 4px rgba(36, 36, 36, .9);
+    border: 3px solid #222;
+    border-radius: 16px;
+}
 .hide { display: none; }
 
 /* ==|== non-semantic helper classes ======================================== */
@@ -394,21 +430,7 @@ h1, h2, h3, h4, h5, p, ul {
 }
 
 @media only screen and (min-width: 768px) {
-    .ipad .uijet_view {
-        right: -768px;
-    }
-    .ipad .uijet_view.reverse {
-        right: auto;
-        left: -768px;
-    }
 }
 
 @media only screen and (min-width: 1024px) {
-    .ipad .uijet_view {
-        right: -1024px;
-    }
-    .ipad .uijet_view.reverse {
-        right: auto;
-        left: -1024px;
-    }
 }

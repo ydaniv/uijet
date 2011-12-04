@@ -3,8 +3,15 @@ uijet.Widget('Bar', {
         type_class  : 'uijet_bar'
     },
     prepareElement  : function () {
-        this.$element.addClass('uijet_widget ' + this.options.type_class + ' clearfix');
-        this.setSize();
+        var class_name = 'clearfix';
+        if ( this.options.vertical ) class_name += ' vertical';
+        this.$element.addClass(class_name);
+        this._super();
+        return this;
+    },
+    _wrap           : function () {
+        this.$wrapper = this.$element;
+        this._super();
         return this;
     }
 });

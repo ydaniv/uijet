@@ -25,33 +25,45 @@
         },
         wake            : function (context) {
             var that = this,
-                dfrds;
-            if ( this.awake ) return this;
-            this.notify('pre_wake');
+                dfrds, args, success, _sequence;
+            if ( this.awake && ! context ) return this; // no reason to continue
+            args = ['pre_wake'].concat(Array.prototype.slice.call(arguments));
+            this.notify.apply(this, args);
             this._setContext.apply(this, arguments);
-            dfrds = this.wakeContained(context);
-            $.when.apply($, dfrds).then(function () {
-                that.render()
-                    .bind()
-                    .appear()
-                    .awake = true;
+            success = function () {
+                if ( ! that.awake ) { // there was context to change but if we're set then bail out
+                    that.render()
+                        .bind()
+                        .appear()
+                        .awake = true;
+                }
                 that.notify('post_wake');
+            };
+            dfrds = this.wakeContained(context);
+            _sequence = $.when.apply($, dfrds).fail(function () {
+                that.notify('wake_failed', arguments);
+                that.sleep();
             });
+            this.options.sync ? _sequence.done(success) : success();
             return this;
         },
         wakeContained   : function (context) {
             return uijet.wakeContained(this.id, context); // returns an array of jQuery deferreds
         },
         sleep           : function () {
-            this.unbind();
-            this.disappear()
-                .sleepContained()
-                .awake = false;
-            this.options.destroy_on_sleep && this.destroy();
+            if ( this.awake ) {
+                this.notify('pre_sleep');
+                this.unbind()
+                    .disappear()
+                    .sleepContained()
+                    .awake = false;
+                this.options.destroy_on_sleep && this.destroy();
+                this.notify('post_sleep');
+            }
             return this;
         },
         sleepContained  : function () {
-           uijet.sleepContained(this.id);
+            uijet.sleepContained(this.id);
             return this;
         },
         destroy         : function () {
@@ -59,35 +71,48 @@
             return this;
         },
         update          : function () {
-            var that = this;
-            return $.ajax({
+            var dfrd_update, _success;
+            if ( ! this.options.data_url ) return {};
+            this.publish('pre_load', null, true);
+            dfrd_update = $.Deferred();
+            _success = function (response) {
+                this.setData(response);
+                if ( ! this.has_data ) {
+                    dfrd_update.reject(response);
+                } else {
+                    this.notify('post_fetch_data', response);
+                    dfrd_update.resolve();
+                }
+            };
+             $.ajax({
                 url     : this.getDataUrl(),
                 type    : 'get',
                 dataType: 'json',
-                success : function (response) {
-                    that.has_data = true;
-                    that.data = response;
-                    that.notify('post_fetch_data', response);
-                },
-                error   : function (response) {
-                    var _publish = that.notify('update_error', response);
-                    _publish !== false && that.publish('update_error', response, true);
+                context : this
+            }).done(_success)
+              .fail(function (response) {
+                var _abort_fail = this.notify.apply(this, ['update_error'].concat(Array.prototype.slice.call(arguments), _success.bind(this)));
+                if ( _abort_fail !== false ) {
+                    this.publish('update_error', response, true);
+                    dfrd_update.reject(response);
                 }
             });
+            return dfrd_update.promise();
         },
         fetchTemplate   : function (refresh) {
             return {};
         },
         prepareElement  : function () {
             this.$element.addClass('uijet_widget ' + this.options.type_class);
-            this.setSize();
+            this.setStyle()
+                .position();
             return this;
         },
-        setSize         : function () {
-            var _h;
-            if ( _h = this.options.height ) {
+        setStyle        : function () {
+            var _style = this.options.style;
+            if ( _style ) {
                 this._wrap()
-                    .$wrapper[0].style.height = _h;
+                    .$wrapper.css(_style);
             }
             return this;
         },
@@ -96,7 +121,6 @@
         },
         render          : function () {
             this.notify('pre_render');
-            this.position();
             return this;
         },
         position        : function () {
@@ -112,15 +136,18 @@
                 } else if ( Utils.isObj(_pos) ) {
                     this.$wrapper.css(_pos);
                 }
+                delete this.options.position; // no need to position twice
             }
             return this;
         },
         appear          : function () {
             this._setCloak(false);
+            this.notify('post_appear');
             return this;
         },
         disappear       : function () {
             this._setCloak(true);
+            this.notify('post_disappear');
             return this;
         },
         parse           : function () {
@@ -129,19 +156,31 @@
             return this;
         },
         bind            : function () {
-            var _dom_events, e, that = this;
+            var _dom_events, e, that = this, _bound;
             if ( _dom_events = this.options.dom_events ) {
+                this._bound_dom_events = _bound = {};
                 for ( e in _dom_events ) (function (name, handler) {
-                    that.$element.bind(name, handler.bind(that));
+                    _bound[name] = handler.bind(that);
+                    that.$element.bind(name, _bound[name]);
                 })(e, _dom_events[e]);
             }
+            this.bound = true;
             return this;
         },
         unbind          : function () {
+            var _dom_events;
+            if ( _dom_events = this.options.dom_events ) {
+                this.$element.unbind(this._bound_dom_events);
+            }
+            this.bound = false;
             return this;
         },
         listen          : function (topic, handler) {
             this[topic] = handler;
+            return this;
+        },
+        unlisten        : function (topic) {
+            if ( this[topic] ) delete this[topic];
             return this;
         },
         notify          : function (topic) {
@@ -163,14 +202,21 @@
             uijet.publish(topic, data);
             return this;
         },
-        runRoute           : function (route, is_silent) {
+        runRoute        : function (route, is_silent) {
             uijet.runRoute(route, is_silent);
             return this;
         },
+        select          : function (initial) {
+            var $el;
+            $el = typeof initial == 'function' ? initial.call(this) : this.$element.find(initial);
+            $el.length && $el.click();
+            return this;
+        },
         setInnerRouter  : function () {
-            var that = this;
+            var routing = this.options.routing, that = this;
             this.$element.delegate('a', 'click', function (e) {
-                uijet.runRoute($(this).attr('href'), true);
+                var $this = $(this);
+                uijet.runRoute($this.attr('href'), typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
                 return false;
             });
         },
@@ -184,21 +230,21 @@
             return this;
         },
         setInitOptions  : function () {
-            var _signals, _app_events;
+            var ops = this.options, _signals, _app_events;
             // listen to all signals set in options
-            if ( _signals = this.options.signals ) {
+            if ( _signals = ops.signals ) {
                 for ( var n in _signals ) {
                     this.listen(n, _signals[n]);
                 }
             }
             // subscribe to all app (custom) events set in options
-             if ( _app_events = this.options.app_events ) {
+             if ( _app_events = ops.app_events ) {
                 for ( n in _app_events ) {
                     this.subscribe(n, _app_events[n]);
                 }
             }
             // capture and delegate all anchor clicks to an inner routing mechanism
-            if ( this.options.dont_route ) {
+            if ( ~ 'function boolean undefined'.indexOf(typeof ops.routing) ) {
                 this.setInnerRouter();
             }
             return this;
@@ -218,7 +264,7 @@
             return this;
         },
         getDataUrl      : function () {
-            return this.substitute(this.options.data_url + Akashi.AUTH, this.context);
+            return this.substitute(this.options.data_url, this.context);
         },
         getTemplateUrl  : function () {
             return this.substitute(this.options.template_url, {});
@@ -228,6 +274,19 @@
             return template.replace(SUBSTITUTE_REGEX, function(match, key){
                 return Utils.isObj(obj) ? obj[key] : obj[n++];
             });
+        },
+        setData         : function (data) {
+            var success = this.notify('process_data', data);
+            if ( typeof success != 'undefined' && ! success ) {
+                return this;
+            }
+            this.data = data;
+            this.has_data = true;
+            return this;
+        },
+        unshadow        : function (elements, do_unshadow) {
+            uijet.is_iPad && $(elements).toggleClass('unshadow', typeof do_unshadow == 'boolean' ? do_unshadow : true);
+            return this;
         },
         _wrap           : function () {
             if ( ! this.$wrapper ) {
@@ -245,6 +304,29 @@
             }
             return this;
         },
+        _getSize            : function () {
+            var children = this.$element.children(),
+                total_width = 0,
+                total_height = 0,
+                l = children.length,
+                size = { width: 0, height: 0 },
+                child, rect;
+            while ( child = children[--l] ) {
+                rect = child.getClientRects();
+                if ( rect && rect[0] ) {
+                    total_width += rect[0].width;
+                    total_height += rect[0].height;
+                }
+            }
+            if ( this.options.horizontal ) {
+                size.width = total_width;
+                size.height = (rect && rect[0].height) || 0;
+            } else {
+                size.width = (rect && rect[0].height) || 0;
+                size.height = total_height;
+            }
+            return size;
+        },
         _parseOptions   : function (options) {
             var _options = {}, _pairs, l, op;
             if ( options && options.split ) {
@@ -261,8 +343,8 @@
             this.$element[0].style.visibility = cloak ? 'hidden' : 'visible';
             return this;
         },
-        _setContext    : function () {
-            if ( arguments.length ) {
+        _setContext     : function () {
+            if ( arguments.length && typeof arguments[0] != 'undefined' ) {
                 this.context = arguments;
             }
             return this;
@@ -275,6 +357,9 @@
         _clearRendered  : function () {
             // remove all children that were added with .render()
             this.$element.children().not(this.$original_children).remove();
+            this.$element[0].setAttribute('style', ''); // needed to work around a Webkit bug
+            this.$element[0].removeAttribute('style');
+            this.has_content = false;
             return this;
         }
     });

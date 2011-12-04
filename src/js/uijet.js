@@ -7,29 +7,46 @@
         widgets = {},
         views = {},
         widget_classes = {},
+        widget_definitions = {},
         uijet;
 
     uijet =  {
-        Widget          : function (name, props, mixin_names) {
-            var _mixins, _class, _mixin;
-            // normalize mixins
+        _normalizeMixins: function (mixin_names) {
+            var _mixins;
             if ( typeof mixin_names == 'string' ) {
                 _mixins = [mixin_names];
             } else if ( Utils.isArr(mixin_names) ) {
-                _mixins = mixin_names;
+                _mixins = mixin_names.slice(0); // copy that
             }
+            return _mixins;
+        },
+        _defineWidget   : function (_name, _props, _mixins) {
+            widget_definitions[_name] = {
+                proto   : _props,
+                mixins  : _mixins
+            };
+            return this;
+        },
+        _generateWidget : function (_props, _mixins) {
+            var _class = Utils.Create(this.BaseWidget, true),
+                _mixin, _mixins_copy;
             // if we have mixins to mix then mix'em
             if ( _mixins && _mixins.length ) {
-                while ( _mixin = _mixins.shift() ) {
+                _mixins_copy = _mixins.slice(0);
+                while ( _mixin = _mixins_copy.shift() ) {
                     if ( mixins[_mixin] ) {
                         _class = Utils.Create(mixins[_mixin], _class, true);
                     }
                 }
-                // place the chain of mixins on top of BaseWidget
-                _class = _class ? Utils.Create(_class, this.BaseWidget, true) : null;
             }
+            return Utils.Create(_props, _class, true);
+        },
+        Widget          : function (name, props, mixin_names) {
+            var _mixins = this._normalizeMixins(mixin_names);
+            // Cache the widget's definition for JIT creation
+            this._defineWidget(name, props, _mixins);
             // finally create and register the class
-            widget_classes[name] = Utils.Create(props, _class || this.BaseWidget, true);
+            widget_classes[name] = this._generateWidget(props, _mixins);
             return this;
         },
         Mixin           : function (name, props) {
@@ -97,9 +114,19 @@
             return this;
         },
         startWidget     : function (_type, _config) {
-            var _w, l;
+            var _w, l, _d, _c, _mixins;
             if ( _type in widget_classes ) {
-                _w = new widget_classes[_type]();
+                if ( _config.mixins ) {
+                    _d = widget_definitions[_type];
+                    _mixins = this._normalizeMixins(_config.mixins);
+                    if ( _d.mixins ) {
+                        _mixins = _d.mixins.concat(_mixins);
+                    }
+                    _c = this._generateWidget(_d.proto, _mixins);
+                } else {
+                    _c = widget_classes[_type];
+                }
+                _w = new _c();
                 if ( _config.adapters ) {
                     l = _config.adapters.length;
                     while ( l-- ) {
@@ -119,7 +146,10 @@
             return this;
         },
         //TODO: implement this if it's needed at all or remove
-        startup         : function () {},
+        startup         : function () {
+            this.publish('startup');
+            return this;
+        },
         getCurrentView  : function () {
             var _current = null;
             for ( var v in views ) {
@@ -170,44 +200,48 @@
         unsubscribe     : function (topic, handler, context) {
             throw new Error('uijet.unsubscribe not implemented');
         },
-        setRoute        : function (widget) {
+        setRoute        : function (widget, route) {
             throw new Error('uijet.setRoute not implemented');
         },
         runRoute        : function (route, is_silent) {
             throw new Error('uijet.runRoute not implemented');
         },
-        isiPad           : function () {
+        getRouteById    : function (widget_id) {
+            for ( var w in widgets ) {
+                if ( w == widget_id ) {
+                    return widgets[w].self.getRoute();
+                }
+            }
+            return null;
+        },
+        isiPad          : function () {
             if ( ~ navigator.userAgent.search(/iPad/i) ) {
                 this.$element.addClass('ipad');
                 this.is_iPad = true;
             }
-            $('body').attr('ontouchmove', "(function preventTouchMove(e){e.preventDefault();}(event));");
+            this.is_iPad && $('body').attr('ontouchmove', "(function preventTouchMove(e){e.preventDefault();}(event));");
             return this;
         },
-        //TODO: remove views specific transition logic
-        animate         : function (widget, callback) {
+        animate         : function (widget, direction, callback) {
             var transit_type = widget.options.animation_type || this.options.animation_type,
-                animation;
+                $el = (widget.$wrapper || widget.$element);
+            direction = direction ||'in';
             if ( uijet.back_navigation ) {
                 uijet.back_navigation = false;
-                widget.$element.addClass('reverse');
-                transit_type += '_reverse';
+                $el.addClass('reverse');
             }
-            switch ( transit_type ) {
-                case 'slide':
-                    animation = {right: this.is_iPad ? '0' : '0%'};
-                    break;
-                case 'slide_reverse':
-                    animation = {left: this.is_iPad ? '0' : '0%'};
-                    break;
-            }
-            widget.$element.animate(animation, function () {
+            $el.one('transitionend webkitTransitionEnd', function (e) {
                 if ( uijet.back_navigation === false ) {
-                    widget.$element.removeClass('reverse');
+                    $el.removeClass('transitioned reverse');
                     delete uijet.back_navigation;
+                } else {
+                    $el.removeClass('transitioned');
                 }
                 callback.call(widget);
             });
+            setTimeout(function () {
+                $el.addClass('transitioned').toggleClass(transit_type + '_in', direction == 'in');
+            }, 0);
             return this;
         },
         switchView      : function (view) {

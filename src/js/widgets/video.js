@@ -2,33 +2,14 @@ uijet.Widget('Video', {
     options : {
         type_class          : 'uijet_video'
     },
-    wake                    : function (context) {
-        var that = this, dfrd;
-        this.notify.call(this, 'pre_wake', arguments);
-        this._setContext.apply(this, arguments);
-        this.dfrd = $.Deferred();
-        dfrd = this.wakeContained(context);
-        $.when.apply($, dfrd).then(function () {
-            $.when( that.update() ).then(function () {
-                $.when ( that.render() ).then(function () {
-                    that.bind()
-                        .initPlayer()
-                        .appear(context)
-                        .awake = true;
-                    that.notify('post_wake');
-                    that.dfrd.resolve();
-                });
-            });
-        });
-        return this.dfrd.promise();
-    },
     sleep           : function () {
-        this.unbind();
-        this.disappear()
-            .destroyVideo()
-            .sleepContained()
-            .awake = false;
-        this.options.destroy_on_sleep && this.destroy();
+        this.awake && this.destroyVideo();
+        this._super();
+        return this;
+    },
+    render                  : function () {
+        this._super()
+            .initPlayer();
         return this;
     },
     next                    : function () {
@@ -53,9 +34,12 @@ uijet.Widget('Video', {
         return this;
     },
     initPlayer              : function () {
-        var item, data = this.data.media;
+        var item, data = this.data && this.data.media || [];
         if ( data.length ) {
             item = data[0];
+            if ( this.awake ) {
+                this.destroyVideo();
+            }
             this.initVideo()
                 ._addItem(item)
                 ._registerNextListener(item)
@@ -192,4 +176,4 @@ uijet.Widget('Video', {
     seek                    : function (time) {
         return this;
     }
-});
+}, 'Updated');
