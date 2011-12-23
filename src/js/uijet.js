@@ -503,21 +503,83 @@
             }
             return this;
         },
+        /*
+         * -NOT IMPLEMENTED-
+         * @sign: publish(topic, [data])
+         * @return: uijet
+         *
+         * Publish a custom event/message accros the app.
+         * Generally takes a string topic and data is an optional extra argument passed to event listeners.
+         * It is possible to support different argument for topic, i.e. object as a map of topics to data.
+         */
         publish         : function (topic, data) {
             throw new Error('uijet.publish not implemented');
         },
+        /*
+         * -NOT IMPLEMENTED-
+         * @sign: subscribe(topic, handler, [context])
+         * @return: uijet
+         *
+         * Subscribe an event handler to a custom event/message in app-wide context.
+         * Generally takes a string topic and a handler function to be called once topic is published.
+         * Takes an optional third context argument which can  act as the `this` argument in the handler's
+         * exection context.
+         * It is possible to support different argument for topic, i.e. object as a map of topics to handlers,
+         * or handler as a string representing a name of a function in the context argument.
+         */
         subscribe       : function (topic, handler, context) {
             throw new Error('uijet.subscribe not implemented');
         },
+        /*
+         * -NOT IMPLEMENTED-
+         * @sign: unsubscribe(topic, [handler], [context])
+         * @return: uijet
+         *
+         * Remove a subscription of an event handler to a custom event/message.
+         * If just the topic is supplied then all handlers subscribed to it will be removed.
+         * If a handler is supplied (either as a function or as a string together with the context argument)
+         * then only that handler will be removed.
+         */
         unsubscribe     : function (topic, handler, context) {
             throw new Error('uijet.unsubscribe not implemented');
         },
+        /*
+         * -NOT IMPLEMENTED-
+         * @sign: setRoute(widget, [route], [callback])
+         * @return: uijet
+         *
+         * Sets a route in the app that will call the widget's run method.
+         * If route argument is NOT supplied then the route is taken using widget.getRoute().
+         * It is possible to supply the route argument as an object when other charateristics of the route
+         * need to be taken into account, such as the REST method, etc.
+         * An optional third argument callback can be used to replace the default run method.
+         * For example, if you need to set a route of a Form's submit with the send method.
+         */
         setRoute        : function (widget, route, callback) {
             throw new Error('uijet.setRoute not implemented');
         },
+        /*
+         * -NOT IMPLEMENTED-
+         * @sign: unsetRoute(widget, [route])
+         * @return: uijet
+         *
+         * Removes a set route from the routes registry.
+         * Arguments can be supplied for all cases as explained for setRoute above.
+         */
         unsetRoute      : function (widget, route) {
             throw new Error('uijet.unsetRoute not implemented');
         },
+        /*
+         * -NOT IMPLEMENTED-
+         * @sign: runRoute(route, [is_silent])
+         * @return: uijet
+         *
+         * Runs a set route.
+         * The second is_silent argument can be used to differentiate between 2 types of routing:
+         * 1. When true: call the route handler but don't propagate the route to the browsers' address bar (possible
+         *    to neither push this state to the HTML5 history object.
+         * 2. When false: Propagate this route to the address bar and the activation of the route handler will follow.
+         */
         runRoute        : function (route, is_silent) {
             throw new Error('uijet.runRoute not implemented');
         },
