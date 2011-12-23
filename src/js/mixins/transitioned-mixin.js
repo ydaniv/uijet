@@ -22,22 +22,27 @@ uijet.Mixin('Transitioned', {
         });
         return this;
     },
-    disappear       : function () {
+    disappear       : function (no_transitions) {
         var that = this,
-            _super = this._super; // caching super method for it later inside an async function
+            _super = this._super, // caching super method for it later inside an async function
+            _success = function () {
+                that._setCloak(true);
+                if ( that.$wrapper ) {
+                    that.$wrapper.removeClass('reverse');
+                    that.$element.removeClass('current');
+                } else {
+                    that.$element.removeClass('current reverse');
+                }
+                _super.call(that, no_transitions);
+            };
         this.$element.removeAttr('style');
-        $.when( this.transit('out') ).then(function () {
-            that._setCloak(true);
-            if ( that.$wrapper ) {
-                that.$wrapper.removeClass('reverse');
-                that.$element.removeClass('current');
-            } else {
-                that.$element.removeClass('current reverse');
-            }
-            _super.call(that);
-        }, function () {
-            (that.$wrapper || that.$element).unbind('transitionend webkitTransitionEnd');
-        });
+        if ( no_transitions ) {
+            _success()
+        } else {
+            $.when( this.transit('out') ).then(_success, function () {
+                (that.$wrapper || that.$element).unbind('transitionend webkitTransitionEnd');
+            });
+        }
         return this;
     },
     transit         : function (dir) {

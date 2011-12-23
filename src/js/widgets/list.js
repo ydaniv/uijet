@@ -7,6 +7,7 @@ uijet.Widget('List', {
         if ( _align = this.options.align ) {
             this.$element.addClass('align_' + _align);
         }
+        //TODO: switch to $element.on('click', 'a', function ...)
         this.$element.delegate('a', 'click', function (e) {
             uijet.is_iPad && e.preventDefault();
             var $this = $(this).closest('li');

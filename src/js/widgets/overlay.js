@@ -24,13 +24,13 @@ uijet.Widget('Overlay', {
         this._super();
         return this;
     },
-    disappear   : function () {
+    disappear   : function (no_transitions) {
         if ( this.$wrapper ) {
             this.$wrapper.removeClass('top')[0].style.visibility = 'hidden';
         } else {
             this.$element.removeClass('top');
         }
-        this._super();
+        this._super(no_transitions);
         return this;
     }
 });

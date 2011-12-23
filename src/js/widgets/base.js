@@ -57,11 +57,11 @@
         wakeContained   : function (context) {
             return uijet.wakeContained(this.id, context); // returns an array of jQuery deferreds
         },
-        sleep           : function () {
+        sleep           : function (no_transitions) {
             if ( this.awake ) {
                 this.notify('pre_sleep');
                 this.unbind()
-                    .disappear()
+                    .disappear(no_transitions)
                     .sleepContained()
                     .awake = false;
                 this.options.destroy_on_sleep && this.destroy();
@@ -74,7 +74,14 @@
             return this;
         },
         destroy         : function () {
-            this._clearRendered();
+            this.notify('pre_destroy');
+            this.destroyContained()
+                .unsubscribe(_window.Object.keys(this.options.app_events).join(' '))
+                .remove();
+            return this;
+        },
+        destroyContained: function () {
+            uijet.destroyContained(this.id);
             return this;
         },
         update          : function () {
@@ -91,7 +98,7 @@
                     dfrd_update.resolve();
                 }
             };
-             $.ajax({
+            $.ajax({
                 url     : this.getDataUrl(),
                 type    : 'get',
                 dataType: 'json',
@@ -197,6 +204,9 @@
             }
         },
         subscribe       : function (topic, handler) {
+            if ( ! (topic in this.options.app_events) ) {
+                this.options.app_events[topic] = handler;
+            }
             uijet.subscribe(topic, handler.bind(this));
             return this;
         },
@@ -221,6 +231,7 @@
         },
         setInnerRouter  : function () {
             var routing = this.options.routing, that = this;
+            //TODO: switch to $element.on('click', 'a', function ...)
             this.$element.delegate('a', 'click', function (e) {
                 var $this = $(this);
                 uijet.runRoute($this.attr('href'), typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
@@ -245,7 +256,7 @@
                 }
             }
             // subscribe to all app (custom) events set in options
-             if ( _app_events = ops.app_events ) {
+            if ( _app_events = ops.app_events ) {
                 for ( n in _app_events ) {
                     this.subscribe(n, _app_events[n]);
                 }
@@ -295,10 +306,15 @@
             uijet.is_iPad && $(elements).toggleClass('unshadow', typeof do_unshadow == 'boolean' ? do_unshadow : true);
             return this;
         },
+        remove          : function () {
+            (this.$wrapper || this.$element).remove();
+            return this;
+        },
         _wrap           : function () {
             if ( ! this.$wrapper ) {
                 this.$wrapper = this.$element.wrap($('<div/>', {
-                    'class' : 'uijet_wrapper ' + this.options.type_class + '_wrapper'
+                    'class' : 'uijet_wrapper ' + this.options.type_class + '_wrapper',
+                    id      : this.id + '_wrapper'
                 })).parent();
             }
             return this;
@@ -317,19 +333,16 @@
                 total_height = 0,
                 l = children.length,
                 size = { width: 0, height: 0 },
-                child, rect;
+                child;
             while ( child = children[--l] ) {
-                rect = child.getClientRects();
-                if ( rect && rect[0] ) {
-                    total_width += rect[0].width;
-                    total_height += rect[0].height;
-                }
+                total_width += child.offsetWidth;
+                total_height += child.offsetHeight;
             }
             if ( this.options.horizontal ) {
                 size.width = total_width;
-                size.height = (rect && rect[0].height) || 0;
+                size.height = children[0].offsetHeight;
             } else {
-                size.width = (rect && rect[0].height) || 0;
+                size.width = children[0].offsetWidth;
                 size.height = total_height;
             }
             return size;

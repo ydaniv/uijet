@@ -8,7 +8,7 @@ uijet.Widget('View', {
         this.checkState();
         return this;
     },
-    disappear       : function () {
+    disappear       : function (no_transitions) {
         this.$element.removeAttr('style');
         this._setCloak(true);
         this.$element.removeClass((this.options.animation_type || 'slide') + '_in');

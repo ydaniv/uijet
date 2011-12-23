@@ -199,7 +199,6 @@ h1, h2, h3, h4, h5, p, ul {
     vertical-align: middle;
 }
 .uijet_list li {
-    display: inline-table;
     width: 100%;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
@@ -233,6 +232,7 @@ h1, h2, h3, h4, h5, p, ul {
     text-align: center;
 }
 .uijet_list.horizontal li {
+    display: inline-table;
     float: left;
     height: 100%;
 }
@@ -346,9 +346,15 @@ h1, h2, h3, h4, h5, p, ul {
 }
 .transitioned {
     -webkit-transform: translateZ(0);
-    -webkit-transition: opacity .5s ease, -webkit-transform .5s ease;
-    -moz-transition: opacity .5s ease, -moz-transform .5s ease;
-    transition: opacity .5s ease, transform .5s ease;
+    -webkit-transition-duration: .5s;
+       -moz-transition-duration: .5s;
+            transition-duration: .5s;
+    -webkit-transition-timing-function: ease;
+       -moz-transition-timing-function: ease;
+            transition-timing-function: ease;
+    -webkit-transition-property: opacity, -webkit-transform, height;
+       -moz-transition-property: opacity, -moz-transform, height;
+            transition-property: opacity, transform, height;
 }
 .appear_out {
     opacity: 0;

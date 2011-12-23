@@ -66,10 +66,12 @@ UIjet is currently based on jQuery, mostly for DOM manipulation, client-server c
 
         uijet.BaseWidget.generate = someTemplateEnginge.render;
 
-        $(uijet.init({
-            //...options...
-        }));
-    }())
+        $(function () {
+            uijet.init({
+                //...options...
+            });
+        });
+    }());
 
 ### Widget instances definition
 

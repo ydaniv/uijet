@@ -232,6 +232,13 @@
             views[name] = widget;
             return this;
         },
+        Form            : function (name, widget) {
+            var $el = widget.$element,
+                method = $el.attr('method') || 'get',
+                route = $el.attr('action');
+            this.setRoute(widget, {method: method, path: route}, 'send');
+            return this;
+        },
         /*
          * @sign: Adapter(name, adapter)
          * @return: uijet
@@ -292,12 +299,12 @@
             return this;
         },
         /*
-         * @sign: _registerWidget(widget)
+         * @sign: registerWidget(widget)
          * @return: uijet
          *
-         * Registers a widget into uijet's tree.
+         * Registers a widget into uijet's widgets tree.
          */
-        _registerWidget  : function (widget) {
+        registerWidget  : function (widget) {
             var $parent = widget.$element.parent(),
                 _current = {
                     self        : widget,
@@ -316,6 +323,24 @@
                     break;
                 }
                 $parent = $parent.parent();
+            }
+            return this;
+        },
+        /*
+         * @sign: unregisterWidget(widget)
+         * @return: uijet
+         *
+         * Unregisters a widget from uijet's widgets tree.
+         */
+        unregisterWidget: function (widget) {
+            var _id = widget.id, registration, _parent_contained;
+            if ( _id in widgets ) {
+                registration = widgets[_id];
+                if ( registration.container ) {
+                    _parent_contained = widgets[registration.container].contained;
+                    _parent_contained.splice(_parent_contained.indexOf(_id), 1);
+                }
+                delete widgets[_id];
             }
             return this;
         },
@@ -361,7 +386,7 @@
                 // init the instance
                 _w.init(_config);
                 // register this instance to uijet
-                this._registerWidget(_w);
+                this.registerWidget(_w);
             }
             return this;
         },
@@ -396,7 +421,16 @@
          * Finds current view and returns it
          */
         getCurrentView  : function () {
-            return this.current_view;
+            var _current = this.current_view, v;
+            if ( ! _current ) {
+                for ( v in views ) {
+                    if ( views[v].options.state == 'current' ) {
+                        _current = views[v];
+                        break;
+                    }
+                }
+            }
+            return _current;
         },
         /*
          * @sign: parse()
@@ -448,7 +482,24 @@
             var _contained = widgets[id].contained,
                 l = _contained.length;
             while ( l-- ) {
-                widgets[_contained[l]].self.sleep();
+                widgets[_contained[l]].self.sleep(true);
+            }
+            return this;
+        },
+        /*
+         * @sign: destroyContained(id)
+         * @return: uijet
+         *
+         * Takes an ID of a widget and destroys and unregisters all its contained widgets.
+         */
+        destroyContained: function (id) {
+            var _contained = widgets[id].contained,
+                l = _contained.length,
+                _w;
+            while ( l-- ) {
+                _w = widgets[_contained[l]].self;
+                _w.destroy();
+                this.unregisterWidget(_w);
             }
             return this;
         },
@@ -461,8 +512,11 @@
         unsubscribe     : function (topic, handler, context) {
             throw new Error('uijet.unsubscribe not implemented');
         },
-        setRoute        : function (widget, route) {
+        setRoute        : function (widget, route, callback) {
             throw new Error('uijet.setRoute not implemented');
+        },
+        unsetRoute      : function (widget, route) {
+            throw new Error('uijet.unsetRoute not implemented');
         },
         runRoute        : function (route, is_silent) {
             throw new Error('uijet.runRoute not implemented');
@@ -512,7 +566,7 @@
          */
         animate         : function (widget, direction, callback) {
             var transit_type = widget.options.animation_type || this.options.animation_type,
-                $el = (widget.$wrapper || widget.$element);
+                $el = (widget.$wrapper || widget.$element), $_children, _h;
             direction = direction ||'in';
             if ( uijet.back_navigation ) {
                 uijet.back_navigation = false;
@@ -526,13 +580,29 @@
                 } else {
                     $el.removeClass('transitioned');
                 }
-                callback.call(widget);
+                callback && callback.call(widget);
             });
-            // throw the actual animation to the top of the execution queue
-            // so it is less likely to be interfered with other rendering/code execution
-            setTimeout(function () {
-                $el.addClass('transitioned').toggleClass(transit_type + '_in', direction == 'in');
-            }, 0);
+            // Handle height property animation specially since it's broken in browsers
+            if ( 'fold' == transit_type ) {
+                $el.addClass('transitioned');
+                if ( direction == 'in' ) {
+                    _h = widget._total_height;
+                    if ( ! _h ) {
+                        $_children = $el.children();
+                        _h = $_children.length * $_children.eq(0).outerHeight(true);
+                        widget._total_height = _h;
+                    }
+                    $el[0].style.height = _h + 'px';
+                } else {
+                    $el[0].style.height = 0;
+                }
+            } else {
+                // throw the actual animation to the top of the execution queue
+                // so it is less likely to be interfered with other rendering/code execution
+                setTimeout(function () {
+                    $el.addClass('transitioned').toggleClass(transit_type + '_in', direction == 'in');
+                }, 0);
+            }
             return this;
         },
         /*

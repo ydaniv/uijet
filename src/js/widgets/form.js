@@ -33,7 +33,7 @@ uijet.Widget('Form', {
                  that.send();
              });
         } else {
-           Akashi.Form(this.id, this);
+           uijet.Form(this.id, this);
         }
         this._super();
         return this;

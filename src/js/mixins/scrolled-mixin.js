@@ -17,10 +17,10 @@ uijet.Mixin('Scrolled', {
             ._super();
         return this;
     },
-    disappear           : function () {
+    disappear           : function (no_transitions) {
         this.setScrolling(false)
             ._setWrapperSize(true)
-            ._super();
+            ._super(no_transitions);
         return this;
     },
     _clearRendered      : function () {
@@ -29,30 +29,30 @@ uijet.Mixin('Scrolled', {
         return this;
     },
     _prepareScrolledSize: function () {
-        var _size = this._getSize(), _dims = this.$element[0].getClientRects()[0];
+        var _size = this._getSize(), el = this.$element[0];
         if ( this.options.horizontal ) {
-            if ( _dims.width < _size.width ) {
+            if ( el.offsetWidth < _size.width ) {
                 this.$element[0].style.width = _size.width + 'px';
             }
         } else {
-            if ( _dims.height < _size.height ) {
+            if ( el.offsetHeight < _size.height ) {
                 this.$element[0].style.height = _size.height + 'px';
             }
         }
         return this;
     },
     _setWrapperSize     : function (clear) {
-        var _dims;
+        var _h;
         if ( this.$wrapper ) {
             if ( clear && this.height_dirty ) {
                 this.$wrapper[0].setAttribute('style', '');
                 this.$wrapper[0].removeAttribute('style');
                 delete this.height_dirty;
             } else {
-                _dims = this.$wrapper && this.$wrapper[0].getClientRects()[0];
-                if ( _dims && ! _dims.height ) {
+                _h = this.$wrapper && this.$wrapper[0].offsetHeight;
+                if ( ! _h ) {
                     this.height_dirty = true;
-                    this.$wrapper[0].style.height = this.$element[0].getClientRects()[0].height + 'px';
+                    this.$wrapper[0].style.height = this.$element[0].offsetHeight + 'px';
                 }
             }
         }

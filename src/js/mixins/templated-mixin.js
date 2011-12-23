@@ -67,7 +67,7 @@ uijet.Mixin('Templated', {
         this.has_content = true;
         loadables = this.options.defer_images ? this.deferLoadables() : [{}];
         $.when.apply($, loadables).then(function () {
-            _super.call(that);
+//            _super.call(that);
             that._prepareScrolledSize && that._prepareScrolledSize();
             that.notify('post_render');
             that.publish('post_load', null, true);
@@ -115,6 +115,6 @@ uijet.Mixin('Templated', {
         return deferreds.length ? deferreds : [{}];
     },
     getTemplateUrl      : function () {
-        return uijet.options.TEMPLATES_PATH + this.id + '.' + uijet.options.TEMPLATES_EXTENSION;
+        return uijet.options.TEMPLATES_PATH + (this.options.template_name || this.id) + '.' + uijet.options.TEMPLATES_EXTENSION;
     }
 });
