@@ -1,7 +1,7 @@
 (function (_window) {
     var uijet = _window.uijet,
         $ = _window.jQuery, // yes, we use jQuery
-        Utils = uijet.Utils,
+        Utils = uijet.Utils, // cache the utilities namespace
         Widget = function () {}, // constructor for BaseWidget
         CONFIG_ATTR = 'data-uijet-config',
         TYPE_ATTR = 'data-uijet-type',
@@ -164,11 +164,6 @@
             this.notify('post_disappear');
             return this;
         },
-        parse           : function () {
-            var _options = this.$element.attr(CONFIG_ATTR);
-            this.setOptions(this._parseOptions(_options));
-            return this;
-        },
         bind            : function () {
             var _dom_events, e, that = this, _bound;
             if ( _dom_events = this.options.dom_events ) {
@@ -239,12 +234,7 @@
             });
         },
         setOptions      : function (options) {
-            if ( options.jquery ) {
-                this.setElement(options)
-                    .parse();
-            } else {
-                this.options = Utils.extend(true, {}, this.options, options);
-            }
+            this.options = Utils.extend(true, {}, this.options, options);
             return this;
         },
         setInitOptions  : function () {
@@ -273,11 +263,8 @@
         },
         setElement      : function (element) {
             if ( ! this.$element ) {
-                if ( element && element.jquery ) {
-                    this.$element = element;
-                } else {
-                    this.$element = $(element || this.options.element);
-                }
+                element = element || this.options.element;
+                this.$element = element.jquery ? element : $(element);
             }
             return this;
         },
@@ -346,18 +333,6 @@
                 size.height = total_height;
             }
             return size;
-        },
-        _parseOptions   : function (options) {
-            var _options = {}, _pairs, l, op;
-            if ( options && options.split ) {
-                _pairs = options.split(',');
-                l = _pairs.length;
-                while ( l-- ) {
-                    op = _pairs[l].split(':');
-                    _options[op[0].trim()] = op[1].trim();
-                }
-            }
-            return _options;
         },
         _setCloak       : function (cloak) {
             this.$element[0].style.visibility = cloak ? 'hidden' : 'visible';

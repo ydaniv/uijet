@@ -2,8 +2,9 @@
 
     var Function = _window.Function,
         Object = _window.Object,
+        Array = _window.Array,
         objToString = Object.prototype.toString,
-        arraySlice = _window.Array.prototype.slice,
+        arraySlice = Array.prototype.slice,
         $ = _window.jQuery,
         mixins = {},
         adapters = {},
@@ -11,6 +12,8 @@
         views = {},
         widget_classes = {},
         widget_definitions = {},
+        TYPE_ATTR = 'data-uijet-type',
+        ATTR_PREFIX = 'data-uijet-',
         uijet;
 
     // shim Function.bind to support Safari -5 - mostly old iOS
@@ -32,6 +35,17 @@
 
     function isFunc(obj) {
         return typeof obj == 'function';
+    }
+
+    function mapAttributes(attrs_list) {
+        var obj = {},
+            re = RegExp('^' + ATTR_PREFIX+ '([-_\\w]+)');
+        Array.prototype.forEach.call(attrs_list, function (attr) {
+            if ( ~ attr.name.search(re) ) {
+                obj[attr.name.match(re)[0]] = attr.value === '' ? true : attr.value;
+            }
+        });
+        return obj;
     }
 
     /*
@@ -438,17 +452,100 @@
          *
          * Walks the DOM, starting from the container element for the application,
          * finds all widget definitions inside the markup and starts these widgets.
-         * This method looks for the 'data-akashi-type' attribute on tags.
+         * This method looks for the 'data-uijet-type' attribute on tags.
          */
         parse           : function () {
-            this.$element.find('[data-akashi-type]')
+            var that = this;
+            this.$element.find('[' + TYPE_ATTR + ']')
                 .each(function () {
                     var $this = $(this),
-                        _type = $this.attr('data-akashi-type');
-                    //TODO: this will not work, need to implement this all the way
-                    uijet.startWidget(_type, $this);
+                        _type = $this.attr(TYPE_ATTR);
+                    uijet.startWidget(_type, that.parseWidget($this));
                 });
             return this;
+        },
+        /*
+         * @sign: _parseScripts($element, config)
+         * @return: uijet
+         *
+         * Looks for script tags inside the widget's element, given as a jQuery object in `$element`,
+         * parses their attributes and innerHTML and adds them as widget options on the given `config` object.
+         * Looks for the `type` attribute to specify the type of option to be set.
+         * If the option is an event then it supposes `data-uijet-event` attribute which specifies the type
+         * of the event to be listened to.
+         * For arguments passed to the event handler it looks for a `data-uijet-args` attribute, which is a list
+         * of argument names separated by ','.
+         * The body of the tag is used as the function body.
+         * Example:
+         *      <div id="my_list" data-uijet-type="List">
+         *          <script type="uijet/app_event"
+         *                  data-uijet-event="my_list_container_pane.post_wake"
+         *                  data-uijet-args="data, event">
+         *              this.wake(data);
+         *          </script>
+         *      </div>
+         */
+        _parseScripts   : function ($el, config) {
+            var F = _window.Function;
+            $el.find('script').each(function () {
+                var $this = $(this),
+                    type = $this.attr('type'),
+                    attrs = mapAttributes($el[0].attributes),
+                    option_name = type.match(/uijet\/(\w+)/),
+                    _fn_args, fn;
+                option_name = option_name ? option_name[0] : '';
+                _fn_args = attrs.args && attrs.args.length ? attrs.args.split(/\s*,\s*/) : [];
+                _fn_args.push(this.innerHTML);
+                fn = F.apply(null, _fn_args);
+                switch ( type ) {
+                    case 'uijet/signal':
+                    case 'uijet/app_event':
+                    case 'uijet/dom_event':
+                        option_name = option_name + 's';
+                        config[option_name] = config[option_name] || {};
+                        config[option_name][attrs.event] = fn;
+                        break;
+                    case 'uijet/initial': break;
+                    case 'uijet/serializer': break;
+                    case 'uijet/routing':
+                        config[option_name] = fn;
+                        break;
+                }
+                $this.remove(); // clean the DOM
+            });
+            return this;
+        },
+        /*
+         * @sign: parseWidget($element)
+         * @return: config
+         *
+         * Parses a widget's configuration from the DOM.
+         * Takes a jQuery object containing the widget's element and parses its attributes and inner script tags.
+         * For complete compliance with HTML5 and non-conflict approach it parses only attributes
+         * prefixed with `data-uijet-`. The name of the attribute following this prefix is the same
+         * as option it matches.
+         * For boolean options that are equal true you can simply use the name of that attribute with no value,
+         * example:
+         *      <div data-uijet-type="List" data-uijet-horizontal>...</div>
+         * Returns a config object to be used in .startWidget() call.
+         * For options with function as a value read the _parseScripts docs.
+         */
+        parseWidget     : function ($el) {
+            var attrs = mapAttributes($el[0].attributes),
+                _ops_string = attrs['config'],
+                _config = {}, _pairs, l, op;
+            if ( _ops_string ) {
+                delete attrs['config'];
+                _pairs = _ops_string.split(',');
+                l = _pairs.length;
+                while ( l-- ) {
+                    op = _pairs[l].split(':');
+                    _config[op[0].trim()] = op[1].trim();
+                }
+                extend(attrs, _config);
+            }
+            this._parseScripts($el, attrs);
+            return attrs;
         },
         /*
          * @sign: wakeContained(id, [context])
@@ -651,8 +748,9 @@
                     _h = widget._total_height;
                     if ( ! _h ) {
                         $_children = $el.children();
+                        // just multiply a single child's height with number of children
                         _h = $_children.length * $_children.eq(0).outerHeight(true);
-                        widget._total_height = _h;
+                        widget._total_height = _h; // cache result
                     }
                     $el[0].style.height = _h + 'px';
                 } else {
