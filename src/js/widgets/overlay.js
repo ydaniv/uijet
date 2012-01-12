@@ -4,7 +4,8 @@ uijet.Widget('Overlay', {
         type_class  : 'uijet_overlay'
     },
     init        : function (options) {
-        this._super(options).render();
+        this._super(options).render()
+            ._finally();
         return this;
     },
     render      : function () {
@@ -17,20 +18,20 @@ uijet.Widget('Overlay', {
     },
     appear      : function () {
         if ( this.$wrapper ) {
-            this.$wrapper.addClass('top')[0].style.visibility = 'visible';
+            this.$wrapper.addClass('z_top')[0].style.visibility = 'visible';
         } else {
-            this.$element.addClass('top');
+            this.$element.addClass('z_top');
         }
         this._super();
         return this;
     },
     disappear   : function (no_transitions) {
         if ( this.$wrapper ) {
-            this.$wrapper.removeClass('top')[0].style.visibility = 'hidden';
+            this.$wrapper.removeClass('z_top')[0].style.visibility = 'hidden';
         } else {
-            this.$element.removeClass('top');
+            this.$element.removeClass('z_top');
         }
         this._super(no_transitions);
         return this;
     }
-});
+}, ['Layered']);

@@ -15,7 +15,7 @@ uijet.Mixin('Transitioned', {
     appear          : function () {
         var that = this, _super = this._super;
         this.notify('pre_appear');
-        this.$element.addClass('current top');
+        (this.$wrapper || this.$element).addClass('current z_top');
         this._setCloak(false);
         $.when( this.transit('in') ).then(function () {
             _super.call(that);
@@ -25,22 +25,19 @@ uijet.Mixin('Transitioned', {
     disappear       : function (no_transitions) {
         var that = this,
             _super = this._super, // caching super method for it later inside an async function
+            $el = this.$wrapper || this.$element,
             _success = function () {
                 that._setCloak(true);
-                if ( that.$wrapper ) {
-                    that.$wrapper.removeClass('reverse');
-                    that.$element.removeClass('current');
-                } else {
-                    that.$element.removeClass('current reverse');
-                }
+                $el.removeClass('current reverse');
                 _super.call(that, no_transitions);
             };
-        this.$element.removeAttr('style');
+        //TODO: this is probably not needed, check for removal
+//        this.$element.removeAttr('style');
         if ( no_transitions ) {
             _success()
         } else {
             $.when( this.transit('out') ).then(_success, function () {
-                (that.$wrapper || that.$element).unbind('transitionend webkitTransitionEnd');
+                $el.unbind('transitionend webkitTransitionEnd');
             });
         }
         return this;
@@ -48,7 +45,7 @@ uijet.Mixin('Transitioned', {
     transit         : function (dir) {
         this.dfrd_transit = $.Deferred();
         uijet.animate(this, dir, function () {
-            this.$element.removeClass('top');
+            (this.$wrapper || this.$element).removeClass('z_top');
             this.dfrd_transit.resolve();
         });
         return this.dfrd_transit.promise();

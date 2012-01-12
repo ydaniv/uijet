@@ -11,21 +11,21 @@ uijet.Widget('View', {
     disappear       : function (no_transitions) {
         this.$element.removeAttr('style');
         this._setCloak(true);
-        this.$element.removeClass((this.options.animation_type || 'slide') + '_in');
-        this.$element.removeClass('current reverse');
+        this.$element.removeClass((this.options.animation_type || 'slide') + '_in')
+                     .removeClass('current z_top reverse');
         this.notify('post_disappear');
         return this;
     },
     appear  : function () {
         var that = this;
         this.notify('pre_appear');
-        this.$element.addClass('current top');
+        this.$element.addClass('current z_top');
         this._setCloak(false);
         $.when( this.transit('in') ).then(function () {
             uijet.switchView(that);
-            that.publish('post_load', null, true);
-            that.notify('post_appear');
+            that.publish('post_load', null, true)
+                .notify('post_appear');
         });
         return this;
     }
-}, ['Routed', 'Transitioned', 'Updated']);
+}, ['Layered', 'Routed', 'Transitioned', 'Updated']);

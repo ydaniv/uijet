@@ -1,8 +1,10 @@
 (function (_window) {
-    var uijet = _window.uijet,
+    var Object = _window.Object,
+        uijet = _window.uijet,
         $ = _window.jQuery, // yes, we use jQuery
         Utils = uijet.Utils, // cache the utilities namespace
         Widget = function () {}, // constructor for BaseWidget
+        arraySlice = _window.Array.prototype.slice,
         CONFIG_ATTR = 'data-uijet-config',
         TYPE_ATTR = 'data-uijet-type',
         SUBSTITUTE_REGEX = /\{([^\s\}]+)\}/g;
@@ -18,6 +20,8 @@
          * For now this options is mandatory, mainly because it must contain the element option.
          */
         init            : function (options) {
+            this.signals_cache = {};
+            this.signals = Object.create(this.signals_cache);
             this.setOptions(options)
                 .setId()            // set .id
                 .setElement()       // set .$element
@@ -52,9 +56,9 @@
             var that = this,
                 dfrds, args, success, _sequence;
             // if already awake and there's no new data coming in
-            if ( this.awake && ! context ) return this; // no reason to continue
+            if ( this.awake && ! context ) return this._finally(); // no reason to continue
             // prepare a pre_wake signal
-            args = ['pre_wake'].concat(Array.prototype.slice.call(arguments));
+            args = ['pre_wake'].concat(arraySlice.call(arguments));
             // fire pre_wake signal
             this.notify.apply(this, args);
             // set the the context data if any
@@ -68,6 +72,7 @@
                         .awake = true;
                 }
                 that.notify('post_wake');
+                that._finally();
             };
             // wake up all contained widgets
             dfrds = this.wakeContained(context);
@@ -121,7 +126,7 @@
                 this.options.destroy_on_sleep && this.destroy();
                 this.notify('post_sleep');
             }
-            return this;
+            return this._finally();
         },
         /*
          * @sign: sleepContained()
@@ -147,8 +152,8 @@
             this.destroyContained()
                 // unsubscribe to app events
                 .unsubscribe(_window.Object.keys(this.options.app_events).join(' '))
-                // remove DOM elements
-                .remove();
+                .remove() // remove DOM elements
+                ._finally();
             return this;
         },
         /*
@@ -176,14 +181,13 @@
                     dfrd_update.resolve();
                 }
             };
-            $.ajax({
-                url     : this.getDataUrl(),
+            $.ajax(this.getDataUrl(), {
                 type    : 'get',
                 dataType: 'json',
                 context : this
             }).done(_success)
-              .fail(function (response) {
-                var _abort_fail = this.notify.apply(this, ['update_error'].concat(Array.prototype.slice.call(arguments), _success.bind(this)));
+            .fail(function (response) {
+                var _abort_fail = this.notify.apply(this, ['update_error'].concat(arraySlice.call(arguments), _success.bind(this)));
                 if ( _abort_fail !== false ) {
                     this.publish('update_error', response, true);
                     dfrd_update.reject(response);
@@ -233,13 +237,13 @@
             return this;
         },
         appear          : function () {
-            this._setCloak(false);
-            this.notify('post_appear');
+            this._setCloak(false)
+                .notify('post_appear');
             return this;
         },
         disappear       : function () {
-            this._setCloak(true);
-            this.notify('post_disappear');
+            this._setCloak(true)
+                .notify('post_disappear');
             return this;
         },
         bind            : function () {
@@ -263,17 +267,30 @@
             return this;
         },
         listen          : function (topic, handler) {
-            this[topic] = handler;
+            this.signals_cache[topic] = handler;
             return this;
         },
         unlisten        : function (topic) {
-            if ( this[topic] ) delete this[topic];
+            if ( this.signals_cache[topic] ) {
+                delete this.signals[topic];
+                delete this.signals_cache[topic];
+            }
             return this;
         },
         notify          : function (topic) {
-            if ( this[topic] ) {
-                var args = Array.prototype.slice.call(arguments, 1);
-                return this[topic].apply(this, args);
+            var handler, own_args_len = 1, args, persist = false;
+            // if first argument is a boolean it means it's a directive to whether persist this signal or not
+            if ( typeof topic == 'boolean' && topic ) {
+                persist = true;
+                handler = this.signals[arguments[1]];
+                own_args_len += 1;
+            } else {
+                handler = this.signals[topic];
+            }
+            if ( handler ) {
+                args = arraySlice.call(arguments, own_args_len);
+                persist || (this.signals[topic] = null);
+                return handler.apply(this, args);
             }
         },
         subscribe       : function (topic, handler) {
@@ -307,7 +324,7 @@
             //TODO: switch to $element.on('click', 'a', function ...)
             this.$element.delegate('a', 'click', function (e) {
                 var $this = $(this);
-                uijet.runRoute($this.attr('href'), typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
+                that.runRoute($this.attr('href'), typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
                 return false;
             });
         },
@@ -434,6 +451,10 @@
             this.$element[0].removeAttribute('style');
             this.has_content = false;
             return this;
+        },
+        _finally        : function () {
+            this.signals = Object.create(this.signals_cache);
+            this.options.state = this.awake ? 'current' : 'asleep';
         }
     });
 

@@ -20,12 +20,13 @@ uijet.Mixin('Updated', {
             that.notify('post_wake');
             self_dfrd.resolve();
             that.publish('post_load', null, true);
+            that._finally();
         };
         _fail = function () {
             that.notify('wake_failed', arguments);
             self_dfrd.reject();
-            that.sleep()
             that.publish('post_load', null, true);
+            that.sleep();
         };
         _success = function () {
             if ( that.options.data_url ) {

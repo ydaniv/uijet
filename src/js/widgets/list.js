@@ -11,7 +11,7 @@ uijet.Widget('List', {
         this.$element.delegate('a', 'click', function (e) {
             uijet.is_iPad && e.preventDefault();
             var $this = $(this).closest('li'),
-                _continue = that.notify('post_select', $this, e);
+                _continue = that.notify(true, 'post_select', $this, e);
             // if post_select signal is handled and returns specificaly false then prevent it
             if( _continue === false ) {
                 e.preventDefault();

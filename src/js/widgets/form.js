@@ -9,18 +9,18 @@ uijet.Widget('Form', {
             this.runRoute(this.getSendUrl() + this.getSerialized(), true);
             return this;
         }
-        return $.ajax({
-            url     : this.getSendUrl(),
+        return $.ajax(this.getSendUrl(), {
             type    : this.$element.attr('method'),
             data    : this.getSerialized(),
-            success : function (response) {
-                that.setData(response);
-                that.notify('post_send_data', response);
-                that.publish('post_send_data', that.data);
-            },
-            error   : function () {
-                that.notify.apply(that, ['send_error'].concat(Array.prototype.slice.call(arguments)));
-            }
+            context : this
+        }).done(function (response) {
+            this.setData(response);
+            this.notify('post_send_data', response);
+            this.publish('post_send_data', this.data);
+        }).fail(function () {
+            this.notify.apply(that, ['send_error'].concat(Array.prototype.slice.call(arguments)));
+        }).always(function () {
+            this._finally();
         });
     },
     //TODO: re-implement the routing mechanism for submitting forms
@@ -42,9 +42,9 @@ uijet.Widget('Form', {
         var $inputs;
         this._super();
         // on iOS devices the element.focus() method is broken
-        if ( ! uijet.is_iPad ) {
+        if ( ! this.options.dont_focus ) {
             $inputs = this.$element.find('input');
-            $inputs.length && $inputs.eq(0)[0].focus();
+            $inputs.length && $inputs.get(0).focus();
         }
         return this;
     },

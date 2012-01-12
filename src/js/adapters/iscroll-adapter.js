@@ -4,12 +4,16 @@ uijet.Adapter('iScroll', {
             bounce  : false
         };
         if ( switch_on ) {
-            this._wrap();
-            if ( this.options.horizontal ) {
-                iS_ops.vScroll = false;
-                iS_ops.vScrollbar = false;
+            if ( this.iScroll ) {
+                this.iScroll.refresh();
+            } else {
+                this._wrap();
+                if ( this.options.horizontal ) {
+                    iS_ops.vScroll = false;
+                    iS_ops.vScrollbar = false;
+                }
+                this.iScroll = new iScroll(this.$wrapper[0], iS_ops);
             }
-            this.iScroll = new iScroll(this.$wrapper[0], iS_ops);
         } else {
             this.iScroll && this.iScroll.destroy();
         }

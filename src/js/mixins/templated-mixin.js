@@ -27,6 +27,7 @@ uijet.Mixin('Templated', {
                     that.notify('post_wake');
                     that.dfrd.resolve();
                     delete that.dfrd;
+                    that._finally();
                 },/* fail render */ _fail);
             },/* fail update/fetch template */ _fail);
         };
@@ -67,7 +68,7 @@ uijet.Mixin('Templated', {
         this.has_content = true;
         loadables = this.options.defer_images ? this.deferLoadables() : [{}];
         $.when.apply($, loadables).then(function () {
-//            _super.call(that);
+            _super.call(that);
             that._prepareScrolledSize && that._prepareScrolledSize();
             that.notify('post_render');
             that.publish('post_load', null, true);

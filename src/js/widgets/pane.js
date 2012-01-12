@@ -6,7 +6,7 @@ uijet.Widget('Pane', {
         var args;
         // if invoked by container widget and not a route then do a dry wake
         if ( ! by_route ) {
-            if ( this.awake ) return this;
+            if ( this.awake ) return this._finally();
             // make sure we allow the user to check the state before we set this.container_context
             args = ['pre_wake'].concat(Array.prototype.slice.call(arguments));
             this.notify.apply(this, args);
@@ -15,9 +15,9 @@ uijet.Widget('Pane', {
                 .appear()
                 .awake = true;
             this.notify('post_wake');
-            return {};
+            return this._finally();
         }
         this.awake = false; // enable waking logic to run
         return this._super(context, by_route);
     }
-}, ['Routed']);
+}, ['Layered', 'Routed']);

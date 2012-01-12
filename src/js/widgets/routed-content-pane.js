@@ -6,7 +6,7 @@ uijet.Widget('RoutedContentPane', {
         var that = this, dfrd, dfrds, args, _success, _sequence;
         // if invoked by container widget and not a route then do a dry wake
         if ( ! by_route ) {
-            if ( this.awake && ! context ) return this; // no reason to continue
+            if ( this.awake && ! context ) return this._finally(); // no reason to continue
             // make sure we allow the user to check the state before we set this.container_context
             args = ['pre_wake'].concat(Array.prototype.slice.call(arguments));
             this.notify.apply(this, args);
@@ -18,12 +18,13 @@ uijet.Widget('RoutedContentPane', {
                 // make the contained appear but don't change their context
                 dfrds = this.wakeContained();
                 _success = function () {
-                    if ( ! this.awake ) { // there was context to change but if we're set then bail out
+                    if ( ! that.awake ) { // there was context to change but if we're set then bail out
                         that.bind()
                             .appear()
                             .awake = true;
                         that.notify('post_wake');
                         dfrd.resolve();
+                        that._finally();
                     }
                 };
                 _sequence = $.when.apply($, dfrds).fail(function () {
@@ -34,8 +35,8 @@ uijet.Widget('RoutedContentPane', {
                 this.options.sync ? _sequence.done(_success) : _success();
                 return dfrd.promise();
             }
-            return {};
+            return this._finally();
         }
         return this._super(context, by_route);
     }
-}, ['Routed', 'Templated']);
+}, ['Layered', 'Routed', 'Templated']);
