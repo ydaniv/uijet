@@ -13,17 +13,21 @@ UIjet provides the views layer for web applications via a separate sandbox.
 Download the src folder and place in your project's static folder.
 
 Implement the following methods using your libraries of choice:
+
 * Custom events/Messaging
-** publish
-** subscribe
-** unsubscribe
+
+    * publish
+    * subscribe
+    * unsubscribe
 
 * URL router:
-** setRoute
-** runRoute
+
+    * setRoute
+    * runRoute
 
 * Template engine:
-** BaseWidget.generate
+
+    * BaseWidget.generate
 
 Include uijet.css in your document.
 Include jQuery>= 1.6 in your document.
