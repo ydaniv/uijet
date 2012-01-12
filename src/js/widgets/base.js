@@ -10,76 +10,154 @@
     Utils.extend(Widget.prototype, {
         /*
          * @sign: init(options)
-         * @return: widget
+         * @return: this
          *
-         * Takes an ID of a widget and wakes all its contained widgets.
-         * Takes an options context object as a second argument.
+         * Initializes a widget instance. Attempts to do all the lifting that can be done prior to
+         * any data received or templates fetched.
+         * Takes an options object as argument.
+         * For now this options is mandatory, mainly because it must contain the element option.
          */
         init            : function (options) {
             this.setOptions(options)
-                .setId()
-                .setElement()
-                ._setCloak(true)
-                .prepareElement()
-                .setInitOptions()
-                .register()
-                ._saveOriginal();
+                .setId()            // set .id
+                .setElement()       // set .$element
+                ._setCloak(true)    // hide the element to prevent browser rendering as much as possible
+                .prepareElement()   // wrapping, styling, positioning, etc.
+                .setInitOptions()   // parse the rest of the options, like event handling, etc.
+                .register()         // if there's sandbox registry any required
+                ._saveOriginal();   // cache reference to initial markup that was coded into the element by user
             this.notify('post_init');
             return this;
         },
+        /*
+         * @sign: register()
+         * @return: this
+         *
+         * Abstract method that may be used by concrete widgets to register themselves into special
+         * namespaces in the uijet sandbox, such as Views and Forms, etc.
+         */
         register        : function () {
             return this;
         },
+        /*
+         * @sign: wake([context[, more_context[, ...]]])
+         * @return: this
+         *
+         * Starts the widget up.
+         * This is the core action that gets all the data and performs all renderings.
+         * May take an unlimited number of optional arguments which may serve as the data context
+         * for this instance to start itself with.
+         */
         wake            : function (context) {
             var that = this,
                 dfrds, args, success, _sequence;
+            // if already awake and there's no new data coming in
             if ( this.awake && ! context ) return this; // no reason to continue
+            // prepare a pre_wake signal
             args = ['pre_wake'].concat(Array.prototype.slice.call(arguments));
+            // fire pre_wake signal
             this.notify.apply(this, args);
+            // set the the context data if any
             this._setContext.apply(this, arguments);
+            // the rest of the tasks needed to be performed
             success = function () {
                 if ( ! that.awake ) { // there was context to change but if we're set then bail out
                     that.render()
-                        .bind()
+                        .bind()     // DOM events
                         .appear()
                         .awake = true;
                 }
                 that.notify('post_wake');
             };
+            // wake up all contained widgets
             dfrds = this.wakeContained(context);
+            // register a failure callback in case one of the children failed to wake up
             _sequence = $.when.apply($, dfrds).fail(function () {
                 that.notify('wake_failed', arguments);
                 that.sleep();
             });
+            // if this widget is to be wake up in sync with its children then let it call
+            // success once they're done
+            // otherwise call success
             this.options.sync ? _sequence.done(success) : success();
             return this;
         },
+        /*
+         * @sign: wakeContained([context])
+         * @return: uijet.wakeContained(...)
+         *
+         * Wakes up contained widgets.
+         * Hooks up into the sandbox's wakeContained method.
+         * Takes an optional context argument (usually an object).
+         * Returns the result of the call to uijet.wakeContained, which returns an array of the promises
+         * of all deferred objects created by each contained widget's wake call.
+         * This array is then handed into the deferring of this widget's wake call to check whether a child
+         * failed to wake or to halt until all are awake in case of a sync=true.
+         */
         wakeContained   : function (context) {
             return uijet.wakeContained(this.id, context); // returns an array of jQuery deferreds
         },
+        /*
+         * @sign: sleep([no_transitions])
+         * @return: this
+         *
+         * Stops a started widget.
+         * This is the opposite of wake. Does only what it takes for this widget to not appear
+         * and stay as much out of the way as needed.
+         * Takes an optional flag argument which if true tells disappear not to perform animations.
+         */
         sleep           : function (no_transitions) {
+            // continue only if we're awake
             if ( this.awake ) {
                 this.notify('pre_sleep');
+                // unbind DOM events
                 this.unbind()
+                    // hide
                     .disappear(no_transitions)
+                    // stop contained widgets
                     .sleepContained()
                     .awake = false;
+                // perform destroy if asked to
                 this.options.destroy_on_sleep && this.destroy();
                 this.notify('post_sleep');
             }
             return this;
         },
+        /*
+         * @sign: sleepContained()
+         * @return: this
+         *
+         * Stop all contained widgets.
+         * Hooks up into the sandbox's sleepContained method.
+         */
         sleepContained  : function () {
             uijet.sleepContained(this.id);
             return this;
         },
+        /*
+         * @sign: destroy()
+         * @return: this
+         *
+         * Clean up all related data, DOM and memory related to this instance.
+         * This method is usually not called by default.
+         */
         destroy         : function () {
             this.notify('pre_destroy');
+            // perform a recursive destruction down the widget tree
             this.destroyContained()
+                // unsubscribe to app events
                 .unsubscribe(_window.Object.keys(this.options.app_events).join(' '))
+                // remove DOM elements
                 .remove();
             return this;
         },
+        /*
+         * @sign: destroyContained()
+         * @return: this
+         *
+         * Cleans up all contained widgets.
+         * Hooks up into the sandbox's destroyContained method.
+         */
         destroyContained: function () {
             uijet.destroyContained(this.id);
             return this;
