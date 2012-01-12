@@ -725,43 +725,63 @@
          */
         animate         : function (widget, direction, callback) {
             var transit_type = widget.options.animation_type || this.options.animation_type,
-                $el = (widget.$wrapper || widget.$element), $_children, _h;
+                $el = (widget.$wrapper || widget.$element),
+                class_name = transit_type + '_in',
+                // cache the handler since we might need to call it explicitly
+                transitionendHandler = function (e) {
+                    if ( uijet.back_navigation === false ) {
+                        $el.removeClass('transitioned reverse');
+                        delete uijet.back_navigation;
+                    } else {
+                        $el.removeClass('transitioned');
+                    }
+                    callback && callback.call(widget);
+                },
+                is_direction_in, has_class_name, _h;
+
             direction = direction ||'in';
+            is_direction_in = direction == 'in';
+
             if ( uijet.back_navigation ) {
                 uijet.back_navigation = false;
                 $el.addClass('reverse');
             }
             // bind just one event listener to the end of the animation
-            $el.one('transitionend webkitTransitionEnd', function (e) {
-                if ( uijet.back_navigation === false ) {
-                    $el.removeClass('transitioned reverse');
-                    delete uijet.back_navigation;
-                } else {
-                    $el.removeClass('transitioned');
-                }
-                callback && callback.call(widget);
-            });
+            $el.one('transitionend webkitTransitionEnd', transitionendHandler);
             // Handle height property animation specially since it's broken in browsers
             if ( 'fold' == transit_type ) {
                 $el.addClass('transitioned');
-                if ( direction == 'in' ) {
-                    _h = widget._total_height;
+                if ( is_direction_in ) {
+                    _h = widget._total_height || 0;
                     if ( ! _h ) {
-                        $_children = $el.children();
-                        // just multiply a single child's height with number of children
-                        _h = $_children.length * $_children.eq(0).outerHeight(true);
+                        // calculate total height
+                        $el.children().each(function () {
+                            _h += this.offsetHeight;
+                        });
                         widget._total_height = _h; // cache result
                     }
+                    // unfold
                     $el[0].style.height = _h + 'px';
                 } else {
+                    // fold
                     $el[0].style.height = 0;
                 }
             } else {
-                // throw the actual animation to the top of the execution queue
-                // so it is less likely to be interfered with other rendering/code execution
-                setTimeout(function () {
-                    $el.addClass('transitioned').toggleClass(transit_type + '_in', direction == 'in');
-                }, 0);
+                has_class_name = $el.hasClass(class_name);
+                // if we're transitioning the element in and it's already in OR
+                // transitioning out and it's already out
+                if ( has_class_name === is_direction_in ) {
+                    // just call the handler since the transition won't take place
+                    transitionendHandler();
+                }
+                // otherwise do the animation
+                else {
+                    // throw the actual animation to the top of the execution queue
+                    // so it is less likely to be interfered with other rendering/code execution
+                    setTimeout(function () {
+                        $el.addClass('transitioned').toggleClass(class_name, is_direction_in);
+                    }, 0);
+                }
             }
             return this;
         },
@@ -777,6 +797,25 @@
             if ( _current !== view ) {
                 _current && _current.sleep();
                 this.current_view = view;
+            }
+            return this;
+        },
+        /*
+         * @sign: switchCurrent(widget)
+         * @return: uijet
+         *
+         * Takes a widget and makes sure all its siblings are not set to `current` state
+         * and do not have the `current` class set on their element
+         */
+        switchCurrent   : function (widget) {
+            var container_id = widgets[widget.id].container,
+                siblings = container_id ? widgets[container_id].contained || [] : [], sibling;
+            for ( var l = 0; sibling = siblings[l]; l++ ) {
+                sibling = widgets[sibling].self;
+                if ( sibling !== widget && sibling.awake && sibling.options.state == 'current' ) {
+                    sibling.options.state = 'awake';
+                    (sibling.$wrapper || sibling.$element).removeClass('current');
+                }
             }
             return this;
         }
