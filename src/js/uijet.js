@@ -64,13 +64,12 @@
             target = args.shift(),
             source,
             is_deep,
-            l, s;
+            s;
         if ( typeof target == 'boolean' ) {
             is_deep = target;
             target = args.shift();
         }
-        l = args.length;
-        while ( source = args.shift(), l-- ) {
+        while ( source = args.shift() ) {
             if ( is_deep ) {
                 for ( s in source ) {
                     if ( isObj(source[s]) && isObj(target[s]) ) {
@@ -105,9 +104,8 @@
         var args = arraySlice.call(arguments),
             target = args.shift(),
             source,
-            l, s;
-        l = args.length;
-        while ( source = args.shift(), l-- ) {
+            s;
+        while ( source = args.shift() ) {
             for ( s in source ) {
                 if ( isFunc(source[s]) && isFunc(target[s]) ) {
                     target[s] = (function (_super, _self) {
@@ -246,6 +244,12 @@
             views[name] = widget;
             return this;
         },
+        /*
+         * @sign: Form(name, widget)
+         * @return: uijet
+         *
+         * Define a form to be used by uijet.
+         */
         Form            : function (name, widget) {
             var $el = widget.$element,
                 method = $el.attr('method') || 'get',
