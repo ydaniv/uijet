@@ -1,7 +1,13 @@
-(function (_window) {
+(function (root, factory) {
+    if ( typeof define === 'function' && define.amd ) {
+        define(['uijet_dir/uijet', 'jquery'], function (uijet, $) {
+            return (uijet.BaseWidget = factory(uijet, $, root));
+        });
+    } else {
+        root.uijet.BaseWidget = factory(root.uijet, root.jQuery, root);
+    }
+}(this, function (uijet, $, _window) {
     var Object = _window.Object,
-        uijet = _window.uijet,
-        $ = _window.jQuery, // yes, we use jQuery
         Utils = uijet.Utils, // cache the utilities namespace
         Widget = function () {}, // constructor for BaseWidget
         arraySlice = _window.Array.prototype.slice,
@@ -475,10 +481,13 @@
         setInnerRouter  : function () {
             var routing = this.options.routing, that = this;
             //TODO: switch to $element.on('click', 'a', function ...)
-            this.$element.delegate('a', 'click', function (e) {
-                var $this = $(this);
-                that.runRoute($this.attr('href'), typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
-                return false;
+            this.$element.delegate('a, [data-route]', 'click', function (e) {
+                var $this = $(this),
+                    is_anchor = this.tagName.toLowerCase() == 'a',
+                    _route = $this.attr(is_anchor ? 'href' : 'data-route');
+                that.runRoute(_route, typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
+                e.stopPropagation(); // confine the event here since it might break other handlers
+                is_anchor && e.preventDefault(); // prevent because this is an INNER router
             });
             return this;
         },
@@ -500,21 +509,29 @@
          * This method is usually called once inside the `init` method flow, after `setOptions`.
          */
         setInitOptions  : function () {
-            var ops = this.options, _signals, _app_events;
+            var ops = this.options,
+                _app_events = ops.app_events || {},
+                _signals;
             // listen to all signals set in options
             if ( _signals = ops.signals ) {
                 for ( var n in _signals ) {
                     this.listen(n, _signals[n]);
                 }
             }
+            // if `wake_on_start` is set to `true` then register a wake handler to sandbox's `startup` event
+            if ( ops.wake_on_startup ) {
+                // making sure this option exists
+                ops.app_events = _app_events;
+                _app_events.startup = function () { this.wake(); };
+            }
             // subscribe to all app (custom) events set in options
-            if ( _app_events = ops.app_events ) {
+            if ( ops.app_events ) {
                 for ( n in _app_events ) {
                     this.subscribe(n, _app_events[n]);
                 }
             }
             // capture and delegate all anchor clicks to an inner routing mechanism
-            if ( ~ 'function boolean undefined'.indexOf(typeof ops.routing) ) {
+            if ( ~ 'function boolean undefined'.indexOf(typeof ops.routing) && ops.routing !== false ) {
                 this.setInnerRouter();
             }
             return this;
@@ -690,5 +707,5 @@
         }
     };
 
-    uijet.BaseWidget = Widget;
-}(window));
+    return Widget;
+}));
