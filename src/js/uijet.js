@@ -1,11 +1,18 @@
-(function (_window, undefined) {
+(function (root, factory) {
+    if ( typeof define === 'function' && define.amd ) {
+        define(['jquery'], function ($) {
+            return (root.uijet = factory($, root));
+        });
+    } else {
+        root.uijet = factory(root.jQuery, root);
+    }
+}(this, function ($, _window) {
 
     var Function = _window.Function,
         Object = _window.Object,
         Array = _window.Array,
         objToString = Object.prototype.toString,
         arraySlice = Array.prototype.slice,
-        $ = _window.jQuery,
         mixins = {},
         adapters = {},
         widgets = {},
@@ -14,6 +21,7 @@
         widget_definitions = {},
         TYPE_ATTR = 'data-uijet-type',
         ATTR_PREFIX = 'data-uijet-',
+        TOP_ADAPTER_NAME = 'TopAdapter',
         uijet;
 
     // shim Function.bind to support Safari -5 - mostly old iOS
@@ -257,16 +265,25 @@
             this.setRoute(widget, {method: method, path: route}, 'send');
             return this;
         },
+        //TODO: revise
         /*
-         * @sign: Adapter(name, adapter)
+         * @sign: Adapter(name, [adapter])
          * @return: uijet
          *
          * Define an adapter to be used by uijet.
+         * If name is omitted and the adapter object is given as first and only argument
+         * then it is used as a top level adapter which overrides all other widget instances.
+         * Useful when you need to specify your custom methods that will override all others.
          */
         Adapter         : function (name, adapter) {
+            if ( ! adapter ) {
+                adapter = name;
+                name = TOP_ADAPTER_NAME;
+            }
             adapters[name] = adapter;
             return this;
         },
+        //TODO: revise
         /*
          * @sign: init([options])
          * @return: uijet
@@ -286,35 +303,53 @@
          * * dont_start: a flag instructing uijet not to run startup as a callback to init. Default is false.
          */
         init            : function (options) {
-            var k, _methods = {};
-            this.options = options;
-            this.$element = $(options && options.element || 'body');
-            this.isiPad();
-            if ( options ) {
-                if ( _methods = options.methods ) {
-                    if ( options.methods_context ) {
-                        for ( k in _methods ) {
-                            _methods[k] = _methods[k].bind(options.methods_context);
+            var _init = function () {
+                var  _methods = {},
+                    that = this,
+                    k, _widgets;
+                this.options = options;
+                this.$element = $(options && options.element || 'body');
+                this.isiPad();
+                if ( options ) {
+                    if ( _methods = options.methods ) {
+                        if ( options.methods_context ) {
+                            for ( k in _methods ) {
+                                _methods[k] = _methods[k].bind(options.methods_context);
+                            }
                         }
+                        extend(this, _methods);
                     }
-                    extend(this, _methods);
-                }
-                if ( options.engine ) {
-                    //TODO: implement hacking into BaseWidget.prototype better
-                    this.BaseWidget.prototype.generate = options.engine;
+                    if ( options.engine ) {
+                        //TODO: implement hacking into BaseWidget.prototype better
+                        this.BaseWidget.prototype.generate = options.engine;
+                    } else {
+                        throw new Error('Template engine not specified');
+                    }
+                    this.options.animation_type = options.animation_type || 'slide';
+                    if ( options.parse ) {
+                        this.dfrd_parsing = $.Deferred();
+                        this.parse();
+                    }
+                    if ( _widgets = this.options.widgets ) {
+                        this.dfrd_starting = $.Deferred();
+                        this.startWidgets(_widgets);
+                    }
+                    $.when(
+                        this.dfrd_parsing ? this.dfrd_parsing.promise() : {},
+                        this.dfrd_starting ? this.dfrd_starting.promise() : {}
+                    ).then(function () {
+                        options.dont_start || that.startup();
+                    });
                 } else {
-                    throw new Error('Template engine not specified');
+                    this.startup();
                 }
-                this.options.animation_type = options.animation_type || 'slide';
-                if ( options.parse ) {
-                    this.parse();
-                }
-                if ( options.widgets ) {
-                    this.startWidgets(options.widgets);
-                }
+                return this;
+            };
+            if ( typeof _window.require == 'function' ) {
+                return this.importModules(options.widgets, _init.bind(this));
+            } else {
+                return _init.call(this);
             }
-            options.dont_start || this.startup();
-            return this;
         },
         /*
          * @sign: registerWidget(widget)
@@ -362,9 +397,10 @@
             }
             return this;
         },
+        //TODO: revise
         /*
          * @sign: startWidget(type, config)
-         * @return: uijet
+         * @return: deferred_start OR uijet
          *
          * Builds an instance of a widget using a cached definition.
          * This instance will be initialized and registered into uijet at the end.
@@ -373,9 +409,19 @@
          * * mixins: a name (String) of a mixin or a list (Array) of names of mixins to add to this instance build
          * * adapters: a list of names of mixins to add to this instance
          */
-        startWidget     : function (_type, _config) {
-            var _w, l, _d, _c, _mixins;
-            if ( _type in widget_classes ) {
+        startWidget     : function (_type, _config, _skip_import) {
+            var that = this,
+                _dfrd_start, _self, _w, l, _d, _c, _mixins;
+            if ( ! _skip_import ) {
+                _dfrd_start = $.Deferred();
+                _self = function () {
+                    that.startWidget(_type, _config, true);
+                    _dfrd_start.resolve();
+                    return this;
+                };
+                this.importModules([{type: _type, config: _config}], _self);
+                return _dfrd_start.promise();
+            } else {
                 // if we have mixins configred to mix
                 if ( _config.mixins ) {
                     // get the stored widget class
@@ -401,6 +447,10 @@
                         extend(_w, adapters[_config.adapters[l]]);
                     }
                 }
+                // check for a top adapter
+                if ( adapters[TOP_ADAPTER_NAME] ) {
+                    extend(_w, adapters[TOP_ADAPTER_NAME]);
+                }
                 // init the instance
                 _w.init(_config);
                 // register this instance to uijet
@@ -408,6 +458,46 @@
             }
             return this;
         },
+        importModules   : function (_widgets, callback) {
+            var deps = [],
+                widgets_prefix = 'uijet_dir/widgets/',
+                adapters_prefix = 'uijet_dir/adapters/',
+                mixins_prefix = 'uijet_dir/mixins/',
+                _w, _m, _m_type, _m_list;
+            if ( typeof _window.require == 'function' ) {
+                for ( var i = 0 ; _w = _widgets[i] ; i++ ) {
+                    _m_type = widgets_prefix + _w.type;
+                    ~ deps.indexOf(_m_type) || deps.push(_m_type);
+                    if ( _m_list = _w.config.adapters ) {
+                        if ( isArr(_m_list) ) {
+                            for ( var j = 0 ; _m = _m_list[i++] ; ) {
+                                _m_type = adapters_prefix + _m;
+                                adapters[_m_list] || deps.push(_m_type);
+                            }
+                        } else {
+                            adapters[_m_list] || deps.push(adapters_prefix + _m_list);
+                        }
+                    }
+                    if ( _m_list = _w.config.mixins ) {
+                        if ( isArr(_m_list) ) {
+                            for ( j = 0 ; _m = _m_list[i++] ; ) {
+                                _m_type = mixins_prefix + _m;
+                                mixins[_m_list] || deps.push(_m_type);
+                            }
+                        } else {
+                            mixins[_m_list] || deps.push(mixins_prefix + _m_list);
+                        }
+                    }
+                }
+                if ( deps.length ) {
+                    return _window.require(deps, callback);
+                }
+            } else {
+                return callback();
+            }
+            return this
+        },
+        //TODO: revise
         /*
          * @sign: startWidgets(widgets)
          * @return: uijet
@@ -415,12 +505,20 @@
          * Accepts an array of widgets definitions and starts them one by one.
          */
         startWidgets    : function (_widgets) {
-            var i = 0, _c;
-            while ( _c = _widgets[i++] ) {
-                this.startWidget(_c.type, _c.config);
+            var i = 0,
+                that = this,
+                dfrd_starts = [],
+                _c;
+            while ( _c = _widgets[i] ) {
+                dfrd_starts[i] = this.startWidget(_c.type, _c.config);
+                i+=1;
             }
+            $.when.apply($, dfrd_starts).then(function () {
+                that.dfrd_starting.resolve();
+            });
             return this;
         },
+        //TODO: revise
         /*
          * @sign: startup()
          * @return: uijet
@@ -429,6 +527,10 @@
          */
         //TODO: implement this if it's needed at all or remove
         startup         : function () {
+            var pre_startup = this.options.pre_startup;
+            if ( typeof pre_startup == 'function' ) {
+                pre_startup();
+            }
             this.publish('startup');
             return this;
         },
@@ -794,7 +896,7 @@
          * @return: uijet
          *
          * Takes a view widget and switches the current view with it.
-         * Most importantly, this method calls the sleep method of the current view.
+         * Most important, this method calls the sleep method of the current view.
          */
         switchView      : function (view) {
             var _current = this.current_view;
@@ -824,7 +926,6 @@
             return this;
         }
     };
-
     // set a namespace on uijet for utility functions.
     uijet.Utils = {
         extend      : extend,
@@ -833,6 +934,6 @@
         isObj       : isObj,
         isArr       : isArr
     };
-    // set uijet in global namespace
-    _window.uijet = uijet;
-}(window));
+    // return the module
+    return uijet;
+}));
