@@ -32,7 +32,7 @@ Implement the following methods using your libraries of choice:
 Include uijet.css in your document.
 Include jQuery>= 1.6 in your document.
 After jQuery include your libraries of choice for templating, URL routing and custom events/messaging.
-Include uijet.js followed by widgets/base.js and the rest of the widgets you need afterwards.
+Include uijet.js followed by widgets/Base.js and the rest of the widgets you need afterwards.
 If you require any mixins (or if they're required by any of the widgets you're using) include them after the widgets.
 If you require any adapters include those at too after the mixins along with each library they adapt.
 
