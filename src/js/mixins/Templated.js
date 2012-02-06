@@ -37,8 +37,12 @@
                         that.dfrd.resolve();
                         delete that.dfrd;
                         that._finally();
-                    },/* fail render */ _fail);
-                },/* fail update/fetch template */ _fail);
+                    },
+                    // fail render
+                    _fail);
+                },
+                // fail update/fetch template
+                _fail);
             };
             _sequence = $.when.apply($, dfrds).fail(_fail);
             this.options.sync ? _sequence.done(_success) : _success();

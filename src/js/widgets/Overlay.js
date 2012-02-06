@@ -21,7 +21,8 @@
             this._super();
             if ( this.options.darken ) {
                 (this.$wrapper || this.$element).addClass('darken');
-                delete this.options.darken; // no need to repeat this
+                // no need to repeat this
+                delete this.options.darken;
             }
             return this;
         },

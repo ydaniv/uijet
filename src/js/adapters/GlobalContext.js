@@ -23,7 +23,8 @@
             if ( arguments.length ) {
                 this.context = arguments[0] && arguments[0].params /* comes from Sammy.js, consider removing */ ||
                                arguments[0] || this.context;
-                uijet.context[this.id] = this.context; // cache the result in the app
+                // cache the result in the app
+                uijet.context[this.id] = this.context;
             }
             return this;
         }

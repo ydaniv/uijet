@@ -22,8 +22,9 @@
             var that = this, dfrd, dfrds, args, _success, _sequence;
             // if invoked by container widget and not a route then do a dry wake
             if ( ! by_route ) {
-                if ( this.awake && ! context ) return this._finally(); // no reason to continue
-                // make sure we allow the user to check the state before we set this.container_context
+                // no reason to continue if already awake and no new context
+                if ( this.awake && ! context ) return this._finally();
+                // make sure we allow the user to check the state before we set `this.container_context`
                 args = ['pre_wake'].concat(Array.prototype.slice.call(arguments));
                 this.notify.apply(this, args);
                 // it's not a specific call for this pane so it's the container's context
@@ -34,7 +35,8 @@
                     // make the contained appear but don't change their context
                     dfrds = this.wakeContained();
                     _success = function () {
-                        if ( ! that.awake ) { // there was context to change but if we're set then bail out
+                        // there was context to change but if we're set then bail out
+                        if ( ! that.awake ) {
                             that.bind()
                                 .appear()
                                 .awake = true;

@@ -33,7 +33,8 @@
         },
         disappear       : function (no_transitions) {
             var that = this,
-                _super = this._super, // caching super method for it later inside an async function
+                // caching super method for calling it later inside an async function
+                _super = this._super,
                 $el = this.$wrapper || this.$element,
                 _success = function () {
                     that._setCloak(true);
@@ -41,7 +42,7 @@
                     _super.call(that, no_transitions);
                 };
             //TODO: this is probably not needed, check for removal
-    //        this.$element.removeAttr('style');
+            /*  this.$element.removeAttr('style');*/
             if ( no_transitions ) {
                 _success()
             } else {

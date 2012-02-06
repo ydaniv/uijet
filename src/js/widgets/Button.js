@@ -38,7 +38,8 @@
         position        : function () {
             var _pos = this.options.position, _$parent;
             if ( _pos ) {
-                _$parent = this.$element.parent(); // get parent element
+                // get parent element
+                _$parent = this.$element.parent();
                 //make sure the parent will contain this button properly
                 if ( !~ 'relative fixed absolute'.indexOf(_$parent.css('position')) ) {
                     _$parent[0].style.position = 'relative';
