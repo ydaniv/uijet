@@ -1,3 +1,4 @@
+// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
@@ -21,25 +22,34 @@
         },
         register: function () {
             this._super();
+            // register this view using `uijet.View`
             uijet.View(this.id, this);
+            // check if this is the current screen
             this.checkState();
             return this;
         },
         disappear       : function (no_transitions) {
+            // clear the `style` attribute
             this.$element.removeAttr('style');
             this._setCloak(true);
-            this.$element.removeClass((this.options.animation_type || 'slide') + '_in')
-                         .removeClass('current z_top reverse');
+            // clear animation related class without animating
+            this.$element.removeClass((this.options.animation_type || uijet.options.animation_type) +
+                                        '_in current z_top reverse');
             this.notify('post_disappear');
             return this;
         },
         appear  : function () {
             var that = this;
             this.notify('pre_appear');
+            // put the `$element` on top
             this.$element.addClass('current z_top');
+            // hide it
             this._setCloak(false);
+            // perform the transition into view
             $.when( this.transit('in') ).then(function () {
+                // switch current view in sandbox
                 uijet.switchView(that);
+                // publish
                 that.publish('post_load', null, true)
                     .notify('post_appear');
             });
