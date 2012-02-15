@@ -1,3 +1,4 @@
+// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
@@ -20,13 +21,17 @@
             var that = this,
                 item_element = this.options.item_element,
                 _align;
+            // if `align` option is set
             if ( _align = this.options.align ) {
+                // set it as a `class` on `$element` prefixed by 'align_'
                 this.$element.addClass('align_' + _align);
             }
+            // delegate all clicks from `item_element` option as selecot or `li`  
             //TODO: switch to $element.on('click', 'li  ', function ...)
             this.$element.delegate(item_element || 'li', 'click', function (e) {
-                uijet.is_iPad && e.preventDefault();
-                // get the selected element
+                // get the selected element  
+                // if `item_element` option is set get the closest `li` stating from current element  
+                // if not then use current element
                 var $this = item_element ? $(this).closest('li') : $(this),
                 // notify the `post-select` signal
                     _continue = that.notify(true, 'post_select', $this, e);

@@ -1,3 +1,4 @@
+// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
@@ -22,6 +23,7 @@
             if ( by_route || this.options.force_wake ) {
                 // enable waking logic to run
                 this.awake = false;
+                // continue with original waking
                 return this._super(context, by_route);
             }
             // if invoked by container widget and not a route then do a dry wake
@@ -29,6 +31,7 @@
             // make sure we allow the user to check the state before we set this.container_context
             args = ['pre_wake'].concat(Array.prototype.slice.call(arguments));
             this.notify.apply(this, args);
+            // it's not a specific call for this pane so it's the container's context
             this.container_context = context;
             this.bind()
                 .appear()

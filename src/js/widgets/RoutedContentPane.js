@@ -1,3 +1,4 @@
+// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
@@ -45,16 +46,19 @@
                             that._finally();
                         }
                     };
+                    // prepare a fail callback if any of the contained should fail waking
                     _sequence = $.when.apply($, dfrds).fail(function () {
                         that.notify('wake_failed', arguments);
                         dfrd.reject();
                         that.sleep();
                     });
+                    // if `sync` option is set then call success callback only aftert all contained are donenwaking
                     this.options.sync ? _sequence.done(_success) : _success();
                     return dfrd.promise();
                 }
                 return this._finally();
             }
+            // continue with full waking
             return this._super(context, by_route);
         }
     }, ['Layered', 'Routed', 'Templated']);
