@@ -72,11 +72,11 @@
                     this.unsetRoute(_ops_route)
                         .options.route = route;
                 } else {
-                    _ops_route =  route;
+                    this.options.route =  route;
                 }
             } else if ( ! _ops_route ) {
                 // create a default route and store it
-                _ops_route = uijet.ROUTE_PREFIX + this.id + uijet.ROUTE_SUFFIX;
+                this.options.route = uijet.ROUTE_PREFIX + this.id + uijet.ROUTE_SUFFIX;
             }
             return this;
         },
