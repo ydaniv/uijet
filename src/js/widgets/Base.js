@@ -1,4 +1,6 @@
+// ### AMD wrapper
 (function (root, factory) {
+    // set the BaseWidget class with the returned constructor function
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet', 'jquery'], function (uijet, $) {
             return (uijet.BaseWidget = factory(uijet, $, root));
@@ -19,13 +21,15 @@
 
     Widget.prototype = {
         constructor     : Widget,
-        // @sign: init(options)
+        // ### widget.init
+        // @sign: init(options)  
         // @return: this
         //
+        // *Lifecycle method*
         // Initializes a widget instance. Attempts to do all the lifting that can be done prior to
-        // any data received or templates fetched.
-        // Takes an options object as argument.
-        // For now this options is mandatory, mainly because it must contain the element option.
+        // any data received or templates fetched.  
+        // Takes an `options` `Object` as argument.  
+        // For now this options is mandatory, mainly because it must contain the `element` option.
         init            : function (options) {
             this.signals_cache = {};
             this.signals = Object.create(this.signals_cache);
@@ -47,19 +51,22 @@
             this.notify('post_init');
             return this;
         },
-        // @sign: register()
+        // ### widget.register
+        // @sign: register()  
         // @return: this
         //
         // Abstract method that may be used by concrete widgets to register themselves into special
-        // namespaces in the uijet sandbox, such as Views and Forms, etc.
+        // namespaces in the uijet sandbox, such as Views, Forms, etc.
         register        : function () {
             return this;
         },
-        // @sign: wake([context[, more_context[, ...]]])
+        // ### widget.wake
+        // @sign: wake([context[, more_context[, ...]]])  
         // @return: this
         //
-        // Starts the widget up.
-        // This is the core action that gets all the data and performs all renderings.
+        // *Lifecycle method*
+        // Starts the widget up.  
+        // This is the core action that gets all the data and performs all renderings.  
         // May take an unlimited number of optional arguments which may serve as the data context
         // for this instance to start itself with.
         wake            : function (context) {
@@ -99,27 +106,31 @@
             this.options.sync ? _sequence.done(success) : success();
             return this;
         },
-        // @sign: wakeContained([context])
+        // ### widget.wakeContained
+        // @sign: wakeContained([context])  
         // @return: uijet.wakeContained(...)
         //
-        // Wakes up contained widgets.
-        // Hooks up into the sandbox's wakeContained method.
-        // Takes an optional context argument (usually an object).
-        // Returns the result of the call to uijet.wakeContained, which returns an array of the promises
-        // of all deferred objects created by each contained widget's wake call.
-        // This array is then handed into the deferring of this widget's wake call to check whether a child
-        // failed to wake or to halt until all are awake in case of a sync=true.
+        // *Lifecycle method*
+        // Wakes up contained widgets.  
+        // Hooks up into `uijet.wakeContained`.  
+        // Takes an optional `context` argument (usually an `Object`).  
+        // Returns the result of the call to `uijet.wakeContained`, which returns an `Array` of the promises
+        // of all deferred objects created by each contained widget's `wake` call.  
+        // This array is then handed into the deferring of this widget's `wake` call to check whether a child
+        // failed to wake or to halt until all are awake in case of a `sync`=`true`.
         wakeContained   : function (context) {
             // returns an array of jQuery deferreds
             return uijet.wakeContained(this.id, context);
         },
-        // @sign: sleep([no_transitions])
+        // ### widget.sleep
+        // @sign: sleep([no_transitions])  
         // @return: this
         //
-        // Stops a started widget.
-        // This is the opposite of wake. Does only what it takes for this widget to not appear
-        // and stay as much out of the way as needed.
-        // Takes an optional flag argument which if true tells disappear not to perform animations.
+        // *Lifecycle method*
+        // Stops a started widget.  
+        // This is the opposite of `wake`. Does only what it takes for this widget to not appear
+        // and stay as much out of the way as needed (unbind, events, turn invisible, etc.).  
+        // Takes an optional flag argument which if `true` tells `disappear` not to perform animations.
         sleep           : function (no_transitions) {
             // continue only if we're awake
             if ( this.awake ) {
@@ -137,20 +148,23 @@
             }
             return this._finally();
         },
-        // @sign: sleepContained()
+        // ### widget.sleepContained
+        // @sign: sleepContained()  
         // @return: this
         //
-        // Stop all contained widgets.
-        // Hooks up into the sandbox's sleepContained method.
+        // Stop all contained widgets.  
+        // Hooks up into `uijet.sleepContained`.
         sleepContained  : function () {
             uijet.sleepContained(this.id);
             return this;
         },
-        // @sign: destroy()
+        // ### widget.destroy
+        // @sign: destroy()  
         // @return: this
         //
-        // Clean up all related data, DOM and memory related to this instance.
-        // This method is usually not called by default.
+        // *Lifecycle method*
+        // Clean up all related data, DOM and memory related to this instance.  
+        // This method is not called by default.
         destroy         : function () {
             this.notify('pre_destroy');
             // perform a recursive destruction down the widget tree
@@ -162,57 +176,74 @@
                 ._finally();
             return this;
         },
-        // @sign: destroyContained()
+        // ### widget.destroyContained
+        // @sign: destroyContained()  
         // @return: this
         //
-        // Cleans up all contained widgets.
-        // Hooks up into the sandbox's destroyContained method.
+        // Cleans up all contained widgets.  
+        // Hooks up into `uijet.destroyContained`.
         destroyContained: function () {
             uijet.destroyContained(this.id);
             return this;
         },
-        // @sign: update()
+        // ### widget.update
+        // @sign: update()  
         // @return: deferred_update.promise()
         //
         // Loads the widget's data from the server and returns a promise that's resolved OR rejected
         // depending on success of that action.
-        // It gets the URL using .getDataUrl and on success runs the .setData.
-        // If that succeeds then .has_data is set to `true` and flow continues toward resolve.
-        // In case of any failure the, if data wasn't correct and wasn't set the promise is rejected.
-        // If the XHR failed then the 'update_error' event is fired and, unless aborted, the promise is rejected.
+        // It gets the URL using `getDataUrl` and on success runs `setData`.
+        // If that succeeds then `has_data` is set to `true` and flow continues towards resolve.
+        // In case of any failure or if `data` wasn't correct and wasn't set the promise is rejected.
+        // If the XHR failed then the `update_error` event is fired and, unless aborted, the promise is rejected.
         update          : function () {
             var dfrd_update, _success;
+            // if there's no URL set bail
             if ( ! this.options.data_url ) return {};
+            // since this may take more then a few miliseconds then publish the `pre_load` event to allow the UI
+            // to respond to tasks that require a long wait from the user
             this.publish('pre_load', null, true);
+            // our update promise object
             dfrd_update = $.Deferred();
             _success = function (response) {
+                // set `this.data`
                 this.setData(response);
                 if ( ! this.has_data ) {
+                    // if `setData` failed, reject the promise
                     dfrd_update.reject(response);
                 } else {
+                    // if success notify a signal that we have `data` and resolve the promise
                     this.notify('post_fetch_data', response);
                     dfrd_update.resolve();
                 }
             };
+            // send XHR to update
             $.ajax(this.getDataUrl(), {
                 type    : 'get',
                 dataType: 'json',
                 context : this
             }).done(_success)
             .fail(function (response) {
+                // notify there was an error and allow user to continue with either:
+                //
+                // * __success flow__: success callback is sent as the last argument to the signal's handler
+                // * __failrue flow__: in case anything but `false` is returned from `update_error` handler
+                // * __or abort it all__: return `false` from `update_error` handler
                 var _abort_fail = this.notify.apply(this, ['update_error'].concat(arraySlice.call(arguments), _success.bind(this)));
                 if ( _abort_fail !== false ) {
+                    // publish an error has occurred with `update`
                     this.publish('update_error', response, true);
                     dfrd_update.reject(response);
                 }
             });
             return dfrd_update.promise();
         },
-        // @sign: prepareElement()
+        // ### widget.prepareElement
+        // @sign: prepareElement()  
         // @return: this
         //
-        // Prepares the instance's element by setting attributes and styles.
-        // In its basic format adds classes and calls .setStyle and .position.
+        // Prepares the instance's element by setting attributes and styles.  
+        // In its basic format adds classes and calls `setStyle` and `position`.  
         // This is usually called once in the init sequence.
         prepareElement  : function () {
             this.$element.addClass('uijet_widget ' + this.options.type_class);
@@ -220,11 +251,13 @@
                 .position();
             return this;
         },
-        // @sign: setStyle()
+        // ### widget.setStyle
+        // @sign: setStyle()  
         // @return: this
         //
-        // Sets the instance element's style in case the style option is set.
-        // It makes sure the the element is wrapped first and sets those style properties on the $wrapper.
+        // Sets the instance element's style in case the `style` option is set.  
+        // It makes sure the the element is wrapped first and sets those style properties on the `$wrapper`.  
+        // It uses `jQuery.css` on the element with the option's value.  
         // This is usually called once in the init sequence.
         setStyle        : function () {
             var _style = this.options.style;
@@ -234,29 +267,35 @@
             }
             return this;
         },
-        // @sign: generate()
+        // # -NOT IMPLEMENTED-
+        // ### widget.generate
+        // @sign: generate()  
         // @return: html
         //
-        // Sets the instance element's style in case the style option is set.
-        // It makes sure the the element is wrapped first and sets those style properties on the $wrapper.
-        // This is usually called once in the init sequence.
+        // A hook to the template engine, used by uijet, to render the template and return the HTML.
         generate        : function () {
             throw new Error('generate not implemented');
         },
-        // @sign: render()
+        // ### widget.render
+        // @sign: render()  
         // @return: this
         //
-        // Renders the instance.
-        // In its base form this is just a placeholder.
+        // Renders the instance.  
+        // In its base form this it's just a placeholder.
         render          : function () {
             this.notify('pre_render');
             return this;
         },
-        // @sign: position()
+        // ### widget.position
+        // @sign: position()  
         // @return: this
         //
-        // Positions the instance's element if the position option is set.
-        // Makes sure the element is wrapped first.
+        // Positions the instance's element if the `position` option is set.  
+        // Makes sure the element is wrapped first.  
+        // If this option is set then the 'fixed' class is added to the `$wrapper`.
+        // Then, if it's a `String` it is added as a class too.  
+        // If ='center' then `_center` is called as well.  
+        // If it's an `Object` then it's used as argument for a `jQuery.css` call on the `$wrapper`.  
         // This is usually called once in the init sequence, then the option is deleted
         // to prevent unnecessary repeating of this call.
         position        : function () {
@@ -277,29 +316,34 @@
             }
             return this;
         },
-        // @sign: appear()
+        // ### widget.appear
+        // @sign: appear()  
         // @return: this
         //
-        // Makes the instance's element appear (initially visibility is set to hidden).
+        // Makes the instance's element appear (initially `visibility` is set to `hidden`).
         appear          : function () {
             this._setCloak(false)
                 .notify('post_appear');
             return this;
         },
-        // @sign: disappear()
+        // ### widget.disappear
+        // @sign: disappear()  
         // @return: this
         //
-        // Makes the instance's element disappear, basically setting visibility to hidden.
+        // Makes the instance's element disappear, basically setting `visibility` to `hidden`.
         disappear       : function () {
             this._setCloak(true)
                 .notify('post_disappear');
             return this;
         },
-        // @sign: bind()
+        // ### widget.bind
+        // @sign: bind()  
         // @return: this
         //
-        // Binds DOM events related to the instance's element, based on the dom_events option.
-        // This is usually called once in the init sequence.
+        // Binds DOM events related to the instance's element, based on the `dom_events` option.  
+        // At the end sets the `bound` flag to `true`.  
+        // This is called every time the widget is awaken.  
+        //TODO: rewrite as a method that binds one event and move this implementation under a different name
         bind            : function () {
             var _dom_events, e, that = this, _bound;
             if ( _dom_events = this.options.dom_events ) {
@@ -312,11 +356,14 @@
             this.bound = true;
             return this;
         },
-        // @sign: unbind()
+        // ### widget.unbind
+        // @sign: unbind()  
         // @return: this
         //
-        // Unbinds all DOM events related to the instance's element, based on the dom_events option.
-        // This is usually called once in the destroy sequence.
+        // Unbinds all DOM events related to the instance's element, based on the `dom_events` option.  
+        // At the end sets the `bound` flag to `false`.  
+        // This is usually called every time the widget is put to sleep.  
+        //TODO: rewrite as a method that unbinds one event and move this implementation under a different name
         unbind          : function () {
             var _dom_events;
             if ( _dom_events = this.options.dom_events ) {
@@ -325,15 +372,17 @@
             this.bound = false;
             return this;
         },
-        // @sign: listen(topic, handler)
+        // ### widget.listen
+        // @sign: listen(topic, handler)  
         // @return: this
         //
-        // Sets a handler function on the given signal with `topic` as its type.
+        // Sets a `handler` function on the given signal with `topic` as its type.
         listen          : function (topic, handler) {
             this.signals_cache[topic] = handler;
             return this;
         },
-        // @sign: unlisten(topic)
+        // ### widget.unlisten
+        // @sign: unlisten(topic)  
         // @return: this
         //
         // Removes a handler from the given signal with `topic` as its type.
@@ -344,14 +393,15 @@
             }
             return this;
         },
-        // @sign: notify(topic [, args]) OR notify(persist, topic [, args])
+        // ### widget.notify
+        // @sign: notify(topic [, args]) OR notify(persist, topic [, args])  
         // @return: handler() OR undefined
         //
-        // Triggers a signal handler using 'topic' as its type, and returns the result of that call.
-        // If the first argument supplied to notify is a boolean it is used to determine whether
-        // multiple calls can be made to this type in during the same single call to a lifecycle method.
-        // All subsequent arguments are sent to the handler as parameters.
-        // If the topic isn't found or it has fired and not set as persistent, then nothing happens
+        // Triggers a signal's handler using `topic` as its type, and returns the result of that call.  
+        // If the first argument supplied to `notify` is a `Boolean` it is used to determine whether
+        // multiple calls can be made to this type during the same single call to a _lifecycle_ method.  
+        // All subsequent arguments are sent to the handler as parameters.  
+        // If the `topic` isn't found or it has fired and not set as persistent, then nothing happens
         // and `undefined` is returned.
         notify          : function (topic) {
             var handler, own_args_len = 1, args, persist = false;
@@ -370,74 +420,80 @@
                 return handler.apply(this, args);
             }
         },
-        // @sign: subscribe(topic, handler)
+        // ### widget.subscribe
+        // @sign: subscribe(topic, handler)  
         // @return: this
         //
-        // Subscribes a handler to a custom event with `topic` as type.
-        // It's a hook into the sandbox's subscribe method only the handler is bound to `this`.
+        // Subscribes a `handler` to a custom event with `topic` as type.  
+        // It's a hook into `uijet.subscribe` only the `handler` is bound to `this`.  
+        //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
         subscribe       : function (topic, handler) {
-            if ( ! (topic in this.options.app_events) ) {
-                // add this event to the `app_events` option to allow quick unsubscribing later
-                this.options.app_events[topic] = handler;
-            }
+            // add this event to the `app_events` option to allow quick unsubscribing later
+            this.options.app_events[topic] = handler;
             uijet.subscribe(topic, handler.bind(this));
             return this;
         },
-        // @sign: unsubscribe(topic, [handler])
+        // ### widget.unsubscribe
+        // @sign: unsubscribe(topic, [handler])  
         // @return: this
         //
-        // Unsubscribes a handler of a custom event with `topic` as type, if the handler is supplied, OR
-        // all handlers under that `topic`.
-        // It's a hook into the sandbox's unsubscribe method.
+        // Unsubscribes a handler of a custom event with `topic` as type, if `handler` is supplied, OR
+        // all handlers under that `topic`.  
+        // It's a hook into `uijet.unsubscribe`.
         unsubscribe     : function (topic, handler) {
             uijet.unsubscribe(topic, handler);
             return this;
         },
-        // @sign: publish(topic, [data], [is_global])
+        // ### widget.publish
+        // @sign: publish(topic, [data], [is_global])  
         // @return: this
         //
-        // Triggers a custom event with type `topic`, handing it `data` as an argument.
-        // If is_global is NOT set to `true` then the topic is prefixed with `this.id` and a '.'.
-        // It's a hook into the sandbox's publish method.
+        // Triggers a custom event with type `topic`, handing it `data` as an argument.  
+        // If `is_global` is NOT set to `true` then the topic is prefixed with `this.id` and a '.'.  
+        // It's a hook into `uijet.publish`.
         publish         : function (topic, data, global) {
             topic = global ? topic : this.id + '.' + topic;
             uijet.publish(topic, data);
             return this;
         },
-        // @sign: runRoute(route, [is_silent])
+        // ### widget.runRoute
+        // @sign: runRoute(route, [is_silent])  
         // @return: this
         //
-        // Runs a route.
-        // If `is_silent` is supplied and is true this route will not propagate to the browser's address bar
-        // and will only trigger the callback for that route.
-        // It's a hook into the sandbox's runRoute method.
+        // Runs a route.  
+        // If `is_silent` is supplied and is `true` this route will not propagate to the browser's address bar
+        // and will only trigger the callback for that route.  
+        // It's a hook into `uijet.runRoute`.
         runRoute        : function (route, is_silent) {
             uijet.runRoute(route, is_silent);
             return this;
         },
-        // @sign: select([initial])
+        // ### widget.select
+        // @sign: select(initial)  
         // @return: this
         //
-        // Triggers a selection in the widget's UI, according to implementation.
-        // In its base form only triggers the click event.
-        // If `initial` is supplied and it's a function, and its result is a jQuery object then trigger click.
-        // Otherwise (usually a string) find this element inside `this.$element` using `initial` as selector
+        // Triggers a selection in the widget's UI, according to implementation.  
+        // In its base form only triggers the `click` event.  
+        // If `initial` is a `function` then the result of its call is the element to call `click` on..  
+        // Otherwise (usually a `String`) find this element inside `this.$element` using `initial` as selector
         // and perform the click on the result.
         select          : function (initial) {
             var $el;
             $el = typeof initial == 'function' ? initial.call(this) : this.$element.find(initial);
-            $el.length && $el.click();
+            typeof $el.click == 'function' && $el.click();
             return this;
         },
-        // @sign: setInnerRouter()
+        // ### widget.setInnerRouter
+        // @sign: setInnerRouter()  
         // @return: this
         //
         // Transforms `this.$element` to a gateway for routes by delegating all anchor clicks inside it
-        // to the sandbox's runRoute method.
-        // The 'is_silent' param is determined by the routing option:
-        // If routing is `undefined` then it's `true`.
-        // If it's a function then it is its call's result when the clicked anchor is handed to it.
-        // Otherwise it is simply the opposite of the truthiness of routing.
+        // to `uijet.runRoute`.  
+        // The 'is_silent' param is determined by the `routing` option:  
+        // If routing is `undefined` then it's `true`.  
+        // If it's a `function` then it is its call's result when the clicked anchor is handed to it.  
+        // Otherwise it is simply the opposite of the truthiness of `routing`.  
+        // This is usually called once in the init sequence.
         setInnerRouter  : function () {
             var routing = this.options.routing, that = this;
             //TODO: switch to $element.on('click', 'a', function ...)
@@ -453,15 +509,18 @@
             });
             return this;
         },
-        // @sign: setOptions([options])
+        // ### widget.setOptions
+        // @sign: setOptions([options])  
         // @return: this
         //
-        // Set this instance's options.
+        // Set this instance's options.  
+        // This is usually called once in the init sequence.
         setOptions      : function (options) {
             this.options = Utils.extend(true, {}, this.options, options);
             return this;
         },
-        // @sign: setInitOptions()
+        // ### widget.setInitOptions
+        // @sign: setInitOptions()  
         // @return: this
         //
         // Perform initialization related tasks on this instance based on the options set.
@@ -494,97 +553,114 @@
             }
             return this;
         },
-        // @sign: setId()
+        // ### widget.setId
+        // @sign: setId()  
         // @return: this
         //
-        // Sets the instance's id using the one set in the config OR the instance's $element OR
-        // tries to create that $element and get its id.
+        // Sets the instance's `id` using the one set in the config OR the instance's `$element`'s OR
+        // tries to create that `$element` and get its `id`.  
+        // This is usually called once in the init sequence.  
         //TODO: allow the automatic setting of a unique ID
         setId           : function () {
             this.id = this.options.id || (this.$element && this.$element[0].id) || this.setElement().$element[0].id;
             return this;
         },
-        // @sign: setElement([element])
+        // ### widget.setElement
+        // @sign: setElement([element])  
         // @return: this
         //
-        // set the instance's $element either by getting it as a param OR from element option
+        // set the instance's `$element` either by getting it as a param OR from `element` option.  
+        // This is usually called once in the init sequence.  
         //TODO: allow the creation of the element outside the `document` when it doesn't exist in the DOM
         setElement      : function (element) {
             if ( ! this.$element ) {
+                // use the `element` argument or the option.
                 element = element || this.options.element;
+                // if it's not a jQuery object then wrap it
                 this.$element = element.jquery ? element : $(element);
             }
             return this;
         },
-        // @sign: getDataUrl()
+        // ### widget.getDataUrl
+        // @sign: getDataUrl()  
         // @return: data_url
         //
-        // Gets the URL used by the widget to fetch/send data.
-        // Uses the instance's context object to replace params in the URL's pattern
+        // Gets the URL used by the widget to fetch/send data.  
+        // Uses the instance's context object to replace params in the URL's pattern,
         getDataUrl      : function () {
             return this.substitute(this.options.data_url, this.context);
         },
-        // @sign: getTemplateUrl()
-        // @return: template_url
-        //
-        // Gets the URL used by the widget to fetch its template.
-        // Uses the instance's context object to replace params in the URL's pattern
-        getTemplateUrl  : function () {
-            return this.substitute(this.options.template_url, {});
-        },
-        // @sign: substitute(template, obj)
+        // ### widget.substitute
+        // @sign: substitute(template, obj)  
         // @return: String
         //
-        // Does a simple string replace on the template using obj as the map of
-        // params to values.
-        // This method is used in getDataUrl & getTemplateUrl.
+        // Does a simple string replace on the template using `obj` as the map of
+        // params to values.  
+        // This method is used in `getDataUrl`.
         substitute      : function(template, obj) {
             var n = 0;
             return template.replace(SUBSTITUTE_REGEX, function(match, key){
                 return Utils.isObj(obj) ? obj[key] : obj[n++];
             });
         },
-        // @sign: setData(data)
+        // ### widget.setData
+        // @sign: setData(data)  
         // @return: this
         //
-        // Sets the instance's data with the given data argument.
-        // Before the data is set it emits the 'process_data' signal.
-        // If that signal's callback returns a defined falsy value then
-        // data isn't set.
-        // If data *was* set it sets the `has_data` of this instance to `true`.
+        // Sets the instance's `data` with the given `data` argument.  
+        // Before the data is set it emits the `process_data` signal.  
+        // If that signal's callback returns a defined falsy value then `data` isn't set.  
+        // If `data` __was__ set it sets the `has_data` of this instance to `true`.  
+        // This is important for `update` to know that it succeeded.
         setData         : function (data) {
+            // notify the `process_data` signal
             var success = this.notify('process_data', data);
+            // if `success` is returned and falsy then bail out
             if ( typeof success != 'undefined' && ! success ) {
                 return this;
             }
+            // set data
             this.data = data;
             this.has_data = true;
             return this;
         },
-        // @sign: unshadow(elements, [do_unshadow])
+        // ### widget.unshadow
+        // @sign: unshadow(elements, [do_unshadow])  
         // @return: this
         //
-        // Used in platforms where CSS shadows creates big performance issues.
+        // Used in platforms where CSS shadows creates big performance issues.  
         // Removes CSS box-shadows from the specified `elements` which is either HTML elements or a selector,
-        // passed to jQuery.
-        // If `do_ushadow` is a boolean it's used for toggeling the state.
-        // Currently only works on iPad.
-        // Internally this toggles the 'unshadow' class.
+        // passed to jQuery.  
+        // If `do_ushadow` is a boolean it's used for toggeling the state. 
+        // Currently only used on iPad.  
+        // Internally this toggles the `unshadow` class.
         unshadow        : function (elements, do_unshadow) {
             uijet.is_iPad && $(elements).toggleClass('unshadow', typeof do_unshadow == 'boolean' ? do_unshadow : true);
             return this;
         },
-        // @sign: remove()
+        // ### widget.remove
+        // @sign: remove()  
         // @return: this
         //
-        // Removes the instance's element, and wrapper if exists, from the DOM.
-        // This is usually used inside destroy sequence.
+        // Removes the instance's element, and wrapper if exists, from the DOM.  
+        // This is usually used inside destroy sequence.  
+        //TODO: write a method that gets the top level element
         remove          : function () {
-            (this.$wrapper || this.$element).remove();
+            (this.$wrapper || this.$center_wrapper || this.$element).remove();
             return this;
         },
+        // ### widget._wrap
+        // @sign: _wrap()  
+        // @return: this
+        //
+        // Wraps the instance's `$element` with `<div>` element.
+        // This wrapper has the `class` of the original `type_class` prefixed with __uijet_wrapper__, and
+        // the same `id` suffixed with ___wrapper__.  
+        // At the end sets a reference to this element in `$wrapper`.  
+        // If `$wrapper` is already set, skips to return.
         _wrap           : function () {
             if ( ! this.$wrapper ) {
+                // wrap and cache the wrapper
                 this.$wrapper = this.$element.wrap($('<div/>', {
                     'class' : 'uijet_wrapper ' + this.options.type_class + '_wrapper',
                     id      : this.id + '_wrapper'
@@ -592,49 +668,94 @@
             }
             return this;
         },
+        // ### widget._center
+        // @sign: _center()  
+        // @return: this
+        //
+        // Centers the instance's `$element` by wrapping it with a `<div>` element that has a `class`
+        // of the original `type_class` suffixed with ___center_wrapper__.  
+        // At the end sets a reference to this element in `$center_wrapper`.  
+        // If `$center_wrapper` is already set, skips to return.
         _center         : function () {
             if ( ! this.$center_wrapper ) {
+                // wrap and cache the wrapper
                 this.$center_wrapper = this.$element.wrap($('<div/>', {
                     'class' : 'uijet_center_wrapper ' + this.options.type_class + '_center_wrapper'
                 })).parent();
             }
             return this;
         },
-        _getSize            : function () {
-            var children = this.$element.children(),
-                total_width = 0,
-                total_height = 0,
-                l = children.length,
+        // ### widget._getSize
+        // @sign: _getSize()  
+        // @return: {width: <width>, height: <height>}
+        //
+        // Gets the size of _content_ of `$element`, meaning, if it's `horizontal` then count
+        // the width of its children.  
+        // If it's not then find where its last contained element's bottom is at.  
+        // The other left dimensions in those cases are determined by the corresponding dimension of the first child.  
+        // Returns an `Object` with `width` and `height` properties.
+        _getSize        : function () {
+            var $children = this.$element.children(),
+                last_child = $children.get(-1),
                 size = { width: 0, height: 0 },
+                // since the default overflow of content is downward just get the last child's position + height
+                total_height = last_child.offsetTop + last_child.offsetHeight,
+                total_width = 0,
+                l = $children.length,
                 child;
-            while ( child = children[--l] ) {
-                total_width += child.offsetWidth;
-                total_height += child.offsetHeight;
-            }
             if ( this.options.horizontal ) {
+                // since HTML is finite horizontally we *have* to count all children
+                while( child = $children[--l] ) {
+                    total_width += child.offsetWidth;
+                }
                 size.width = total_width;
-                size.height = children[0].offsetHeight;
+                size.height = $children[0].offsetHeight;
             } else {
-                size.width = children[0].offsetWidth;
+                size.width = $children[0].offsetWidth;
                 size.height = total_height;
             }
             return size;
         },
+        // ### widget._setCloak
+        // @sign: _setCloak(cloak)  
+        // @return: this
+        //
+        // Depending on the `cloak` flag either sets the `$element`'s `visibility` to `hidden` or `visible`.
         _setCloak       : function (cloak) {
             this.$element[0].style.visibility = cloak ? 'hidden' : 'visible';
             return this;
         },
+        // ### widget._setContext
+        // @sign: _setContext([args, ...])  
+        // @return: this
+        //
+        // If it gets any defined arguments, it sets `this.context` to the `arguments` object.  
+        //TODO: rewrite to get either an Object or Array, along with an adapter which takes arguments and route
+        // and turns it into am object of named params.
         _setContext     : function () {
             if ( arguments.length && typeof arguments[0] != 'undefined' ) {
                 this.context = arguments;
             }
             return this;
         },
+        // ### widget._saveOriginal
+        // @sign: _saveOriginal()  
+        // @return: this
+        //
+        // Sets `this.$original_children` with the `$element`'s children as a jQuery object if they aren't set yet.  
+        // This is used to save reference to elements created by the user in the original markup, prior to rendering.
         _saveOriginal   : function () {
             // save a reference to the child nodes of the element prior to rendering
             ! this.$original_children && (this.$original_children = this.$element.children());
             return this;
         },
+        // ### widget._clearRendered
+        // @sign: _clearRendered()  
+        // @return: this
+        //
+        // Removes the elements created by rendering the widget, meaning all that's *NOT* in `$original_children`.  
+        // Also cleares the `style` attribute of `$element`.  
+        // At the end resets `has_content` to `false`.
         _clearRendered  : function () {
             // remove all children that were added with .render()
             this.$element.children().not(this.$original_children).remove();
@@ -644,9 +765,18 @@
             this.has_content = false;
             return this;
         },
+        // ### widget._finally
+        // @sign: _finally()  
+        // @return: this
+        //
+        // A utility method that's called at the end of every *lifecycle method* call.  
+        // Does all the clean up related a lifecycle operation, such as clearing the callable signals hash and
+        // setting current `options.state`.
         _finally        : function () {
+            // replace the masking `Object` with a new one
             this.signals = Object.create(this.signals_cache);
             this.options.state = this.awake ? 'current' : 'asleep';
+            return this;
         }
     };
 
