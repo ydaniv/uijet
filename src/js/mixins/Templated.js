@@ -1,3 +1,4 @@
+// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet', 'jquery'], function (uijet, $) {
@@ -11,25 +12,38 @@
         templated       : true,
         wake            : function (context) {
             var that = this, dfrds, _fail, _success, _sequence;
+            // notify the `pre_wake` signal
             this.notify.apply(this, ['pre_wake'].concat(Array.prototype.slice.call(arguments)));
+            // setting `context`
             this._setContext.apply(this, arguments);
+            // store the wake promise object
             this.dfrd = this.dfrd || $.Deferred();
+            // wake up the kids
             dfrds = this.wakeContained(context);
+            // in case of failure
             _fail = function () {
+                // notify failure signal
                 var retry = that.notify.apply(that, ['wake_failed'].concat(Array.prototype.slice.call(arguments)));
                 if ( retry ) {
+                    // if user asked to retry the wake again
                     that.wake();
                 } else {
                     that.dfrd.reject();
                     delete that.dfrd;
+                    // inform UI the process is done
                     that.publish('post_load', null, true);
                     that.sleep();
                 }
             };
+            // in case of success
             _success = function () {
+                // update the widget and get the template
                 $.when( that.update(), that.fetchTemplate() ).then(function () {
+                    // render it
                     $.when ( that.render() ).then(function () {
+                        // bind DOM events
                         that.bind();
+                        // if `initial` option is set the perform selection inside the widget
                         if ( that.options.initial ) { that.select(that.options.initial); }
                         that.appear()
                             .awake = true;
@@ -44,54 +58,87 @@
                 // fail update/fetch template
                 _fail);
             };
+            // in case any of the children failed, fail this
             _sequence = $.when.apply($, dfrds).fail(_fail);
+            // if `sync` option is `true` then call success after all children are awake
             this.options.sync ? _sequence.done(_success) : _success();
             return this.dfrd && this.dfrd.promise() || {};
         },
+        // ### widget.fetchTemplate
+        // @sign: fetchTemplate([refresh])  
+        // @return: XHR_promise OR {}
+        //
+        // Gets the template from the server to be used for this widget via XHR.  
+        // If `refresh` is truthy then force the widget to fetch the template again.
         fetchTemplate   : function (refresh) {
-            var that = this;
+            // if we don't have the template cached or was asked to refresh it
             if ( ! this.has_template || refresh ) {
+                // if asked to refresh then invalidate cache
+                refresh && (this.has_template = false);
+                // return the promise from the XHR call
                 return $.ajax({
                     url     : this.getTemplateUrl(),
                     type    : 'get',
                     context : this
                 }).done( function (response) {
+                    // cache result
                     this.template = response;
                     this.has_template = true;
+                    // tell the user we're done
                     this.notify('post_fetch_template', response);
                 }).fail( function (response) {
+                    // tell the user we failed
                     this.notify.apply(this, ['fetchTemplate_error'].concat(Array.prototype.slice.call(arguments)));
                 });
             }
+            // like a fulfilled promise
             return {};
         },
         render              : function () {
+            // generate the HTML
             var _html = this.generate(),
                 dfrd = $.Deferred(),
                 loadables, that = this, _super = this._super;
+            // notify `pre_render` with the generate HTML
             this.notify('pre_render', _html);
             // remove the old rendered content
             this._clearRendered();
-            // and append the new
+            // and append the new  
+            // if `insert_before` option is set it's used as a selector or element to indicate where to insert the
+            // generated HTML before.
             if ( this.options.insert_before ) {
                 $(_html).insertBefore(this.options.insert_before);
             } else {
+                // just append the HTML at the end
                 this.$element.append(_html);
             }
             this.has_content = true;
+            // if `defer_images` option is `> 0` then defer the flow till after the loading of images
             loadables = this.options.defer_images ? this.deferLoadables() : [{}];
+            // after all was loaded or if ignored deferring it
             $.when.apply($, loadables).then(function () {
                 _super.call(that);
-                that._prepareScrolledSize && that._prepareScrolledSize();
+                // if this widget is `scrolled` then prepare its `$element`'s size
+                that.scrolled && that._prepareScrolledSize();
                 that.notify('post_render');
-                that.publish('post_load', null, true);
+                uijet.publish('post_load');
                 dfrd.resolve();
             });
             return dfrd.promise();
         },
+        // ### widget.deferLoadables
+        // @sign: deferLoadables()  
+        // @return: promises_array OR [{}]
+        //
+        // Deferrs the flow to continue after all images have been loaded.  
+        //TODO: Make this work over either all images or as defined by `this.options.defer_images`  
+        //TODO: consider moving this to base to defer also non-templated loadables
         deferLoadables  : function () {
+            // find all images
             var $img = this.$element.find('img'),
-                _html = this.$element.html(),
+                // get innerHTML of `$element`
+                _html = this.$element[0].innerHTML,
+                // match all URLs of images in the HTML
                 _inlines = _html.match(/url\(['"]?([\w\/:\.-]*)['"]?\)/),
                 dfrd, src, _img, _dfrd, deferreds = [],
                 _inlines_resolver = function () {
@@ -128,6 +175,13 @@
             }
             return deferreds.length ? deferreds : [{}];
         },
+        // ### widget.getTemplateUrl
+        // @sign: getTemplateUrl()  
+        // @return: template_url
+        //
+        // Gets the URL used by the widget to fetch its template.  
+        // Uses uijet's `TEMPLATE_PATH` option as a prefix, followed by either `template_name` option or the `id`
+        // property, with uijet's `TEMPLATES_EXTENSION` option as the extension suffix.
         getTemplateUrl      : function () {
             return uijet.options.TEMPLATES_PATH + (this.options.template_name || this.id) + '.' + uijet.options.TEMPLATES_EXTENSION;
         }
