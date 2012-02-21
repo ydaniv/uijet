@@ -69,7 +69,7 @@
         if ( isArr(obj) ) {
             // copy that
             arr = obj.slice(0);
-        } else if ( arguments.length ) {
+        } else if ( typeof obj != 'undefined' ) {
             arr = [obj];
         }
         return arr;
@@ -984,18 +984,27 @@
         // @sign: switchCurrent(widget)  
         // @return: uijet
         //
-        // Takes a widget and makes sure all its siblings are not set to `current` state
-        // and do not have the `current` class set on their element
+        // Takes a widget and makes sure all its siblings, who share the same direct parent DOM Node, awake
+        // and are set to `current` state, do not have the `current` class set on their top element and their
+        // state is switched to `awake`.  
+        // At the end adds the `current` class to the widget's top element.
         switchCurrent   : function (widget) {
             var container_id = widgets[widget.id].container,
-                siblings = container_id ? widgets[container_id].contained || [] : [], sibling;
+                siblings = container_id ? widgets[container_id].contained || [] : [], sibling,
+                _parent = (widget.$wrapper || widget.$element)[0].parentNode,
+                $top;
             for ( var l = 0; sibling = siblings[l]; l++ ) {
                 sibling = widgets[sibling].self;
                 if ( sibling !== widget && sibling.awake && sibling.options.state == 'current' ) {
-                    sibling.options.state = 'awake';
-                    (sibling.$wrapper || sibling.$element).removeClass('current');
+                    $top = (sibling.$wrapper || sibling.$element);
+                    if ( $top[0].parentNode === _parent ) {
+                        sibling.options.state = 'awake';
+                        $top.removeClass('current');
+                    }
                 }
             }
+            widget.options.state = 'current';
+            (widget.$wrapper || widget.$element).addClass('current');
             return this;
         }
     };
