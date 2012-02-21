@@ -9,6 +9,11 @@
     }
 }(function (uijet) {
     uijet.Mixin('Layered', {
+        sleep       : function () {
+            this._super();
+            (this.$wrapper || this.$element).removeClass('current');
+            return this;
+        },
         appear      : function () {
             this.setCurrent()
                 ._super();
