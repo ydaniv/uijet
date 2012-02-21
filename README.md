@@ -7,6 +7,8 @@ Generic and sandboxed GUI components for web apps.
 ## Description
 
 UIjet provides the views layer for web applications via a separate sandbox.
+It creates another layer of abstraction above HTML which allows you to create any UI widget you can think of
+easily.
 
 ## Installation
 
@@ -20,18 +22,61 @@ Implement the following methods using your libraries of choice:
     * subscribe
     * unsubscribe
 
+* Template engine:
+
+    * BaseWidget.generate
+
+Optionally, if you need client-side routing in your app you can also implement the following:
+
 * URL router:
 
     * setRoute
     * runRoute
 
-* Template engine:
-
-    * BaseWidget.generate
-
 Include uijet.css in your document.
+
+### With AMD - using require.js
+
+Include the require.js file at the bottom of your `<body>` tag.
+
+#### Suggested configuration
+
+Above it, open a `<script>` tag and in it include your require object, like:
+
+    var require = {
+        baseUrl : '/static_path/js/',
+        deps    : ['jquery'],
+        paths   : {
+            jquery      : 'lib/jquery-1.7.1.min',
+            uijet_dir   : 'lib/uijet',
+            plugins     : 'lib'
+            // rest of needed paths ...
+        },
+        callback: function () {
+            require(['jquery', 'my_app'], function ($, myApp) {
+                myApp.init({
+                    widgets : [/*
+                        widgets declarations
+                    */]
+                });
+            });
+        }
+    };
+
+Where the *must have* configurations are:
+
+* **baseUrl** - pointing to your base static folder.
+* **deps** - must include at least 'jquery'.
+* **paths** - you need to config the paths to *jquery*, *uijet_dir* - where your UIjet library is located - and 
+third party plugins, which are adapted into UIjet, need to be conigured under the *plugins* key.
+* **callback** - to make sure everything works correctly it's best to use this option and put you initialization
+call in there.
+
+### Without AMD
+
 Include jQuery>= 1.6 in your document.
-After jQuery include your libraries of choice for templating, URL routing and custom events/messaging.
+After jQuery include your libraries of choice for templating and custom events/messaging.
+If you also need routing include the router library.
 Include uijet.js followed by widgets/Base.js and the rest of the widgets you need afterwards.
 If you require any mixins (or if they're required by any of the widgets you're using) include them after the widgets.
 If you require any adapters include those at too after the mixins along with each library they adapt.
@@ -42,9 +87,9 @@ If you require any adapters include those at too after the mixins along with eac
 UIjet makes only one layer in the application and depends on other integral components
 that should reside within the application:
 
-* URL router
-* Custom events/Messaging library
 * Template engine
+* Custom events/Messaging library
+* [optional] URL router
 
 UIjet is currently based on jQuery, mostly for DOM manipulation, client-server communication and its promises API.
 *There are plans to be either library agnostic or to have additional implementations which will not rely on jQuery.
@@ -53,8 +98,8 @@ UIjet is currently based on jQuery, mostly for DOM manipulation, client-server c
 
 * jQuery>=1.6
 * Template engine of choice
-* URL router of choice
 * Custom events library of choice
+* [optoinal] URL router of choice
 
 ## Usage
 
