@@ -134,9 +134,10 @@ UIjet is currently based on jQuery, mostly for DOM manipulation, client-server c
                 route   : '#/home/'
             }
         }, {
-            type    : 'ContentPane',
+            type    : 'Pane',
             config  : {
                 element : '#home_content_pane',
+                mixins  : ['Templated'],
                 data_url: '/home_content/',
                 position: 'center',
                 style   : {
@@ -144,10 +145,10 @@ UIjet is currently based on jQuery, mostly for DOM manipulation, client-server c
                 }
             }
         }, {
-            type    : 'ContentPane',
+            type    : 'Pane',
             config  : {
                 element         : '#alert_pane',
-                mixins          : 'Transitioned',
+                mixins          : ['Templated', 'Transitioned'],
                 position        : 'center',
                 animation_type  : 'appear',
                 insert_before   : '#alert_close',
