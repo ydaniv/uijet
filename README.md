@@ -31,6 +31,7 @@ Optionally, if you need client-side routing in your app you can also implement t
 * URL router:
 
     * setRoute
+    * unsetRoute
     * runRoute
 
 Include uijet.css in your document.
