@@ -46,6 +46,7 @@ define([
                 route_prefix        : '#/',
                 route_suffix        : '/',
                 animation_type      : 'fade',
+                submit_handled      : true, // forms' submit event is captured by Sammy
                 widgets             : options.widgets,
                 engine              : function () {
                     return Mustache.to_html(this.template, this.data || this.context);
@@ -62,6 +63,8 @@ define([
                 TEMPLATES_PATH      : TEMPLATES_PATH,
                 TEMPLATES_EXTENSION : TEMPLATES_EXTENSION,
                 pre_startup         : function () {
+                    // since Sammy needs the app to be run before events can start work we use
+                    // this signal to make sure the app is running
                     that.startup()
                 }
             });

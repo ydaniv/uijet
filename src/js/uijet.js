@@ -40,9 +40,10 @@
     // a simple shim of Function.bind to support Safari -5 - mostly old iOS
     if ( typeof Function.bind != 'function' ) {
         Function.prototype.bind = function (scope) {
-            var _self = this;
+            var _self = this,
+                args = arraySlice.call(arguments, 1);
             return function () {
-                return _self.apply(scope, arguments);
+                return _self.apply(scope, args.concat(arraySlice.call(arguments)));
             };
         };
     }
@@ -265,21 +266,6 @@
             views[name] = widget;
             return this;
         },
-        // ### uijet.Form
-        // @sign: Form(name, widget)  
-        // @return: uijet
-        //
-        // Define a form to be used by uijet.
-        Form            : function (name, widget) {
-            var $el = widget.$element,
-                // check for the method
-                method = $el.attr('method') || 'get',
-                // check for the route in the 'action' attribute
-                route = $el.attr('action');
-            // set the route
-            this.setRoute(widget, {method: method, path: route}, 'send');
-            return this;
-        },
         // ### uijet.Adapter
         // @sign: Adapter(name, [adapter])  
         // @return: uijet
@@ -327,6 +313,8 @@
                 this.$element = $(options && options.element || 'body');
                 // sniff for iPad UA and perform optimizations accordingly
                 this.isiPad();
+                // initially not using a router
+                this.options.routed = false;
                 if ( options ) {
                     if ( options.route_prefix ) {
                         this.ROUTE_PREFIX = options.route_prefix;
@@ -339,6 +327,7 @@
                             // bind each method to given context
                             for ( k in _methods ) {
                                 _methods[k] = _methods[k].bind(options.methods_context);
+                                k == 'setRoute' && (this.options.routed = true);
                             }
                         }
                         // implement missing methods
@@ -383,10 +372,10 @@
             if ( typeof _window.require == 'function' ) {
                 // import all the modules we need (Mixins, Widgets, Adapters, 3rd party...)  
                 // and initialization will start when done
-                return this.importModules(options.widgets, _init.bind(this));
+                return this.importModules(options.widgets, _init.bind(this, options));
             } else {
                 // otherwise just init
-                return _init.call(this);
+                return _init.call(this, options);
             }
         },
         // ### uijet.registerWidget

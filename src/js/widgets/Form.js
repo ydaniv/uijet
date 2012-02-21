@@ -26,7 +26,7 @@
                 _data = this.getSerialized();
             this.notify('pre_send');
             // if `route_send` is `true`
-            if ( this.options.route_send ) {
+            if ( uijet.options.routed && this.options.route_send ) {
                 // run the URL as a route
                 this.runRoute(_url + _data, true);
                 return this;
@@ -51,22 +51,40 @@
                 this._finally();
             });
         },
-        //TODO: re-implement the routing mechanism for submitting forms
         register        : function () {
-            var that = this;
+            var that = this,
+                $el = this.$element,
+                // check for the method
+                method = $el.attr('method') || 'get',
+                // check for the route in the 'action' attribute
+                route = $el.attr('action'),
+                is_routed = uijet.options.routed,
+                is_send_routed = is_routed && this.options.route_send,
+                route_obj = {method: method, path: route},
+                topic = method + '.' + route;
             // if `route_send` option is set to `true`
-            if ( this.options.route_send ) {
-                // capture the `submit` event of this `$element`
-                 this.$element.bind('submit', function (e) {
-                     // stop and prevent it
-                     e.preventDefault();
-                     e.stopPropagation();
-                     // instead call `send`
-                     that.send();
-                 });
-            } else {
-                // otherwise register this Form on the sandbox via `uijet.Form`
-               uijet.Form(this.id, this);
+            if ( ! is_send_routed ) {
+                if ( is_routed ) {
+                    // set as route
+                    uijet.setRoute(this, route_obj, 'send');
+                } else {
+                    // set as event
+                    uijet.subscribe(topic, this.send, this);
+                }
+            }
+            // check if there's no one else handling the form submit event, e.g. Sammy.js
+            if ( ! uijet.options.submit_handled ) {
+                $el.bind('submit', function (e) {
+                    // stop and prevent it
+                    e.preventDefault();
+                    e.stopPropagation();
+                    if ( is_send_routed ) {
+                        // just call `send` and bypass regular submission channels
+                        that.send();
+                    } else {
+                        is_routed ? that.runRoute(route_obj, true) : that.publish(topic);
+                    }
+                });
             }
             this._super();
             return this;
