@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/static_path/css/uijet.css"/>
+    <link rel="stylesheet" href="/static_path/css/my_app.css"/>
+    <script>
+        var require = {
+            baseUrl : '/static_path/js/',
+            deps    : ['jquery'],
+            paths   : {
+                jquery      : 'lib/jquery-1.7.1.min',
+                uijet_dir   : 'lib/uijet',
+                plugins     : 'lib',
+                sammy       : 'lib/sammy/sammy',
+                mustache    : 'lib/mustache'
+            },
+            callback: function () {
+                require(['jquery', 'my_app'], function ($, myApp) {
+                    myApp.init({
+                        widgets : [/*
+                            widgets declarations
+                        */]
+                    });
+                });
+            }
+        };
+    </script>
+    <script src="/static_path/js/require.js"></script>
+    <title></title>
+</head>
+<body>
+<div id="main">
+    <!-- Application markup -->
+</div>
+</body>
+</html>
