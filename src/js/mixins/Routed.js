@@ -10,18 +10,26 @@
 }(function (uijet) {
     uijet.Mixin('Routed', {
         routed          : true,
+        wake            : function (context, by_route) {
+            if ( by_route ) {
+                // enable waking logic to run
+                this.awake = false;
+                // continue with original waking
+                return this._super(context);
+            }
+            // it's not a specific call for this pane so it's the container's context
+            this.container_context = context;
+            return this._super();
+        },
         destroy         : function () {
             this.notify('pre_destroy');
-            //TODO: implement unregisterRoutes and replace with the following call
-            this.unsetRoute()
+            this.unregisterRoutes()
                 ._super();
             return this;
         },
         register        : function () {
-            // set the `route` option
-            this.setRoute()
-                // register all routes
-                .registerRoutes()
+            // register all routes
+            this.registerRoutes()
                 ._super();
             return this;
         },
@@ -30,15 +38,29 @@
         // @return: this
         // 
         // Register the premier route.  
-        // Registers all alias routes using the `alias_routes` option.  
-        // Hooks into `uijet.setRoute`.
+        // Registers all alias routes using the `alias_routes` option.
         registerRoutes  : function () {
             var _aliases = this.options.alias_routes;
             // register the route set as the `route` option
-            uijet.setRoute(this);
+            this.setRoute();
             // set the alias routes
             if ( _aliases && _aliases.length ) {
                 for ( var i = 0, a; a = _aliases[i++]; ) uijet.setRoute(this, a);
+            }
+            return this;
+        },
+        // ### widget.unregisterRoutes
+        // @sign: unregisterRoutes()  
+        // @return: this
+        // 
+        // Unregister the premier route and all alias routes.
+        unregisterRoutes: function () {
+            var _aliases = this.options.alias_routes;
+            // register the route set as the `route` option
+            this.unsetRoute();
+            // set the alias routes
+            if ( _aliases && _aliases.length ) {
+                for ( var i = 0, a; a = _aliases[i++]; ) this.unsetRoute(a);
             }
             return this;
         },
@@ -59,15 +81,15 @@
         // @sign: setRoute([route])  
         // @return: this
         //
-        // Sets the `route` option.  
+        // Sets the `route` option and then registers it with the router via the sandbox.  
         // If `route` argument is supplied as a `String` it uses it.  
-        // If `route` option is already set the unset it and set again with the new.  
+        // If `route` option is already set then unset it and set again with the new.  
         // If no arguments and `route` option is not set then it is set to `this.id`, prefixed by `uijet.ROUTE_PREFIX`
         // and suffixed by `uijet.ROUTE_SUFFIX`.  
         //TODO: implement replacing a current route and setting another route (alias) separately
         setRoute        : function (route) {
             var _ops_route = this.options.route;
-            if ( route && typeof route == 'string') {
+            if ( route ) {
                 if ( _ops_route ) {
                     this.unsetRoute(_ops_route)
                         .options.route = route;
@@ -78,6 +100,7 @@
                 // create a default route and store it
                 this.options.route = uijet.ROUTE_PREFIX + this.id + uijet.ROUTE_SUFFIX;
             }
+            uijet.setRoute(this);
             return this;
         },
         // ### widget.unsetRoute
@@ -89,7 +112,7 @@
         // If it isn't, it calls `getRoute` and attempts to unset that route.  
         // Hooks into `uijet.unsetRoute`.
         unsetRoute      : function (route) {
-            route = route || this.getRoute(); 
+            route = route || this.getRoute();
             uijet.unsetRoute(this, route);
             return this;
         },
