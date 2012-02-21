@@ -144,6 +144,61 @@ h1, h2, h3, h4, h5, p, ul {
     background-image: -moz-linear-gradient(top, rgba(210, 210, 210, 1), rgba(92, 92, 92, 1));
     background-image: linear-gradient(top, rgba(210, 210, 210, 1), rgba(92, 92, 92, 1));
 }
+.uijet_button.back, .uijet_button.forward {
+    border: none;
+    border-bottom: 1px solid #999;
+    border-radius: 10px;
+}
+.uijet_button.back:before, .uijet_button.forward:before {
+    content: "";
+    position: absolute;
+    z-index: 0;
+    width: 1.7em;
+    height: 1.7em;
+    top: 4px;
+    left: -8px;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    transform: rotate(45deg);
+    background-image: -webkit-gradient(linear, left top, right bottom, from(transparent), color-stop(50%, rgba(255, 255, 255, 0.2)), color-stop(51%, transparent), to(transparent)), -webkit-gradient(linear, left top, right bottom, from(#F0F0F0), to( #505050));
+    background-image: -moz-linear-gradient(-45deg, transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), -moz-linear-gradient(-45deg , #F0F0F0, #505050);
+    background-image: linear-gradient(-45deg, transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), linear-gradient(-45deg , #F0F0F0, #505050);
+    border-bottom: 1px solid #999;
+    border-left: 1px solid #222;
+    border-radius: 5px;
+}
+.uijet_button.back:after, .uijet_button.forward:after {
+    content: "Back";
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding-top: .55em;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, rgba(255, 255, 255, 0.2)), color-stop(51%, transparent), to(transparent)), -webkit-gradient(linear, left top, left bottom, from(#F0F0F0), to( #505050));
+    background-image: -moz-linear-gradient(center top , transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), -moz-linear-gradient(center top , #F0F0F0, #505050);
+    background-image: linear-gradient(center top, transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), linear-gradient(center top , #F0F0F0, #505050);
+    border-radius: 6px;
+    border-top: 1px solid #222;
+    color : #0a0a0a;
+    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6);
+    /*border-bottom: 1px solid #999;*/
+}
+.uijet_button.forward:before {
+    left: auto;
+    right: -8px;
+    border-left: none;
+    border-bottom: none;
+    border-top: 1px solid #222;
+    border-right: 1px solid #999;
+}
+.uijet_button.forward:after {
+    content: "Next";
+}
 .uijet_form {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -252,7 +307,7 @@ h1, h2, h3, h4, h5, p, ul {
 .uijet_list.horizontal.align_right li {
     float: right;
 }
-.uijet_pane, .uijet_content_pane, .uijet_routed_content_pane {
+.uijet_pane, .uijet_routed_content_pane {
     width: 100%;
     height: 100%;
     -moz-box-sizing: border-box;
@@ -269,7 +324,7 @@ h1, h2, h3, h4, h5, p, ul {
 .uijet_overlay.darken {
     background-color: rgba(20,20,20,0.7);
 }
-.uijet_overlay.top, .uijet_overlay_wrapper.top {
+.uijet_overlay.z_top, .uijet_overlay_wrapper.z_top {
     z-index: 1000;
 }
 .uijet_overlay_wrapper.darken {
@@ -292,15 +347,13 @@ h1, h2, h3, h4, h5, p, ul {
     overflow: hidden;
     background-color: #0a0a0a;
 }
-.uijet_view.current {
-    z-index: 1;
-}
-.uijet_view.top {
+.uijet_view.z_top {
     z-index: 10;
 }
 .uijet_view_container {
     position: relative;
     width: 100%;
+    height: 100%;
 }
 .uijet_video {
     width: 100%;
@@ -344,6 +397,12 @@ h1, h2, h3, h4, h5, p, ul {
     position: static;
     margin: auto;
 }
+.current {
+    z-index: 1;
+}
+.z_top {
+    z-index: 10;
+}
 .transitioned {
     -webkit-transform: translateZ(0);
     -webkit-transition-duration: .5s;
@@ -375,6 +434,21 @@ h1, h2, h3, h4, h5, p, ul {
 .slide_in {
     -webkit-transform: translate3d(-100%,0,0);
     -moz-transform: translate(-100%,0);
+}
+.down_slide_out {
+    position: absolute;
+    top: -100%;
+}
+.down_slide_in {
+    -webkit-transform: translate3d(0,100%,0);
+    -moz-transform: translate(0,100%);
+}
+.fade_out {
+    position: absolute;
+    opacity: 0;
+}
+.fade_in {
+    opacity: 1;
 }
 .reverse.slide_out {
     right: auto;
@@ -414,7 +488,7 @@ h1, h2, h3, h4, h5, p, ul {
     border: 3px solid #222;
     border-radius: 16px;
 }
-.hide { display: none; }
+.hide { display: none !important; }
 
 /* ==|== non-semantic helper classes ======================================== */
 .ir { display: block; border: 0; text-indent: -999em; overflow: hidden; background-color: transparent; background-repeat: no-repeat; text-align: left; direction: ltr; }
