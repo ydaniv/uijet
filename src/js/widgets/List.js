@@ -4,7 +4,6 @@
         define([
                 'uijet_dir/uijet',
                 'uijet_dir/widgets/Base',
-                'uijet_dir/mixins/Templated',
                 'uijet_dir/mixins/Scrolled'
             ], function (uijet) {
                 return factory(uijet);
@@ -51,5 +50,5 @@
             this._super();
             return this;
         }
-    }, ['Templated', 'Scrolled']);
+    }, ['Scrolled']);
 }));
