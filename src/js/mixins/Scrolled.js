@@ -74,9 +74,10 @@
                     this.$element[0].style.width = _size.width + 'px';
                 }
             } else {
-                if ( el.offsetHeight < _size.height ) {
-                    this.$element[0].style.height = _size.height + 'px';
-                }
+                // don't need to update height
+//                if ( el.offsetHeight > _size.height ) {
+//                    this.$element[0].style.height = _size.height + 'px';
+//                }
             }
             return this;
         },
