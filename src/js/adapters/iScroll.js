@@ -1,6 +1,6 @@
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', '../../iScroll.js'], function (uijet) {
+        define(['uijet_dir/uijet', 'plugins/iscroll'], function (uijet) {
             return factory(uijet);
         });
     } else {
