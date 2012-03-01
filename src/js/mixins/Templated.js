@@ -11,11 +11,13 @@
     uijet.Mixin('Templated', {
         templated       : true,
         wake            : function (context) {
-            var that = this, dfrds, _fail, _success, _sequence;
+            var that = this,
+                args = Array.prototype.slice.call(arguments),
+                dfrds, _fail, _success, _sequence;
             // notify the `pre_wake` signal
-            this.notify.apply(this, ['pre_wake'].concat(Array.prototype.slice.call(arguments)));
+            this.notify.apply(this, ['pre_wake'].concat(args));
             // setting `context`
-            this._setContext.apply(this, arguments);
+            this._setContext.apply(this, args);
             // store the wake promise object
             this.dfrd = this.dfrd || $.Deferred();
             // wake up the kids
@@ -42,10 +44,8 @@
                     // render it
                     $.when ( that.render() ).then(function () {
                         // bind DOM events
-                        that.bind();
-                        // if `initial` option is set the perform selection inside the widget
-                        if ( that.options.initial ) { that.select(that.options.initial); }
-                        that.appear()
+                        that.bind()
+                            .appear()
                             .awake = true;
                         that.notify('post_wake');
                         that.dfrd.resolve();
