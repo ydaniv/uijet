@@ -168,11 +168,11 @@
         destroy         : function () {
             this.notify('pre_destroy');
             // perform a recursive destruction down the widget tree
-            this.destroyContained()
-                // unsubscribe to app events
-                .unsubscribe(_window.Object.keys(this.options.app_events).join(' '))
-                // remove DOM elements
-                .remove()
+            this.destroyContained();
+            // unsubscribe to app events
+            this.options.app_events && this.unsubscribe(_window.Object.keys(this.options.app_events).join(' '));
+            // remove DOM elements
+            this.remove()
                 ._finally();
             return this;
         },
@@ -322,6 +322,7 @@
         //
         // Makes the instance's element appear (initially `visibility` is set to `hidden`).
         appear          : function () {
+            this.notify('pre_appear');
             this._setCloak(false)
                 .notify('post_appear');
             return this;
