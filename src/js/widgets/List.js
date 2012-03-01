@@ -3,8 +3,7 @@
     if ( typeof define === 'function' && define.amd ) {
         define([
                 'uijet_dir/uijet',
-                'uijet_dir/widgets/Base',
-                'uijet_dir/mixins/Scrolled'
+                'uijet_dir/widgets/Base'
             ], function (uijet) {
                 return factory(uijet);
             });
@@ -19,14 +18,20 @@
         prepareElement  : function () {
             var that = this,
                 item_element = this.options.item_element,
+                _horizontal = this.options.horizontal,
                 _align;
             // if `align` option is set
+            if ( _horizontal ) {
+                this.$element.addClass('horizontal');
+                delete this.options.horizontal;
+            }
             if ( _align = this.options.align ) {
                 // set it as a `class` on `$element` prefixed by 'align_'
                 this.$element.addClass('align_' + _align);
             }
             // delegate all clicks from `item_element` option as selecot or `li`  
-            //TODO: switch to $element.on('click', 'li  ', function ...)
+            //TODO: switch to $element.on('click', 'li  ', function ...)  
+            //TODO: runRoute or publish on select  should be called implicitly or by coniguration and not explicitly
             this.$element.delegate(item_element || 'li', 'click', function (e) {
                 // get the selected element  
                 // if `item_element` option is set get the closest `li` stating from current element  
@@ -49,6 +54,15 @@
             });
             this._super();
             return this;
+        },
+        bind            : function () {
+            var initial = this.options.initial;
+            this._super();
+            // if `initial` option is set the perform selection inside the widget
+            if ( initial ) {
+                this.select(initial);
+            }
+            return this;
         }
-    }, ['Scrolled']);
+    });
 }));
