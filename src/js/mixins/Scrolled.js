@@ -11,9 +11,11 @@
     uijet.Mixin('Scrolled', {
         scrolled            : true,
         prepareElement      : function () {
+            this._super()
+                ._wrap()
+                .$wrapper.addClass('scrolled');
             // set the `horizontal` class if that option is set
             this.options.horizontal && this.$element.addClass('horizontal');
-            this._super();
             return this;
         },
         // ### widget.setScrolling
@@ -90,7 +92,7 @@
         _setWrapperSize     : function (clear) {
             var _h;
             if ( this.$wrapper ) {
-                // if `clear` is truthy and heifht was tempered with
+                // if `clear` is truthy and height was tempered with
                 if ( clear && this.height_dirty ) {
                     // clear the style attribute  
                     // works around a Webkit issue
