@@ -266,6 +266,17 @@
             views[name] = widget;
             return this;
         },
+        // ### uijet.Form
+        // @sign: Form(name, widget)  
+        // @return: uijet
+        //
+        // Set a form's route to connect its submission with the widget's `send` method.
+        Form            : function (name, widget) {
+            this.options.routed ?
+                this.setRoute(widget, widget.getSendRoute(), 'send', true) :
+                this.subscribe(widget.id + '.submitted', widget.send, widget);
+            return this;
+        },
         // ### uijet.Adapter
         // @sign: Adapter(name, [adapter])  
         // @return: uijet
@@ -399,8 +410,10 @@
             while ( $parent.length && ! $parent.is('body') ) {
                 // if we hit a `uijet_widget`
                 if ( $parent.hasClass('uijet_widget') ) {
-                    // get its `id`
-                    _parent_id = $parent[0].id;
+                    // get its `id`.  
+                    // important to get the attribute and not do `element.id`, since it might break
+                    // when the element is a `<form>` and has an `<input name=id>`.
+                    _parent_id = $parent.attr('id');
                     // and set it as the container in this registry
                     _current.container = _parent_id;
                     if ( _parent_id in widgets ) {
