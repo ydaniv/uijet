@@ -29,8 +29,8 @@
         },
         register        : function () {
             // register all routes
-            this.registerRoutes()
-                ._super();
+            this._super()
+                .registerRoutes();
             return this;
         },
         // ### widget.registerRoutes
