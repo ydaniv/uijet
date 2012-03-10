@@ -1,4 +1,4 @@
-/* HTML5 ✰ Boilerplate
+/* HTML5 ✰ Boilerplate | Modified
  * ==|== normalize ==========================================================
  */
 
@@ -9,23 +9,14 @@ audio:not([controls]) { display: none; }
 
 html { font-size: 100%; overflow-y: scroll; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
 body { margin: 0; font-size: 13px; line-height: 1.231; /* Cancel Webkit user selection */-khtml-user-select: none; }
-body, button, input, select, textarea { font-family: sans-serif; color: #222; }
+body, button, input, select, textarea { font-family: sans-serif; }
 input, select, textarea { -khtml-user-select: auto; }
 
-/*::-moz-selection { background: #fe57a1; color: #fff; text-shadow: none; }*/
 ::-moz-selection { background: none; }
-input::-moz-selection, select::-moz-selection, textarea::-moz-selection { background: #6495ed; color: white; }
-/*::selection { background: #fe57a1; color: #fff; text-shadow: none; }*/
 ::selection { background: none; }
-input::selection, select::selection, textarea::selection { background: #6495ed; color: white; }
 
 
-/*a { color: #00e; }*/
-a { text-decoration: none; color: whitesmoke; }
-/*a:visited { color: #551a8b; }*/
-a:visited { color: whitesmoke; }
-/*a:hover { color: #06e; }*/
-/*a:hover { color: #F68220; }*/
+a { text-decoration: none; }
 a:focus { outline: none; }
 a:hover, a:active { outline: 0; }
 
@@ -72,7 +63,6 @@ td { vertical-align: top; }
 video:focus { outline: none; }
 
 /* ==|== primary styles =====================================================
-   Author:
    ========================================================================== */
 
 html, body {
@@ -81,8 +71,6 @@ html, body {
 }
 body {
     text-align: center;
-    background-color: #0a0a0a;
-    color: whitesmoke;
 }
 h1, h2, h3, h4, h5, p, ul {
     margin: 0;
@@ -96,122 +84,13 @@ h1, h2, h3, h4, h5, p, ul {
     display: table-cell;
     vertical-align: middle;
 }
-.uijet_bar {
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 1%;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#EBEBEB), to(#777));
-    background-image: -moz-linear-gradient(top, #EBEBEB, #777);
-    background-image: linear-gradient(top, #EBEBEB, #777);
-    /*-webkit-box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8);*/
-    -moz-box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8);
-    box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8);
-    border: 2px solid #666;
-    border-radius: 5px;
-}
 .uijet_bar.vertical {
     height: 100%;
-    background-image: -webkit-gradient(linear, left top, right top, from(#EBEBEB), to(#777));
-    background-image: -moz-linear-gradient(left, #EBEBEB, #777);
-    background-image: linear-gradient(left, #EBEBEB, #777);
 }
 .uijet_button, .uijet_form button, .uijet_form input[type=submit], .uijet_form input[type=button] {
     display: inline-block;
     padding: 1em;
-    border: 1px solid #999;
-    /*border-top-color: #222;*/
-    /*border-bottom-color: whitesmoke;*/
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 5px #000, 0 0 0 1px #0f0f0f inset;
-    -moz-box-shadow: inset 0 0 5px #000, 0 0 0 1px #0f0f0f inset;
-    box-shadow: inset 0 0 5px #000, 0 0 0 1px #0f0f0f inset;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, rgba(255, 255, 255, 0.2)), color-stop(51%, transparent), to(transparent)), -webkit-gradient(linear, left top, left bottom, from(#F0F0F0), to( #505050));
-    background-image: -moz-linear-gradient(center top , transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), -moz-linear-gradient(center top , #F0F0F0, #505050);
-    background-image: linear-gradient(center top, transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), linear-gradient(center top , #F0F0F0, #505050);
-    color: #222;
-    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6);
-    font-weight: bold;
     cursor: pointer;
-}
-.uijet_button:hover {
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(250, 250, 250, 1)), to(rgba(152, 152, 152, 1)));
-    background-image: -moz-linear-gradient(top, rgba(250, 250, 250, 1), rgba(152, 152, 152, 1));
-    background-image: linear-gradient(top, rgba(250, 250, 250, 1), rgba(152, 152, 152, 1));
-}
-.uijet_button:active {
-    background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(210, 210, 210, 1)), to(rgba(92, 92, 92, 1)));
-    background-image: -moz-linear-gradient(top, rgba(210, 210, 210, 1), rgba(92, 92, 92, 1));
-    background-image: linear-gradient(top, rgba(210, 210, 210, 1), rgba(92, 92, 92, 1));
-}
-.uijet_button.back, .uijet_button.forward {
-    border: none;
-    border-bottom: 1px solid #999;
-    border-radius: 10px;
-}
-.uijet_button.back:before, .uijet_button.forward:before {
-    content: "";
-    position: absolute;
-    z-index: 0;
-    width: 1.7em;
-    height: 1.7em;
-    top: 4px;
-    left: -8px;
-    -webkit-transform: rotate(45deg);
-    -moz-transform: rotate(45deg);
-    transform: rotate(45deg);
-    background-image: -webkit-gradient(linear, left top, right bottom, from(transparent), color-stop(50%, rgba(255, 255, 255, 0.2)), color-stop(51%, transparent), to(transparent)), -webkit-gradient(linear, left top, right bottom, from(#F0F0F0), to( #505050));
-    background-image: -moz-linear-gradient(-45deg, transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), -moz-linear-gradient(-45deg , #F0F0F0, #505050);
-    background-image: linear-gradient(-45deg, transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), linear-gradient(-45deg , #F0F0F0, #505050);
-    border-bottom: 1px solid #999;
-    border-left: 1px solid #222;
-    border-radius: 5px;
-}
-.uijet_button.back:after, .uijet_button.forward:after {
-    content: "Back";
-    position: absolute;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    padding-top: .55em;
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(transparent), color-stop(50%, rgba(255, 255, 255, 0.2)), color-stop(51%, transparent), to(transparent)), -webkit-gradient(linear, left top, left bottom, from(#F0F0F0), to( #505050));
-    background-image: -moz-linear-gradient(center top , transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), -moz-linear-gradient(center top , #F0F0F0, #505050);
-    background-image: linear-gradient(center top, transparent, rgba(255, 255, 255, 0.2) 50%, transparent 51%, transparent), linear-gradient(center top , #F0F0F0, #505050);
-    border-radius: 6px;
-    border-top: 1px solid #222;
-    color : #0a0a0a;
-    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6);
-    /*border-bottom: 1px solid #999;*/
-}
-.uijet_button.forward:before {
-    left: auto;
-    right: -8px;
-    border-left: none;
-    border-bottom: none;
-    border-top: 1px solid #222;
-    border-right: 1px solid #999;
-}
-.uijet_button.forward:after {
-    content: "Next";
-}
-.uijet_form {
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 1%;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#EBEBEB), to(#777));
-    background-image: -moz-linear-gradient(top, #EBEBEB, #777);
-    background-image: linear-gradient(top, #EBEBEB, #777);
-    /*-webkit-box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8), 0 0 1px 3px rgba(150, 150, 150, 0.8);*/
-    -moz-box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8), 0 0 1px 3px rgba(150, 150, 150, 0.8);
-    box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8), 0 0 1px 3px rgba(150, 150, 150, 0.8);
-    border: 1px solid #666;
-    border-radius: 12px;
 }
 .uijet_form {
     width: 60%;
@@ -221,13 +100,9 @@ h1, h2, h3, h4, h5, p, ul {
     margin-bottom: 12px;
     text-align: left;
     font-size: 1.4em;
-    color: #222;
-    text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.6);
-    font-weight: bold;
 }
 .uijet_form label.error {
     margin-bottom: 0;
-    color: #ee2d2d;
 }
 .uijet_form input[type=text] {
     -webkit-appearance: none;
@@ -235,13 +110,6 @@ h1, h2, h3, h4, h5, p, ul {
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     padding: 5px 3px;
-    border-radius: 6px;
-    border: none;
-    border-top: 1px solid gray;
-    border-bottom: 1px solid lightgray;
-    -webkit-box-shadow: inset -1px 2px 3px 0.5px rgba(30, 30, 30, 0.7), inset .5px -.5px 1px 1px rgba(0, 0, 0, 0.4);
-    -moz-box-shadow: inset -1px 2px 3px 0.5px rgba(30, 30, 30, 0.7), inset .5px -.5px 1px 1px rgba(0, 0, 0, 0.4);
-    box-shadow: inset -1px 2px 3px 0.5px rgba(30, 30, 30, 0.7), inset .5px -.5px 1px 1px rgba(0, 0, 0, 0.4);
 }
 .uijet_list {
     width: 100%;
@@ -258,29 +126,10 @@ h1, h2, h3, h4, h5, p, ul {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
-    border: 1px solid #777;
     cursor: pointer;
-}
-.uijet_list li:first-child {
-    border-top-left-radius: 12px;
-    border-top-right-radius: 12px;
-}
-.uijet_list li:last-child {
-    border-bottom-left-radius: 12px;
-    border-bottom-right-radius: 12px;
-}
-.uijet_list li.selected {
-    background-color: #777;
-}
-.uijet_list li + li {
-    border-top: none;
 }
 .uijet_list.horizontal {
     height: 99%;
-    background-image: -webkit-gradient(linear, left top, left bottom, from(#EBEBEB), to(#777));
-    background-image: -moz-linear-gradient(top, #EBEBEB, #777);
-    background-image: linear-gradient(top, #EBEBEB, #777);
-    border-radius: 12px;
 }
 .uijet_list.horizontal a {
     width: inherit;
@@ -291,16 +140,6 @@ h1, h2, h3, h4, h5, p, ul {
     float: left;
     height: 100%;
 }
-.uijet_list.horizontal li:first-child {
-    border-radius: 12px 0 0 12px;
-}
-.uijet_list.horizontal li:last-child {
-    border-radius: 0 12px 12px 0;
-}
-.uijet_list.horizontal li + li {
-    border-top: 1px solid #777;
-    border-left: none;
-}
 .uijet_list.horizontal.align_center li {
     float: none;
 }
@@ -310,9 +149,6 @@ h1, h2, h3, h4, h5, p, ul {
 .uijet_pane, .uijet_routed_content_pane {
     width: 100%;
     height: 100%;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
 }
 .uijet_overlay {
     position: fixed;
@@ -341,11 +177,7 @@ h1, h2, h3, h4, h5, p, ul {
     /*right: -100%;*/
     width: 100%;
     height: 100%;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
     overflow: hidden;
-    background-color: #0a0a0a;
 }
 .uijet_view.z_top {
     z-index: 10;
@@ -359,6 +191,11 @@ h1, h2, h3, h4, h5, p, ul {
     width: 100%;
     height: 100%;
 }
+.uijet_widget {
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
 .uijet_wrapper {
     position: relative;
     width: 100%;
@@ -368,7 +205,7 @@ h1, h2, h3, h4, h5, p, ul {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
-.uijet_wrapper.fixed, .uijet_widget.fixed {
+.uijet_wrapper.fixed, .uijet_widget.fixed, .layered {
     position: absolute;
 }
 .uijet_wrapper.bottom, .uijet_widget.bottom {
@@ -385,6 +222,9 @@ h1, h2, h3, h4, h5, p, ul {
 }
 .uijet_wrapper.top, .uijet_widget.top {
     top: 0;
+}
+.uijet_wrapper.scrolled > .uijet_widget {
+    height: auto;
 }
 .uijet_wrapper > .uijet_widget {
     position: relative;
@@ -416,6 +256,7 @@ h1, h2, h3, h4, h5, p, ul {
             transition-property: opacity, transform, height;
 }
 .appear_out {
+    position: absolute;
     opacity: 0;
     -webkit-transform: scale3d(.4, .4, .4);
     -moz-transform: scale(.4);
@@ -450,6 +291,10 @@ h1, h2, h3, h4, h5, p, ul {
 .fade_in {
     opacity: 1;
 }
+.fold_out {
+    height: 0;
+    overflow-y: hidden;
+}
 .reverse.slide_out {
     right: auto;
     left: -100%;
@@ -477,16 +322,7 @@ h1, h2, h3, h4, h5, p, ul {
 }
 .float > .uijet_widget {
     position: static;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
     /*overflow: hidden;*/
-    background-color: #ccc;
-    -webkit-box-shadow: inset 0 0 8px 4px rgba(36, 36, 36, .9);
-    -moz-box-shadow: inset 0 0 8px 4px rgba(36, 36, 36, .9);
-    box-shadow: inset 0 0 8px 4px rgba(36, 36, 36, .9);
-    border: 3px solid #222;
-    border-radius: 16px;
 }
 .hide { display: none !important; }
 
