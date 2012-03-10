@@ -3,8 +3,7 @@
     if ( typeof define === 'function' && define.amd ) {
         define([
             'uijet_dir/uijet',
-            'uijet_dir/widgets/Base',
-            'uijet_dir/mixins/Layered'
+            'uijet_dir/widgets/Base'
         ], function (uijet) {
             return factory(uijet);
         });
@@ -16,5 +15,5 @@
         options : {
             type_class  : 'uijet_pane'
         }
-    }, ['Layered']);
+    });
 }));
