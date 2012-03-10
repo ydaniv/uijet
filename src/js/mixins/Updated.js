@@ -12,12 +12,11 @@
         updated : true,
         wake    : function (context) {
             var that = this, self_dfrd = $.Deferred(),
-                dfrds, args, _callback, _fail, _success, _sequence;
+                dfrds, _callback, _fail, _success, _sequence;
             // notify the `pre_wake` signal with given `context`
-            args = ['pre_wake'].concat(Array.prototype.slice.call(arguments));
-            this.notify.apply(this, args);
+            this.notify('pre_wake', context);
             // set the `context`
-            this._setContext.apply(this, arguments);
+            this._setContext(context);
             // if this is not the updater then it receives data through `context`
             if ( ! this.options.data_url ) {
                 // set `data`
