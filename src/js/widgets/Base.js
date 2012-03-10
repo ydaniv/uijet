@@ -40,10 +40,10 @@
                 .setElement()
                 // hide the element to prevent browser rendering as much as possible
                 ._setCloak(true)
-                // wrapping, styling, positioning, etc.
-                .prepareElement()
                 // parse the rest of the options, like events handling, etc.
                 .setInitOptions()
+                // wrapping, styling, positioning, etc.
+                .prepareElement()
                 // if there's sandbox registry any required
                 .register()
                 // cache reference to initial markup that was coded into the element by user
@@ -55,9 +55,11 @@
         // @sign: register()  
         // @return: this
         //
-        // Abstract method that may be used by concrete widgets to register themselves into special
-        // namespaces in the uijet sandbox, such as Views, Forms, etc.
+        // Registers the widget into the sandbox.  
+        // Hooks into uijet's `registerWidget`.
+        // *Note*: It is recommended to call `this._super` first thing when overriding this method.
         register        : function () {
+            uijet.registerWidget(this);
             return this;
         },
         // ### widget.wake
@@ -71,15 +73,14 @@
         // for this instance to start itself with.
         wake            : function (context) {
             var that = this,
-                dfrds, args, success, _sequence;
+                dfrds, success, _sequence;
             // if already awake and there's no new data coming in then no reason to continue
             if ( this.awake && ! context ) return this._finally();
             // prepare a pre_wake signal
-            args = ['pre_wake'].concat(arraySlice.call(arguments));
             // fire pre_wake signal
-            this.notify.apply(this, args);
+            this.notify('pre_wake', context);
             // set the the context data if any
-            this._setContext.apply(this, arguments);
+            this._setContext(context);
             // the rest of the tasks needed to be performed
             success = function () {
                 // there was context to change but if we're set then bail out
@@ -589,7 +590,7 @@
         // Gets the URL used by the widget to fetch/send data.  
         // Uses the instance's context object to replace params in the URL's pattern,
         getDataUrl      : function () {
-            return this.substitute(this.options.data_url, this.context);
+            return this.substitute(uijet.Utils.returnOf(this.options.data_url, this), this.context);
         },
         // ### widget.substitute
         // @sign: substitute(template, obj)  
@@ -706,9 +707,9 @@
                 child;
             if ( this.options.horizontal ) {
                 // since HTML is finite horizontally we *have* to count all children
-                while( child = $children[--l] ) {
+                $children.each(function (i, child) {
                     total_width += child.offsetWidth;
-                }
+                });
                 size.width = total_width;
                 size.height = $children[0].offsetHeight;
             } else {
@@ -758,6 +759,9 @@
         // Also cleares the `style` attribute of `$element`.  
         // At the end resets `has_content` to `false`.
         _clearRendered  : function () {
+            if ( this.bound ) {
+                this.unbind();
+            }
             // remove all children that were added with .render()
             this.$element.children().not(this.$original_children).remove();
             // needed to work around a Webkit bug
