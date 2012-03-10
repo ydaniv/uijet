@@ -23,7 +23,6 @@
             // if `align` option is set
             if ( _horizontal ) {
                 this.$element.addClass('horizontal');
-                delete this.options.horizontal;
             }
             if ( _align = this.options.align ) {
                 // set it as a `class` on `$element` prefixed by 'align_'
