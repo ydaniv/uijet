@@ -18,11 +18,14 @@
         // the URL got via `getSendUrl`.  
         // If `route_send` option is set to `true` then use that URL as a route in `runRoute`.  
         // If not then make an XHR call.
-        send            : function (context) {
+        send            : function () {
             var that = this,
-                _url = this.getSendUrl(context),
-                _data = this.getSerialized();
-            this.notify('pre_send');
+                _data = this.getSerialized(),
+                _url, context;
+            // notify the `pre_send` signal and allow user to set the context
+            context = this.notify('pre_send');
+            // set the URL for sending
+            _url = this.getSendUrl(context);
             // if `route_send` option is `true`
             if ( this.options.route_send ) {
                 // if using a router then run the URL as a route, otherwise publish it
@@ -72,7 +75,7 @@
         // By default, the method is 'get'.  
         // If `send_url` option isn't set it returns `undefined`.
         getSendUrl      : function (send_context) {
-            var url = this.options.send_url,
+            var url = uijet.Utils.returnOf(this.options.send_url, this),
                 context = send_context || this.context,
                 path;
             // if we have a context set
