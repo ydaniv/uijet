@@ -16,6 +16,7 @@
         factory(uijet, jQuery);
     }
 }(function (uijet, $) {
+    //TODO: refactor to use Layered and uijet.switchCurrent
     uijet.Widget('View', {
         options : {
             type_class  : 'uijet_view'
