@@ -88,7 +88,11 @@
         });
         return obj;
     }
-
+    // ### Utils.returnOf
+    // Wrapper for checking if a variable is a function and return its returned value or else simply return it.
+    function returnOf(arg, ctx) {
+        return isFunc(arg) ? arg.call(ctx || _window) : arg;
+    }
     // ### Utils.extend
     // @sign: extend(target, source[, source1[, ...]])  
     // @sign: extend(bool, target, source[, source1[, ...]])  
@@ -273,7 +277,7 @@
         // Set a form's route to connect its submission with the widget's `send` method.
         Form            : function (name, widget) {
             this.options.routed ?
-                this.setRoute(widget, widget.getSendRoute(), 'send', true) :
+                this.setRoute(widget, widget.getSendRoute(), 'send') :
                 this.subscribe(widget.id + '.submitted', widget.send, widget);
             return this;
         },
@@ -313,6 +317,8 @@
         // * __parse__: a flag instructing uijet to parse the HTML to look for widget definitions. Default is `false`.
         // * __dont_start__: a flag instructing uijet not to run `startup` as a callback to init. Default is `false`.
         // * __pre_startup__: a callback to run synchronously in the beginning of `startup`.
+        // * __submit_handled__: whether your code or some other 3rd party (e.g. Sammy.js) is handling routing of submit
+        //                      events. Default is `false`.
         init            : function (options) {
             // wrap the actuall initialization function
             var _init = function () {
@@ -507,8 +513,6 @@
                 }
                 // init the instance
                 _w.init(_config);
-                // register this instance to the uijet sandbox
-                this.registerWidget(_w);
             }
             return this;
         },
@@ -921,7 +925,7 @@
                 },
                 is_direction_in, has_class_name, _h;
 
-            direction = direction ||'in';
+            direction = direction || 'in';
             is_direction_in = direction == 'in';
 
             if ( uijet.back_navigation ) {
@@ -997,11 +1001,15 @@
                 $top;
             for ( var l = 0; sibling = siblings[l]; l++ ) {
                 sibling = widgets[sibling].self;
-                if ( sibling !== widget && sibling.awake && sibling.options.state == 'current' ) {
+                if ( sibling.layered && sibling !== widget && sibling.awake ) {
                     $top = (sibling.$wrapper || sibling.$element);
                     if ( $top[0].parentNode === _parent ) {
-                        sibling.options.state = 'awake';
-                        $top.removeClass('current');
+                        if ( sibling.options.keep_layer_awake ) {
+                            sibling.options.state = 'awake';
+                            $top.removeClass('current');
+                        } else {
+                            sibling.sleep();
+                        }
                     }
                 }
             }
@@ -1018,7 +1026,8 @@
         isObj       : isObj,
         isArr       : isArr,
         isFunc      : isFunc,
-        toArray     : toArray
+        toArray     : toArray,
+        returnOf    : returnOf
     };
     // return the module
     return uijet;

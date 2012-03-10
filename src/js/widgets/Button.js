@@ -70,7 +70,7 @@
         },
         // override the base method if it's overridden by mixins
         getDataUrl      : function () {
-            return this.substitute(this.options.data_url, this.context);
+            return this.substitute(uijet.Utils.returnOf(this.options.data_url, this), this.context);
         }
     });
 }));

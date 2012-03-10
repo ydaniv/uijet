@@ -11,7 +11,7 @@
     uijet.Adapter('GlobalContext', {
         global_contexted: true,
         getDataUrl      : function () {
-            return this.substitute(this.options.data_url, uijet.context);
+            return this.substitute(uijet.Utils.returnOf(this.options.data_url, this), uijet.context);
         },
         substitute      : function(template, obj) {
             var SUBSTITUTE_REGEX = /\{([^\s\}:]*):([^\s\}]+)\}/g, _context = this.context;
