@@ -12,14 +12,13 @@
         templated       : true,
         wake            : function (context) {
             var that = this,
-                args = Array.prototype.slice.call(arguments),
-                dfrds, _fail, _success, _sequence;
+                dfrd_wake, dfrds, _fail, _success, _sequence;
             // notify the `pre_wake` signal
-            this.notify.apply(this, ['pre_wake'].concat(args));
+            this.notify('pre_wake', context);
             // setting `context`
-            this._setContext.apply(this, args);
-            // store the wake promise object
-            this.dfrd = this.dfrd || $.Deferred();
+            this._setContext(context);
+            // create a new deferred wake promise object
+            dfrd_wake = $.Deferred();
             // wake up the kids
             dfrds = this.wakeContained(context);
             // in case of failure
@@ -30,8 +29,7 @@
                     // if user asked to retry the wake again
                     that.wake();
                 } else {
-                    that.dfrd.reject();
-                    delete that.dfrd;
+                    dfrd_wake.reject();
                     // inform UI the process is done
                     that.publish('post_load', null, true);
                     that.sleep();
@@ -48,8 +46,7 @@
                             .appear()
                             .awake = true;
                         that.notify('post_wake');
-                        that.dfrd.resolve();
-                        delete that.dfrd;
+                        dfrd_wake.resolve();
                         that._finally();
                     },
                     // fail render
@@ -62,7 +59,7 @@
             _sequence = $.when.apply($, dfrds).fail(_fail);
             // if `sync` option is `true` then call success after all children are awake
             this.options.sync ? _sequence.done(_success) : _success();
-            return this.dfrd && this.dfrd.promise() || {};
+            return dfrd_wake ? dfrd_wake.promise() : {};
         },
         // ### widget.fetchTemplate
         // @sign: fetchTemplate([refresh])  
