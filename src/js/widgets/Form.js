@@ -22,6 +22,7 @@
         },
         register        : function () {
             var that = this;
+            this._super();
             // check if there's no one else handling the form submit event, e.g. Sammy.js
             if ( ! uijet.options.submit_handled ) {
                 this.$element.bind('submit', function (e) {
@@ -35,7 +36,6 @@
                 // otherwise register this Form on the sandbox via `uijet.Form`
                uijet.Form(this.id, this);
             }
-            this._super();
             return this;
         },
         appear          : function () {
