@@ -22,11 +22,13 @@ Implement the following methods using your libraries of choice:
     * subscribe
     * unsubscribe
 
+Optionally, if you are rendering templates on client-side in your app you can also implement the following:
+
 * Template engine:
 
     * BaseWidget.generate
 
-Optionally, if you need client-side routing in your app you can also implement the following:
+Another optional enhancement, if you need client-side routing in your app you can also implement the following:
 
 * URL router:
 
@@ -76,11 +78,11 @@ call in there.
 ### Without AMD
 
 Include jQuery>= 1.6 in your document.
-After jQuery include your libraries of choice for templating and custom events/messaging.
+After jQuery include your libraries of choice for custom events/messaging and, if needed, templating.
 If you also need routing include the router library.
 Include uijet.js followed by widgets/Base.js and the rest of the widgets you need afterwards.
 If you require any mixins (or if they're required by any of the widgets you're using) include them after the widgets.
-If you require any adapters include those at too after the mixins along with each library they adapt.
+If you require any adapters include those too after the mixins along with each library they adapt to.
 
 
 ### Installation notes
@@ -88,8 +90,8 @@ If you require any adapters include those at too after the mixins along with eac
 UIjet makes only one layer in the application and depends on other integral components
 that should reside within the application:
 
-* Template engine
 * Custom events/Messaging library
+* [optional] Template engine
 * [optional] URL router
 
 UIjet is currently based on jQuery, mostly for DOM manipulation, client-server communication and its promises API.
@@ -98,8 +100,8 @@ UIjet is currently based on jQuery, mostly for DOM manipulation, client-server c
 ## Dependencies
 
 * jQuery>=1.6
-* Template engine of choice
 * Custom events library of choice
+* [optional] Template engine of choice
 * [optoinal] URL router of choice
 
 ## Usage
