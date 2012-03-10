@@ -11,6 +11,7 @@
     uijet.Mixin('Transitioned', {
         transitioned    : true,
         prepareElement  : function () {
+            this.notify('pre_prepareelement');
             // initialy set the __animation_type_out__ `class`
             this.$element.addClass((this.options.animation_type || uijet.options.animation_type) + '_out');
             this._super();
@@ -53,6 +54,7 @@
                     $el.removeClass('current reverse');
                     _super.call(that, no_transitions);
                 };
+            this.notify('pre_disappear');
             if ( no_transitions ) {
                 // in case we want to hide the widget without animation just fire the callback
                 _success()
@@ -78,6 +80,7 @@
                 // get this widget off the top
                 (this.$wrapper || this.$element).removeClass('z_top');
                 this.dfrd_transit.resolve();
+                this.notify('post_transit');
             });
             return this.dfrd_transit.promise();
         },
@@ -85,6 +88,13 @@
             // make sure we rollback the transit
             this.dfrd_transit && this.dfrd_transit.reject();
             this._super();
+            return this;
+        },
+        sleepContained  : function () {
+            var _super = this._super, that = this;
+            $.when ( this.dfrd_transit.promise() ).then( function () {
+                _super.call(that);
+            });
             return this;
         }
     });
