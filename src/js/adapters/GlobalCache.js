@@ -28,6 +28,17 @@
             this._updateCache(key, data);
             uijet.cache[key] = data;
             return this;
+        },
+        clearCache      : function (key) {
+            var result = this._clearCache(key);
+            if ( key ) {
+                if ( key in uijet.cache ) {
+                    return delete uijet.cache[key] || result;
+                }
+            } else {
+                uijet.cache = {};
+            }
+            return result;
         }
     });
 }));
