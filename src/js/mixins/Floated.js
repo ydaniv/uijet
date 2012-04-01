@@ -25,6 +25,11 @@
                 .setFloat();
             return this;
         },
+        // ### widget.setFloat
+        // @sign: setFloat()  
+        // @return: this
+        //
+        // Makes sure the element is floating, meaning, wraps it and adds the `float` class to `$wrapper`.
         setFloat        : function () {
             if ( ! this.floating ) {
                 // wrap and set the `float` class
