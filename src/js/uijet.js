@@ -47,6 +47,55 @@
             };
         };
     }
+    // a simple shim for Object.create
+    if ( typeof Object.create != 'function' ) {
+        Object.create = function (o) {
+            if ( arguments.length > 1 ) {
+                throw new Error('Object.create implementation only accepts the first parameter.');
+            }
+            function F() {}
+            F.prototype = o;
+            return new F();
+        };
+    }
+    // shim for Array.indexOf
+    if ( typeof Array.indexOf != 'function' ) {
+        Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
+            if ( this == null ) {
+                throw new TypeError();
+            }
+            var t = Object(this);
+            var len = t.length >>> 0;
+            if ( len === 0 ) {
+                return -1;
+            }
+            var n = 0;
+            if ( arguments.length > 0 ) {
+                n = Number(arguments[1]);
+                if ( n != n ) { // shortcut for verifying if it's NaN  
+                    n = 0;
+                } else if ( n != 0 && n != Infinity && n != -Infinity ) {
+                    n = (n > 0 || -1) * Math.floor(Math.abs(n));
+                }
+            }
+            if ( n >= len ) {
+                return -1;
+            }
+            var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
+            for ( ; k < len ; k++ ) {
+                if ( k in t && t[k] === searchElement ) {
+                    return k;
+                }
+            }
+            return -1;
+        };
+    }
+    // shim String.trim
+    if( typeof String.trim != 'function' ) {
+        _window.String.prototype.trim = function () {
+            return this.replace(/^\s+|\s+$/g,'');
+        };
+    }
     // ### Utils.isObj
     // utility for checking if param is an Obejct
     function isObj(obj) {
@@ -62,12 +111,19 @@
     function isFunc(obj) {
         return typeof obj == 'function';
     }
+    // ### Utils.isArgs
+    // utility for checking if param is the `arguments` object
+    function isArgs(obj) {
+        return objToString.call(obj) == '[object Arguments]';
+    }
     // ### Utils.toArray
     // utility for either wrapping a param with an `Array` or return a copy of that array  
     // if no arguments are supplied then return `undefined`
     function toArray(obj) {
         var arr;
-        if ( isArr(obj) ) {
+        if ( isArgs(obj) ) {
+            arr = arraySlice.call(obj);
+        } else if ( isArr(obj) ) {
             // copy that
             arr = obj.slice(0);
         } else if ( typeof obj != 'undefined' ) {
@@ -265,7 +321,7 @@
         // @sign: View(name, widget)  
         // @return: uijet
         //
-        // Define a view to be used by uijet.
+        // Define and register a view to be used by uijet.
         View            : function (name, widget) {
             views[name] = widget;
             return this;
@@ -402,24 +458,25 @@
         // Registers a widget into uijet's widgets tree.
         registerWidget  : function (widget) {
             // get the parent element
-            var $parent = widget.$element.parent(),
+            var _parent = widget.$element[0].parentNode,
                 // create the registry object
                 _current = {
                     self        : widget,
                     contained   : []
                 },
                 _id = widget.id,
+                _body = _window.document.body,
                 _parent_id;
             // add registry object to the sandbox's store
             widgets[_id] = _current;
             // walk the DOM tree upwards until we hit 'body'
-            while ( $parent.length && ! $parent.is('body') ) {
+            while ( _parent && _parent !== _body ) {
                 // if we hit a `uijet_widget`
-                if ( $parent.hasClass('uijet_widget') ) {
+                if ( ~ _parent.className.indexOf('uijet_widget') ) {
                     // get its `id`.  
                     // important to get the attribute and not do `element.id`, since it might break
                     // when the element is a `<form>` and has an `<input name=id>`.
-                    _parent_id = $parent.attr('id');
+                    _parent_id = _parent.getAttribute('id');
                     // and set it as the container in this registry
                     _current.container = _parent_id;
                     if ( _parent_id in widgets ) {
@@ -430,7 +487,7 @@
                     break;
                 }
                 // keep walking
-                $parent = $parent.parent();
+                _parent = _parent.parentNode;
             }
             return this;
         },
@@ -944,8 +1001,8 @@
                         $el.children().each(function () {
                             _h += this.offsetHeight;
                         });
-                        // cache result
-                        widget._total_height = _h;
+                        //TODO: cache result and invalidate it when necessary
+//                        widget._total_height = _h;
                     }
                     // unfold
                     $el[0].style.height = _h + 'px';
@@ -999,16 +1056,21 @@
                 siblings = container_id ? widgets[container_id].contained || [] : [], sibling,
                 _parent = (widget.$wrapper || widget.$element)[0].parentNode,
                 $top;
-            for ( var l = 0; sibling = siblings[l]; l++ ) {
-                sibling = widgets[sibling].self;
-                if ( sibling.layered && sibling !== widget && sibling.awake ) {
-                    $top = (sibling.$wrapper || sibling.$element);
-                    if ( $top[0].parentNode === _parent ) {
-                        if ( sibling.options.keep_layer_awake ) {
-                            sibling.options.state = 'awake';
-                            $top.removeClass('current');
-                        } else {
-                            sibling.sleep();
+            if ( ! container_id && widget.options.type_class == 'uijet_view' ) {
+                this.switchView(widget);
+            }
+            else {
+                for ( var l = 0; sibling = siblings[l]; l++ ) {
+                    sibling = widgets[sibling].self;
+                    if ( sibling.layered && sibling !== widget && sibling.awake ) {
+                        $top = (sibling.$wrapper || sibling.$element);
+                        if ( $top[0].parentNode === _parent ) {
+                            if ( sibling.options.keep_layer_awake ) {
+                                sibling.options.state = 'awake';
+                                $top.removeClass('current');
+                            } else {
+                                sibling.sleep();
+                            }
                         }
                     }
                 }
@@ -1016,6 +1078,32 @@
             widget.options.state = 'current';
             (widget.$wrapper || widget.$element).addClass('current');
             return this;
+        },
+        // ## uijet.buildContext
+        // @sign: buildContext(route, args_array)  
+        // @return: context
+        //
+        // Builds a context `Object` from the returned arguments of a route.  
+        // Named parameters in `route` are indexed in the context obejct by their name.  
+        // Unnamed parameters are indexed by there inedx in `args_array`.
+        buildContext    : function (route, args_array) {
+            var context = {},
+                parts = route.split('/'),
+                i = 0, n = 0, part;
+            args_array = toArray(args_array);
+            while ( part = parts[i++], typeof part == 'string' ) {
+                // if it's a named argument
+                if ( part[0] === ':' ) {
+                    // then add it to the conetxt by name
+                    context[part.slice(1)] = args_array.shift();
+                    n += 1;
+                } else if ( ~ part.indexOf('(') ) {
+                    // if it's unnamed then add it by its index in `args_array`
+                    context[n] = args_array.shift();
+                    n += 1;
+                }
+            }
+            return context;
         }
     };
     // set a namespace on uijet for utility functions.
