@@ -109,19 +109,25 @@ UIjet is currently based on jQuery, mostly for DOM manipulation, client-server c
 ### Application startup
 
     var MyApp = (function () {
-        uijet.publish = someEventsLib.publish;
-        uijet.subscribe = someEventsLib.subscribe;
-        uijet.unsubscribe = someEventsLib.unsubscribe;
-
-        uijet.runRoute = someUrlRouter.runRoute;
-        uijet.setRoute = someUrlRouter.setRoute;
-
-        uijet.BaseWidget.generate = someTemplateEnginge.render;
-
-        $(function () {
-            uijet.init({
-                //...options...
-            });
+        // ...application code...
+        
+        // UIjet initialization
+        uijet.init({
+            methods : {
+                // mandatory
+                publish     : someEventsLib.publish,
+                subscribe   : someEventsLib.subscribe,
+                unsubscribte: someEventsLib.unsubscribe,
+                // if using routes
+                runRoute    : someRouter.runRoute,
+                setRoute    : someRouter.setRoute,
+                unsetRoute  : someRouter.unsetRoute
+            },
+            // if using templates
+            engine  : function () {
+                return someTemplateEnginge.render(this.template, this.data || this.context);
+            }
+            //...more options...
         });
     }());
 
