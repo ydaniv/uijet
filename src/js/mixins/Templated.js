@@ -132,44 +132,41 @@
         //TODO: consider moving this to base to defer also non-templated loadables
         deferLoadables  : function () {
             // find all images
-            var $img = this.$element.find('img'),
+            var $imgs = this.$element.find('img'),
                 // get innerHTML of `$element`
                 _html = this.$element[0].innerHTML,
                 // match all URLs of images in the HTML
                 _inlines = _html.match(/url\(['"]?([\w\/:\.-]*)['"]?\)/),
-                dfrd, src, _img, _dfrd, deferreds = [],
+                src, _img, dfrd, deferreds = [],
                 _inlines_resolver = function () {
-                    _dfrd.resolve();
-                },
-                _element_resolver = function () {
                     dfrd.resolve();
                 };
             if ( _inlines && _inlines[1] ) {
                 _img = new Image();
-                _dfrd = $.Deferred();
+                dfrd = $.Deferred();
                 _img.src = _inlines[1];
                 if ( _img.complete ) {
-                    _dfrd.resolve();
+                    dfrd.resolve();
                 } else {
                     _img.onload = _inlines_resolver;
                     _img.onerror = _inlines_resolver;
                 }
-                deferreds.push(_dfrd.promise());
+                deferreds.push(dfrd.promise());
             }
-            if ( $img.length ) {
-                $img = $img.eq(0);
-                if ( src = $img.attr('src') ) {
-                    $img = $img[0];
-                    dfrd = $.Deferred();
-                    if ( $img.complete ) {
-                        dfrd.resolve();
+            $imgs.each(function (i, img) {
+                var _dfrd, _resolver;
+                if ( src = img.getAttribute('src') ) {
+                    _dfrd = $.Deferred();
+                    _resolver = _dfrd.resolve.bind(_dfrd);
+                    if ( img.complete ) {
+                        _resolver();
                     } else {
-                        $img.onload = _element_resolver;
-                        $img.onerror = _element_resolver;
+                        img.onload = _resolver;
+                        img.onerror = _resolver;
                     }
-                    deferreds.push(dfrd.promise());
+                    deferreds.push(_dfrd.promise());
                 }
-            }
+            });
             return deferreds.length ? deferreds : [{}];
         },
         // ### widget.getTemplateUrl
