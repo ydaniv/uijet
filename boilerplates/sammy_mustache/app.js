@@ -8,7 +8,7 @@ define([
     var _window = window,
         Sammy = _window.Sammy,
         BASE_PATH = '/',
-        TEMPLATES_PATH = BASE_PATH + 'static/myapp/templates/',
+        TEMPLATES_PATH = BASE_PATH + 'static_path/myapp/templates/',
         TEMPLATES_EXTENSION = 'ms',
         Mustache = _window.Mustache,
         MyApp;
@@ -17,9 +17,9 @@ define([
     uijet.context = {};
     uijet.Adapter({
         _setContext : function () {
-            if ( arguments.length ) {
-                this.context = arguments[0] && arguments[0].params ||
-                    arguments[0] || this.context;
+            if ( context ) {
+                this.context = context && context.params ||
+                    context || this.context;
                 uijet.context[this.id] = this.context; // cache the result in the app
             }
             return this;

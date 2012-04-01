@@ -19,12 +19,11 @@
                 return widget_id ? obj[widget_id][params_key] : _context[params_key];
             });
         },
-        _setContext     : function () {
-            if ( arguments.length ) {
-                this.context = arguments[0] && arguments[0].params /* comes from Sammy.js, consider removing */ ||
-                               arguments[0] || this.context;
-                // cache the result in the app
-                uijet.context[this.id] = this.context;
+        _setContext : function (context) {
+            if ( context ) {
+                this.context = context && context.params ||
+                    context || this.context;
+                uijet.context[this.id] = this.context; // cache the result in the app
             }
             return this;
         }

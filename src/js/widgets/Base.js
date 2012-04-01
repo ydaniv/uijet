@@ -19,6 +19,38 @@
         TYPE_ATTR = 'data-uijet-type',
         SUBSTITUTE_REGEX = /\{([^\s\}]+)\}/g;
 
+    // shim for Object.keys
+    if ( typeof Object.keys != 'function' ) {
+        Object.keys = (function () {
+            var hasOwnProperty = Object.prototype.hasOwnProperty,
+                hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
+                dontEnums = [
+                    'toString',
+                    'toLocaleString',
+                    'valueOf',
+                    'hasOwnProperty',
+                    'isPrototypeOf',
+                    'propertyIsEnumerable',
+                    'constructor'
+                ],
+                dontEnumsLength = dontEnums.length;
+
+            return function (obj) {
+                if ( typeof obj !== 'object' && typeof obj !== 'function' || obj === null)
+                    throw new TypeError('Object.keys called on non-object');
+                var result = [];
+                for ( var prop in obj )
+                    if ( hasOwnProperty.call(obj, prop) )
+                        result.push(prop);
+                if ( hasDontEnumBug )
+                    for (var i = 0 ; i < dontEnumsLength ; i++ )
+                        if ( hasOwnProperty.call(obj, dontEnums[i]) )
+                            result.push(dontEnums[i]);
+                return result;
+            };
+        })();
+    }
+
     Widget.prototype = {
         constructor     : Widget,
         // ### widget.init
@@ -499,10 +531,10 @@
         setInnerRouter  : function () {
             var routing = this.options.routing, that = this;
             //TODO: switch to $element.on('click', 'a', function ...)
-            this.$element.delegate('a, [data-route]', 'click', function (e) {
+            this.$element.delegate('a, [data-uijet-route]', 'click', function (e) {
                 var $this = $(this),
                     is_anchor = this.tagName.toLowerCase() == 'a',
-                    _route = $this.attr(is_anchor ? 'href' : 'data-route');
+                    _route = $this.attr(is_anchor ? 'href' : 'data-uijet-route');
                 that.runRoute(_route, typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
                 // confine the event here since it might break other handlers
                 e.stopPropagation();
@@ -588,7 +620,7 @@
         // @return: data_url
         //
         // Gets the URL used by the widget to fetch/send data.  
-        // Uses the instance's context object to replace params in the URL's pattern,
+        // Uses the instance's context object to replace params in the URL's pattern.
         getDataUrl      : function () {
             return this.substitute(uijet.Utils.returnOf(this.options.data_url, this), this.context);
         },
@@ -728,15 +760,13 @@
             return this;
         },
         // ### widget._setContext
-        // @sign: _setContext([args, ...])  
+        // @sign: _setContext(context)  
         // @return: this
         //
-        // If it gets any defined arguments, it sets `this.context` to the `arguments` object.  
-        //TODO: rewrite to get either an Object or Array, along with an adapter which takes arguments and route
-        // and turns it into am object of named params.
-        _setContext     : function () {
-            if ( arguments.length && typeof arguments[0] != 'undefined' ) {
-                this.context = arguments;
+        // If it gets a `context` object it sets it to `this.context`,  
+        _setContext     : function (context) {
+            if ( context ) {
+                this.context = context;
             }
             return this;
         },
