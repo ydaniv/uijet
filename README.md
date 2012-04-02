@@ -7,7 +7,7 @@ Killer UI for web-apps.
 ## Description
 
 UIjet provides the views layer for web applications via a separate sandbox.
-It creates another layer of abstraction above HTML which allows you to create any UI widget you can think of
+It creates another layer of abstraction which allows you to create any UI widget you can think of
 easily.
 
 ## Installation
@@ -22,11 +22,22 @@ Implement the following methods using your libraries of choice:
     * subscribe
     * unsubscribe
 
-Optionally, if you are rendering templates on client-side in your app you can also implement the following:
+And set the methods of the same name in the `methods` object of the configuration object you provide to `uijet.init`, like so:
 
-* Template engine:
+    uijet.init({
+        methods : {
+            publish     : publish,
+            subscribe   : subscribe,
+            unsubscribe : unsubscribe
+        }
+    });
 
-    * BaseWidget.generate
+Optionally, if you are rendering templates on client-side in your app you can also implement the `generate` method by setting the `engine` option - here is an example using Mustache.js:
+
+    //...uijet.init...
+        engine  : function () {
+            return Mustache.to_html(this.template, this.data || this.context);
+        }
 
 Another optional enhancement, if you need client-side routing in your app you can also implement the following:
 
@@ -94,13 +105,14 @@ that should reside within the application:
 * [optional] Template engine
 * [optional] URL router
 
-UIjet is currently based on jQuery, mostly for DOM manipulation, client-server communication and its promises API.
+UIjet is currently based on jQuery, mostly for DOM manipulation, client-server communication and its Promises API.
 *There are plans to be either library agnostic or to have additional implementations which will not rely on jQuery.
 
 ## Dependencies
 
 * jQuery>=1.6
 * Custom events library of choice
+* [optional] require.js
 * [optional] Template engine of choice
 * [optoinal] URL router of choice
 
