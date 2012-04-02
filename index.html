@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8' />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
+    <meta name="description" content="UIjet : Killer UI for web-apps." />
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>UIjet</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/ydaniv/uijet">Fork Me on GitHub</a>
+
+          <h1 id="project_title">UIjet</h1>
+          <h2 id="project_tagline">Killer UI for web-apps.</h2>
+
+          <section id="downloads">
+            <a class="zip_download_link" href="https://github.com/ydaniv/uijet/zipball/master">Download this project as a .zip file</a>
+            <a class="tar_download_link" href="https://github.com/ydaniv/uijet/tarball/master">Download this project as a tar.gz file</a>
+          </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><a href="http://uijet.com">http://uijet.com</a></p>
+
+<h2>Description</h2>
+
+<p>UIjet provides the views layer for web applications via a separate sandbox.
+It creates another layer of abstraction which allows you to create any UI widget you can think of
+easily.</p>
+
+<h2>Installation</h2>
+
+<p>Download the src folder and place in your project's static folder.</p>
+
+<p>Implement the following methods using your libraries of choice:</p>
+
+<ul>
+<li>Custom events/Messaging
+
+<ul>
+<li>publish</li>
+<li>subscribe</li>
+<li>unsubscribe</li>
+</ul>
+</li>
+</ul><p>And set the methods of the same name in the <code>methods</code> object of the configuration object you provide to <code>uijet.init</code>, like so:</p>
+
+<pre><code>uijet.init({
+    methods : {
+        publish     : publish,
+        subscribe   : subscribe,
+        unsubscribe : unsubscribe
+    }
+});
+</code></pre>
+
+<p>Optionally, if you are rendering templates on client-side in your app you can also implement the <code>generate</code> method by setting the <code>engine</code> option - here is an example using Mustache.js:</p>
+
+<pre><code>//...uijet.init...
+    engine  : function () {
+        return Mustache.to_html(this.template, this.data || this.context);
+    }
+</code></pre>
+
+<p>Another optional enhancement, if you need client-side routing in your app you can also implement the following:</p>
+
+<ul>
+<li>URL router:
+
+<ul>
+<li>setRoute</li>
+<li>unsetRoute</li>
+<li>runRoute</li>
+</ul>
+</li>
+</ul><p>Include uijet.css in your document.</p>
+
+<h3>With AMD - using require.js</h3>
+
+<p>Include the require.js file at the bottom of your <code>&lt;body&gt;</code> tag.</p>
+
+<h4>Suggested configuration</h4>
+
+<p>Above it, open a <code>&lt;script&gt;</code> tag and in it include your require object, like:</p>
+
+<pre><code>var require = {
+    baseUrl : '/static_path/js/',
+    deps    : ['jquery'],
+    paths   : {
+        jquery      : 'lib/jquery-1.7.1.min',
+        uijet_dir   : 'lib/uijet',
+        plugins     : 'lib'
+        // rest of needed paths ...
+    },
+    callback: function () {
+        require(['jquery', 'my_app'], function ($, myApp) {
+            myApp.init({
+                widgets : [/*
+                    widgets declarations
+                */]
+            });
+        });
+    }
+};
+</code></pre>
+
+<p>Where the <em>must have</em> configurations are:</p>
+
+<ul>
+<li>
+<strong>baseUrl</strong> - pointing to your base static folder.</li>
+<li>
+<strong>deps</strong> - must include at least 'jquery'.</li>
+<li>
+<strong>paths</strong> - you need to config the paths to <em>jquery</em>, <em>uijet_dir</em> - where your UIjet library is located - and 
+third party plugins, which are adapted into UIjet, need to be conigured under the <em>plugins</em> key.</li>
+<li>
+<strong>callback</strong> - to make sure everything works correctly it's best to use this option and put you initialization
+call in there.</li>
+</ul><h3>Without AMD</h3>
+
+<p>Include jQuery&gt;= 1.6 in your document.
+After jQuery include your libraries of choice for custom events/messaging and, if needed, templating.
+If you also need routing include the router library.
+Include uijet.js followed by widgets/Base.js and the rest of the widgets you need afterwards.
+If you require any mixins (or if they're required by any of the widgets you're using) include them after the widgets.
+If you require any adapters include those too after the mixins along with each library they adapt to.</p>
+
+<h3>Installation notes</h3>
+
+<p>UIjet makes only one layer in the application and depends on other integral components
+that should reside within the application:</p>
+
+<ul>
+<li>Custom events/Messaging library</li>
+<li>[optional] Template engine</li>
+<li>[optional] URL router</li>
+</ul><p>UIjet is currently based on jQuery, mostly for DOM manipulation, client-server communication and its Promises API.
+*There are plans to be either library agnostic or to have additional implementations which will not rely on jQuery.</p>
+
+<h2>Dependencies</h2>
+
+<ul>
+<li>jQuery&gt;=1.6</li>
+<li>Custom events library of choice</li>
+<li>[optional] require.js</li>
+<li>[optional] Template engine of choice</li>
+<li>[optoinal] URL router of choice</li>
+</ul><h2>Usage</h2>
+
+<h3>Application startup</h3>
+
+<pre><code>var MyApp = (function () {
+    // ...application code...
+
+    // UIjet initialization
+    uijet.init({
+        methods : {
+            // mandatory
+            publish     : someEventsLib.publish,
+            subscribe   : someEventsLib.subscribe,
+            unsubscribte: someEventsLib.unsubscribe,
+            // if using routes
+            runRoute    : someRouter.runRoute,
+            setRoute    : someRouter.setRoute,
+            unsetRoute  : someRouter.unsetRoute
+        },
+        // if using templates
+        engine  : function () {
+            return someTemplateEnginge.render(this.template, this.data || this.context);
+        }
+        //...more options...
+    });
+}());
+</code></pre>
+
+<h3>Widget instances definition</h3>
+
+<pre><code>uijet.init({
+    templates_path  : '/path/to/templates/',
+    widgets         : [{
+        type    : 'View',
+        config  : {
+            element : '#my_first_view',
+            route   : '#/home/'
+        }
+    }, {
+        type    : 'Pane',
+        config  : {
+            element : '#home_content_pane',
+            mixins  : ['Templated'],
+            data_url: '/home_content/',
+            position: 'center',
+            style   : {
+                padding : '3%'
+            }
+        }
+    }, {
+        type    : 'Pane',
+        config  : {
+            element         : '#alert_pane',
+            mixins          : ['Templated', 'Transitioned'],
+            position        : 'center',
+            animation_type  : 'appear',
+            insert_before   : '#alert_close',
+            signals         : {
+                post_disappear  : function () {
+                    this.publish('close');
+                }
+            },
+            app_events      : {
+                'alert_close.clicked'   : function () {
+                    this.sleep();
+                }
+            }
+        }
+    }, {
+        type    : 'Button',
+        config  : {
+            element : '#alert_close'
+        }
+    }]
+});
+</code></pre>
+
+<h2>Author</h2>
+
+<p>Yehonatan Daniv</p>
+
+<h2>Special thanks</h2>
+
+<p>Venvid Technologies</p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">UIjet maintained by <a href="https://github.com/ydaniv">ydaniv</a></p>
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
