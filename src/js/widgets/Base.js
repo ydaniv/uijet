@@ -58,10 +58,10 @@
         // @return: this
         //
         // *Lifecycle method*
-        // Initializes a widget instance. Attempts to do all the lifting that can be done prior to
-        // any data received or templates fetched.  
-        // Takes an `options` `Object` as argument.  
-        // For now this options is mandatory, mainly because it must contain the `element` option.
+        // Initializes a widget instance.  
+        // Attempts to do all the lifting that can be done prior to any data received or templates fetched.  
+        // Takes an `options` object as argument.  
+        // For now `options` is mandatory, mainly because it must contain the `element` option.
         init            : function (options) {
             this.signals_cache = {};
             this.signals = Object.create(this.signals_cache);
