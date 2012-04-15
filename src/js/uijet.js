@@ -34,6 +34,17 @@
         TYPE_ATTR = 'data-uijet-type',
         ATTR_PREFIX = 'data-uijet-',
         TOP_ADAPTER_NAME = 'TopAdapter',
+        // a polyfill for requestAnimationFrame
+        requestAnimFrame = (function () {
+            return _window.requestAnimationFrame       ||
+                _window.webkitRequestAnimationFrame ||
+                _window.mozRequestAnimationFrame    ||
+                _window.oRequestAnimationFrame      ||
+                _window.msRequestAnimationFrame     ||
+                function( callback ){
+                    _window.setTimeout(callback, 1000 / 60);
+                };
+        }());
         // the sandbox
         uijet;
 
@@ -1020,11 +1031,9 @@
                 }
                 // otherwise do the animation
                 else {
-                    // throw the actual animation to the top of the execution queue
-                    // so it is less likely to be interfered with other rendering/code execution
-                    setTimeout(function () {
+                    requestAnimFrame(function () {
                         $el.addClass('transitioned').toggleClass(class_name, is_direction_in);
-                    }, 0);
+                    });
                 }
             }
             return this;
