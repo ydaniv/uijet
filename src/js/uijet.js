@@ -24,6 +24,7 @@
         // sandbox's registries
         mixins = {},
         adapters = {},
+        declared_widgets = [],
         widgets = {},
         views = {},
         // caching built predefined widgets' classes
@@ -391,7 +392,7 @@
             var _init = function () {
                 var  _methods = {},
                     that = this,
-                    k, _widgets;
+                    k;
                 this.options = options;
                 // set top container
                 this.$element = $(options && options.element || 'body');
@@ -433,15 +434,17 @@
                         this.parse();
                     }
                     // if we have widgets defined
-                    if ( _widgets = this.options.widgets ) {
-                        this.dfrd_starting = $.Deferred();
-                        // build and init them
-                        this.startWidgets(_widgets);
+                    if ( isArr(this.options.widgets) ) {
+                        // add these to the declared ones
+                        this.declareWidgets(this.options.widgets);
                     }
+                    this.dfrd_starting = $.Deferred();
+                    // build and init declared widgets
+                    this.startWidgets(declared_widgets);
                     // after all parsing, loading, build and initializing was done
                     $.when(
                         this.dfrd_parsing ? this.dfrd_parsing.promise() : {},
-                        this.dfrd_starting ? this.dfrd_starting.promise() : {}
+                        this.dfrd_starting.promise()
                     ).then(function () {
                         // kick-start the GUI - unless ordered not to
                         options.dont_start || that.startup();
@@ -518,6 +521,19 @@
                 }
                 // remove its registry
                 delete widgets[_id];
+            }
+            return this;
+        },
+        // ## uijet.declareWidgets
+        // @sign: declareWidgets(widgets)  
+        // @return: uijet
+        //
+        // Declare one or more widgets that will be started once the app is initialized.
+        declareWidgets  : function (_widgets) {
+            if ( isObj(_widgets) ) {
+                declared_widgets.push(_widgets);
+            } else if ( isArr(_widgets) ) {
+                declared_widgets = declared_widgets.concat(_widgets);
             }
             return this;
         },
