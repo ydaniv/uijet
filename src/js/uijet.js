@@ -45,7 +45,7 @@
                 function( callback ){
                     _window.setTimeout(callback, 1000 / 60);
                 };
-        }());
+        }()),
         // the sandbox
         uijet;
 
@@ -151,7 +151,7 @@
             re = RegExp('^' + ATTR_PREFIX+ '([-_\\w]+)');
         Array.prototype.forEach.call(attrs_list, function (attr) {
             if ( ~ attr.name.search(re) ) {
-                obj[attr.name.match(re)[0]] = attr.value === '' ? true : attr.value;
+                obj[attr.name.match(re)[1]] = attr.value === '' ? true : attr.value;
             }
         });
         return obj;
@@ -389,54 +389,47 @@
         //                      events. Default is `false`.
         init            : function (options) {
             // wrap the actuall initialization function
-            var _init = function () {
-                var  _methods = {},
+            var _init = function (_options) {
+                var _methods = {},
                     that = this,
                     k;
-                this.options = options;
+                this.options = _options || {};
                 // set top container
-                this.$element = $(options && options.element || 'body');
+                this.$element = $(_options && _options.element || 'body');
                 // sniff for iPad UA and perform optimizations accordingly
                 this.isiPad();
                 // initially not using a router
                 this.options.routed = false;
-                if ( options ) {
-                    if ( options.route_prefix ) {
-                        this.ROUTE_PREFIX = options.route_prefix;
+                if ( _options ) {
+                    if ( _options.route_prefix ) {
+                        this.ROUTE_PREFIX = _options.route_prefix;
                     }
-                    if ( options.route_suffix ) {
-                        this.ROUTE_SUFFIX = options.route_suffix;
+                    if ( _options.route_suffix ) {
+                        this.ROUTE_SUFFIX = _options.route_suffix;
                     }
-                    if ( _methods = options.methods ) {
-                        if ( options.methods_context ) {
+                    if ( _methods = _options.methods ) {
+                        if ( _options.methods_context ) {
                             // bind each method to given context
                             for ( k in _methods ) {
-                                _methods[k] = _methods[k].bind(options.methods_context);
+                                _methods[k] = _methods[k].bind(_options.methods_context);
                                 k == 'setRoute' && (this.options.routed = true);
                             }
                         }
                         // implement missing methods
                         extend(this, _methods);
                     }
-                    if ( options.engine ) {
+                    if ( _options.engine ) {
                         //TODO: implement hacking into BaseWidget.prototype better  
                         // set the template engine hook
-                        this.BaseWidget.prototype.generate = options.engine;
-                    } else {
-                        throw new Error('Template engine not specified');
+                        this.BaseWidget.prototype.generate = _options.engine;
                     }
                     // set default animation type
-                    this.options.animation_type = options.animation_type || 'slide';
+                    this.options.animation_type = _options.animation_type || 'slide';
                     // if the user told us to look in the DOM
-                    if ( options.parse ) {
+                    if ( _options.parse ) {
                         this.dfrd_parsing = $.Deferred();
                         // parse the DOM for widgets
                         this.parse();
-                    }
-                    // if we have widgets defined
-                    if ( isArr(this.options.widgets) ) {
-                        // add these to the declared ones
-                        this.declareWidgets(this.options.widgets);
                     }
                     this.dfrd_starting = $.Deferred();
                     // build and init declared widgets
@@ -446,20 +439,27 @@
                         this.dfrd_parsing ? this.dfrd_parsing.promise() : {},
                         this.dfrd_starting.promise()
                     ).then(function () {
+                        that.initialized = true;
                         // kick-start the GUI - unless ordered not to
-                        options.dont_start || that.startup();
+                        _options.dont_start || that.startup();
                     });
                 } else {
+                    this.initialized = true;
                     // no options - kick-start
                     this.startup();
                 }
                 return this;
             };
+            // if we have widgets defined
+            if ( options && isArr(options.widgets) ) {
+                // add these to the declared ones
+                this.declareWidgets(options.widgets);
+            }
             // if we're in AMD mode
             if ( typeof _window.require == 'function' ) {
                 // import all the modules we need (Mixins, Widgets, Adapters, 3rd party...)  
                 // and initialization will start when done
-                return this.importModules(options.widgets, _init.bind(this, options));
+                return this.importModules(declared_widgets, _init.bind(this, options));
             } else {
                 // otherwise just init
                 return _init.call(this, options);
@@ -528,7 +528,9 @@
         // @sign: declareWidgets(widgets)  
         // @return: uijet
         //
-        // Declare one or more widgets that will be started once the app is initialized.
+        // Declare one or more widgets that will be started once the app is initialized.  
+        // `widgets` can be either an `Object` containing a widget's declaration (type and config)
+        // or an `Array` of such objects.
         declareWidgets  : function (_widgets) {
             if ( isObj(_widgets) ) {
                 declared_widgets.push(_widgets);
@@ -730,7 +732,9 @@
                 .each(function () {
                     var $this = $(this),
                         _type = $this.attr(TYPE_ATTR);
-                    uijet.startWidget(_type, that.parseWidget($this));
+                    uijet.initialized ?
+                        uijet.declareWidgets({ type : _type, config : that.parseWidget($this) }) :
+                        uijet.startWidget(_type, that.parseWidget($this));
                 });
             return this;
         },
@@ -761,12 +765,12 @@
                 var $this = $(this),
                     type = $this.attr('type'),
                     // get attributes and normalize it into an `Array`, their names and `Boolean` values
-                    attrs = mapAttributes($el[0].attributes),
+                    attrs = mapAttributes($this[0].attributes),
                     // extract the option name from the type
                     option_name = type.match(/uijet\/(\w+)/),
                     _fn_args, fn;
                 // get the `string` from the matches if got any
-                option_name = option_name ? option_name[0] : '';
+                option_name = option_name ? option_name[1] : '';
                 // if we have an `args` attribute split it to an `Array` and trim their names
                 _fn_args = attrs.args && attrs.args.length ? attrs.args.split(/\s*,\s*/) : [];
                 // add function body
@@ -824,6 +828,7 @@
                 extend(attrs, _config);
             }
             this._parseScripts($el, attrs);
+            attrs['element'] = $el;
             return attrs;
         },
         // ## uijet.wakeContained
@@ -1110,7 +1115,7 @@
         //
         // Builds a context `Object` from the returned arguments of a route.  
         // Named parameters in `route` are indexed in the context obejct by their name.  
-        // Unnamed parameters are indexed by there inedx in `args_array`.
+        // Unnamed parameters are indexed by their index in `args_array`.
         buildContext    : function (route, args_array) {
             var context = {},
                 parts = route.split('/'),
