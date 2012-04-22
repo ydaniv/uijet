@@ -26,32 +26,34 @@
             context = this.notify('pre_send');
             // set the URL for sending
             _url = this.getSendUrl(context);
-            // if `route_send` option is `true`
-            if ( this.options.route_send ) {
-                // if using a router then run the URL as a route, otherwise publish it
-                uijet.options.routed ?
-                    this.runRoute(_url.path + _data, true) :
-                    this.publish('sent', { url: _url, data: _data });
-                return this;
+            if ( _url ) {
+                // if `route_send` option is `true`
+                if ( this.options.route_send ) {
+                    // if using a router then run the URL as a route, otherwise publish it
+                    uijet.options.routed ?
+                        this.runRoute(_url.path + _data, true) :
+                        this.publish('sent', { url: _url, data: _data });
+                    return this;
+                }
+                // otherwise make an XHR
+                return $.ajax(_url.path, {
+                    type        : _url.method,
+                    data        : _data,
+                    contentType : this.options.send_content_type || 'application/x-www-form-urlencoded',
+                    context     : this
+                }).done(function (response) {
+                    // notify `post_send_data` signal
+                    this.notify('post_send_data', response);
+                    // publish `post_send_data` event of this widget sandbox-wide
+                    this.publish('post_send_data', response);
+                }).fail(function () {
+                    // emit the `send_error` signal
+                    this.notify.apply(that, ['send_error'].concat(Array.prototype.slice.call(arguments)));
+                }).always(function () {
+                    // always call `_finally` at the end
+                    this._finally();
+                });
             }
-            // otherwise make an XHR
-            return $.ajax(_url.path, {
-                type        : _url.method,
-                data        : _data,
-                contentType : this.options.send_content_type || 'application/x-www-form-urlencoded',
-                context     : this
-            }).done(function (response) {
-                // notify `post_send_data` signal
-                this.notify('post_send_data', response);
-                // publish `post_send_data` event of this widget sandbox-wide
-                this.publish('post_send_data', response);
-            }).fail(function () {
-                // emit the `send_error` signal
-                this.notify.apply(that, ['send_error'].concat(Array.prototype.slice.call(arguments)));
-            }).always(function () {
-                // always call `_finally` at the end
-                this._finally();
-            });
         },
         setInitOptions  : function () {
             this._super();
@@ -78,8 +80,8 @@
             var url = uijet.Utils.returnOf(this.options.send_url, this),
                 context = send_context || this.context,
                 path;
-            // if we have a context set
-            if ( context ) {
+            // if we have a URL to send to
+            if ( url ) {
                 if ( typeof url == 'string' ) {
                     // parse the URL
                     path = this.substitute(url, context);
@@ -90,13 +92,11 @@
                 } else {
                     return;
                 }
+                return {
+                    method: url.method || 'get',
+                    path: path || (url.path ? url.path : url)
+                };
             }
-            return {
-                method: url.method || 'get',
-                path: path || (url.path ? url.path : url)
-            };
-
-
         },
         // ### widget.getSerialized
         // @sign: getSerialized()  
