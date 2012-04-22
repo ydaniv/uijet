@@ -95,19 +95,25 @@
             // generate the HTML
             var _html = this.generate(),
                 dfrd = $.Deferred(),
-                loadables, that = this, _super = this._super;
+                loadables, that = this, _super = this._super,
+                do_insert = true;
             // notify `pre_render` with the generate HTML
             this.notify('pre_render', _html);
             // remove the old rendered content
             this._clearRendered();
             // and append the new  
-            // if `insert_before` option is set it's used as a selector or element to indicate where to insert the
-            // generated HTML before.
-            if ( this.options.insert_before ) {
-                $(_html).insertBefore(this.options.insert_before);
-            } else {
-                // just append the HTML at the end
-                this.$element.append(_html);
+            // allow the user to specify his own method of inserting the HTML
+            // if this signal returns `false` we'll skip the lines below
+            do_insert = this.notify('pre_html_insert', _html);
+            if ( do_insert !== false ) {
+                // if `insert_before` option is set it's used as a selector or element to indicate where to insert the
+                // generated HTML before.
+                if ( this.options.insert_before ) {
+                    $(_html).insertBefore(this.options.insert_before);
+                } else {
+                    // just append the HTML at the end
+                    this.$element.append(_html);
+                }
             }
             this.has_content = true;
             // if `defer_images` option is `> 0` then defer the flow till after the loading of images
@@ -139,6 +145,7 @@
                 _inlines = _html.match(/url\(['"]?([\w\/:\.-]*)['"]?\)/),
                 src, _img, dfrd, deferreds = [],
                 _inlines_resolver = function () {
+                    _img = null;
                     dfrd.resolve();
                 };
             if ( _inlines && _inlines[1] ) {
@@ -146,6 +153,7 @@
                 dfrd = $.Deferred();
                 _img.src = _inlines[1];
                 if ( _img.complete ) {
+                    _img = null;
                     dfrd.resolve();
                 } else {
                     _img.onload = _inlines_resolver;
@@ -155,17 +163,15 @@
             }
             $imgs.each(function (i, img) {
                 var _dfrd, _resolver;
-                if ( src = img.getAttribute('src') ) {
-                    _dfrd = $.Deferred();
-                    _resolver = _dfrd.resolve.bind(_dfrd);
-                    if ( img.complete ) {
-                        _resolver();
-                    } else {
-                        img.onload = _resolver;
-                        img.onerror = _resolver;
-                    }
-                    deferreds.push(_dfrd.promise());
+                _dfrd = $.Deferred();
+                _resolver = _dfrd.resolve.bind(_dfrd);
+                if ( img.complete ) {
+                    _resolver();
+                } else {
+                    img.onload = _resolver;
+                    img.onerror = _resolver;
                 }
+                deferreds.push(_dfrd.promise());
             });
             return deferreds.length ? deferreds : [{}];
         },
