@@ -33,9 +33,11 @@
             var result = this._clearCache(key);
             if ( key ) {
                 if ( key in uijet.cache ) {
+                    uijet.publish('cache_cleared', key);
                     return delete uijet.cache[key] || result;
                 }
             } else {
+                uijet.publish('cache_cleared');
                 uijet.cache = {};
             }
             return result;
