@@ -627,30 +627,18 @@
                     // if this widget type wasn't loaded and isn't in the dependencies list then add it
                     (widgets[_w.type] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
                     // check for adapters option
-                    if ( _m_list = _w.config.adapters ) {
-                        // if it's an `Array` of adapters
-                        if ( isArr(_m_list) ) {
-                            for ( var n = 0 ; _m = _m_list[n++] ; ) {
-                                // grab each one and add it if it wasn't loaded before and not already in the list
-                                _m_type = adapters_prefix + _m;
-                                (adapters[_m_list] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
-                            }
-                        } else {
-                            // otherwise it's a string
-                            _m_type = adapters_prefix + _m_list;
-                            // if not in the list and not loaded before add it
+                    if ( _m_list = toArray(_w.config.adapters) ) {
+                        for ( var n = 0 ; _m = _m_list[n++] ; ) {
+                            // grab each one and add it if it wasn't loaded before and not already in the list
+                            _m_type = adapters_prefix + _m;
                             (adapters[_m_list] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
                         }
                     }
                     // check for mixins option and give it the same treatment like we did with adapters
-                    if ( _m_list = _w.config.mixins ) {
-                        if ( isArr(_m_list) ) {
-                            for ( n = 0 ; _m = _m_list[n++] ; ) {
-                                _m_type = mixins_prefix + _m;
-                                (mixins[_m_list] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
-                            }
-                        } else {
-                            (mixins[_m_list] || ~ deps.indexOf(_m_type)) || deps.push(mixins_prefix + _m_list);
+                    if ( _m_list = toArray(_w.config.mixins) ) {
+                        for ( n = 0 ; _m = _m_list[n++] ; ) {
+                            _m_type = mixins_prefix + _m;
+                            (mixins[_m_list] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
                         }
                     }
                 }
@@ -816,15 +804,12 @@
         parseWidget     : function ($el) {
             var attrs = mapAttributes($el[0].attributes),
                 _ops_string = attrs['config'],
-                _config = {}, _pairs, l, op;
+                _config;
             if ( _ops_string ) {
                 delete attrs['config'];
-                _pairs = _ops_string.split(',');
-                l = _pairs.length;
-                while ( l-- ) {
-                    op = _pairs[l].split(':');
-                    _config[op[0].trim()] = op[1].trim();
-                }
+                try {
+                    _config = JSON.parse(_ops_string);
+                } catch (e) {}
                 extend(attrs, _config);
             }
             this._parseScripts($el, attrs);
