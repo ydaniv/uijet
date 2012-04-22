@@ -58,10 +58,10 @@
         // @return: this
         //
         // *Lifecycle method*
-        // Initializes a widget instance.  
-        // Attempts to do all the lifting that can be done prior to any data received or templates fetched.  
-        // Takes an `options` object as argument.  
-        // For now `options` is mandatory, mainly because it must contain the `element` option.
+        // Initializes a widget instance. Attempts to do all the lifting that can be done prior to
+        // any data received or templates fetched.  
+        // Takes an `options` `Object` as argument.  
+        // For now this options is mandatory, mainly because it must contain the `element` option.
         init            : function (options) {
             this.signals_cache = {};
             this.signals = Object.create(this.signals_cache);
@@ -295,6 +295,9 @@
         setStyle        : function () {
             var _style = this.options.style;
             if ( _style ) {
+                if ( Utils.isFunc(_style) ) {
+                    _style = Utils.returnOf(_style, this);
+                }
                 this._wrap()
                     .$wrapper.css(_style);
             }
@@ -735,8 +738,7 @@
                 // since the default overflow of content is downward just get the last child's position + height
                 total_height = last_child.offsetTop + last_child.offsetHeight,
                 total_width = 0,
-                l = $children.length,
-                child;
+                l = $children.length;
             if ( this.options.horizontal ) {
                 // since HTML is finite horizontally we *have* to count all children
                 $children.each(function (i, child) {
