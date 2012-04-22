@@ -21,6 +21,9 @@
         },
         render      : function () {
             this._super();
+            if ( this.$wrapper ) {
+                this.$wrapper[0].style.visibility = 'hidden';
+            }
             // if `darken` option is set and `true`
             if ( this.options.darken ) {
                 // add the `darken` class to the top level element
