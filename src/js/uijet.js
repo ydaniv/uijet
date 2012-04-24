@@ -774,8 +774,12 @@
                         config[option_name] = config[option_name] || {};
                         config[option_name][attrs.event] = fn;
                         break;
-                    case 'uijet/initial': break;
-                    case 'uijet/serializer': break;
+                    case 'uijet/initial':
+                    case 'uijet/serializer':
+                    case 'uijet/style':
+                    case 'uijet/position':
+                    case 'uijet/data_url':
+                    case 'uijet/send_url':
                     case 'uijet/routing':
                         config[option_name] = fn;
                         break;
