@@ -17,7 +17,7 @@
         options         : {
             type_class  : 'uijet_form',
             serializer  : function () {
-                this.$element.serialize();
+                return this.$element.serialize();
             }
         },
         register        : function () {
