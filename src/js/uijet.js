@@ -18,6 +18,7 @@
     var Function = _window.Function,
         Object = _window.Object,
         Array = _window.Array,
+        BROWSER_PREFIX = { upper : ['Webkit', 'Moz', 'O', 'ms'], lower : ['webkit', 'moz', 'o', 'ms'] },
         // native utilities caching
         objToString = Object.prototype.toString,
         arraySlice = Array.prototype.slice,
@@ -35,15 +36,29 @@
         TYPE_ATTR = 'data-uijet-type',
         ATTR_PREFIX = 'data-uijet-',
         TOP_ADAPTER_NAME = 'TopAdapter',
+        getPrefixed = function (name, obj, is_upper) {
+            var cases = BROWSER_PREFIX[is_upper ? 'upper' : 'lower'],
+                len = cases.length, prop;
+            while ( len-- ) {
+                if ( prop = obj[cases[len] + name] ) {
+                    return prop;
+                }
+            }
+            return null;
+        },
         // a polyfill for requestAnimationFrame
         requestAnimFrame = (function () {
-            return _window.requestAnimationFrame       ||
-                _window.webkitRequestAnimationFrame ||
-                _window.mozRequestAnimationFrame    ||
-                _window.oRequestAnimationFrame      ||
-                _window.msRequestAnimationFrame     ||
+            return _window.requestAnimationFrame ||
+                getPrefixed('RequestAnimationFrame', _window) ||
                 function( callback ){
-                    _window.setTimeout(callback, 1000 / 60);
+                    return _window.setTimeout(callback, 1000 / 60);
+                };
+        }()),
+        cancelAnimFrame = (function () {
+            return getPrefixed('CancelRequestAnimationFrame', _window)  ||
+                getPrefixed('CancelAnimationFrame', _window)            ||
+                function( requestId ){
+                    return _window.clearTimeout(requestId);
                 };
         }()),
         // the sandbox
@@ -65,7 +80,7 @@
             if ( arguments.length > 1 ) {
                 throw new Error('Object.create implementation only accepts the first parameter.');
             }
-            function F() {}
+            function F () {}
             F.prototype = o;
             return new F();
         };
@@ -110,28 +125,28 @@
     }
     // ### Utils.isObj
     // utility for checking if param is an Obejct
-    function isObj(obj) {
+    function isObj (obj) {
         return objToString.call(obj) == '[object Object]';
     }
     // ### Utils.isArr
     // utility for checking if param is an Array
-    function isArr(obj) {
+    function isArr (obj) {
         return objToString.call(obj) == '[object Array]';
     }
     // ### Utils.isFunc
     // utility for checking if param is a Function
-    function isFunc(obj) {
+    function isFunc (obj) {
         return typeof obj == 'function';
     }
     // ### Utils.isArgs
     // utility for checking if param is the `arguments` object
-    function isArgs(obj) {
+    function isArgs (obj) {
         return objToString.call(obj) == '[object Arguments]';
     }
     // ### Utils.toArray
     // utility for either wrapping a param with an `Array` or return a copy of that array  
     // if no arguments are supplied then return `undefined`
-    function toArray(obj) {
+    function toArray (obj) {
         var arr;
         if ( isArgs(obj) ) {
             arr = arraySlice.call(obj);
@@ -146,7 +161,7 @@
     // ### Utils.mapAttributes
     // utility for iterating over an attributes list, picking those that begin with `data-uijet-`
     // and returns a map of the name - without the prefix - to the value OR `true` if empty
-    function mapAttributes(attrs_list) {
+    function mapAttributes (attrs_list) {
         var obj = {},
             re = RegExp('^' + ATTR_PREFIX+ '([-_\\w]+)');
         Array.prototype.forEach.call(attrs_list, function (attr) {
@@ -158,7 +173,7 @@
     }
     // ### Utils.returnOf
     // Wrapper for checking if a variable is a function and return its returned value or else simply return it.
-    function returnOf(arg, ctx) {
+    function returnOf (arg, ctx) {
         return isFunc(arg) ? arg.call(ctx || _window) : arg;
     }
     // ### Utils.extend
@@ -171,7 +186,7 @@
     // First (or second of first is a Boolean) argument is the target.  
     // All following arguments are source objects.  
     // Objects are copied to target from left to right.
-    function extend() {
+    function extend () {
         var args = arraySlice.call(arguments),
             target = args.shift(),
             source,
@@ -212,7 +227,7 @@
     // * object: deep copy.
     // * function: target method is wrapped to support a super call to the source method.
     // * else: shallow copy.
-    function extendProto() {
+    function extendProto () {
         var args = arraySlice.call(arguments),
             target = args.shift(),
             source,
@@ -250,9 +265,9 @@
     // In the latter the `prototype` property is used.  
     // If `as_constructor` flag is passed and `true` the returned result is a constructor function,  
     // otherwise it is an instance of that class.
-    function Create(proto, _extends, as_constructor) {
+    function Create (proto, _extends, as_constructor) {
         var _proto = isFunc(proto) ? proto.prototype : proto;
-        function F() {}
+        function F () {}
         if ( typeof _extends == 'boolean' ) {
             as_constructor = _extends; _extends = null;
         }
@@ -266,40 +281,102 @@
         return as_constructor ? F : new F();
     }
 
+    // ### Utils.getStyleProperty
+    // @sign: getStyleProperty(prop)  
+    // @return: prefixed_prop OR `null`
+    //
+    // Checks whether a CSS feature is supported in the browser
+    // and if so, return its supported name, i.e. with vendor prefix, if needed.
+    // Otherwise it returns `null` to indicate a lack of support.
+    function getStyleProperty (prop) {
+        var style = _window.document.body.style,
+            cases = BROWSER_PREFIX.upper,
+            prefix, res, i = 0;
+        if ( prop in style) return prop;
+        prop = prop[0].toUpperCase() + prop.slice(1);
+        while ( prefix = cases[i++] ) {
+            if ( (prefix +  prop) in style )
+                return prefix +  prop;
+        }
+        return null;
+    }
+
+    // ### Utils.getOffsetOf
+    // @sign: getOffsetOf(child, parent)  
+    // @return: offset_obj
+    //
+    // Returns the offset in pixels of an element from another element as an `Object`
+    // with the keys `x` and `y` and its left and top values corresponding.  
+    // If `child` is not a descendant of `parent` then the values will both be 0.
+    function getOffsetOf (child, parent) {
+        var result = { x: 0, y: 0 };
+        //TODO: uses jQuery.contains - might wanna lose it later
+        if ( ! child || ! parent || child === parent || ! $.contains(parent, child) ) return result;
+        do {
+            result.x += child.offsetLeft;
+            result.y += child.offsetTop;
+            if ( child === parent ) break;
+        } while ( child = child.offsetParent );
+        return result;
+    }
     // ### uijet namespace
     uijet =  {
         ROUTE_PREFIX    : '',
         ROUTE_SUFFIX    : '',
+        // detected browser features
+        support         : {
+            '3d'            : !!getStyleProperty('perspective'),
+            transitionend   : (function (name) {
+                return name ? ({
+                    transition      : 'transitionend',
+                    MozTransition   : 'transitionend',
+                    WebkitTransition: 'webkitTransitionEnd',
+                    OTransition     : 'OTransitionEnd',
+                    msTransition    : 'MSTransitionEnd'
+                })[name] : name;
+            }([getStyleProperty('transition')]))
+        },
         // ### uijet._defineWidget
-        // @sign: _defineWidget(name, props, [mixins])  
+        // @sign: _defineWidget(name, props, [deps])  
         // @return: uijet
         //
-        // Caches a definition of a widget inside uijet,  
-        // using name as the key and props as the definition.  
-        // Optional mixins argument can be supplied for defining this widget on top of a mixin.
-        _defineWidget   : function (_name, _props, _mixins) {
+        // Caches a definition of a widget inside uijet,
+        // using `name` as the key and `props` as the definition.  
+        // Optional `deps` argument can be supplied for defining this widget on top of mixins and/or other widgets.
+        _defineWidget   : function (_name, _props, _deps) {
             widget_definitions[_name] = {
                 proto   : _props,
-                mixins  : _mixins
+                deps    : _deps
             };
             return this;
         },
         // ### uijet._generateWidget
-        // @sign: _generateWidget(_props, [_mixins])  
+        // @sign: _generateWidget(_props, [_mixins], [_widgets])  
         // @return: widget_class
         //
         // Generate a widget class using `Create` with `uijet.BaseWidget` as the base prototype.
-        _generateWidget : function (_props, _mixins) {
+        _generateWidget : function (_props, _mixins, _widgets) {
             // create the base class
             var _class = Create(this.BaseWidget, true),
-                _mixin, _mixins_copy;
+                _mixin, _mixins_copy,
+                _widget, _widgets_copy;
             // if we have mixins to mix then mix'em
             if ( _mixins && _mixins.length ) {
-                _mixins_copy = _mixins.slice(0);
+                _mixins_copy = toArray(_mixins);
                 while ( _mixin = _mixins_copy.shift() ) {
                     if ( mixins[_mixin] ) {
-                        // like a stacking turtles
+                        // just like stacking turtles
                         _class = Create(mixins[_mixin], _class, true);
+                    }
+                }
+            }
+            // if we have widgets to build on then mix'em
+            if ( _widgets && _widgets.length ) {
+                _widgets_copy = toArray(_widgets);
+                while ( _widget = _widgets_copy.shift() ) {
+                    if ( widget_definitions[_widget] ) {
+                        // stack those madafakas
+                        _class = Create(widget_definitions[_widget].proto, _class, true);
                     }
                 }
             }
@@ -307,17 +384,29 @@
             return Create(_props, _class, true);
         },
         // ### uijet.Widget
-        // @sign: Widget(name, props, [mixin_names])  
+        // @sign: Widget(name, props, [deps])  
         // @return: uijet
         //
         // Define and generate a widget class.  
-        // `mixin_names` is normalized into a list of names.
+        // `deps` is normalized into a list of names if it's a `String`.  
+        // If `deps` is an `Object` it has to contain a `mixins` and/or `widgets` keys
+        // which values will also be normalized into `Array`s.
         Widget          : function (name, props, mixin_names) {
-            var _mixins = toArray(mixin_names);
+            var mixins_as_obj = isObj(mixin_names),
+                _mixins;
+            if ( mixins_as_obj ) {
+                _mixins = {};
+                _mixins.mixins = toArray(mixin_names.mixins);
+                _mixins.widgets = toArray(mixin_names.widgets);
+            } else {
+                _mixins = toArray(mixin_names);
+            }
             // Cache the widget's definition for JIT creation
             this._defineWidget(name, props, _mixins);
             // finally create and cache the class
-            widget_classes[name] = this._generateWidget(props, _mixins);
+            widget_classes[name] = mixins_as_obj ?
+                this._generateWidget(props, _mixins.mixins, _mixins.widgets) :
+                this._generateWidget(props, _mixins);
             return this;
         },
         // ### uijet.Mixin
@@ -480,9 +569,17 @@
                 },
                 _id = widget.id,
                 _body = _window.document.body,
-                _parent_id;
+                _parent_id, _container;
             // add registry object to the sandbox's store
             widgets[_id] = _current;
+            // if the `container` option is set use it to override the container
+            if ( _container = widget.options.container ) {
+                if ( typeof _container == 'string' ) {
+                    _parent = _window.document.getElementById(_container);
+                } else if ( _container.nodeType === 1 ) {
+                    _parent = _container;
+                }
+            }
             // walk the DOM tree upwards until we hit 'body'
             while ( _parent && _parent !== _body ) {
                 // if we hit a `uijet_widget`
@@ -553,7 +650,7 @@
         // * __adapters__: a list of names of mixins to add to this instance.
         startWidget     : function (_type, _config, _skip_import) {
             var that = this,
-                _dfrd_start, _self, _w, l, _d, _c, _mixins, _adapters;
+                _dfrd_start, _self, _w, l, _d, _c, _mixins, _adapters, _widgets;
             // if not `true` then import dependencies first and then do the starting
             if ( ! _skip_import ) {
                 _dfrd_start = $.Deferred();
@@ -573,11 +670,17 @@
                     // get the stored widget class
                     _d = widget_definitions[_type];
                     // concatenate the list of mixins to use
-                    if ( _d.mixins ) {
-                        _mixins = _d.mixins.concat(_mixins);
+                    if ( _d.deps ) {
+                        if ( isObj(_d.deps) ) {
+                            _widgets = _d.deps.widgets;
+                            _d.deps.mixins && (_mixins = _d.deps.mixins.concat(_mixins));
+                        }
+                        else {
+                            _mixins = _d.deps.concat(_mixins);
+                        }
                     }
                     // create a new class from the joined definitions
-                    _c = this._generateWidget(_d.proto, _mixins);
+                    _c = this._generateWidget(_d.proto, _mixins, _widgets);
                 } else {
                     // just get the stored widget class definition
                     _c = widget_classes[_type];
@@ -625,7 +728,7 @@
                     // build widget's path
                     _m_type = widgets_prefix + _w.type;
                     // if this widget type wasn't loaded and isn't in the dependencies list then add it
-                    (widgets[_w.type] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
+                    (widget_classes[_w.type] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
                     // check for adapters option
                     if ( _m_list = toArray(_w.config.adapters) ) {
                         for ( var n = 0 ; _m = _m_list[n++] ; ) {
@@ -683,9 +786,8 @@
         // At the end fires the `startup` event.
         startup         : function () {
             var pre_startup = this.options.pre_startup;
-            if ( typeof pre_startup == 'function' ) {
-                pre_startup();
-            }
+            isFunc(pre_startup) && pre_startup();
+            this.$element[0].style.visibility = 'visible';
             this.publish('startup');
             return this;
         },
@@ -978,16 +1080,16 @@
             this.is_iPad && $('body').attr('ontouchmove', "(function preventTouchMove(e){e.preventDefault();}(event));");
             return this;
         },
-        // ## uijet.animate
-        // @sign: animate(widget, direction, callback)  
+        // ## uijet.transit
+        // @sign: transit(widget, direction, callback)  
         // @return: uijet
         //
         // Handles widgets animation across the appliaction.  
         // Mostly transitions of widgets in and out of the view.  
-        // Takes a widget to animate, a direction ("in"/"out") of the animation
+        // Takes a widget to transition, a direction ("in"/"out") of the animation
         // and a callback to fire once the animation is done.  
         // This callback will usually resolve a promise waiting for the animation to end.
-        animate         : function (widget, direction, callback) {
+        transit         : function (widget, direction, callback) {
             var transit_type = widget.options.animation_type || this.options.animation_type,
                 $el = (widget.$wrapper || widget.$element),
                 class_name = transit_type + '_in',
@@ -1001,6 +1103,7 @@
                     }
                     callback && callback.call(widget);
                 },
+                trans_end_event = uijet.support.transitionend,
                 is_direction_in, has_class_name, _h;
 
             direction = direction || 'in';
@@ -1011,10 +1114,9 @@
                 $el.addClass('reverse');
             }
             // bind just one event listener to the end of the animation
-            $el.one('transitionend webkitTransitionEnd', transitionendHandler);
+            trans_end_event && $el.one(trans_end_event, transitionendHandler);
             // Handle height property animation specially since it's broken in browsers
             if ( 'fold' == transit_type ) {
-                $el.addClass('transitioned');
                 if ( is_direction_in ) {
                     _h = widget._total_height || 0;
                     if ( ! _h ) {
@@ -1022,14 +1124,12 @@
                         $el.children().each(function () {
                             _h += this.offsetHeight;
                         });
-                        //TODO: cache result and invalidate it when necessary
-//                        widget._total_height = _h;
                     }
                     // unfold
-                    $el[0].style.height = _h + 'px';
+                    this.animate($el, 'height', _h + 'px');
                 } else {
                     // fold
-                    $el[0].style.height = 0;
+                    this.animate($el, 'height', 0);
                 }
             } else {
                 has_class_name = $el.hasClass(class_name);
@@ -1041,12 +1141,26 @@
                 }
                 // otherwise do the animation
                 else {
-                    requestAnimFrame(function () {
+                    this['animation_id_' + widget.id] = requestAnimFrame(function () {
                         $el.addClass('transitioned').toggleClass(class_name, is_direction_in);
                     });
                 }
             }
             return this;
+        },
+        animate         : function ($el, prop, value, callback) {
+            var trans_end_event = uijet.support.transitionend,
+                have_callback = isFunc(callback),
+                request_id;
+            $el.addClass('transitioned');
+            have_callback && trans_end_event && $el.one(trans_end_event, callback);
+            request_id = requestAnimFrame(function () {
+                $el[0].style[prop] = value;
+            });
+            if ( ! trans_end_event ) {
+                request_id = have_callback && requestAnimFrame(callback);
+            }
+            return request_id;
         },
         // ## uijet.switchView
         // @sign: switchView(view)  
@@ -1075,7 +1189,7 @@
                 siblings = container_id ? widgets[container_id].contained || [] : [], sibling,
                 _parent = (widget.$wrapper || widget.$element)[0].parentNode,
                 $top;
-            if ( ! container_id && widget.options.type_class == 'uijet_view' ) {
+            if ( ! container_id && ~ widget.options.type_class.indexOf('uijet_view') ) {
                 this.switchView(widget);
             }
             else {
@@ -1127,14 +1241,20 @@
     };
     // set a namespace on uijet for utility functions.
     uijet.Utils = {
-        extend      : extend,
-        extendProto : extendProto,
-        Create      : Create,
-        isObj       : isObj,
-        isArr       : isArr,
-        isFunc      : isFunc,
-        toArray     : toArray,
-        returnOf    : returnOf
+        extend          : extend,
+        extendProto     : extendProto,
+        Create          : Create,
+        isObj           : isObj,
+        isArr           : isArr,
+        isFunc          : isFunc,
+        toArray         : toArray,
+        returnOf        : returnOf,
+        getStyleProperty: getStyleProperty,
+        getOffsetOf     : getOffsetOf,
+        // wrap these objects since they point to native objects which is forbidden  
+        // You Maniacs! You blew it up! Ah, damn you!
+        requestAnimFrame: function (f) { return requestAnimFrame(f); },
+        cancelAnimFrame : function (id) { return cancelAnimFrame(id); }
     };
     // return the module
     return uijet;
