@@ -46,31 +46,15 @@
                 ._super();
             return this;
         },
-        position        : function () {
-            var _pos = this.options.position, _$parent;
-            // if `position` options is set
-            if ( _pos ) {
-                // get parent element
-                _$parent = this.$element.parent();
-                //make sure the parent will contain this button properly
-                if ( !~ 'relative fixed absolute'.indexOf(_$parent.css('position')) ) {
-                    _$parent[0].style.position = 'relative';
-                }
-                this.$element.addClass('fixed');
-                if ( typeof _pos == 'string') {
-                    this.$element.addClass( _pos);
-                    if ( _pos == 'center') {
-                        this._center();
-                    }
-                } else if ( uijet.Utils.isObj(_pos) ) {
-                    this.$element.css(_pos);
-                }
-            }
-            return this;
-        },
         // override the base method if it's overridden by mixins
         getDataUrl      : function () {
             return this.substitute(uijet.Utils.returnOf(this.options.data_url, this), this.context);
+        },
+        _wrap           : function () {
+            // never wrap a Button `$element` so duplicate the `$warpper` for compatibility
+            this.$wrapper = this.$element;
+            this._super();
+            return this;
         }
     });
 }));
