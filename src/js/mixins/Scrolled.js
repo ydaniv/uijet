@@ -16,6 +16,9 @@
                 .$wrapper.addClass('scrolled');
             // set the `horizontal` class if that option is set
             this.options.horizontal && this.$element.addClass('horizontal');
+            if ( ! this.templated ) {
+                this._prepareScrolledSize();
+            }
             return this;
         },
         // ### widget.setScrolling
@@ -75,11 +78,6 @@
                 if ( el.offsetWidth < _size.width ) {
                     this.$element[0].style.width = _size.width + 'px';
                 }
-            } else {
-                // don't need to update height
-//                if ( el.offsetHeight > _size.height ) {
-//                    this.$element[0].style.height = _size.height + 'px';
-//                }
             }
             return this;
         },
