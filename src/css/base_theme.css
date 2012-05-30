@@ -173,6 +173,18 @@ body {
     border-top: 1px solid #777;
     border-left: none;
 }
+.uijet_pane.colored {
+    padding: 3%;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#EBEBEB), to(#777));
+    background-image: -moz-linear-gradient(top, #EBEBEB, #777);
+    background-image: linear-gradient(top, #EBEBEB, #777);
+    -moz-box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8), 0 0 1px 3px rgba(150, 150, 150, 0.8);
+    box-shadow: inset 0 -3px 20px 0.5px rgba(66, 66, 66, .8), 0 0 1px 3px rgba(150, 150, 150, 0.8);
+    border: 1px solid #666;
+    border-radius: 12px;
+    color: #0a0a0a;
+    text-shadow: 1px 1px 0 rgba(255,255,255,.6);
+}
 .uijet_view {
     background-color: #0a0a0a;
 }
