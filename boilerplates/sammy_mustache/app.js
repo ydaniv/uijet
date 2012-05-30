@@ -16,7 +16,7 @@ define([
 
     uijet.context = {};
     uijet.Adapter({
-        _setContext : function () {
+        _setContext : function (context) {
             if ( context ) {
                 this.context = context && context.params ||
                     context || this.context;
