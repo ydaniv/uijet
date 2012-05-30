@@ -96,7 +96,7 @@
             var _html = this.generate(),
                 dfrd = $.Deferred(),
                 loadables, that = this, _super = this._super,
-                do_insert = true;
+                do_insert;
             // notify `pre_render` with the generate HTML
             this.notify('pre_render', _html);
             // remove the old rendered content
