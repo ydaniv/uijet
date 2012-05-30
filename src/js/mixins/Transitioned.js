@@ -59,7 +59,7 @@
                 // in case we want to hide the widget without animation just fire the callback
                 _success()
             } else {
-                // animate out
+                // transit out
                 $.when( this.transit('out') ).then(_success, function () {
                     // make sure we unbind the transition-end event handler
                     $el.unbind('transitionend webkitTransitionEnd');
@@ -71,12 +71,12 @@
         // @sign: transit([direction])  
         // @return: transit_promise
         // 
-        // Performs the transition by hooking into `uijet.animate`.
+        // Performs the transition by hooking into `uijet.transit`.
         transit         : function (dir) {
             // create a promise object
             this.dfrd_transit = $.Deferred();
-            // animate
-            uijet.animate(this, dir, function () {
+            // do transition
+            uijet.transit(this, dir, function () {
                 // get this widget off the top
                 (this.$wrapper || this.$element).removeClass('z_top');
                 this.dfrd_transit.resolve();
