@@ -17,25 +17,36 @@
         },
         prepareElement  : function () {
             var that = this,
+                // `item_selector` option allows the widget to be markup agnostic.  
+                // If it's set it will be used as the top item element - defaults to `li`
+                item_selector = this.options.item_selector || 'li',
+                // `item_element` option can be used to set an element inside `element_selector`
+                // which behaves like the item itself
                 item_element = this.options.item_element,
                 _horizontal = this.options.horizontal,
+                class_attrs = [],
                 _align;
-            // if `align` option is set
+            // if `horizontal` option is set
             if ( _horizontal ) {
-                this.$element.addClass('horizontal');
+                // add the 'horizontal' 
+                class_attrs.push('horizontal');
             }
+            // if `align` option is set
             if ( _align = this.options.align ) {
                 // set it as a `class` on `$element` prefixed by 'align_'
-                this.$element.addClass('align_' + _align);
+                class_attrs.push('align_' + _align);
             }
-            // delegate all clicks from `item_element` option as selecot or `li`  
+            if ( class_attrs.length ) {
+                this.$element.addClass(class_attrs.join(' '));
+            }
+            // delegate all clicks from `item_element` option as selector or `item_selector`  
             //TODO: switch to $element.on('click', 'li  ', function ...)  
             //TODO: runRoute or publish on select  should be called implicitly or by coniguration and not explicitly
-            this.$element.delegate(item_element || 'li', 'click', function (e) {
+            this.$element.delegate(item_element || item_selector, 'click', function (e) {
                 // get the selected element  
-                // if `item_element` option is set get the closest `li` stating from current element  
+                // if `item_element` option is set get the closest `item_selector` stating from current element  
                 // if not then use current element
-                var $this = item_element ? $(this).closest('li') : $(this),
+                var $this = item_element ? $(this).closest(item_selector) : $(this),
                 // notify the `post-select` signal
                     _continue = that.notify(true, 'post_select', $this, e);
                 // if `post_select signal` is handled and returns specifically `false` then prevent it
