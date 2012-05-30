@@ -279,7 +279,7 @@
         // In its basic format adds classes and calls `setStyle` and `position`.  
         // This is usually called once in the init sequence.
         prepareElement  : function () {
-            this.$element.addClass('uijet_widget ' + this.options.type_class);
+            this.$element.addClass('uijet_widget ' + Utils.toArray(this.options.type_class).join(' '));
             this.setStyle()
                 .position();
             return this;
@@ -572,7 +572,6 @@
                     this.listen(n, _signals[n]);
                 }
             }
-            // if `wake_on_start` is set to `true` then register a wake handler to sandbox's `startup` event
             if ( ops.wake_on_startup ) {
                 // making sure this option exists
                 ops.app_events = _app_events;
@@ -676,15 +675,16 @@
             return this;
         },
         // ### widget.remove
-        // @sign: remove()  
-        // @return: this
+        // @sign: remove([reinsert])  
+        // @return: widget_top_element OR this
         //
         // Removes the instance's element, and wrapper if exists, from the DOM.  
         // This is usually used inside destroy sequence.  
+        // Returns the removed element  
         //TODO: write a method that gets the top level element
-        remove          : function () {
-            (this.$wrapper || this.$center_wrapper || this.$element).remove();
-            return this;
+        remove          : function (reinsert) {
+            var el = (this.$wrapper || this.$center_wrapper || this.$element)[reinsert ? 'detach' : 'remove']();
+            return reinsert ? el : this;
         },
         // ### widget._wrap
         // @sign: _wrap()  
@@ -699,7 +699,7 @@
             if ( ! this.$wrapper ) {
                 // wrap and cache the wrapper
                 this.$wrapper = this.$element.wrap($('<div/>', {
-                    'class' : 'uijet_wrapper ' + this.options.type_class + '_wrapper',
+                    'class' : 'uijet_wrapper ' + Utils.toArray(this.options.type_class).join('_wrapper ') + '_wrapper',
                     id      : this.id + '_wrapper'
                 })).parent();
             }
@@ -717,7 +717,9 @@
             if ( ! this.$center_wrapper ) {
                 // wrap and cache the wrapper
                 this.$center_wrapper = this.$element.wrap($('<div/>', {
-                    'class' : 'uijet_center_wrapper ' + this.options.type_class + '_center_wrapper'
+                    'class' : 'uijet_center_wrapper ' +
+                        Utils.toArray(this.options.type_class).join('_center_wrapper ') +
+                        '_center_wrapper'
                 })).parent();
             }
             return this;
@@ -736,7 +738,7 @@
                 last_child = $children.get(-1),
                 size = { width: 0, height: 0 },
                 // since the default overflow of content is downward just get the last child's position + height
-                total_height = last_child.offsetTop + last_child.offsetHeight,
+                total_height = last_child && (last_child.offsetTop + last_child.offsetHeight) || 0,
                 total_width = 0,
                 l = $children.length;
             if ( this.options.horizontal ) {
@@ -747,7 +749,7 @@
                 size.width = total_width;
                 size.height = $children[0].offsetHeight;
             } else {
-                size.width = $children[0].offsetWidth;
+                $children.length && (size.width = $children[0].offsetWidth);
                 size.height = total_height;
             }
             return size;
