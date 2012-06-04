@@ -10,10 +10,9 @@
         root.uijet = factory(root.jQuery, root);
     }
 }(this, function ($, _window) {
-    //TODO: remove routing from dependencies  
-    //TODO: implement a method for creating a context object from `arguments`  
     //TODO: create an adapter for promises API  
     //TODO: create an adapter for XHR  
+    //TODO: create an adapter for DOM events  
     // cache some gloabls
     var Function = _window.Function,
         Object = _window.Object,
@@ -149,11 +148,13 @@
     function toArray (obj) {
         var arr;
         if ( isArgs(obj) ) {
+            // convert to `Array`
             arr = arraySlice.call(obj);
         } else if ( isArr(obj) ) {
             // copy that
             arr = obj.slice(0);
         } else if ( typeof obj != 'undefined' ) {
+            // wrap it
             arr = [obj];
         }
         return arr;
@@ -174,7 +175,7 @@
     // ### Utils.returnOf
     // Wrapper for checking if a variable is a function and return its returned value or else simply return it.
     function returnOf (arg, ctx) {
-        return isFunc(arg) ? arg.call(ctx || _window) : arg;
+        return isFunc(arg) ? arg.apply(ctx || _window, arraySlice.call(arguments, 2)) : arg;
     }
     // ### Utils.extend
     // @sign: extend(target, source[, source1[, ...]])  
@@ -321,10 +322,13 @@
     }
     // ### uijet namespace
     uijet =  {
-        ROUTE_PREFIX    : '',
-        ROUTE_SUFFIX    : '',
+        ROUTE_PREFIX        : '',
+        ROUTE_SUFFIX        : '',
         // detected browser features
-        support         : {
+        support             : {
+            touch           : (function () {
+                return ('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch;
+            }()),
             '3d'            : !!getStyleProperty('perspective'),
             transitionend   : (function (name) {
                 return name ? ({
@@ -343,7 +347,7 @@
         // Caches a definition of a widget inside uijet,
         // using `name` as the key and `props` as the definition.  
         // Optional `deps` argument can be supplied for defining this widget on top of mixins and/or other widgets.
-        _defineWidget   : function (_name, _props, _deps) {
+        _defineWidget       : function (_name, _props, _deps) {
             widget_definitions[_name] = {
                 proto   : _props,
                 deps    : _deps
@@ -355,7 +359,7 @@
         // @return: widget_class
         //
         // Generate a widget class using `Create` with `uijet.BaseWidget` as the base prototype.
-        _generateWidget : function (_props, _mixins, _widgets) {
+        _generateWidget     : function (_props, _mixins, _widgets) {
             // create the base class
             var _class = Create(this.BaseWidget, true),
                 _mixin, _mixins_copy,
@@ -391,7 +395,7 @@
         // `deps` is normalized into a list of names if it's a `String`.  
         // If `deps` is an `Object` it has to contain a `mixins` and/or `widgets` keys
         // which values will also be normalized into `Array`s.
-        Widget          : function (name, props, mixin_names) {
+        Widget              : function (name, props, mixin_names) {
             var mixins_as_obj = isObj(mixin_names),
                 _mixins;
             if ( mixins_as_obj ) {
@@ -414,7 +418,7 @@
         // @return: uijet
         //
         // Define a mixin to be used by uijet.
-        Mixin           : function (name, props) {
+        Mixin               : function (name, props) {
             mixins[name] = props;
             return this;
         },
@@ -423,7 +427,7 @@
         // @return: uijet
         //
         // Define and register a view to be used by uijet.
-        View            : function (name, widget) {
+        View                : function (name, widget) {
             views[name] = widget;
             return this;
         },
@@ -432,7 +436,7 @@
         // @return: uijet
         //
         // Set a form's route to connect its submission with the widget's `send` method.
-        Form            : function (name, widget) {
+        Form                : function (name, widget) {
             this.options.routed ?
                 this.setRoute(widget, widget.getSendRoute(), 'send') :
                 this.subscribe(widget.id + '.submitted', widget.send, widget);
@@ -447,7 +451,7 @@
         // then it is used as a top level adapter which overrides all other widget instances.  
         // Useful when you need to specify your custom methods that will override all others.  
         // Internally uses the name `TopAdapter`.
-        Adapter         : function (name, adapter) {
+        Adapter             : function (name, adapter) {
             if ( ! adapter ) {
                 adapter = name;
                 name = TOP_ADAPTER_NAME;
@@ -476,7 +480,7 @@
         // * __pre_startup__: a callback to run synchronously in the beginning of `startup`.
         // * __submit_handled__: whether your code or some other 3rd party (e.g. Sammy.js) is handling routing of submit
         //                      events. Default is `false`.
-        init            : function (options) {
+        init                : function (options) {
             // wrap the actuall initialization function
             var _init = function (_options) {
                 var _methods = {},
@@ -559,7 +563,7 @@
         // @return: uijet
         //
         // Registers a widget into uijet's widgets tree.
-        registerWidget  : function (widget) {
+        registerWidget      : function (widget) {
             // get the parent element
             var _parent = widget.$element[0].parentNode,
                 // create the registry object
@@ -607,7 +611,7 @@
         // @return: uijet
         //
         // Unregisters a widget from uijet's widgets tree.
-        unregisterWidget: function (widget) {
+        unregisterWidget    : function (widget) {
             var _id = widget.id, registration, _parent_contained;
             if ( _id in widgets ) {
                 registration = widgets[_id];
@@ -628,7 +632,7 @@
         // Declare one or more widgets that will be started once the app is initialized.  
         // `widgets` can be either an `Object` containing a widget's declaration (type and config)
         // or an `Array` of such objects.
-        declareWidgets  : function (_widgets) {
+        declareWidgets      : function (_widgets) {
             if ( isObj(_widgets) ) {
                 declared_widgets.push(_widgets);
             } else if ( isArr(_widgets) ) {
@@ -648,7 +652,7 @@
         //
         // * __mixins__: a `String` name of a mixin or an `Array` of names of mixins to add to this instance build.
         // * __adapters__: a list of names of mixins to add to this instance.
-        startWidget     : function (_type, _config, _skip_import) {
+        startWidget         : function (_type, _config, _skip_import) {
             var that = this,
                 _dfrd_start, _self, _w, l, _d, _c, _mixins, _adapters, _widgets;
             // if not `true` then import dependencies first and then do the starting
@@ -714,7 +718,7 @@
         // At the end checks for any module that's not already loaded and loads them.  
         // If it needs to load anything it fires `callback` after load is finished,
         // If there's nothing to load or AMD isn't in use it returns the call to `callback` OR `uijet`.
-        importModules   : function (_widgets, callback) {
+        importModules       : function (_widgets, callback) {
             var deps = [],
                 // modules paths
                 widgets_prefix = 'uijet_dir/widgets/',
@@ -763,7 +767,7 @@
         // Since `uijet.startWidget()` returns a promise object that's resolved after widget's dependencies
         // are all imported and it has been started, it also resolves `this.dfrd_starting` promise obejct
         // which holds the `uijet.init()` flow before `startup` is called.
-        startWidgets    : function (_widgets) {
+        startWidgets        : function (_widgets) {
             var i = 0,
                 that = this,
                 dfrd_starts = [],
@@ -784,30 +788,12 @@
         // Starts up uijet and publishes this event across the app.  
         // If the `pre_startup` callback is defined it will run in the beginning.  
         // At the end fires the `startup` event.
-        startup         : function () {
+        startup             : function () {
             var pre_startup = this.options.pre_startup;
             isFunc(pre_startup) && pre_startup();
             this.$element[0].style.visibility = 'visible';
             this.publish('startup');
             return this;
-        },
-        //TODO: consider removing this method altogether
-        // ## uijet.getCurrentView
-        // @sign: getCurrentView()  
-        // @return: current_view_widget
-        //
-        // Finds current view and returns it
-        getCurrentView  : function () {
-            var _current = this.current_view, v;
-            if ( ! _current ) {
-                for ( v in views ) {
-                    if ( views[v].options.state == 'current' ) {
-                        _current = views[v];
-                        break;
-                    }
-                }
-            }
-            return _current;
         },
         // ## uijet.parse
         // @sign: parse()  
@@ -816,7 +802,7 @@
         // Searches the DOM, starting from the container element, for all widget definitions inside the markup
         // and starts these widgets.  
         // This method looks for the `data-uijet-type` attribute on tags.
-        parse           : function () {
+        parse               : function () {
             var that = this;
             this.$element.find('[' + TYPE_ATTR + ']')
                 .each(function () {
@@ -849,7 +835,7 @@
         //              this.wake(data);
         //          </script>
         //      </div>
-        _parseScripts   : function ($el, config) {
+        _parseScripts       : function ($el, config) {
             var F = _window.Function;
             $el.find('script').each(function () {
                 var $this = $(this),
@@ -907,7 +893,7 @@
         //
         // Returns a config object to be used in `uijet.startWidget()` call.  
         // For options with function as a value read the `uijet._parseScripts` docs.
-        parseWidget     : function ($el) {
+        parseWidget         : function ($el) {
             var attrs = mapAttributes($el[0].attributes),
                 _ops_string = attrs['config'],
                 _config;
@@ -930,7 +916,7 @@
         // Takes an options context object as a second argument.  
         // Returns an `array` of promise objects,
         // each representing the promise returned by a contained widget's `wake` call
-        wakeContained   : function  (id, context) {
+        wakeContained       : function  (id, context) {
             var _contained = widgets[id].contained,
                 deferreds = [],
                 _widget,
@@ -948,7 +934,7 @@
         // @return: uijet
         //
         // Takes an `id` of a widget and sleeps all its contained widgets.
-        sleepContained  : function (id) {
+        sleepContained      : function (id) {
             var _contained = widgets[id].contained,
                 l = _contained.length;
             while ( l-- ) {
@@ -961,7 +947,7 @@
         // @return: uijet
         //
         // Takes an `id` of a widget and destroys and unregisters all its contained widgets.
-        destroyContained: function (id) {
+        destroyContained    : function (id) {
             var _contained = widgets[id].contained,
                 l = _contained.length,
                 _w;
@@ -980,7 +966,7 @@
         // Publish a custom event/message across the app.  
         // Generally takes a `string` `topic` and `data` is an optional extra argument passed to event listeners.  
         // It is possible to support different argument for `topic`, i.e. `object` as a map of topics to data.
-        publish         : function (topic, data) {
+        publish             : function (topic, data) {
             throw new Error('uijet.publish not implemented');
         },
         // # -NOT IMPLEMENTED-
@@ -994,7 +980,7 @@
         // exection context.  
         // It is possible to support different argument for `topic`, i.e. `object` as a map of topics to handlers,
         // or `handler` as a `string` representing a name of a `function` in the `context` argument.
-        subscribe       : function (topic, handler, context) {
+        subscribe           : function (topic, handler, context) {
             throw new Error('uijet.subscribe not implemented');
         },
         // # -NOT IMPLEMENTED-
@@ -1006,7 +992,7 @@
         // If just the `topic` is supplied then all handlers subscribed to it will be removed.  
         // If a `handler` is supplied (either as a `function` or as a `string` together with the `context` argument)
         // then only that handler will be removed.
-        unsubscribe     : function (topic, handler, context) {
+        unsubscribe         : function (topic, handler, context) {
             throw new Error('uijet.unsubscribe not implemented');
         },
         // # -NOT IMPLEMENTED-
@@ -1020,7 +1006,7 @@
         // need to be taken into account, such as the REST method, etc.
         // An optional third argument `callback` can be used to replace the default `uijet.run` method.
         // For example, if you need to set a route of a Form's submit with the send method.
-        setRoute        : function (widget, route, callback) {
+        setRoute            : function (widget, route, callback) {
             throw new Error('uijet.setRoute not implemented');
         },
         // # -NOT IMPLEMENTED-
@@ -1030,7 +1016,7 @@
         //
         // Removes a set route from the routes registry.  
         // Arguments can be supplied for all cases as explained for `uijet.setRoute` above.
-        unsetRoute      : function (widget, route) {
+        unsetRoute          : function (widget, route) {
             throw new Error('uijet.unsetRoute not implemented');
         },
         // # -NOT IMPLEMENTED-
@@ -1044,7 +1030,7 @@
         // 1. When `true`: call the route handler but don't propagate the route to the browsers' address bar (possible
         //    to neither push this state to the HTML5 history object.
         // 2. When `false`: Propagate this route to the address bar and the activation of the route handler will follow.
-        runRoute        : function (route, is_silent) {
+        runRoute            : function (route, is_silent) {
             throw new Error('uijet.runRoute not implemented');
         },
         // ## uijet.getRouteById
@@ -1052,7 +1038,7 @@
         // @return: route OR null
         //
         // Takes an `id` of a widget and returns a route of the found widget OR `null`.
-        getRouteById    : function (widget_id) {
+        getRouteById        : function (widget_id) {
             var _widget;
             for ( var w in widgets ) {
                 if ( w == widget_id ) {
@@ -1062,6 +1048,23 @@
             }
             return null;
         },
+        // ## uijet.getCurrentViewRoute
+        // @sign: getCurrentViewRoute()  
+        // @return: current_view_route
+        //
+        // Finds current view and returns its route
+        getCurrentViewRoute : function () {
+            var _current = this.current_view, v;
+            if ( ! _current ) {
+                for ( v in views ) {
+                    if ( views[v].options.state == 'current' ) {
+                        _current = views[v];
+                        break;
+                    }
+                }
+            }
+            return _current && _current.getRoute();
+        },
         // ## uijet.isiPad
         // @sign: isiPad()  
         // @return: uijet
@@ -1070,7 +1073,7 @@
         // If true then handles all iPad related actions,
         // such as adding the "ipad" class to the application container,
         // disabling touchmove on the entire viewport, etc.
-        isiPad          : function () {
+        isiPad              : function () {
             // sniff userAgent for iPad
             if ( ~ navigator.userAgent.search(/iPad/i) ) {
                 this.$element.addClass('ipad');
@@ -1089,7 +1092,7 @@
         // Takes a widget to transition, a direction ("in"/"out") of the animation
         // and a callback to fire once the animation is done.  
         // This callback will usually resolve a promise waiting for the animation to end.
-        transit         : function (widget, direction, callback) {
+        transit             : function (widget, direction, callback) {
             var transit_type = widget.options.animation_type || this.options.animation_type,
                 $el = (widget.$wrapper || widget.$element),
                 class_name = transit_type + '_in',
@@ -1148,7 +1151,7 @@
             }
             return this;
         },
-        animate         : function ($el, prop, value, callback) {
+        animate             : function ($el, prop, value, callback) {
             var trans_end_event = uijet.support.transitionend,
                 have_callback = isFunc(callback),
                 request_id;
@@ -1168,7 +1171,7 @@
         //
         // Takes a view widget and switches the current view with it.  
         // Most important, this method calls the `sleep` method of the current view.
-        switchView      : function (view) {
+        switchView          : function (view) {
             var _current = this.current_view;
             if ( _current !== view ) {
                 _current && _current.sleep();
@@ -1184,7 +1187,7 @@
         // and are set to `current` state, do not have the `current` class set on their top element and their
         // state is switched to `awake`.  
         // At the end adds the `current` class to the widget's top element.
-        switchCurrent   : function (widget) {
+        switchCurrent       : function (widget) {
             var container_id = widgets[widget.id].container,
                 siblings = container_id ? widgets[container_id].contained || [] : [], sibling,
                 _parent = (widget.$wrapper || widget.$element)[0].parentNode,
@@ -1219,7 +1222,7 @@
         // Builds a context `Object` from the returned arguments of a route.  
         // Named parameters in `route` are indexed in the context obejct by their name.  
         // Unnamed parameters are indexed by their index in `args_array`.
-        buildContext    : function (route, args_array) {
+        buildContext        : function (route, args_array) {
             var context = {},
                 parts = route.split('/'),
                 i = 0, n = 0, part;
