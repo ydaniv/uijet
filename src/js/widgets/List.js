@@ -40,9 +40,7 @@
                 this.$element.addClass(class_attrs.join(' '));
             }
             // delegate all clicks from `item_element` option as selector or `item_selector`  
-            //TODO: switch to $element.on('click', 'li  ', function ...)  
-            //TODO: runRoute or publish on select  should be called implicitly or by coniguration and not explicitly
-            this.$element.delegate(item_element || item_selector, 'click', function (e) {
+            this.$element.on('click', item_element || item_selector, function (e) {
                 // get the selected element  
                 // if `item_element` option is set get the closest `item_selector` stating from current element  
                 // if not then use current element
@@ -65,7 +63,7 @@
             this._super();
             return this;
         },
-        bind            : function () {
+        bindAll         : function () {
             var initial = this.options.initial;
             this._super();
             // if `initial` option is set the perform selection inside the widget

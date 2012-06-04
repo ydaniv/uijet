@@ -17,7 +17,8 @@
         arraySlice = _window.Array.prototype.slice,
         CONFIG_ATTR = 'data-uijet-config',
         TYPE_ATTR = 'data-uijet-type',
-        SUBSTITUTE_REGEX = /\{([^\s\}]+)\}/g;
+        SUBSTITUTE_REGEX = /\{([^\s\}]+)\}/g,
+        widget_id_index = 0;
 
     // shim for Object.keys
     if ( typeof Object.keys != 'function' ) {
@@ -63,8 +64,10 @@
         // Takes an `options` `Object` as argument.  
         // For now this options is mandatory, mainly because it must contain the `element` option.
         init            : function (options) {
+            // ready...
             this.signals_cache = {};
             this.signals = Object.create(this.signals_cache);
+            // FIGHT!
             this.setOptions(options)
                 // set .id
                 .setId()
@@ -105,21 +108,21 @@
         // for this instance to start itself with.
         wake            : function (context) {
             var that = this,
+                old_context = this.context,
                 dfrds, success, _sequence;
             // if already awake and there's no new data coming in then no reason to continue
             if ( this.awake && ! context ) return this._finally();
-            // prepare a pre_wake signal
-            // fire pre_wake signal
-            this.notify('pre_wake', context);
             // set the the context data if any
             this._setContext(context);
+            // fire pre_wake signal
+            this.notify('pre_wake', old_context);
             // the rest of the tasks needed to be performed
             success = function () {
                 // there was context to change but if we're set then bail out
                 if ( ! that.awake ) {
                     that.render()
                         // bind DOM events
-                        .bind()
+                        .bindAll()
                         .appear()
                         .awake = true;
                 }
@@ -169,7 +172,7 @@
             if ( this.awake ) {
                 this.notify('pre_sleep');
                 // unbind DOM events
-                this.unbind()
+                this.unbindAll()
                     // hide
                     .disappear(no_transitions)
                     // stop contained widgets
@@ -377,34 +380,78 @@
         // @sign: bind()  
         // @return: this
         //
-        // Binds DOM events related to the instance's element, based on the `dom_events` option.  
-        // At the end sets the `bound` flag to `true`.  
-        // This is called every time the widget is awaken.  
-        //TODO: rewrite as a method that binds one event and move this implementation under a different name
-        bind            : function () {
-            var _dom_events, e, that = this, _bound;
-            if ( _dom_events = this.options.dom_events ) {
-                this._bound_dom_events = _bound = {};
-                for ( e in _dom_events ) (function (name, handler) {
-                    _bound[name] = handler.bind(that);
-                    that.$element.bind(name, _bound[name]);
-                })(e, _dom_events[e]);
-            }
+        // Binds a `handler` on DOM event specified by `type` to the instance's element.  
+        // Sets `bound` to `true` at the end.  
+        //TODO: this overrides existing `type` with a new one - if this is not the required outcome implement using a list of handlers
+        bind            : function (type, handler) {
+            var bound_handler = handler.bind(this);
+            // cache the original handler
+            this.options.dom_events[type] = handler;
+            // and the bound one
+            this._bound_dom_events[type] = bound_handler;
+            // do it!
+            this.$element.on(type, bound_handler);
+            // raise the `bound` flag to make sure it's unbounded before any `bindAll` call
             this.bound = true;
             return this;
         },
         // ### widget.unbind
-        // @sign: unbind()  
+        // @sign: unbind(type, [handler])  
+        // @return: this
+        //
+        // Unbinds a DOM event specified by `type` from the instance's element.  
+        // If `handler` is supplied it will attempt to unbind this specific handler only from that `type` of event.  
+        // This will not remove that handler from being bound again with `bindAll` on next `wake`.  
+        unbind          : function (type, handler) {
+            var _dom_events = this.options.dom_events || {};
+            if ( type in _dom_events ) {
+                this.$element.off(type, handler || this._bound_dom_events[type]);
+            }
+            return this;
+        },
+        // ### widget.bindAll
+        // @sign: bindAll()  
+        // @return: this
+        //
+        // Binds DOM events related to the instance's element, based on the `dom_events` option.  
+        // At the end sets the `bound` flag to `true`.  
+        // This is called every time the widget is awaken.  
+        bindAll         : function () {
+            var _dom_events = this.options.dom_events,
+                e, that = this,
+                _bound = this._bound_dom_events;
+            // if we have any DOM events set
+            if ( _dom_events ) {
+                // in case something was bound
+                if ( this.bound ) {
+                    // unbind all so to not have the same event bound more than onceZ
+                    this.unbindAll();
+                }
+                // one loop to make sure all handlers are bound
+                for ( e in _dom_events ) (function (name, handler) {
+                    if ( ! (name in _bound) ) {
+                        _bound[name] = handler.bind(that);
+                    }
+                }(e, _dom_events[e]));
+                // and in the darkness bind them
+                this.$element.on(_bound);
+            }
+            this.bound = true;
+            return this;
+        },
+        // ### widget.unbindAll
+        // @sign: unbindAll()  
         // @return: this
         //
         // Unbinds all DOM events related to the instance's element, based on the `dom_events` option.  
         // At the end sets the `bound` flag to `false`.  
         // This is usually called every time the widget is put to sleep.  
-        //TODO: rewrite as a method that unbinds one event and move this implementation under a different name
-        unbind          : function () {
-            var _dom_events;
-            if ( _dom_events = this.options.dom_events ) {
-                this.$element.unbind(this._bound_dom_events);
+        unbindAll       : function () {
+            var _dom_events = this.options.dom_events;
+            // if we have any DOM events that are bound
+            if ( this.bound && _dom_events ) {
+                // unbind all
+                this.$element.off(this._bound_dom_events);
             }
             this.bound = false;
             return this;
@@ -520,29 +567,34 @@
             typeof $el.click == 'function' && $el.click();
             return this;
         },
-        // ### widget.setInnerRouter
-        // @sign: setInnerRouter()  
+        // ### widget.captureRoutes
+        // @sign: captureRoutes()  
         // @return: this
         //
-        // Transforms `this.$element` to a gateway for routes by delegating all anchor clicks inside it
+        // Transforms `this.$element` to a gateway for routes by delegating all anchor or `uijet-route` clicks inside it
         // to `uijet.runRoute`.  
-        // The 'is_silent' param is determined by the `routing` option:  
-        // If routing is `undefined` then it's `true`.  
-        // If it's a `function` then it is its call's result when the clicked anchor is handed to it.  
-        // Otherwise it is simply the opposite of the truthiness of `routing`.  
+        // The 'is_silent' param for `runRoute` is the opposite of the truthiness of `routing` option.  
         // This is usually called once in the init sequence.
-        setInnerRouter  : function () {
-            var routing = this.options.routing, that = this;
-            //TODO: switch to $element.on('click', 'a', function ...)
-            this.$element.delegate('a, [data-uijet-route]', 'click', function (e) {
+        captureRoutes   : function () {
+            var routing = this.options.routing,
+                capture_href = this.options.capture_href,
+                selector = '[data-uijet-route]',
+                that = this;
+            capture_href && (selector += ',a');
+            this.$element.on('click', selector, function (e) {
                 var $this = $(this),
                     is_anchor = this.tagName.toLowerCase() == 'a',
-                    _route = $this.attr(is_anchor ? 'href' : 'data-uijet-route');
-                that.runRoute(_route, typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
-                // confine the event here since it might break other handlers
+                    _route = $this.attr(is_anchor && capture_href ? 'href' : 'data-uijet-route');
+                if ( uijet.options.routed ) {
+//                    that.runRoute(_route, typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
+                    that.runRoute(_route, ! Utils.returnOf(routing, that, $this));
+                } else {
+                    uijet.publish(_route);
+                }
+                // contain the route to this widget only
                 e.stopPropagation();
                 // prevent because this is an INNER router
-                is_anchor && e.preventDefault();
+                is_anchor && capture_href && e.preventDefault();
             });
             return this;
         },
@@ -554,6 +606,9 @@
         // This is usually called once in the init sequence.
         setOptions      : function (options) {
             this.options = Utils.extend(true, {}, this.options, options);
+            // make sure DOM events maps are initialized
+            ! this.options.dom_events && (this.options.dom_events = {});
+            ! this._bound_dom_events && (this._bound_dom_events = {});
             return this;
         },
         // ### widget.setInitOptions
@@ -583,10 +638,8 @@
                     this.subscribe(n, _app_events[n]);
                 }
             }
-            // capture and delegate all anchor clicks to an inner routing mechanism
-            if ( ~ 'function boolean undefined'.indexOf(typeof ops.routing) && ops.routing !== false ) {
-                this.setInnerRouter();
-            }
+            // capture and delegate all `uijet-route` and/or anchor clicks to routing/publishing mechanism
+            this.captureRoutes();
             return this;
         },
         // ### widget.setId
@@ -595,10 +648,13 @@
         //
         // Sets the instance's `id` using the one set in the config OR the instance's `$element`'s OR
         // tries to create that `$element` and get its `id`.  
+        // If all fails generates an id from the widget's type and a running index.  
         // This is usually called once in the init sequence.  
-        //TODO: allow the automatic setting of a unique ID
         setId           : function () {
-            this.id = this.options.id || (this.$element && this.$element[0].id) || this.setElement().$element[0].id;
+            this.id = this.options.id ||
+                (this.$element && this.$element[0].id) ||
+                this.setElement().$element[0].id ||
+                this._generateId();
             return this;
         },
         // ### widget.setElement
@@ -685,6 +741,13 @@
         remove          : function (reinsert) {
             var el = (this.$wrapper || this.$center_wrapper || this.$element)[reinsert ? 'detach' : 'remove']();
             return reinsert ? el : this;
+        },
+        _generateId     : function () {
+            var id =  Utils.toArray(this.options.type_class)
+                            .splice(-1, 1)
+                            .replace('uijet_', '') + '_' + (++widget_id_index);
+            this.$element.attr('id', id);
+            return id;
         },
         // ### widget._wrap
         // @sign: _wrap()  
@@ -794,7 +857,7 @@
         // At the end resets `has_content` to `false`.
         _clearRendered  : function () {
             if ( this.bound ) {
-                this.unbind();
+                this.unbindAll();
             }
             // remove all children that were added with .render()
             this.$element.children().not(this.$original_children).remove();

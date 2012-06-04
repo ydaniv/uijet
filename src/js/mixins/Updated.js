@@ -12,11 +12,12 @@
         updated : true,
         wake    : function (context) {
             var that = this, self_dfrd = $.Deferred(),
-                dfrds, _callback, _fail, _success, _sequence;
-            // notify the `pre_wake` signal with given `context`
-            this.notify('pre_wake', context);
+                old_context = this.context, do_update,
+                dfrds, _activate, _fail, _success, _sequence;
             // set the `context`
             this._setContext(context);
+            // notify the `pre_wake` signal with `old_context`
+            do_update = this.notify('pre_wake', old_context);
             // if this is not the updater then it receives data through `context`
             if ( ! this.options.data_url ) {
                 // set `data`
@@ -25,9 +26,9 @@
             // starting waking up the kids
             dfrds = this.wakeContained(context);
             // store the callback to the successful flow
-            _callback = function () {
+            _activate = function () {
                 that.render()
-                    .bind()
+                    .bindAll()
                     .appear()
                     .awake = true;
                 that.notify('post_wake');
@@ -46,12 +47,12 @@
             // store the success callback
             _success = function () {
                 // if we have a `data_url` then `update` needs to be called
-                if ( that.options.data_url ) {
+                if ( that.options.data_url && do_update !== false ) {
                     // update the widget and continue flow
-                    $.when( that.update() ).then(_callback, _fail);
+                    $.when( that.update() ).then(_activate, _fail);
                 } else {
                     // just continue flow without updating
-                    _callback();
+                    _activate();
                 }
             };
             // prepare for failing (of the children) first

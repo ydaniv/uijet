@@ -12,11 +12,12 @@
         templated       : true,
         wake            : function (context) {
             var that = this,
-                dfrd_wake, dfrds, _fail, _success, _sequence;
-            // notify the `pre_wake` signal
-            this.notify('pre_wake', context);
+                old_context = this.context, do_render,
+                dfrd_wake, dfrds, _fail, _success, _activate, _sequence;
             // setting `context`
             this._setContext(context);
+            // notify the `pre_wake` signal with the `old_context`
+            do_render = this.notify('pre_wake', old_context);
             // create a new deferred wake promise object
             dfrd_wake = $.Deferred();
             // wake up the kids
@@ -35,26 +36,32 @@
                     that.sleep();
                 }
             };
-            // in case of success
-            _success = function () {
-                // update the widget and get the template
-                $.when( that.update(), that.fetchTemplate() ).then(function () {
-                    // render it
-                    $.when ( that.render() ).then(function () {
-                        // bind DOM events
-                        that.bind()
-                            .appear()
-                            .awake = true;
-                        that.notify('post_wake');
-                        dfrd_wake.resolve();
-                        that._finally();
-                    },
-                    // fail render
-                    _fail);
-                },
-                // fail update/fetch template
-                _fail);
+            // final activation once content is ready
+            _activate = function () {
+                // bind DOM events
+                that.bindAll()
+                    .appear()
+                    .awake = true;
+                that.notify('post_wake');
+                dfrd_wake.resolve();
+                that._finally();
             };
+            // in case of success
+            if ( this.has_content && do_render === false ) {
+                _success = _activate;
+            } else {
+                _success = function () {
+                    // update the widget and get the template
+                    $.when( that.update(), that.fetchTemplate() ).then(function () {
+                        // render it
+                        $.when ( that.render() ).then(_activate,
+                        // fail render
+                        _fail);
+                    },
+                    // fail update/fetch template
+                    _fail);
+                };
+            }
             // in case any of the children failed, fail this
             _sequence = $.when.apply($, dfrds).fail(_fail);
             // if `sync` option is `true` then call success after all children are awake
@@ -85,7 +92,7 @@
                     this.notify('post_fetch_template', response);
                 }).fail( function (response) {
                     // tell the user we failed
-                    this.notify.apply(this, ['fetchTemplate_error'].concat(Array.prototype.slice.call(arguments)));
+                    this.notify.apply(this, ['fetchTemplate_error'].concat(uijet.Utils.toArray(arguments)));
                 });
             }
             // like a fulfilled promise
