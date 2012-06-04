@@ -46,6 +46,13 @@
                 ._super();
             return this;
         },
+        select          : function (initial) {
+            if ( typeof initial == 'undefined' ) {
+                this.$element.click();
+            } else {
+                this._super(initial);
+            }
+        },
         // override the base method if it's overridden by mixins
         getDataUrl      : function () {
             return this.substitute(uijet.Utils.returnOf(this.options.data_url, this), this.context);
