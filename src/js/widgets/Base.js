@@ -282,7 +282,10 @@
         // In its basic format adds classes and calls `setStyle` and `position`.  
         // This is usually called once in the init sequence.
         prepareElement  : function () {
-            this.$element.addClass('uijet_widget ' + Utils.toArray(this.options.type_class).join(' '));
+            var classes = 'uijet_widget ' +
+                Utils.toArray(this.options.type_class).join(' ');
+            this.options.extra_class && (classes += ' ' + this.options.extra_class);
+            this.$element.addClass(classes);
             this.setStyle()
                 .position();
             return this;
@@ -759,10 +762,13 @@
         // At the end sets a reference to this element in `$wrapper`.  
         // If `$wrapper` is already set, skips to return.
         _wrap           : function () {
+            var classes;
             if ( ! this.$wrapper ) {
+                classes = 'uijet_wrapper ' + Utils.toArray(this.options.type_class).join('_wrapper ') + '_wrapper';
+                this.options.wrapper_class && (classes += ' ' + this.options.wrapper_class);
                 // wrap and cache the wrapper
                 this.$wrapper = this.$element.wrap($('<div/>', {
-                    'class' : 'uijet_wrapper ' + Utils.toArray(this.options.type_class).join('_wrapper ') + '_wrapper',
+                    'class' : classes,
                     id      : this.id + '_wrapper'
                 })).parent();
             }
