@@ -579,7 +579,13 @@
             // if the `container` option is set use it to override the container
             if ( _container = widget.options.container ) {
                 if ( typeof _container == 'string' ) {
-                    _parent = _window.document.getElementById(_container);
+                    if ( _container in widgets ) {
+                        _current.container = _container;
+                        widgets[_container].contained.push(_id);
+                        return this;
+                    } else {
+                        _parent = _window.document.getElementById(_container);
+                    }
                 } else if ( _container.nodeType === 1 ) {
                     _parent = _container;
                 }
