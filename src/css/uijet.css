@@ -63,8 +63,8 @@ td { vertical-align: top; }
 video:focus { outline: none; }
 
 body [contenteditable=true] { -khtml-user-select: auto; }
-[contenteditable=true]::-moz-selection { background: auto; }
-[contenteditable=true]::selection { background: auto; }
+[contenteditable=true]::-moz-selection { background: orange; }
+[contenteditable=true]::selection { background: orange; }
 
 /* ==|== primary styles =====================================================
    ========================================================================== */
