@@ -14,7 +14,7 @@
                 // by default bind this click event handler
                 click   : function (e) {
                     // publish the `pre_click` signal and allow user to disable `clicked` event
-                    var _publish = this.notify(true, 'pre_click');
+                    var _publish = this.notify(true, 'pre_click', e);
                     if ( _publish !== false ) {
                         // publish `clicked` event
                         this.publish('clicked', this.context);
