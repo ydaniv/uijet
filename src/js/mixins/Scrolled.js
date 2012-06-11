@@ -89,17 +89,15 @@
         // `$element`'s height and set it on the `$wrapper`.
         _setWrapperSize     : function (clear) {
             var _h;
-            if ( this.$wrapper ) {
+            if ( this.$wrapper && ! this.options.horizontal ) {
                 // if `clear` is truthy and height was tempered with
                 if ( clear && this.height_dirty ) {
-                    // clear the style attribute  
-                    // works around a Webkit issue
-                    this.$wrapper[0].setAttribute('style', '');
-                    this.$wrapper[0].removeAttribute('style');
+                    // clear style.height
+                    this.$wrapper[0].style.height = '';
                     delete this.height_dirty;
                 } else {
                     // get the `$wrapper`'s height
-                    _h = this.$wrapper && this.$wrapper[0].offsetHeight;
+                    _h = this.$wrapper[0].offsetHeight;
                     // if it's 0 for some reason
                     if ( ! _h ) {
                         this.height_dirty = true;
