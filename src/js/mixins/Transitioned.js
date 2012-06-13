@@ -80,7 +80,7 @@
                 // get this widget off the top
                 (this.$wrapper || this.$element).removeClass('z_top');
                 this.dfrd_transit.resolve();
-                this.notify('post_transit');
+                this.notify('post_transit', dir);
             });
             return this.dfrd_transit.promise();
         },
