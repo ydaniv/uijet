@@ -64,6 +64,7 @@ video:focus { outline: none; }
 
 body [contenteditable=true] { -khtml-user-select: auto; }
 [contenteditable=true]::-moz-selection { background: orange; }
+[contenteditable=true] ::-moz-selection { background-color: orange !important; }
 [contenteditable=true]::selection { background: orange; }
 
 /* ==|== primary styles =====================================================
