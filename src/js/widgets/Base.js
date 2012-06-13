@@ -234,8 +234,8 @@
         // If the XHR failed then the `update_error` event is fired and, unless aborted, the promise is rejected.
         update          : function () {
             var dfrd_update, _success;
-            // if there's no URL set bail
-            if ( ! this.options.data_url ) return {};
+            // if there's no URL set or the pre_update signal returned `false` then bail
+            if ( ! this.options.data_url || this.notify('pre_update') === false ) return {};
             // since this may take more then a few miliseconds then publish the `pre_load` event to allow the UI
             // to respond to tasks that require a long wait from the user
             this.publish('pre_load', null, true);
