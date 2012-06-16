@@ -144,7 +144,11 @@
                                 };
                                 that.dragging = false;
                                 // notify user of drag end
-                                that.notify(true, 'post_drag_end', up_e, end_position, $clone);
+                                if ( that.notify(true, 'post_drag_end', up_e, end_position, $clone) !== false ) {
+                                    // if not specified otherwise remove and delete the clone
+                                    $clone.remove();
+                                    $clone = null;
+                                }
                             }
                             // clear end event handlers
                             $doc.off(MOVE_E);
