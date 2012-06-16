@@ -71,6 +71,11 @@
                 this.select(initial);
             }
             return this;
+        },
+        _clearRendered  : function () {
+            delete this.$selected;
+            this._super();
+            return this;
         }
     });
 }));
