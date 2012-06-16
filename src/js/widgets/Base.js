@@ -587,7 +587,10 @@
             this.$element.on('click', selector, function (e) {
                 var $this = $(this),
                     is_anchor = this.tagName.toLowerCase() == 'a',
-                    _route = $this.attr(is_anchor && capture_href ? 'href' : 'data-uijet-route');
+                    _route = that.substitute(
+                        $this.attr(is_anchor && capture_href ? 'href' : 'data-uijet-route'),
+                        that.context
+                    );
                 if ( uijet.options.routed ) {
 //                    that.runRoute(_route, typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
                     that.runRoute(_route, ! Utils.returnOf(routing, that, $this));
