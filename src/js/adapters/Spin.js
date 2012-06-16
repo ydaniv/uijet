@@ -18,7 +18,7 @@
                     speed       : 1,
                     trail       : 100,
                     shadow      : true,
-                    hwaccel     : true,
+                    hwaccel     : false,
                     className   : 'uijet_spin_spinner'
                 },
                 $el = this.$wrapper || this.$element;
