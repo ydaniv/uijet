@@ -718,7 +718,7 @@
                 return this;
             }
             // set data
-            this.data = data;
+            this.data = this.data ? Utils.returnOf(this.options.extend_data, this, data) || data : data;
             this.has_data = true;
             return this;
         },
@@ -865,15 +865,19 @@
         // Also cleares the `style` attribute of `$element`.  
         // At the end resets `has_content` to `false`.
         _clearRendered  : function () {
+            var extend_rendered = this.options.extend_rendered;
+            extend_rendered = extend_rendered === void 0 && !!this.options.extend_data;
             if ( this.bound ) {
                 this.unbindAll();
             }
-            // remove all children that were added with .render()
-            this.$element.children().not(this.$original_children).remove();
             // needed to work around a Webkit bug
             this.$element[0].setAttribute('style', '');
             this.$element[0].removeAttribute('style');
-            this.has_content = false;
+            if ( ! extend_rendered ) {
+                // remove all children that were added with .render()
+                this.$element.children().not(this.$original_children).remove();
+                this.has_content = false;
+            }
             return this;
         },
         // ### widget._finally
