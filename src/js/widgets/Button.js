@@ -10,6 +10,7 @@
     uijet.Widget('Button', {
         options         : {
             type_class  : 'uijet_button',
+            dont_wrap   : true,
             dom_events  : {
                 // by default bind this click event handler
                 click   : function (e) {
@@ -56,12 +57,6 @@
         // override the base method if it's overridden by mixins
         getDataUrl      : function () {
             return this.substitute(uijet.Utils.returnOf(this.options.data_url, this), this.context);
-        },
-        _wrap           : function () {
-            // never wrap a Button `$element` so duplicate the `$warpper` for compatibility
-            this.$wrapper = this.$element;
-            this._super();
-            return this;
         }
     });
 }));

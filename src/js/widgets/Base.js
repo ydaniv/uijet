@@ -773,13 +773,17 @@
         _wrap           : function () {
             var classes;
             if ( ! this.$wrapper ) {
-                classes = 'uijet_wrapper ' + Utils.toArray(this.options.type_class).join('_wrapper ') + '_wrapper';
-                this.options.wrapper_class && (classes += ' ' + this.options.wrapper_class);
-                // wrap and cache the wrapper
-                this.$wrapper = this.$element.wrap($('<div/>', {
-                    'class' : classes,
-                    id      : this.id + '_wrapper'
-                })).parent();
+                if ( this.options.dont_wrap ) {
+                    this.$wrapper = this.$element;
+                } else {
+                    classes = 'uijet_wrapper ' + Utils.toArray(this.options.type_class).join('_wrapper ') + '_wrapper';
+                    this.options.wrapper_class && (classes += ' ' + this.options.wrapper_class);
+                    // wrap and cache the wrapper
+                    this.$wrapper = this.$element.wrap($('<div/>', {
+                        'class' : classes,
+                        id      : this.id + '_wrapper'
+                    })).parent();
+                }
             }
             return this;
         },
