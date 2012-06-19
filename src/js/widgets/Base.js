@@ -748,6 +748,12 @@
             var el = (this.$wrapper || this.$center_wrapper || this.$element)[reinsert ? 'detach' : 'remove']();
             return reinsert ? el : this;
         },
+        // ### widget._generateId
+        // @sign: _generateId()  
+        // @return: id
+        //
+        // Generates an id for the instance using the type_class option (sans the 'uijet_' prefix) + a suffix of '_'
+        // and an auto-incremented index.
         _generateId     : function () {
             var id =  Utils.toArray(this.options.type_class)
                             .splice(-1, 1).toString()
@@ -866,7 +872,7 @@
         // At the end resets `has_content` to `false`.
         _clearRendered  : function () {
             var extend_rendered = this.options.extend_rendered;
-            extend_rendered = extend_rendered === void 0 && !!this.options.extend_data;
+            extend_rendered === void 0 && (extend_rendered = !!this.options.extend_data);
             if ( this.bound ) {
                 this.unbindAll();
             }
