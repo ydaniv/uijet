@@ -18,7 +18,8 @@
                     var _publish = this.notify(true, 'pre_click', e);
                     if ( _publish !== false ) {
                         // publish `clicked` event
-                        this.publish('clicked', this.context);
+                        this.publish('clicked', this.context)
+                            .publish('app.clicked', this.id, true);
                     }
                     return false;
                 }
