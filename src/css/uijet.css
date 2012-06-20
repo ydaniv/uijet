@@ -326,6 +326,49 @@ h1, h2, h3, h4, h5, p, ul {
     position: static;
     /*overflow: hidden;*/
 }
+/**************/
+/* Datepicker */
+/**************/
+.uijet_datepicker > .uijet_pane_wrapper {
+    width: auto;
+}
+.uijet_datepicker_container {
+    width: 14em;
+    font-size: .8em;
+}
+.uijet_datepicker_current_date {
+    display: inline-block;
+    margin-top: 1em;
+    vertical-align: top;
+    font-size: 1.1em;
+    line-height: 100%;
+}
+.uijet_datepicker_dateslist {
+    text-align: left;
+}
+.uijet_datepicker_dateslist li {
+    display: inline-block;
+    width: 2em;
+    height: 2em;
+    line-height: 2em;
+    vertical-align: middle;
+    text-align: center;
+}
+.uijet_datepicker_arrow {
+    padding: 0;
+    margin-top: 1em;
+    vertical-align: top;
+    font-size: 1.1em;
+    line-height: 100%;
+}
+.uijet_datepicker_next {
+    float: right;
+    margin-right: 1em
+}
+.uijet_datepicker_prev {
+    float: left;
+    margin-left: 1em;
+}
 .uijet_dragee {
     position: absolute;
     pointer-events: none;
