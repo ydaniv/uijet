@@ -51,12 +51,8 @@
                 if( _continue !== false ) {
                     // make sure this element still exists inside the DOM
                     if ( $this && $this.length && $this.parent().length ) {
-                        // cache selection
-                        that.$selected = $this;
-                        // paint selection
-                        $this.siblings()
-                            .removeClass('selected');
-                        $this.addClass('selected');
+                        // cache  & paint selection
+                        that.setSelected($this);
                     }
                 }
             });
@@ -69,6 +65,38 @@
             // if `initial` option is set the perform selection inside the widget
             if ( initial ) {
                 this.select(initial);
+            }
+            return this;
+        },
+        // ### widget.setSelected([item])
+        //
+        // @sign: setSelected(jQuery_object)
+        // @sign: setSelected(element)
+        // @sign: setSelected(boolean)
+        // @sign: setSelected()
+        // @return: this
+        //
+        // Sets the class of the element currently set in `this.$selected` to `selected` and removes it from its siblings.  
+        // If called with a jQuery object or an HTMLElement object it will set `this.$selected` to that element and then
+        // set the class as above.  
+        // If called with a boolean it will toggle the `selected` class on the currently `this.$selected` element. `true`
+        // will add the class and `false` will remove it.  
+        // No arguments will be treated like `false`.
+        setSelected     : function (toggle) {
+            if ( toggle && toggle.jquery ) {
+                this.$selected = toggle;
+                toggle = true;
+            } else if ( toggle && toggle.nodeType === 1) {
+                this.$selected = $(toggle);
+                toggle = true;
+            } else {
+                toggle = !!toggle;
+            }
+            if ( this.$selected && this.$selected.parent().length ) {
+                if ( toggle ) {
+                    this.$selected.siblings().removeClass('selected');
+                }
+                this.$selected.toggleClass('selected', toggle);
             }
             return this;
         },
