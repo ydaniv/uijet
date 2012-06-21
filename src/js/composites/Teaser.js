@@ -114,7 +114,7 @@
                 _super.call(that);
                 that.last_index = 1;
                 that.slide_index = 1;
-                that._setTimeout();
+                that._setTimeout(true);
             });
             return this;
         },
