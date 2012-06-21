@@ -52,9 +52,19 @@
                         },
                         post_disappear  : function () {
                             this.$wrapper[0].style.top = '-9000px';
+                        },
+                        pre_sleep       : function () {
+                            this.opened = false;
                         }
                     },
-                    app_events  : {}
+                    app_events  : {
+                        // in order to stay as less obtrusive as possible sleep when this global event is triggered
+                        'app.clicked'   : function (e, _id) {
+                            if ( this.opened && (! _id || ! ~ _id.indexOf(id)) ) {
+                                this.sleep();
+                            }
+                        }
+                    }
                 },
                 dateslist_config = {
                     element     : $('<ul/>', {
@@ -98,11 +108,7 @@
                             this.publish(id + '.picked', this.current_date, true);
                         }
                     },
-                    app_events  : {
-                        'app.clicked'   : function () {
-                            this.sleep();
-                        }
-                    }
+                    app_events  : {}
                 };
             this._super();
             // add user defined options to defaults for container
