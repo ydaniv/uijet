@@ -320,7 +320,11 @@ h1, h2, h3, h4, h5, p, ul {
 .float {
     position: absolute;
     z-index: 200;
+    top: -9000px;
     height: auto;
+}
+.float.show {
+    top: 0;
 }
 .float > .uijet_widget {
     position: static;

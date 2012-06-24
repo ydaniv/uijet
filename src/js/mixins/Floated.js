@@ -42,7 +42,15 @@
         appear          : function () {
             // needed to be set programmatically at the end to prevent Webkit from not setting the right height
             this.$element[0].style.overflow = 'hidden';
+            // drop the element back to its place from the initial `top: -9000px` it's in
+            this.$wrapper.addClass('show');
             this._super();
+            return this;
+        },
+        disappear      : function () {
+            this._super();
+            // kick the element back to high heavens
+            this.$wrapper.removeClass('show');
             return this;
         }
     });
