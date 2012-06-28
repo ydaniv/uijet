@@ -18,8 +18,7 @@ define([
     uijet.Adapter({
         _setContext : function (context) {
             if ( context ) {
-                this.context = context && context.params ||
-                    context || this.context;
+                this.context = context || this.context;
                 uijet.context[this.id] = this.context; // cache the result in the app
             }
             return this;
@@ -104,6 +103,7 @@ define([
                 callback = widget.run
             }
             this.app[method](route || widget.getRoute(), function (context) {
+                context = context ? context : context.params;
                 callback.call(widget, context);
             });
             return this;
