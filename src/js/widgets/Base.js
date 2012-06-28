@@ -829,7 +829,7 @@
                     total_width += child.offsetWidth;
                 });
                 size.width = total_width;
-                size.height = $children[0].offsetHeight;
+                $children.length && (size.height = $children[0].offsetHeight);
             } else {
                 $children.length && (size.width = $children[0].offsetWidth);
                 size.height = total_height;
@@ -851,8 +851,16 @@
         //
         // If it gets a `context` object it sets it to `this.context`,  
         _setContext     : function (context) {
+            var k;
             if ( context ) {
-                this.context = context;
+                if ( this.options.clone_context ) {
+                    this.context = {};
+                    for ( k in context )
+                        if ( context.hasOwnProperty(k) )
+                            this.context[k] = context[k];
+                } else {
+                    this.context = context;
+                }
             }
             return this;
         },
