@@ -1186,6 +1186,7 @@
             if ( _current !== view ) {
                 _current && _current.sleep();
                 this.current_view = view;
+                this.publish('view_switched');
             }
             return this;
         },
