@@ -21,8 +21,7 @@
         },
         _setContext : function (context) {
             if ( context ) {
-                this.context = context && context.params ||
-                    context || this.context;
+                this.context = context || this.context;
                 uijet.context[this.id] = this.context; // cache the result in the app
             }
             return this;
