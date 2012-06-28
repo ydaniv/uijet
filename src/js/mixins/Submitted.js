@@ -22,6 +22,7 @@
             var that = this,
                 _data = this.getSerialized(),
                 _url, context;
+            this.serialize(_data);
             // notify the `pre_send` signal and allow user to set the context
             context = this.notify('pre_send');
             // set the URL for sending
@@ -106,6 +107,13 @@
         // By default returns an empty function. You can override it with the `serializer` option.
         getSerialized   : function () {
             return function () {};
+        },
+        //TODO: add docs
+        serialize       : function (data) {
+            if ( this.options.serializers ) {
+                uijet.serialize(data, this.options.serializers, this);
+            }
+            return this;
         }
     });
 }));

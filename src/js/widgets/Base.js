@@ -717,9 +717,18 @@
             if ( typeof success != 'undefined' && ! success ) {
                 return this;
             }
+            // pass data through visualizers
+            this.visualize(data);
             // set data
             this.data = this.data ? Utils.returnOf(this.options.extend_data, this, data) || data : data;
             this.has_data = true;
+            return this;
+        },
+        //TODO: add docs
+        visualize       : function (data) {
+            if ( this.options.visualizers ) {
+                uijet.visualize(data, this.options.visualizers, this);
+            }
             return this;
         },
         // ### widget.unshadow

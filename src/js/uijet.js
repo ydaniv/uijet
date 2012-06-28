@@ -27,6 +27,8 @@
         declared_widgets = [],
         widgets = {},
         views = {},
+        visualizers = {},
+        serializers = {},
         // caching built predefined widgets' classes
         widget_classes = {},
         // caching pre-built predefined widgets' classes
@@ -457,6 +459,14 @@
                 name = TOP_ADAPTER_NAME;
             }
             adapters[name] = adapter;
+            return this;
+        },
+        Serializer          : function (name, config) {
+            serializers[name] = config;
+            return this;
+        },
+        Visualizer          : function (name, config) {
+            visualizers[name] = config;
             return this;
         },
         // ### uijet.init
@@ -965,6 +975,32 @@
                 _w = widgets[_contained[l]].self;
                 _w.destroy();
                 this.unregisterWidget(_w);
+            }
+            return this;
+        },
+        //TODO: add docs
+        visualize           : function (data, vizers, widget) {
+            this._process_data(visualizers, data, vizers, widget);
+            return this;
+        },
+        //TODO: add docs
+        serialize           : function (data, sezers, widget) {
+            this._process_data(serializers, data, sezers, widget);
+            return this;
+        },
+        //TODO: add docs
+        _process_data       : function (processors, data, using, widget) {
+            var name, processor, field;
+            using = toArray(using);
+            while ( name = using.shift() ) {
+                if ( name in processors ) {
+                    processor = processors[name];
+                    for ( field in processor ) {
+                        if ( field in data ) {
+                            data[field] = returnOf(processor[field], widget, data[field]);
+                        }
+                    }
+                }
             }
             return this;
         },
