@@ -724,7 +724,11 @@
             this.has_data = true;
             return this;
         },
-        //TODO: add docs
+        // ### widget.visualize
+        // @sign: visualize(data)  
+        // @return: this
+        //
+        // Takes an `Object` or an `Array` and visualizes it using the visualizers configured in the `visualizers` option.
         visualize       : function (data) {
             if ( this.options.visualizers ) {
                 uijet.visualize(data, this.options.visualizers, this);

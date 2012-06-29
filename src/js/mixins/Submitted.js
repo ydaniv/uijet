@@ -108,7 +108,11 @@
         getSerialized   : function () {
             return function () {};
         },
-        //TODO: add docs
+        // ### widget.serialize
+        // @sign: serialize(data)  
+        // @return: this
+        //
+        // Takes an `Object` or an `Array` and serializes it using the serializers configured in the `serializers` option.
         serialize       : function (data) {
             if ( this.options.serializers ) {
                 uijet.serialize(data, this.options.serializers, this);

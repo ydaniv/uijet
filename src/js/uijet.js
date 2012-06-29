@@ -257,6 +257,39 @@
         return target;
     }
 
+    function process (data, processor, widget) {
+        var key;
+        if ( isObj(processor)) {
+            for ( key in processor ) {
+                if ( isObj(data) ) {
+                    process(data[key], processor[key], widget);
+                } else if ( isArr(data) ) {
+                    data.forEach(function (item, i) {
+                        if ( isObj(item) || isArr(item) ) {
+                            process(item, processor[key], widget);
+                        } else {
+                            data[i] = returnOf(processor[key], widget, item);
+                        }
+                    });
+                }
+            }
+        } else {
+            if ( isObj(data) ) {
+                for ( key in data ) {
+                    if ( data.hasOwnProperty(key) ) {
+                        data[key] = returnOf(processor, widget, data[key]);
+                    }
+                }
+            } else if ( isArr(data) ) {
+                data.forEach(function (item, i) {
+                    data[i] = returnOf(processor, widget, item);
+                });
+            } else {
+                console.warn('can not assign', data, processor);
+            }
+        }
+    }
+
     // ### Utils.Create
     // @sign: Create(self, [extended], [as_constructor])  
     // @sign: Create(self, [as_constructor]])  
@@ -461,10 +494,20 @@
             adapters[name] = adapter;
             return this;
         },
+        // ### uijet.Serializer
+        // @sign: Serializer(name, serializer)  
+        // @return: uijet
+        //
+        // Define an serializer to be used by uijet.
         Serializer          : function (name, config) {
             serializers[name] = config;
             return this;
         },
+        // ### uijet.Visualizer
+        // @sign: Visualizer(name, visualizer)  
+        // @return: uijet
+        //
+        // Define an visualizer to be used by uijet.
         Visualizer          : function (name, config) {
             visualizers[name] = config;
             return this;
@@ -978,28 +1021,45 @@
             }
             return this;
         },
-        //TODO: add docs
+        // ## uijet.visualize
+        // @sign: visualize(data, visualizers, [widget])  
+        // @return: uijet
+        //
+        // Takes a `data` object and a name or a list of names of visualizers and uses those visualizers to process
+        // that data.  
+        // Takes an optional third argument `widget` - an instance object - that can be used as the context for evaluating
+        // the visualizers' callbacks.
         visualize           : function (data, vizers, widget) {
             this._process_data(visualizers, data, vizers, widget);
             return this;
         },
-        //TODO: add docs
+        // ## uijet.serialize
+        // @sign: serialize(data, serializers, [widget])  
+        // @return: uijet
+        //
+        // Takes a `data` object and a name or a list of names of serializers and uses those serializers to process
+        // that data.
+        // Takes an optional third argument `widget` - an instance object - that can be used as the context for evaluating
+        // the serializers' callbacks.
         serialize           : function (data, sezers, widget) {
             this._process_data(serializers, data, sezers, widget);
             return this;
         },
-        //TODO: add docs
+        // ## uijet._process_data
+        // @sign: visualize(data, names, [widget])  
+        // @return: uijet
+        //
+        // Takes a `data` object and a name or a list of names of visualizers and uses those visualizers to process
+        // this data.
         _process_data       : function (processors, data, using, widget) {
-            var name, processor, field;
+            var name;
             using = toArray(using);
+            // loop over the processors' names we have to use
             while ( name = using.shift() ) {
+                // if this processor exist in the given group
                 if ( name in processors ) {
-                    processor = processors[name];
-                    for ( field in processor ) {
-                        if ( field in data ) {
-                            data[field] = returnOf(processor[field], widget, data[field]);
-                        }
-                    }
+                    // process it
+                    process(data, processors[name], widget);
                 }
             }
             return this;
