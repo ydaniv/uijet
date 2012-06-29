@@ -15,7 +15,15 @@
     }
 }(function ($, uijet) {
     var ANIMATION_PROPS = {
-        slide   : uijet.Utils.getStyleProperty('transform')
+        slide   : {
+            prop    : uijet.Utils.getStyleProperty('transform'),
+            value   : function (index) {
+                var support_3d = uijet.support['3d'],
+                    slide_size = this.$slides.get(index).offsetWidth,
+                    value = support_3d ? 'translate3d(-' : 'translate(-';
+                return value + index * slide_size + 'px,0' + (support_3d ? ',0)' : ')');
+            }
+        }
     };
     uijet.Widget('Teaser', {
         options : {
@@ -27,8 +35,11 @@
             // duplicate this row from Base.prepareElement since preparing the slides requires the type classes set
             this.$element.addClass('uijet_widget ' + uijet.Utils.toArray(this.options.type_class).join(' '));
             //TODO: replace this mechanism - won't work with more complex stuff or with simple fade in/out
+            this.animation_type = uijet.Utils.isObj(this.options.animation_type) ?
+                this.options.animation_type :
+                ANIMATION_PROPS[this.options.animation_type || uijet.options.animation_type];
             // set the CSS property to be used when animating the transition
-            this.animation_prop = ANIMATION_PROPS[this.options.animation_type || uijet.options.animation_type];
+            this.animation_prop = this.animation_type.prop;
             // if `cycle` option is `true` and this is not a templated instance
             if ( ! this.templated ) {
                 this._prepareSlides();
@@ -146,7 +157,7 @@
             this.animation_id = uijet.animate(
                 this.$element,
                 this.animation_prop,
-                this._getAnimValue(this.slide_index),
+                uijet.Utils.returnOf(this.animation_type.value, this, this.slide_index),
                 function () {
                     that.last_index = that.slide_index;
                 }
@@ -154,7 +165,7 @@
             return this;
         },
         jumpTo          : function (index) {
-            this.$element.removeClass('transitioned')[0].style[this.animation_prop] = this._getAnimValue(index);
+            this.$element.removeClass('transitioned')[0].style[this.animation_prop] = uijet.Utils.returnOf(this.animation_type.value, this, index);
             return this;
         },
         _setIndex       : function (next_prev) {
@@ -183,12 +194,6 @@
                 that.timeout = setTimeout(_next, delay * 1000);
             }, delay * 1000);
             return this;
-        },
-        _getAnimValue   : function (index) {
-            var support_3d = uijet.support['3d'],
-                slide_size = this.$slides.get(index).offsetWidth,
-                value = support_3d ? 'translate3d(-' : 'translate(-';
-            return value + index * slide_size + 'px,0' + (support_3d ? ',0)' : ')');
         },
         _fixPosition    : function () {
             var $dummy;
