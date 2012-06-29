@@ -259,33 +259,37 @@
 
     function process (data, processor, widget) {
         var key;
-        if ( isObj(processor)) {
+        if ( isObj(processor) ) {
             for ( key in processor ) {
-                if ( isObj(data) ) {
-                    process(data[key], processor[key], widget);
-                } else if ( isArr(data) ) {
-                    data.forEach(function (item, i) {
-                        if ( isObj(item) || isArr(item) ) {
-                            process(item, processor[key], widget);
+                if ( isObj(processor[key]) ) {
+                    if ( isObj(data) && data.hasOwnProperty(key) ) {
+                        if ( isObj(data[key]) || isArr(data[key]) ) {
+                            process(data[key], processor[key], widget);
                         } else {
-                            data[i] = returnOf(processor[key], widget, item);
+                            data[key] = processor[key];
                         }
-                    });
-                }
-            }
-        } else {
-            if ( isObj(data) ) {
-                for ( key in data ) {
-                    if ( data.hasOwnProperty(key) ) {
-                        data[key] = returnOf(processor, widget, data[key]);
+                    } else if ( isArr(data) ) {
+                        data.forEach(function (item, i) {
+                            if ( isObj(item) || isArr(item) ) {
+                                process(item, processor[key], widget);
+                            } else {
+                                data[i] = processor[key];
+                            }
+                        });
+                    }
+                } else {
+                    if ( isObj(data) && data.hasOwnProperty(key) ) {
+                        data[key] = returnOf(processor[key], widget, data[key]);
+                    } else if ( isArr(data) ) {
+                        data.forEach(function (item, i) {
+                            if ( isObj(item) && item.hasOwnProperty(key) ) {
+                                item[key] = returnOf(processor[key], widget, item[key]);
+                            } else {
+                                data[i] = returnOf(processor[key], widget, item);
+                            }
+                        });
                     }
                 }
-            } else if ( isArr(data) ) {
-                data.forEach(function (item, i) {
-                    data[i] = returnOf(processor, widget, item);
-                });
-            } else {
-                console.warn('can not assign', data, processor);
             }
         }
     }
