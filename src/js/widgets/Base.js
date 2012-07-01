@@ -823,27 +823,32 @@
         // @sign: _getSize()  
         // @return: {width: <width>, height: <height>}
         //
-        // Gets the size of _content_ of `$element`, meaning, if it's `horizontal` then count
-        // the width of its children.  
-        // If it's not then find where its last contained element's bottom is at.  
-        // The other left dimensions in those cases are determined by the corresponding dimension of the first child.  
+        // Gets the size of _content_ of `$element`.  
         // Returns an `Object` with `width` and `height` properties.
         _getSize        : function () {
             var $children = this.$element.children(),
+                // cache `window` in this scope
+                __window = _window,
                 last_child = $children.get(-1),
                 size = { width: 0, height: 0 },
-                // since the default overflow of content is downward just get the last child's position + height
+            // since the default overflow of content is downward just get the last child's position + height
                 total_height = last_child && (last_child.offsetTop + last_child.offsetHeight) || 0,
                 total_width = 0,
                 l = $children.length;
             if ( this.options.horizontal ) {
                 // since HTML is finite horizontally we *have* to count all children
                 $children.each(function (i, child) {
-                    total_width += child.offsetWidth;
+                    // get the computed style object
+                    var style = __window.getComputedStyle(child, null);
+                    // add the total width of each child + left & right margin
+                    total_width += child.offsetWidth + (+style.marginLeft.slice(0,-2)) + (+style.marginRight.slice(0,-2));
                 });
                 size.width = total_width;
+                // height is by default the total height of the first child
                 $children.length && (size.height = $children[0].offsetHeight);
             } else {
+                // it's a vertical widget  
+                // width is by default the total width of the first child
                 $children.length && (size.width = $children[0].offsetWidth);
                 size.height = total_height;
             }
