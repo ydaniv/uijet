@@ -223,7 +223,7 @@
             return this;
         },
         // ### widget.update
-        // @sign: update()  
+        // @sign: update([request_data])  
         // @return: deferred_update.promise()
         //
         // Loads the widget's data from the server and returns a promise that's resolved OR rejected
@@ -232,7 +232,8 @@
         // If that succeeds then `has_data` is set to `true` and flow continues towards resolve.
         // In case of any failure or if `data` wasn't correct and wasn't set the promise is rejected.
         // If the XHR failed then the `update_error` event is fired and, unless aborted, the promise is rejected.
-        update          : function () {
+        // Takes an optional argument `request_data` to be used as data for the request.
+        update          : function (request_data) {
             var dfrd_update, _success;
             // if there's no URL set or the pre_update signal returned `false` then bail
             if ( ! this.options.data_url || this.notify('pre_update') === false ) return {};
@@ -256,6 +257,7 @@
             // send XHR to update
             $.ajax(this.getDataUrl(), {
                 type    : 'get',
+                data    : request_data,
                 dataType: 'json',
                 context : this
             }).done(_success)
