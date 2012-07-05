@@ -11,16 +11,17 @@
     uijet.Mixin('Submitted', {
         submitted       : true,
         // ### widget.send
-        // @sign: send()  
+        // @sign: send([request_data])  
         // @return: this OR $.ajax()
         //
         // Performs serialization of the `$element` using `getSerialized` and emits the data to
         // the URL got via `getSendUrl`.  
         // If `route_send` option is set to `true` then use that URL as a route in `runRoute`.  
         // If not then make an XHR call.
-        send            : function () {
+        // The optional `request_data` argument can be used to send additional data to the `serializer`.
+        send            : function (request_data) {
             var that = this,
-                _data = this.getSerialized(),
+                _data = this.getSerialized(request_data),
                 _url, context;
             this.serialize(_data);
             // notify the `pre_send` signal and allow user to set the context
@@ -100,13 +101,14 @@
             }
         },
         // ### widget.getSerialized
-        // @sign: getSerialized()  
+        // @sign: getSerialized([request_data])  
         // @return: serialized_url_params
         //
         // Serializes the data and returns the params' string.  
-        // By default returns an empty function. You can override it with the `serializer` option.
-        getSerialized   : function () {
-            return function () {};
+        // You can override it with the `serializer` option.  
+        // By default returns an the optional `request_data` argument.
+        getSerialized   : function (request_data) {
+            return request_data;
         },
         // ### widget.serialize
         // @sign: serialize(data)  
