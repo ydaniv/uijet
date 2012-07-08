@@ -16,8 +16,8 @@
         //
         // Sets the widget in a draggable state.  
         // `over_callback` is called every time the mouse/touchmove event is fired.  
-        // The over callback takes the move event object as first argument and the jQuery-wrapped clone of
-        // element as second.  
+        // The over callback takes the move event object as first argument, an `Object` with `dx` and `dy` properties
+        // for the x and y deltas respectively and the jQuery-wrapped clone of element as third argument.  
         // If `axis` is supplied - as a `String`: `'X'` or `'Y'`- the drag will be enabled in that axis only.  
         // Callbacks for drag start and end can be registered via the signals `post_drag_start` and `post_drag_end`
         // respectively.
@@ -126,7 +126,10 @@
                                 }
                             });
                             // call the over callback
-                            over_callback && over_callback.call(that, move_e, $clone);
+                            over_callback && over_callback.call(that, move_e, {
+                                dx  : x_pos,
+                                dy  : y_pos
+                            }, $clone);
                         //bind the drag end handler to a single end event
                         }).one(END_E, function (up_e) {
                             var up_pos, end_position;
@@ -179,12 +182,10 @@
                 // get the offset of the original element from the `uijet.$element`
                 offset = uijet.Utils.getOffsetOf(orig, uijet.$element[0]);
                 // set the position and dimensions of the `$clone`
-                $clone.css({
-                    left    : offset.x + 'px',
-                    top     : offset.y + 'px',
-                    width   : orig.offsetWidth + 'px',
-                    height  : orig.offsetHeight + 'px'
-                });
+                $clone[0].style.cssText += 'left:' + offset.x +
+                                            'px;top:' + offset.y +
+                                            'px;width:' + orig.offsetWidth +
+                                            'px;height:' + orig.offsetHeight + 'px';
             }
             // add the `uijet_dragee` class to the dragged element
             ($clone || $orig).addClass('uijet_dragee')
