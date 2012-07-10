@@ -66,8 +66,7 @@
             return this;
         },
         unsubscribe     : function (topic, handler) {
-            //TODO: unlisten also takes a second arg `index`, perhaps integrate it in some way
-            Ebox.unlisten(topic);
+            Ebox.unlisten(topic, handler);
             return this;
         },
         setRoute        : function (widget, route, callback) {
