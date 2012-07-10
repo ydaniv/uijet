@@ -20,38 +20,6 @@
         SUBSTITUTE_REGEX = /\{([^\s\}]+)\}/g,
         widget_id_index = 0;
 
-    // shim for Object.keys
-    if ( typeof Object.keys != 'function' ) {
-        Object.keys = (function () {
-            var hasOwnProperty = Object.prototype.hasOwnProperty,
-                hasDontEnumBug = !({toString: null}).propertyIsEnumerable('toString'),
-                dontEnums = [
-                    'toString',
-                    'toLocaleString',
-                    'valueOf',
-                    'hasOwnProperty',
-                    'isPrototypeOf',
-                    'propertyIsEnumerable',
-                    'constructor'
-                ],
-                dontEnumsLength = dontEnums.length;
-
-            return function (obj) {
-                if ( typeof obj !== 'object' && typeof obj !== 'function' || obj === null)
-                    throw new TypeError('Object.keys called on non-object');
-                var result = [];
-                for ( var prop in obj )
-                    if ( hasOwnProperty.call(obj, prop) )
-                        result.push(prop);
-                if ( hasDontEnumBug )
-                    for (var i = 0 ; i < dontEnumsLength ; i++ )
-                        if ( hasOwnProperty.call(obj, dontEnums[i]) )
-                            result.push(dontEnums[i]);
-                return result;
-            };
-        })();
-    }
-
     Widget.prototype = {
         constructor     : Widget,
         // ### widget.init
@@ -206,7 +174,7 @@
             // perform a recursive destruction down the widget tree
             this.destroyContained();
             // unsubscribe to app events
-            this.options.app_events && this.unsubscribe(_window.Object.keys(this.options.app_events).join(' '));
+            this.options.app_events && this.unsubscribe(this.options.app_events);
             // remove DOM elements
             this.remove()
                 ._finally();
@@ -517,9 +485,10 @@
         // It's a hook into `uijet.subscribe` only the `handler` is bound to `this`.  
         //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
         subscribe       : function (topic, handler) {
-            // add this event to the `app_events` option to allow quick unsubscribing later
-            this.options.app_events[topic] = handler;
-            uijet.subscribe(topic, handler.bind(this));
+            var _h = handler.bind(this);
+            // add this handler to the `app_events` option to allow quick unsubscribing later
+            this.options.app_events[topic] = _h;
+            uijet.subscribe(topic, _h);
             return this;
         },
         // ### widget.unsubscribe
