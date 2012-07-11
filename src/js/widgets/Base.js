@@ -174,7 +174,7 @@
             // perform a recursive destruction down the widget tree
             this.destroyContained();
             // unsubscribe to app events
-            this.options.app_events && this.unsubscribe(this.options.app_events);
+            this.app_events && this.unsubscribe(this.app_events);
             // remove DOM elements
             this.remove()
                 ._finally();
@@ -486,8 +486,8 @@
         //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
         subscribe       : function (topic, handler) {
             var _h = handler.bind(this);
-            // add this handler to the `app_events` option to allow quick unsubscribing later
-            this.options.app_events[topic] = _h;
+            // add this handler to `app_events` to allow quick unsubscribing later
+            this.app_events[topic] = _h;
             uijet.subscribe(topic, _h);
             return this;
         },
@@ -598,6 +598,7 @@
             var ops = this.options,
                 _app_events = ops.app_events || {},
                 _signals;
+            this.app_events = {};
             // listen to all signals set in options
             if ( _signals = ops.signals ) {
                 for ( var n in _signals ) {
@@ -605,9 +606,7 @@
                 }
             }
             if ( ops.wake_on_startup ) {
-                // making sure this option exists
-                ops.app_events = _app_events;
-                _app_events.startup = function () { this.wake(); };
+                this.app_events.startup = function () { this.wake(); };
             }
             // subscribe to all app (custom) events set in options
             if ( ops.app_events ) {
