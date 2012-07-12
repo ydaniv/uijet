@@ -279,13 +279,13 @@
                     }
                 } else {
                     if ( isObj(data) && data.hasOwnProperty(key) ) {
-                        data[key] = returnOf(processor[key], widget, data[key]);
+                        data[key] = returnOf(processor[key], widget, data[key], data);
                     } else if ( isArr(data) ) {
                         data.forEach(function (item, i) {
                             if ( isObj(item) && item.hasOwnProperty(key) ) {
-                                item[key] = returnOf(processor[key], widget, item[key]);
+                                item[key] = returnOf(processor[key], widget, item[key], data);
                             } else {
-                                data[i] = returnOf(processor[key], widget, item);
+                                data[i] = returnOf(processor[key], widget, item, data);
                             }
                         });
                     }
