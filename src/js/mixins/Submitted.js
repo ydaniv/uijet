@@ -22,6 +22,7 @@
         send            : function (request_data) {
             var that = this,
                 _data = this.getSerialized(request_data),
+                _inner = typeof this.options.inner_route == 'boolean' ? this.options.inner_route : true,
                 _url, context;
             this.serialize(_data);
             // notify the `pre_send` signal and allow user to set the context
@@ -33,7 +34,7 @@
                 if ( this.options.route_send ) {
                     // if using a router then run the URL as a route, otherwise publish it
                     uijet.options.routed ?
-                        this.runRoute(_url.path + _data, true) :
+                        this.runRoute(_url.path + _data, _inner) :
                         this.publish('sent', { url: _url, data: _data });
                     return this;
                 }
