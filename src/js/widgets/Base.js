@@ -606,7 +606,7 @@
                 }
             }
             if ( ops.wake_on_startup ) {
-                this.app_events.startup = function () { this.wake(); };
+                this.subscribe('startup', function () { this.wake(); });
             }
             // subscribe to all app (custom) events set in options
             if ( ops.app_events ) {
