@@ -13,18 +13,6 @@ define([
         Mustache = _window.Mustache,
         MyApp;
 
-
-    uijet.context = {};
-    uijet.Adapter({
-        _setContext : function (context) {
-            if ( context ) {
-                this.context = context || this.context;
-                uijet.context[this.id] = this.context; // cache the result in the app
-            }
-            return this;
-        }
-    });
-
     MyApp =  {
         AUTH            : '',
         ROUTES_SKIP_LIST: ['#/login/'],
