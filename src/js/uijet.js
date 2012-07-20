@@ -353,9 +353,9 @@
         //TODO: uses jQuery.contains - might wanna lose it later
         if ( ! child || ! parent || child === parent || ! $.contains(parent, child) ) return result;
         do {
+            if ( child === parent ) break;
             result.x += child.offsetLeft;
             result.y += child.offsetTop;
-            if ( child === parent ) break;
         } while ( child = child.offsetParent );
         return result;
     }
