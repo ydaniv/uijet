@@ -35,7 +35,7 @@
                 parse               : options.parse,
                 widgets             : options.widgets,
                 engine              : function () {
-                    return Mustache.to_html(this.template, this.data || this.context);
+                    return Mustache.to_html(this.template, this.data || this.context, this.partials);
                 },
                 methods_context     : this,
                 methods             : {

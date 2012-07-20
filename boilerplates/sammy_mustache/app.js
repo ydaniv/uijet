@@ -48,7 +48,7 @@ define([
                 submit_handled      : true, // forms' submit event is captured by Sammy
                 widgets             : options.widgets,
                 engine              : function () {
-                    return Mustache.to_html(this.template, this.data || this.context);
+                    return Mustache.to_html(this.template, this.data || this.context, this.partials);
                 },
                 methods_context     : this,
                 methods             : {
