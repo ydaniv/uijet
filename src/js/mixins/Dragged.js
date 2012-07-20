@@ -175,12 +175,13 @@
         //
         // Initializes the dragged clone element. Sets its position, dimensions and other styles.
         _initDragee      : function ($orig, $clone) {
-            var orig, offset;
+            var parent = this.options.drag_parent || uijet.$element[0],
+                orig, offset;
             // if `$clone` is supplied
             if ( $clone ) {
                 orig = $orig[0];
                 // get the offset of the original element from the `uijet.$element`
-                offset = uijet.Utils.getOffsetOf(orig, uijet.$element[0]);
+                offset = uijet.Utils.getOffsetOf(orig, parent);
                 // set the position and dimensions of the `$clone`
                 $clone[0].style.cssText += 'left:' + offset.x +
                                             'px;top:' + offset.y +
@@ -190,7 +191,7 @@
             // add the `uijet_dragee` class to the dragged element
             ($clone || $orig).addClass('uijet_dragee')
                             // and append it the `uijet.$element`
-                             .appendTo(uijet.$element);
+                             .appendTo(parent);
             return this;
         },
         // ### widget._getDragElement
