@@ -21,15 +21,16 @@
                         iS_ops.vScroll = false;
                         iS_ops.vScrollbar = false;
                     }
-                    this.iScroll = new iScroll(this.$wrapper[0], iS_ops);
+                    this.iScroll = new iScroll(this.$wrapper[0], uijet.Utils.extend(iS_ops, this.options.iscroll_options || {}));
                 }
             } else {
                 this.iScroll && this.iScroll.destroy();
+                delete this.iScroll;
             }
             return this;
         },
         scrollTo    : function (element) {
-            this.iScroll && this.iScroll.scrollToElement(element);
+            this.iScroll && this.iScroll.scrollToElement(element.jquery ? element[0] : element);
         }
     });
 }));
