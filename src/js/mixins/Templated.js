@@ -99,12 +99,13 @@
                 // request the template
                 requests.push(this.getTemplateUrl(), $.ajax({
                     context : this
-                }).done( function (response) {
+                }).done(function (response) {
                     // cache result
                     this.template = response;
                 }).fail(failure));
                 // if we need to fetch partial templates
                 if ( partials ) {
+                    this.partials || (this.partials = {}); 
                     // loop over them
                     for ( p in partials ) (function (name, path) {
                         // build the path to each partial
@@ -118,7 +119,7 @@
                         }).done(function (partial) {
                             // when done cache it
                             this.partials[name] = partial;
-                        })).fail(failure);
+                        }).fail(failure));
                     }(p, partials[p]));
                 }
                 // when all requests are resolved
