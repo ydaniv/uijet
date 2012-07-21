@@ -97,7 +97,7 @@
                 // if asked to refresh then invalidate cache
                 refresh && (this.has_template = false);
                 // request the template
-                requests.push(this.getTemplateUrl(), $.ajax({
+                requests.push($.ajax(this.getTemplateUrl(), {
                     context : this
                 }).done(function (response) {
                     // cache result
