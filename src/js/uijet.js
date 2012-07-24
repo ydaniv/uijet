@@ -581,13 +581,11 @@
                         // parse the DOM for widgets
                         this.parse();
                     }
-                    this.dfrd_starting = $.Deferred();
-                    // build and init declared widgets
-                    this.startWidgets(declared_widgets);
                     // after all parsing, loading, build and initializing was done
                     $.when(
                         this.dfrd_parsing ? this.dfrd_parsing.promise() : {},
-                        this.dfrd_starting.promise()
+                        // build and init declared widgets
+                        this.startWidgets(declared_widgets)
                     ).then(function () {
                         that.initialized = true;
                         // kick-start the GUI - unless ordered not to
@@ -824,15 +822,15 @@
         },
         // ## uijet.startWidgets
         // @sign: startWidgets(widgets)  
-        // @return: uijet
+        // @return: promise
         //
         // Accepts an `Array` of widgets definitions and starts them one by one.  
-        // Since `uijet.startWidget()` returns a promise object that's resolved after widget's dependencies
-        // are all imported and it has been started, it also resolves `this.dfrd_starting` promise obejct
-        // which holds the `uijet.init()` flow before `startup` is called.
+        // Returns a promise that's resolved after all the `widgets` started successfully or
+        // rejects this promise if there's an error.
         startWidgets        : function (_widgets) {
             var i = 0,
                 that = this,
+                dfrd = $.Deferred(),
                 dfrd_starts = [],
                 _c;
             while ( _c = _widgets[i] ) {
@@ -840,9 +838,11 @@
                 i+=1;
             }
             $.when.apply($, dfrd_starts).then(function () {
-                that.dfrd_starting.resolve();
+                dfrd.resolve();
+            }, function () {
+                dfrd.reject();
             });
-            return this;
+            return dfrd.promise();
         },
         // ## uijet.startup
         // @sign: startup()  
