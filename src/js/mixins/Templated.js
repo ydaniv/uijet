@@ -17,7 +17,7 @@
             // setting `context`
             this._setContext(context);
             // notify the `pre_wake` signal with the `old_context`
-            do_render = this.notify('pre_wake', old_context);
+                do_render = this.notify('pre_wake', old_context);
             // create a new deferred wake promise object
             dfrd_wake = $.Deferred();
             // wake up the kids
@@ -47,7 +47,7 @@
                 that._finally();
             };
             // in case of success
-            if ( this.has_content && do_render === false ) {
+            if ( do_render === false ) {
                 _success = _activate;
             } else {
                 _success = function () {
