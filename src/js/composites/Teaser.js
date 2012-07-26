@@ -120,9 +120,10 @@
         },
         wake            : function () {
             var that = this,
+                args = arguments,
                 _super = this._super;
             $.when.apply($, this.dfrd_widgets).then(function () {
-                _super.call(that);
+                _super.apply(that, args);
                 that.last_index = 1;
                 that.slide_index = 1;
                 that._setTimeout(true);
