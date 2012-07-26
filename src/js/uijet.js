@@ -620,7 +620,7 @@
         // Registers a widget into uijet's widgets tree.
         registerWidget      : function (widget) {
             // get the parent element
-            var _parent = widget.$element[0].parentNode,
+            var _parent = null,
                 // create the registry object
                 _current = {
                     self        : widget,
@@ -630,22 +630,41 @@
                 _body = _window.document.body,
                 _parent_id, _container;
             // add registry object to the sandbox's store
-            widgets[_id] = _current;
+            // if the registry exists
+            if ( _id in widgets ) {
+                // set reference to the widget's instance
+                widgets[_id].self || (widgets[_id].self = widget);
+                // init contained if needed
+                widgets[_id].contained || (widgets[_id].contained = []);
+            }
+            // or create a new registry
+            else {
+                widgets[_id] = _current;
+            }
             // if the `container` option is set use it to override the container
             if ( _container = widget.options.container ) {
-                if ( typeof _container == 'string' ) {
+                // if it's an `HTMLElement` then try getting its `id` attribute
+                if ( _container.nodeType === 1 ) {
+                    _container = _container.getAttribute('id');
+                }
+                // if the `container` option is a `String`
+                if ( _container && typeof _container == 'string' ) {
                     if ( _container in widgets ) {
                         _current.container = _container;
                         widgets[_container].contained.push(_id);
                         return this;
                     } else {
-                        _parent = _window.document.getElementById(_container);
+                        widgets[_container] = {
+                            contained   : [_id]
+                        };
                     }
-                } else if ( _container.nodeType === 1 ) {
-                    _parent = _container;
                 }
             }
-            // walk the DOM tree upwards until we hit 'body'
+            // or set `_parent` and start traversing up the DOM tree
+            else {
+                _parent = widget.$element[0].parentNode;
+            }
+            // walk the DOM tree upwards until we hit `body`
             while ( _parent && _parent !== _body ) {
                 // if we hit a `uijet_widget`
                 if ( ~ _parent.className.indexOf('uijet_widget') ) {
@@ -658,6 +677,12 @@
                     if ( _parent_id in widgets ) {
                         // if the parent is registered then add this widget to its contained
                         widgets[_parent_id].contained.push(_id);
+                    }
+                    // if the parent is not in the registry then add it
+                    else {
+                        widgets[_parent_id] = {
+                            contained   : [_id]
+                        };
                     }
                     //bail out
                     break;
