@@ -3,7 +3,8 @@
     if ( typeof define === 'function' && define.amd ) {
         define([
             'uijet_dir/uijet',
-            'uijet_dir/widgets/Base'
+            'uijet_dir/widgets/Base',
+            'uijet_dir/widgets/Overlay'
 //            'uijet_dir/widgets/Pane'
         ], function (uijet) {
             return factory(uijet);
@@ -13,16 +14,17 @@
     }
 }(function (uijet) {
     uijet.Widget('Dialog', {
-        options         : {
+        options : {
             type_class: ['uijet_pane', 'uijet_modal'],
             position  : 'center'
         },
-        prepareElement  : function () {
+        register: function () {
             var overlay,
                 overlay_id,
                 buttons_configs,
                 conf,
                 buttons;
+            this._super();
             // if this is a modal dialog
             if ( this.options.modal ) {
                 // create the overlay element
@@ -39,7 +41,7 @@
                     id          : overlay_id,
                     container   : this.id,
                     darken      : true
-                }, this.options.underlay_options || {}));
+                }, this.options.underlay_options || {}), true);
             }
             // if we have buttons to create
             if ( buttons_configs = uijet.Utils.toArray(this.options.buttons) ) {
@@ -53,7 +55,7 @@
                 }
                 uijet.startWidgets(buttons);
             }
-            return this._super();
+            return this;
         }
     });
 }));
