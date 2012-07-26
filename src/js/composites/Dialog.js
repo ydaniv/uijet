@@ -32,7 +32,7 @@
                 overlay_id = this.id + '_underlay';
                 overlay.id = overlay_id;
                 // append this as content element of the overlay
-                overlay.appendChild(this.$element[0]);
+                overlay.appendChild((this.$wrapper || this.$element)[0]);
                 // insert the overlay to the app's element's as its first child
                 uijet.$element[0].insertBefore(overlay, uijet.$element[0].firstChild);
                 // create the overlay widget
