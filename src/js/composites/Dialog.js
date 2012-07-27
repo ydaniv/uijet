@@ -4,7 +4,8 @@
         define([
             'uijet_dir/uijet',
             'uijet_dir/widgets/Base',
-            'uijet_dir/widgets/Overlay'
+            'uijet_dir/widgets/Overlay',
+            'uijet_dir/widgets/Button'
 //            'uijet_dir/widgets/Pane'
         ], function (uijet) {
             return factory(uijet);
@@ -47,7 +48,7 @@
             if ( buttons_configs = uijet.Utils.toArray(this.options.buttons) ) {
                 buttons = [];
                 while ( conf = buttons_configs.shift() ) {
-                    conf.container = this.id;
+                    conf.container || (conf.container = this.id);
                     buttons.push({
                         type    : 'Button',
                         config  : conf
