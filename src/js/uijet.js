@@ -283,9 +283,9 @@
                     } else if ( isArr(data) ) {
                         data.forEach(function (item, i) {
                             if ( isObj(item) && item.hasOwnProperty(key) ) {
-                                item[key] = returnOf(processor[key], widget, item[key], data);
+                                item[key] = returnOf(processor[key], widget, item[key], item, i, data);
                             } else {
-                                data[i] = returnOf(processor[key], widget, item, data);
+                                data[i] = returnOf(processor[key], widget, data[i], item, i, data);
                             }
                         });
                     }
