@@ -65,6 +65,16 @@
             uijet.registerWidget(this);
             return this;
         },
+        // ### widget.unregister
+        // @sign: unregister()  
+        // @return: this
+        //
+        // Unregisters the widget from the sandbox.  
+        // Hooks into uijet's `unregisterWidget`.
+        unregister      : function () {
+            uijet.unregisterWidget(this);
+            return this;
+        },
         // ### widget.wake
         // @sign: wake([context[, more_context[, ...]]])  
         // @return: this
@@ -175,8 +185,10 @@
             this.destroyContained();
             // unsubscribe to app events
             this.app_events && this.unsubscribe(this.app_events);
+            // unregister from uijet
+            this.unregister()
             // remove DOM elements
-            this.remove()
+                .remove()
                 ._finally();
             return this;
         },
