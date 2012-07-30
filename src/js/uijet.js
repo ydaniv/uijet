@@ -1038,15 +1038,16 @@
         // @sign: destroyContained(id)  
         // @return: uijet
         //
-        // Takes an `id` of a widget and destroys and unregisters all its contained widgets.
+        // Takes an `id` of a widget and destroys all its contained widgets.
         destroyContained    : function (id) {
-            var _contained = widgets[id].contained,
-                l = _contained.length,
-                _w;
-            while ( l-- ) {
-                _w = widgets[_contained[l]].self;
-                _w.destroy();
-                this.unregisterWidget(_w);
+            var _contained, l, _w;
+            if ( id in widgets ) {
+                _contained = widgets[id].contained;
+                l = _contained.length;
+                while ( l-- ) {
+                    _w = widgets[_contained[l]].self;
+                    _w.destroy();
+                }
             }
             return this;
         },
