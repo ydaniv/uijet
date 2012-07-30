@@ -47,12 +47,12 @@
                 MOVE_E = 'mousemove';
                 END_E = 'mouseup';
             }
-            // clone if required to
-            if ( this.options.drag_clone ) {
-                $clone = $el.clone();
-            }
             // set the start event on the drag_element, if set, or the top container
             ($drag_element && $drag_element.length ? $drag_element : $el).one(START_E, function (down_e) {
+                // clone if required to
+                if ( that.options.drag_clone ) {
+                    $clone = $el.clone();
+                }
                 // get the start event object  
                 //TODO: this is adapted for iPad touch event object handling, need to test/implement the rest
                 var down_pos = has_touch ? down_e.originalEvent.touches[0] : down_e,
