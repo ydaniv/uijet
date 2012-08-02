@@ -56,7 +56,7 @@
         },
         defer           : function (promise, callback, error) {
             // if we did not get a callback param
-            if ( callback ) {
+            if ( ! callback ) {
                 // use wake as callback
                 callback = this.wake;
             }
