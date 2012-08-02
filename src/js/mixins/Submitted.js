@@ -110,17 +110,6 @@
         // By default returns an the optional `request_data` argument.
         getSerialized   : function (request_data) {
             return request_data;
-        },
-        // ### widget.serialize
-        // @sign: serialize(data)  
-        // @return: this
-        //
-        // Takes an `Object` or an `Array` and serializes it using the serializers configured in the `serializers` option.
-        serialize       : function (data) {
-            if ( this.options.serializers ) {
-                uijet.serialize(data, this.options.serializers, this);
-            }
-            return this;
         }
     });
 }));
