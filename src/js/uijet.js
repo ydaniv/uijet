@@ -29,6 +29,7 @@
         views = {},
         visualizers = {},
         serializers = {},
+        resources = {},
         // caching built predefined widgets' classes
         widget_classes = {},
         // caching pre-built predefined widgets' classes
@@ -294,6 +295,173 @@
         }
     }
 
+    function Base () {}
+
+    Base.prototype = {
+        constructor : Base,
+        // ### widget.listen
+        // @sign: listen(topic, handler)  
+        // @return: this
+        //
+        // Sets a `handler` function on the given signal with `topic` as its type.
+        listen          : function (topic, handler) {
+            this.signals_cache[topic] = handler;
+            return this;
+        },
+        // ### widget.unlisten
+        // @sign: unlisten(topic)  
+        // @return: this
+        //
+        // Removes a handler from the given signal with `topic` as its type.
+        unlisten        : function (topic) {
+            if ( this.signals_cache[topic] ) {
+                delete this.signals[topic];
+                delete this.signals_cache[topic];
+            }
+            return this;
+        },
+        // ### widget.notify
+        // @sign: notify(topic [, args]) OR notify(persist, topic [, args])  
+        // @return: handler() OR undefined
+        //
+        // Triggers a signal's handler using `topic` as its type, and returns the result of that call.  
+        // If the first argument supplied to `notify` is a `Boolean` it is used to determine whether
+        // multiple calls can be made to this type during the same single call to a _lifecycle_ method.  
+        // All subsequent arguments are sent to the handler as parameters.  
+        // If the `topic` isn't found or it has fired and not set as persistent, then nothing happens
+        // and `undefined` is returned.
+        notify          : function (topic) {
+            var handler, own_args_len = 1, args, persist = false;
+            // if first argument is a boolean it means it's a directive to whether persist this signal or not
+            if ( typeof topic == 'boolean' && topic ) {
+                persist = true;
+                handler = this.signals[arguments[1]];
+                own_args_len += 1;
+            } else {
+                handler = this.signals[topic];
+            }
+            if ( handler ) {
+                args = arraySlice.call(arguments, own_args_len);
+                // if not to persist then mask this signal's handler with null
+                persist || (this.signals[topic] = null);
+                return handler.apply(this, args);
+            }
+        },
+        // ### widget.subscribe
+        // @sign: subscribe(topic, handler)  
+        // @return: this
+        //
+        // Subscribes a `handler` to a custom event with `topic` as type.  
+        // It's a hook into `uijet.subscribe` only the `handler` is bound to `this`.  
+        //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
+        subscribe       : function (topic, handler) {
+            var _h = handler.bind(this);
+            // add this handler to `app_events` to allow quick unsubscribing later
+            this.app_events[topic] = _h;
+            uijet.subscribe(topic, _h);
+            return this;
+        },
+        // ### widget.unsubscribe
+        // @sign: unsubscribe(topic, [handler])  
+        // @return: this
+        //
+        // Unsubscribes a handler of a custom event with `topic` as type, if `handler` is supplied, OR
+        // all handlers under that `topic`.  
+        // It's a hook into `uijet.unsubscribe`.
+        unsubscribe     : function (topic, handler) {
+            uijet.unsubscribe(topic, handler);
+            return this;
+        },
+        // ### widget.publish
+        // @sign: publish(topic, [data], [is_global])  
+        // @return: this
+        //
+        // Triggers a custom event with type `topic`, handing it `data` as an argument.  
+        // If `is_global` is NOT set to `true` then the topic is prefixed with `this.id` and a '.'.  
+        // It's a hook into `uijet.publish`.
+        publish         : function (topic, data, global) {
+            topic = global ? topic : this.id + '.' + topic;
+            uijet.publish(topic, data);
+            return this;
+        },
+        // ### widget.visualize
+        // @sign: visualize(data)  
+        // @return: this
+        //
+        // Takes an `Object` or an `Array` and visualizes it using the visualizers configured in the `visualizers` option.
+        visualize       : function (data) {
+            if ( this.options.visualizers ) {
+                uijet.visualize(data, this.options.visualizers, this);
+            }
+            return this;
+        },
+        // ### widget.serialize
+        // @sign: serialize(data)  
+        // @return: this
+        //
+        // Takes an `Object` or an `Array` and serializes it using the serializers configured in the `serializers` option.
+        serialize       : function (data) {
+            if ( this.options.serializers ) {
+                uijet.serialize(data, this.options.serializers, this);
+            }
+            return this;
+        }
+    };
+
+    function Resource (config) {
+        this.signals_cache = {};
+        this.signals = Object.create(this.signals_cache);
+        extend(this, config);
+    }
+
+    Resource.prototype = {
+        constructor : Resource,
+        // ### resource.defer
+        // @sign: defer(promise)  
+        // @return: this
+        //
+        // Takes a `promise` object and `wake`s the widget once `promise` is resolved.  
+        // If `promise` is rejected it calls `sleep`.
+        //
+        // @sign: defer(promise, [callback], [error])
+        //
+        // If `callback` is a `Function` it is used as the `done` callback for `promise`.  
+        // If `callback` is a `String` and it is a name of a method of this resource, that method is used
+        // as the `done` callback.  
+        // Same for `error`, if not supplied, `this.sleep` is used, if supplied it is treated like `callback`
+        // only it is triggered as the callback for `fail` of `promise`.  
+        // All callbacks, success and failure, are run in the context of this instance.
+        defer           : function (promise, callback, error) {
+            // if we got a callback param
+            if ( callback ) {
+                if ( typeof callback == 'string' && isFunc(this[callback]) ) {
+                    callback = this[callback];
+                }
+            } else {
+                // otherwise use wake
+                callback = this.fetch;
+            }
+            // if we got an error param
+            if ( error ) {
+                if ( typeof error == 'string' && isFunc(this[error]) ) {
+                    error = this[error];
+                }
+            }
+            this.when(promise)
+                .then(callback.bind(this), error && error.bind(this));
+            return this;
+        },
+        get         : function (key) {},
+        set         : function (key, value) {},
+        fetch       : function (context) {
+            $.ajax(this.getDataUrl(), {
+                context : this
+            });
+        },
+        send        : function () {},
+        clear       : function () {}
+    };
+
     // ### Utils.Create
     // @sign: Create(self, [extended], [as_constructor])  
     // @sign: Create(self, [as_constructor]])  
@@ -306,18 +474,21 @@
     // If `as_constructor` flag is passed and `true` the returned result is a constructor function,  
     // otherwise it is an instance of that class.
     function Create (proto, _extends, as_constructor) {
-        var _proto = isFunc(proto) ? proto.prototype : proto;
+        var is_proto_f = isFunc(proto),
+            is_extends_f = isFunc(_extends),
+            _proto = is_proto_f ? proto.prototype : proto;
         function F () {}
         if ( typeof _extends == 'boolean' ) {
             as_constructor = _extends; _extends = null;
         }
         if ( _extends ) {
             _proto = extendProto(
-                Object.create(isFunc(_extends) ? _extends.prototype : _extends),
+                Object.create(is_extends_f ? _extends.prototype : _extends),
                 _proto
             );
         }
         F.prototype = _proto;
+        _proto.constructor = is_proto_f ? proto : is_extends_f ? _extends : F;
         return as_constructor ? F : new F();
     }
 
@@ -516,6 +687,11 @@
             visualizers[name] = config;
             return this;
         },
+        Resource            : function (name, config) {
+            var Res = Create(Resource, Base, true);
+            resources[name] = new Res(config);
+            return this;
+        },
         // ### uijet.init
         // @sign: init([options])  
         // @return: uijet
@@ -568,6 +744,18 @@
                         // implement missing methods
                         extend(this, _methods);
                     }
+                    if ( _options.promises && isFunc(_options.promises.Promise) && isFunc(_options.promises.when) ) {
+                        this.Promise = _options.promises.Promise;
+                        this.when = _options.promises.when;
+                        if ( _options.promises.context ) {
+                            this.Promise = this.Promise.bind(_options.promises.context);
+                            this.when = this.when.bind(_options.promises.context);
+                        }
+                    } else {
+                        this.Promise = $.Deferred.bind($);
+                        this.when = $.when.bind($);
+                        this.options.promises.context = $;
+                    }
                     if ( _options.engine ) {
                         //TODO: implement hacking into BaseWidget.prototype better  
                         // set the template engine hook
@@ -577,12 +765,12 @@
                     this.options.animation_type = _options.animation_type || 'slide';
                     // if the user told us to look in the DOM
                     if ( _options.parse ) {
-                        this.dfrd_parsing = $.Deferred();
+                        this.dfrd_parsing = this.Promise();
                         // parse the DOM for widgets
                         this.parse();
                     }
                     // after all parsing, loading, build and initializing was done
-                    $.when(
+                    this.when(
                         this.dfrd_parsing ? this.dfrd_parsing.promise() : {},
                         // build and init declared widgets
                         this.startWidgets(declared_widgets)
@@ -743,7 +931,7 @@
                 _dfrd_start, _self, _w, l, _d, _c, _mixins, _adapters, _widgets;
             // if not `true` then import dependencies first and then do the starting
             if ( ! _skip_import ) {
-                _dfrd_start = $.Deferred();
+                _dfrd_start = this.Promise();
                 // the import's callback
                 _self = function () {
                     that.startWidget(_type, _config, true);
@@ -855,14 +1043,14 @@
         startWidgets        : function (_widgets) {
             var i = 0,
                 that = this,
-                dfrd = $.Deferred(),
+                dfrd = this.Promise(),
                 dfrd_starts = [],
                 _c;
             while ( _c = _widgets[i] ) {
                 dfrd_starts[i] = this.startWidget(_c.type, _c.config);
                 i+=1;
             }
-            $.when.apply($, dfrd_starts).then(function () {
+            this.when.apply(this.options.promises.context, dfrd_starts).then(function () {
                 dfrd.resolve();
             }, function () {
                 dfrd.reject();
@@ -1016,7 +1204,11 @@
             while ( l-- ) {
                 _widget = widgets[_contained[l]].self;
                 if ( _widget && ! _widget.options.dont_wake ) {
-                    deferreds.unshift(_widget.wake(context));
+                    deferreds.unshift(
+                        _widget.options.wake_promise ?
+                            _widget.defer(_widget.options.wake_promise) :
+                            _widget.wake(context)
+                    );
                 }
             }
             return deferreds;
@@ -1396,6 +1588,7 @@
         requestAnimFrame: function (f) { return requestAnimFrame(f); },
         cancelAnimFrame : function (id) { return cancelAnimFrame(id); }
     };
+    uijet.Base = Base;
     // return the module
     return uijet;
 }));
