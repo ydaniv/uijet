@@ -778,7 +778,9 @@
                     } else {
                         this.Promise = $.Deferred.bind($);
                         this.when = $.when.bind($);
-                        this.options.promises.context = $;
+                        this.options.promises = {
+                            context : $
+                        };
                     }
                     if ( _options.engine ) {
                         //TODO: implement hacking into BaseWidget.prototype better  
