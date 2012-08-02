@@ -1231,8 +1231,8 @@
                 _widget = widgets[_contained[l]].self;
                 if ( _widget && ! _widget.options.dont_wake ) {
                     deferreds.unshift(
-                        _widget.options.wake_promise ?
-                            _widget.defer(_widget.options.wake_promise) :
+                        'wake_promise' in _widget.options ?
+                            _widget.defer(returnOf(_widget.options.wake_promise)) :
                             _widget.wake(context)
                     );
                 }
