@@ -83,7 +83,7 @@
                         // set again as draggable unless requested not to
                         that.options.drag_once || that.bindDrag(over_callback, axis);
                     },
-                    dfrd = $.Deferred();
+                    dfrd = uijet.Promise();
                 // confine the dragging to the primary mouse button or touch
                 if ( has_touch || down_pos.which === 1 ) {
                     // in this stage we're just checking if this is really a case of dragging  
@@ -92,7 +92,7 @@
                         // and a single drag end to the cancel handler
                         .one(END_E, cancelHandler);
                     // if passed delay test activate draggable state
-                    $.when(dfrd.promise()).then(function () {
+                    uijet.when(dfrd.promise()).then(function () {
                         that.dragging = true;
                         // remove the delay test handlers
                         cancelHandler();

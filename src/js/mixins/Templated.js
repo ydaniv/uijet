@@ -19,7 +19,7 @@
             // notify the `pre_wake` signal with the `old_context`
                 do_render = this.notify('pre_wake', old_context);
             // create a new deferred wake promise object
-            dfrd_wake = $.Deferred();
+            dfrd_wake = uijet.Promise();
             // wake up the kids
             dfrds = this.wakeContained(context);
             // in case of failure
@@ -52,9 +52,9 @@
             } else {
                 _success = function () {
                     // update the widget and get the template
-                    $.when( that.update(), that.fetchTemplate() ).then(function () {
+                    uijet.when( that.update(), that.fetchTemplate() ).then(function () {
                         // render it
-                        $.when ( that.render() ).then(_activate,
+                        uijet.when ( that.render() ).then(_activate,
                         // fail render
                         _fail);
                     },
@@ -63,7 +63,7 @@
                 };
             }
             // in case any of the children failed, fail this
-            _sequence = $.when.apply($, dfrds).fail(_fail);
+            _sequence = uijet.when.apply(uijet.options.promises.context, dfrds).fail(_fail);
             // if `sync` option is `true` then call success after all children are awake
             this.options.sync ? _sequence.done(_success) : _success();
             return dfrd_wake ? dfrd_wake.promise() : {};
@@ -81,7 +81,7 @@
             // if we don't have the template cached or was asked to refresh it
             if ( ! this.has_template || refresh ) {
                 // create a promise for retrieving all templates
-                var dfrd = $.Deferred(),
+                var dfrd = uijet.Promise(),
                     // a stack for all template GET requests
                     requests = [],
                     // an error callback handler
@@ -123,7 +123,7 @@
                     }(p, partials[p]));
                 }
                 // when all requests are resolved
-                $.when.apply($, requests).then(function () {
+                uijet.when.apply(uijet.options.promises.context, requests).then(function () {
                     // set state to `has_tempalte`
                     that.has_template = true;
                     // tell the user we're done
@@ -139,7 +139,7 @@
         render              : function () {
             // generate the HTML
             var _html = this.generate(),
-                dfrd = $.Deferred(),
+                dfrd = uijet.Promise(),
                 loadables, that = this, _super = this._super,
                 do_insert;
             // notify `pre_render` with the generate HTML
@@ -164,7 +164,7 @@
             // if `defer_images` option is `> 0` then defer the flow till after the loading of images
             loadables = this.options.defer_images ? this.deferLoadables() : [{}];
             // after all was loaded or if ignored deferring it
-            $.when.apply($, loadables).then(function () {
+            uijet.when.apply(uijet.options.promises.context, loadables).then(function () {
                 _super.call(that);
                 // if this widget is `scrolled` then prepare its `$element`'s size
                 that.scrolled && that._prepareScrolledSize();
@@ -195,7 +195,7 @@
                 };
             if ( _inlines && _inlines[1] ) {
                 _img = new Image();
-                dfrd = $.Deferred();
+                dfrd = uijet.Promise();
                 _img.src = _inlines[1];
                 if ( _img.complete ) {
                     _img = null;
@@ -208,7 +208,7 @@
             }
             $imgs.each(function (i, img) {
                 var _dfrd, _resolver;
-                _dfrd = $.Deferred();
+                _dfrd = uijet.Promise();
                 _resolver = _dfrd.resolve.bind(_dfrd);
                 if ( img.complete ) {
                     _resolver();

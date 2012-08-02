@@ -42,7 +42,7 @@
         // Takes a path `String` and returns a promise that resolves when the image,
         // loaded with the given `path` has completed loading either successfully or not.
         preloadImage: function (path) {
-            var img, dfrd = $.Deferred();
+            var img, dfrd = uijet.Promise();
             // if the `preload_img_el` option is set
             if ( this.options.preload_img_el ) {
                 // use the DOM's createElement to create the image

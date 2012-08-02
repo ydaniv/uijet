@@ -60,7 +60,7 @@
                 _success()
             } else {
                 // transit out
-                $.when( this.transit('out') ).then(_success, function () {
+                uijet.when( this.transit('out') ).then(_success, function () {
                     // make sure we unbind the transition-end event handler
                     $el.unbind('transitionend webkitTransitionEnd');
                 });
@@ -74,7 +74,7 @@
         // Performs the transition by hooking into `uijet.transit`.
         transit         : function (dir) {
             // create a promise object
-            this.dfrd_transit = $.Deferred();
+            this.dfrd_transit = uijet.Promise();
             // do transition
             uijet.transit(this, dir, function () {
                 // get this widget off the top

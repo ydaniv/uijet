@@ -122,7 +122,7 @@
             var that = this,
                 args = arguments,
                 _super = this._super;
-            $.when.apply($, this.dfrd_widgets).then(function () {
+            uijet.when.apply(uijet.options.promises.context, this.dfrd_widgets).then(function () {
                 _super.apply(that, args);
                 that.last_index = 1;
                 that.slide_index = 1;
@@ -139,8 +139,8 @@
             var dfrd,
                 that = this;
             if ( this.options.cycle && this.templated ) {
-                dfrd = $.Deferred();
-                $.when(this._super()).then(function () {
+                dfrd = uijet.Promises();
+                uijet.when(this._super()).then(function () {
                     that._prepareSlides();
                     dfrd.resolve();
                 });

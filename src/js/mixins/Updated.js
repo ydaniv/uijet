@@ -11,7 +11,7 @@
     uijet.Mixin('Updated', {
         updated : true,
         wake    : function (context) {
-            var that = this, self_dfrd = $.Deferred(),
+            var that = this, self_dfrd = uijet.Promise(),
                 old_context = this.context, do_update,
                 dfrds, _activate, _fail, _success, _sequence;
             // set the `context`
@@ -49,14 +49,14 @@
                 // if we have a `data_url` then `update` needs to be called
                 if ( that.options.data_url && do_update !== false ) {
                     // update the widget and continue flow
-                    $.when( that.update() ).then(_activate, _fail);
+                    uijet.when( that.update() ).then(_activate, _fail);
                 } else {
                     // just continue flow without updating
                     _activate();
                 }
             };
             // prepare for failing (of the children) first
-            _sequence = $.when.apply($, dfrds).fail(_fail);
+            _sequence = uijet.when.apply(uijet.options.promises.context, dfrds).fail(_fail);
             // if `sync` option is set to `true` then wake only after they're all awake
             this.options.sync ? _sequence.done(_success): _success();
             return self_dfrd.promise();
