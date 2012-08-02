@@ -54,6 +54,45 @@
             this.notify('post_init');
             return this;
         },
+        // ### widget.defer
+        // @sign: defer(promise)  
+        // @return: this
+        //
+        // Takes a `promise` object and `wake`s the widget once `promise` is resolved.  
+        // If `promise` is rejected it calls `sleep`.
+        //
+        // @sign: defer(promise, [callback], [error])
+        //
+        // If `callback` is a `Function` it is used as the `done` callback for `promise`.  
+        // If `callback` is a `String` and it is a name of a method of this widget, that method is used
+        // as the `done` callback.  
+        // Same for `error`, if not supplied, `this.sleep` is used, if supplied it is treated like `callback`
+        // only it is triggered as the callback for `fail` of `promise`.  
+        // All callbacks, success and failure, are run in the context of this instance.
+        defer           : function (promise, callback, error) {
+            // if we got a callback param
+            if ( callback ) {
+                if ( typeof callback == 'string' && isFunc(this[callback]) ) {
+                    callback = this[callback];
+                }
+            } else {
+                // otherwise use wake
+                callback = this.wake;
+            }
+            // if we got an error param
+            if ( error ) {
+                if ( typeof error == 'string' && isFunc(this[error]) ) {
+                    error = this[error];
+                }
+            } else {
+                // otherwise use sleep
+                error = this.sleep;
+            }
+            uijet.when(promise)
+                .done(callback.bind(this))
+                .fail(error.bind(this));
+            return this;
+        },
         // ### widget.register
         // @sign: register()  
         // @return: this
@@ -110,7 +149,7 @@
             // wake up all contained widgets
             dfrds = this.wakeContained(context);
             // register a failure callback in case one of the children failed to wake up
-            _sequence = $.when.apply($, dfrds).fail(function () {
+            _sequence = uijet.when.apply(uijet.options.promises.context, dfrds).fail(function () {
                 that.notify('wake_failed', arguments);
                 that.sleep();
             });
@@ -221,7 +260,7 @@
             // to respond to tasks that require a long wait from the user
             this.publish('pre_load', null, true);
             // our update promise object
-            dfrd_update = $.Deferred();
+            dfrd_update = uijet.Promise();
             _success = function (response) {
                 // set `this.data`
                 this.setData(response);
@@ -441,91 +480,6 @@
             this.bound = false;
             return this;
         },
-        // ### widget.listen
-        // @sign: listen(topic, handler)  
-        // @return: this
-        //
-        // Sets a `handler` function on the given signal with `topic` as its type.
-        listen          : function (topic, handler) {
-            this.signals_cache[topic] = handler;
-            return this;
-        },
-        // ### widget.unlisten
-        // @sign: unlisten(topic)  
-        // @return: this
-        //
-        // Removes a handler from the given signal with `topic` as its type.
-        unlisten        : function (topic) {
-            if ( this.signals_cache[topic] ) {
-                delete this.signals[topic];
-                delete this.signals_cache[topic];
-            }
-            return this;
-        },
-        // ### widget.notify
-        // @sign: notify(topic [, args]) OR notify(persist, topic [, args])  
-        // @return: handler() OR undefined
-        //
-        // Triggers a signal's handler using `topic` as its type, and returns the result of that call.  
-        // If the first argument supplied to `notify` is a `Boolean` it is used to determine whether
-        // multiple calls can be made to this type during the same single call to a _lifecycle_ method.  
-        // All subsequent arguments are sent to the handler as parameters.  
-        // If the `topic` isn't found or it has fired and not set as persistent, then nothing happens
-        // and `undefined` is returned.
-        notify          : function (topic) {
-            var handler, own_args_len = 1, args, persist = false;
-            // if first argument is a boolean it means it's a directive to whether persist this signal or not
-            if ( typeof topic == 'boolean' && topic ) {
-                persist = true;
-                handler = this.signals[arguments[1]];
-                own_args_len += 1;
-            } else {
-                handler = this.signals[topic];
-            }
-            if ( handler ) {
-                args = arraySlice.call(arguments, own_args_len);
-                // if not to persist then mask this signal's handler with null
-                persist || (this.signals[topic] = null);
-                return handler.apply(this, args);
-            }
-        },
-        // ### widget.subscribe
-        // @sign: subscribe(topic, handler)  
-        // @return: this
-        //
-        // Subscribes a `handler` to a custom event with `topic` as type.  
-        // It's a hook into `uijet.subscribe` only the `handler` is bound to `this`.  
-        //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
-        subscribe       : function (topic, handler) {
-            var _h = handler.bind(this);
-            // add this handler to `app_events` to allow quick unsubscribing later
-            this.app_events[topic] = _h;
-            uijet.subscribe(topic, _h);
-            return this;
-        },
-        // ### widget.unsubscribe
-        // @sign: unsubscribe(topic, [handler])  
-        // @return: this
-        //
-        // Unsubscribes a handler of a custom event with `topic` as type, if `handler` is supplied, OR
-        // all handlers under that `topic`.  
-        // It's a hook into `uijet.unsubscribe`.
-        unsubscribe     : function (topic, handler) {
-            uijet.unsubscribe(topic, handler);
-            return this;
-        },
-        // ### widget.publish
-        // @sign: publish(topic, [data], [is_global])  
-        // @return: this
-        //
-        // Triggers a custom event with type `topic`, handing it `data` as an argument.  
-        // If `is_global` is NOT set to `true` then the topic is prefixed with `this.id` and a '.'.  
-        // It's a hook into `uijet.publish`.
-        publish         : function (topic, data, global) {
-            topic = global ? topic : this.id + '.' + topic;
-            uijet.publish(topic, data);
-            return this;
-        },
         // ### widget.runRoute
         // @sign: runRoute(route, [is_silent])  
         // @return: this
@@ -704,17 +658,6 @@
             // set data
             this.data = this.data ? Utils.returnOf(this.options.extend_data, this, data) || data : data;
             this.has_data = true;
-            return this;
-        },
-        // ### widget.visualize
-        // @sign: visualize(data)  
-        // @return: this
-        //
-        // Takes an `Object` or an `Array` and visualizes it using the visualizers configured in the `visualizers` option.
-        visualize       : function (data) {
-            if ( this.options.visualizers ) {
-                uijet.visualize(data, this.options.visualizers, this);
-            }
             return this;
         },
         // ### widget.unshadow
@@ -913,5 +856,5 @@
         }
     };
 
-    return Widget;
+    return uijet.Utils.Create(Widget, uijet.Base, true);
 }));
