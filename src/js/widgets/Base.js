@@ -54,44 +54,13 @@
             this.notify('post_init');
             return this;
         },
-        // ### widget.defer
-        // @sign: defer(promise)  
-        // @return: this
-        //
-        // Takes a `promise` object and `wake`s the widget once `promise` is resolved.  
-        // If `promise` is rejected it calls `sleep`.
-        //
-        // @sign: defer(promise, [callback], [error])
-        //
-        // If `callback` is a `Function` it is used as the `done` callback for `promise`.  
-        // If `callback` is a `String` and it is a name of a method of this widget, that method is used
-        // as the `done` callback.  
-        // Same for `error`, if not supplied, `this.sleep` is used, if supplied it is treated like `callback`
-        // only it is triggered as the callback for `fail` of `promise`.  
-        // All callbacks, success and failure, are run in the context of this instance.
         defer           : function (promise, callback, error) {
-            // if we got a callback param
+            // if we did not get a callback param
             if ( callback ) {
-                if ( typeof callback == 'string' && isFunc(this[callback]) ) {
-                    callback = this[callback];
-                }
-            } else {
-                // otherwise use wake
+                // use wake as callback
                 callback = this.wake;
             }
-            // if we got an error param
-            if ( error ) {
-                if ( typeof error == 'string' && isFunc(this[error]) ) {
-                    error = this[error];
-                }
-            } else {
-                // otherwise use sleep
-                error = this.sleep;
-            }
-            uijet.when(promise)
-                .done(callback.bind(this))
-                .fail(error.bind(this));
-            return this;
+            return this._super(promise, callback, error);
         },
         // ### widget.register
         // @sign: register()  

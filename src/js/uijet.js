@@ -299,6 +299,57 @@
 
     Base.prototype = {
         constructor : Base,
+        // ### instance.defer
+        // @sign: defer(promise, [callback], [error])
+        // @return: this
+        //
+        // Takes a `promise` object as first argument and calls either `callback` or `error` depending on
+        // whether that promise was resolved or rejected.  
+        // If `callback` is a `Function` it is used as the `done` callback for `promise`.  
+        // If `callback` is a `String` and it is a name of a method of this instance, that method is used
+        // as the `done` callback.  
+        // If there's no such method, it is published as an app event, sending the data sent to `resolve/resolveWith`
+        // to the `publish` call as data.  
+        // If `error` is supplied it is treated like `callback`,
+        // only it is triggered as the callback for `fail` of `promise`.  
+        // All callbacks, success and failure, are run in the context of this instance.
+        defer           : function (promise, callback, error) {
+            var cb, err;
+            // if callback param is a `String`
+            if ( typeof callback == 'string' ) {
+                // check if it's a method of this instance
+                if ( isFunc(this[callback]) ) {
+                    callback = this[callback];
+                }
+                // otherwise just publish it as an app event
+                else {
+                    cb = callback;
+                    callback = function (arg) {
+                        uijet.publish(cb, arg);
+                    };
+                }
+            }
+            // if we got an error param
+            if ( error ) {
+                // if it's a `String`
+                if ( typeof error == 'string' ) {
+                    // check if it's a method of this instance
+                    if ( isFunc(this[error]) ) {
+                        error = this[error];
+                    }
+                    // otherwise publish it as an app event
+                    else {
+                        err = error;
+                        error = function (arg) {
+                            uijet.publish(err, arg);
+                        };
+                    }
+                }
+            }
+            uijet.when(promise)
+                .then(callback.bind(this), error && error.bind(this));
+            return this;
+        },
         // ### widget.listen
         // @sign: listen(topic, handler)  
         // @return: this
@@ -416,40 +467,13 @@
 
     Resource.prototype = {
         constructor : Resource,
-        // ### resource.defer
-        // @sign: defer(promise)  
-        // @return: this
-        //
-        // Takes a `promise` object and `wake`s the widget once `promise` is resolved.  
-        // If `promise` is rejected it calls `sleep`.
-        //
-        // @sign: defer(promise, [callback], [error])
-        //
-        // If `callback` is a `Function` it is used as the `done` callback for `promise`.  
-        // If `callback` is a `String` and it is a name of a method of this resource, that method is used
-        // as the `done` callback.  
-        // Same for `error`, if not supplied, `this.sleep` is used, if supplied it is treated like `callback`
-        // only it is triggered as the callback for `fail` of `promise`.  
-        // All callbacks, success and failure, are run in the context of this instance.
         defer           : function (promise, callback, error) {
-            // if we got a callback param
-            if ( callback ) {
-                if ( typeof callback == 'string' && isFunc(this[callback]) ) {
-                    callback = this[callback];
-                }
-            } else {
-                // otherwise use wake
+            // if we did not get a callback param
+            if ( ! callback ) {
+                // use `fetch` as a callback
                 callback = this.fetch;
             }
-            // if we got an error param
-            if ( error ) {
-                if ( typeof error == 'string' && isFunc(this[error]) ) {
-                    error = this[error];
-                }
-            }
-            this.when(promise)
-                .then(callback.bind(this), error && error.bind(this));
-            return this;
+            return this._super(promise, callback, error);
         },
         get         : function (key) {},
         set         : function (key, value) {},
