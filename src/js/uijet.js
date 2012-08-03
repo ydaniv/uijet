@@ -87,7 +87,7 @@
         };
     }
     // shim for Array.indexOf
-    if ( typeof Array.indexOf != 'function' ) {
+    if ( typeof Array.prototype.indexOf != 'function' ) {
         Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
             if ( this == null ) {
                 throw new TypeError();
@@ -119,7 +119,7 @@
         };
     }
     // shim String.trim
-    if( typeof String.trim != 'function' ) {
+    if( typeof String.prototype.trim != 'function' ) {
         _window.String.prototype.trim = function () {
             return this.replace(/^\s+|\s+$/g,'');
         };
