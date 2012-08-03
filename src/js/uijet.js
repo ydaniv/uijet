@@ -10,7 +10,6 @@
         root.uijet = factory(root.jQuery, root);
     }
 }(this, function ($, _window) {
-    //TODO: create an adapter for promises API  
     //TODO: create an adapter for XHR  
     //TODO: create an adapter for DOM events  
     // cache some gloabls
