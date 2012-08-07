@@ -858,15 +858,21 @@
             if ( _container = widget.options.container ) {
                 // if it's an `HTMLElement` then try getting its `id` attribute
                 if ( _container.nodeType === 1 ) {
+                    // try getting the `id` attribute from this element
                     _container = _container.getAttribute('id');
                 }
-                // if the `container` option is a `String`
+                // if we have a valid container id
                 if ( _container && typeof _container == 'string' ) {
+                    widgets[_id].container = _container;
+                    // if this container is registered
                     if ( _container in widgets ) {
-                        _current.container = _container;
+                        // add this widget's id to the list of contained widgets of this container's registry
                         widgets[_container].contained.push(_id);
                         return this;
-                    } else {
+                    }
+                    // if not
+                    else {
+                        // add it to the registry
                         widgets[_container] = {
                             contained   : [_id]
                         };
@@ -1262,8 +1268,10 @@
                 _contained = widgets[id].contained;
                 l = _contained.length;
                 while ( l-- ) {
-                    _w = widgets[_contained[l]].self;
-                    _w.destroy();
+                    if ( _contained[l] in widgets ) {
+                        _w = widgets[_contained[l]].self;
+                        _w.destroy();
+                    }
                 }
             }
             return this;
