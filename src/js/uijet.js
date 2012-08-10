@@ -265,26 +265,32 @@
                     if ( isObj(data) && data.hasOwnProperty(key) ) {
                         if ( isObj(data[key]) || isArr(data[key]) ) {
                             process(data[key], processor[key], widget);
-                        } else {
+                        }
+                        else {
                             data[key] = processor[key];
                         }
-                    } else if ( isArr(data) ) {
+                    }
+                    else if ( isArr(data) ) {
                         data.forEach(function (item, i) {
                             if ( isObj(item) || isArr(item) ) {
                                 process(item, processor[key], widget);
-                            } else {
+                            }
+                            else {
                                 data[i] = processor[key];
                             }
                         });
                     }
-                } else {
-                    if ( isObj(data) && data.hasOwnProperty(key) ) {
+                }
+                else {
+                    if ( isObj(data) ) {
                         data[key] = returnOf(processor[key], widget, data[key], data);
-                    } else if ( isArr(data) ) {
+                    }
+                    else if ( isArr(data) ) {
                         data.forEach(function (item, i) {
-                            if ( isObj(item) && item.hasOwnProperty(key) ) {
+                            if ( isObj(item) ) {
                                 item[key] = returnOf(processor[key], widget, item[key], item, i, data);
-                            } else {
+                            }
+                            else {
                                 data[i] = returnOf(processor[key], widget, data[i], item, i, data);
                             }
                         });
