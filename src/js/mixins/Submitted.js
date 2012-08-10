@@ -26,7 +26,7 @@
                 _url, context;
             this.serialize(_data);
             // notify the `pre_send` signal and allow user to set the context
-            context = this.notify('pre_send');
+            context = this.notify(true, 'pre_send');
             // set the URL for sending
             _url = this.getSendUrl(context);
             if ( _url ) {
@@ -46,15 +46,12 @@
                     context     : this
                 }).done(function (response) {
                     // notify `post_send_data` signal
-                    this.notify('post_send_data', response);
+                    this.notify(true, 'post_send_data', response);
                     // publish `post_send_data` event of this widget sandbox-wide
                     this.publish('post_send_data', response);
                 }).fail(function () {
                     // emit the `send_error` signal
-                    this.notify.apply(that, ['send_error'].concat(Array.prototype.slice.call(arguments)));
-                }).always(function () {
-                    // always call `_finally` at the end
-                    this._finally();
+                    this.notify.apply(that, [true, 'send_error'].concat(Array.prototype.slice.call(arguments)));
                 });
             }
         },
