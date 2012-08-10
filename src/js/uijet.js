@@ -258,7 +258,7 @@
     }
 
     function process (data, processor, widget) {
-        var key;
+        var key, val;
         if ( isObj(processor) ) {
             for ( key in processor ) {
                 if ( isObj(processor[key]) ) {
@@ -283,12 +283,19 @@
                 }
                 else {
                     if ( isObj(data) ) {
-                        data[key] = returnOf(processor[key], widget, data[key], data);
+                        val = returnOf(processor[key], widget, data[key], data);
+                        if ( data.hasOwnProperty(key) || val !== void 0 ) {
+                            data[key] = val;
+                        }
                     }
                     else if ( isArr(data) ) {
                         data.forEach(function (item, i) {
+                            var val;
                             if ( isObj(item) ) {
-                                item[key] = returnOf(processor[key], widget, item[key], item, i, data);
+                                val = returnOf(processor[key], widget, item[key], item, i, data);
+                                if ( item.hasOwnProperty(key) || val !== void 0 ) {
+                                    item[key] = val
+                                }
                             }
                             else {
                                 data[i] = returnOf(processor[key], widget, data[i], item, i, data);
