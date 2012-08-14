@@ -580,7 +580,7 @@
                 return name ? ({
                     transition      : 'transitionend',
                     MozTransition   : 'transitionend',
-                    webkitTransition: 'webkitTransitionEnd',
+                    WebkitTransition: 'webkitTransitionEnd',
                     OTransition     : 'OTransitionEnd',
                     msTransition    : 'MSTransitionEnd'
                 })[name] : name;
