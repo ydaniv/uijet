@@ -16,7 +16,7 @@
     var Function = _window.Function,
         Object = _window.Object,
         Array = _window.Array,
-        BROWSER_PREFIX = { upper : ['Webkit', 'Moz', 'O', 'ms'], lower : ['webkit', 'moz', 'o', 'ms'] },
+        BROWSER_PREFIX = { style : ['webkit', 'Moz', 'O', 'ms'], prop : ['WebKit', 'webkit', 'moz', 'o', 'ms'] },
         // native utilities caching
         objToString = Object.prototype.toString,
         arraySlice = Array.prototype.slice,
@@ -37,8 +37,8 @@
         TYPE_ATTR = 'data-uijet-type',
         ATTR_PREFIX = 'data-uijet-',
         TOP_ADAPTER_NAME = 'TopAdapter',
-        getPrefixed = function (name, obj, is_upper) {
-            var cases = BROWSER_PREFIX[is_upper ? 'upper' : 'lower'],
+        getPrefixed = function (name, obj, is_prop) {
+            var cases = BROWSER_PREFIX[is_prop ? 'prop' : 'style'],
                 len = cases.length, prop;
             while ( len-- ) {
                 if ( prop = obj[cases[len] + name] ) {
@@ -537,7 +537,7 @@
     // Otherwise it returns `null` to indicate a lack of support.
     function getStyleProperty (prop) {
         var style = _window.document.body.style,
-            cases = BROWSER_PREFIX.upper,
+            cases = BROWSER_PREFIX.style,
             prefix, res, i = 0;
         if ( prop in style) return prop;
         prop = prop[0].toUpperCase() + prop.slice(1);
@@ -580,7 +580,7 @@
                 return name ? ({
                     transition      : 'transitionend',
                     MozTransition   : 'transitionend',
-                    WebkitTransition: 'webkitTransitionEnd',
+                    webkitTransition: 'webkitTransitionEnd',
                     OTransition     : 'OTransitionEnd',
                     msTransition    : 'MSTransitionEnd'
                 })[name] : name;
