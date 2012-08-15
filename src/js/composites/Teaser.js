@@ -139,7 +139,7 @@
             var dfrd,
                 that = this;
             if ( this.options.cycle && this.templated ) {
-                dfrd = uijet.Promises();
+                dfrd = uijet.Promise();
                 uijet.when(this._super()).then(function () {
                     that._prepareSlides();
                     dfrd.resolve();
