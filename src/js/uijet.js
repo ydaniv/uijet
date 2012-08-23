@@ -1014,13 +1014,13 @@
                     l = _adapters.length;
                     // extend this instance with these adapters
                     while ( l-- ) {
-                        extend(_w, adapters[_adapters[l]]);
+                        extend(true, _w, adapters[_adapters[l]]);
                     }
                 }
                 // check for a top-adapter
                 if ( adapters[TOP_ADAPTER_NAME] ) {
                     // extend this instance with the top-adapter
-                    extend(_w, adapters[TOP_ADAPTER_NAME]);
+                    extend(true, _w, adapters[TOP_ADAPTER_NAME]);
                 }
                 // init the instance
                 _w.init(_config);
