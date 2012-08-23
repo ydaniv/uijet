@@ -12,7 +12,7 @@
         pushed  : true,
         init    : function () {
             var push_config;
-            this._super();
+            this._super.apply(this, arguments);
             push_config = this.options.push_config;
             if ( push_config && push_config.open_on_init ) {
                 this.open();
@@ -31,14 +31,14 @@
             if ( ! (push_config && push_config.keep_open) ) {
                 this.close();
             }
-            return this._super();
+            return this._super.apply(this, arguments);
         },
         destroy : function () {
             this.close();
-            return this._super();
+            return this._super.apply(this, arguments);
         },
         getPushUrl: function () {
-            return uijet.Utils.returnOf(this.options.push_config.url);
+            return uijet.Utils.returnOf(this.options.push_config.url, this, this.context);
         },
         open    : function (restart) {
             return this;
