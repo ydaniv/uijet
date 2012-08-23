@@ -36,7 +36,7 @@
             // make visible
             this._setCloak(false);
             // start transitioning in
-            $.when( this.transit('in') ).then(function () {
+            uijet.when( this.transit('in') ).then(function () {
                 _super.call(that);
             });
             return this;
@@ -92,7 +92,7 @@
         },
         sleepContained  : function () {
             var _super = this._super, that = this;
-            $.when ( this.dfrd_transit.promise() ).then( function () {
+            uijet.when ( this.dfrd_transit.promise() ).then( function () {
                 _super.call(that);
             });
             return this;

@@ -1,13 +1,13 @@
 // ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'jquery'], function (uijet, $) {
-            return factory(uijet, $);
+        define(['uijet_dir/uijet'], function (uijet) {
+            return factory(uijet);
         });
     } else {
-        factory(uijet, jQuery);
+        factory(uijet);
     }
-}(function (uijet, $) {
+}(function (uijet) {
     uijet.Mixin('Updated', {
         updated : true,
         wake    : function (context) {
