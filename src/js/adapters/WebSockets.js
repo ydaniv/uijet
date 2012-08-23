@@ -10,10 +10,13 @@
     uijet.Adapter('WebSockets', {
         open            : function (restart) {
             var push_config = this.options.push_config;
-            this.socket_promise = uijet.Promise();
             if ( restart ) {
                 this.socket && this.socket.close();
                 delete this.socket;
+                delete this.socket_promise;
+            }
+            if ( ! this.socket_promise || this.socket_promise.state() === 'rejected' ) {
+                this.socket_promise = uijet.Promise();
             }
             if ( ! this.socket ) {
                 this.socket = new WebSocket(this.getPushUrl(), push_config && uijet.Utils.returnOf(push_config.protocols, this));
@@ -37,16 +40,16 @@
                 this.socket.send(msg);
             } else {
                 uijet.when( this.open() )
-                    .then(this.send.bind(this));
+                    .then(this.send.bind(this, msg));
             }
             return this;
         },
         _openHandler    : function (e) {
             this.socket_promise.resolve(e);
-            this.notify(true, 'socket_opened', e);
+            this.notify(true, 'socket_open', e);
         },
         _closeHandler   : function (e) {
-            this.notify(true, 'socket_closed', e);
+            this.notify(true, 'socket_close', e);
         },
         _messageHandler : function (e) {
             this.notify(true, 'socket_message', e);
