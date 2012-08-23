@@ -187,13 +187,15 @@
         _setTimeout     : function (reset) {
             var that = this,
                 delay = this.options.delay;
-            if ( reset && this.timeout ) {
-                clearTimeout(this.timeout);
+            if ( delay ) {
+                if ( reset && this.timeout ) {
+                    clearTimeout(this.timeout);
+                }
+                this.timeout = setTimeout(function _next() {
+                    that.next();
+                    that.timeout = setTimeout(_next, delay * 1000);
+                }, delay * 1000);
             }
-            this.timeout = setTimeout(function _next() {
-                that.next();
-                that.timeout = setTimeout(_next, delay * 1000);
-            }, delay * 1000);
             return this;
         },
         _fixPosition    : function () {
@@ -227,6 +229,7 @@
                 this.jumpTo(1);
             } else {
                 this.$slides = $slides;
+                $first = $slides.eq(0);
             }
             $first.addClass('current');
         }
