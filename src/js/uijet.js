@@ -31,7 +31,8 @@
         resources = {},
         // caching built predefined widgets' classes
         widget_classes = {},
-        // caching pre-built predefined widgets' classes
+        // caching pre-built predefined widgets' classes  
+        // `{ proto : widget_prototype, deps : dependencies }`
         widget_definitions = {},
         // constants
         TYPE_ATTR = 'data-uijet-type',
@@ -987,7 +988,7 @@
                 return _dfrd_start.promise();
             } else {
                 // do start  
-                // if we have mixins configred to mix
+                // if we have mixins configured to mix
                 if ( _mixins = toArray(_config.mixins) ) {
                     // get the stored widget class
                     _d = widget_definitions[_type];
@@ -1001,6 +1002,8 @@
                             _mixins = _d.deps.concat(_mixins);
                         }
                     }
+                    //TODO: here we can check if we have _type + _widgets.join('') + _mixins.join('') as key in cache
+                        // and use that class. If we don't have it we can cache _c under that key.
                     // create a new class from the joined definitions
                     _c = this._generateWidget(_d.proto, _mixins, _widgets);
                 } else {
