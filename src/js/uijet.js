@@ -859,10 +859,19 @@
             // add registry object to the sandbox's store
             // if the registry exists
             if ( _id in widgets ) {
-                // set reference to the widget's instance
-                widgets[_id].self || (widgets[_id].self = widget);
-                // init contained if needed
-                widgets[_id].contained || (widgets[_id].contained = []);
+                // if there's an instance
+                if ( widgets[_id].self ) {
+                    // destroy!
+                    widgets[_id].self.destroy();
+                    // since desrtoy just unregistered this widget
+                    widgets[_id] = _current;
+                }
+                else {
+                    // set reference to the widget's instance
+                    widgets[_id].self = widget;
+                    // init contained if needed
+                    widgets[_id].contained || (widgets[_id].contained = []);
+                }
             }
             // or create a new registry
             else {
