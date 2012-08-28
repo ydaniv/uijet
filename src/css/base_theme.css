@@ -160,7 +160,7 @@ body {
 .uijet_form label.error {
     color: #ee2d2d;
 }
-.uijet_form input[type=text] {
+.uijet_form input[type=text], .uijet_form textarea {
     border-radius: 6px;
     border: none;
     border-top: 1px solid gray;
