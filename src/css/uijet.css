@@ -148,7 +148,7 @@ h1, h2, h3, h4, h5, p, ul {
 .uijet_list.horizontal.align_right li {
     float: right;
 }
-.uijet_pane, .uijet_routed_content_pane {
+.uijet_pane {
     width: 100%;
     height: 100%;
 }
