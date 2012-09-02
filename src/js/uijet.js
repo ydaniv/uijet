@@ -1068,14 +1068,14 @@
                         for ( var n = 0 ; _m = _m_list[n++] ; ) {
                             // grab each one and add it if it wasn't loaded before and not already in the list
                             _m_type = adapters_prefix + _m;
-                            (adapters[_m_list] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
+                            (adapters[_m] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
                         }
                     }
                     // check for mixins option and give it the same treatment like we did with adapters
                     if ( _m_list = toArray(_w.config.mixins) ) {
                         for ( n = 0 ; _m = _m_list[n++] ; ) {
                             _m_type = mixins_prefix + _m;
-                            (mixins[_m_list] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
+                            (mixins[_m] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
                         }
                     }
                 }
