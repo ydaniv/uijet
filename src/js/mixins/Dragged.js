@@ -36,7 +36,8 @@
                 $drag_element = this._getDragElement(),
                 // set the delay in ms
                 delay = this.options.drag_delay || 150,
-                START_E, MOVE_E, END_E, $clone;
+                is_cloned = that.options.drag_clone,
+                START_E, MOVE_E, END_E, $dragee;
             // set the events names
             if ( has_touch ) {
                 START_E = 'touchstart';
@@ -50,9 +51,7 @@
             // set the start event on the drag_element, if set, or the top container
             ($drag_element && $drag_element.length ? $drag_element : $el).one(START_E, function (down_e) {
                 // clone if required to
-                if ( that.options.drag_clone ) {
-                    $clone = $el.clone();
-                }
+                $dragee = is_cloned ? $el.clone() : $el;
                 // get the start event object  
                 //TODO: this is adapted for iPad touch event object handling, need to test/implement the rest
                 var down_pos = has_touch ? down_e.originalEvent.touches[0] : down_e,
@@ -60,7 +59,7 @@
                     start_event_pos = { y : down_pos.pageY, x : down_pos.pageX },
                     el = $el[0],
                     $doc = $(document),
-                    clone = $clone && $clone[0],
+                    dragee = $dragee[0],
                     start_time = down_e.timeStamp,
                     // a lambda for checking if the set delay time has passed
                     delayHandler = function (move_e) {
@@ -97,12 +96,12 @@
                         // remove the delay test handlers
                         cancelHandler();
                         // prepare the visual dragee
-                        that._initDragee($el, $clone);
-                        if ( clone ) {
-                            el = clone;
+                        that._initDragee($el, $dragee);
+                        if ( is_cloned ) {
+                            el = dragee;
                         }
                         // notify user of start
-                        that.notify(true, 'post_drag_start', down_e, $clone);
+                        that.notify(true, 'post_drag_start', down_e, $dragee);
                         // bind the move handler to the drag move event
                         $doc.on(MOVE_E, function (move_e) {
                             // On iPad this captures the event and prevent trickling - so quick-fix is to prevent default
@@ -129,7 +128,7 @@
                             over_callback && over_callback.call(that, move_e, {
                                 dx  : x_pos,
                                 dy  : y_pos
-                            }, $clone);
+                            }, $dragee);
                         //bind the drag end handler to a single end event
                         }).one(END_E, function (up_e) {
                             var up_pos, end_position;
@@ -146,10 +145,10 @@
                                 };
                                 that.dragging = false;
                                 // notify user of drag end
-                                if ( that.notify(true, 'post_drag_end', up_e, end_position, $clone) !== false ) {
+                                if ( that.notify(true, 'post_drag_end', up_e, end_position, $dragee) !== false && is_cloned ) {
                                     // if not specified otherwise remove and delete the clone
-                                    $clone.remove();
-                                    $clone = null;
+                                    $dragee.remove();
+                                    $dragee = null;
                                 }
                             }
                             // clear end event handlers
@@ -170,28 +169,28 @@
             return this;
         },
         // ### widget._initDragee
-        // @sign: _initDragee($original, $clone)  
+        // @sign: _initDragee($original, $dragee)  
         // @return: this
         //
-        // Initializes the dragged clone element. Sets its position, dimensions and other styles.
-        _initDragee      : function ($orig, $clone) {
+        // Initializes the dragged element. Sets its position, dimensions and other styles.
+        _initDragee      : function ($orig, $dragee) {
             var parent = this.options.drag_parent || uijet.$element[0],
-                orig, offset;
-            // if `$clone` is supplied
-            if ( $clone ) {
-                orig = $orig[0];
-                // get the offset of the original element from the `uijet.$element`
-                offset = uijet.Utils.getOffsetOf(orig, parent);
-                // set the position and dimensions of the `$clone`
-                $clone[0].style.cssText += 'left:' + offset.x +
-                                            'px;top:' + offset.y +
-                                            'px;width:' + orig.offsetWidth +
-                                            'px;height:' + orig.offsetHeight + 'px';
-            }
+                orig = $orig[0],
+                dragee = $dragee[0],
+                offset;
+            // get the offset of the original element from the `uijet.$element`
+            offset = uijet.Utils.getOffsetOf(orig, parent);
+            // set the position and dimensions of the `$dragee`
+            dragee.style.cssText += 'left:' + offset.x +
+                                    'px;top:' + offset.y +
+                                    'px;width:' + orig.offsetWidth +
+                                    'px;height:' + orig.offsetHeight + 'px';
             // add the `uijet_dragee` class to the dragged element
-            ($clone || $orig).addClass('uijet_dragee')
-                            // and append it the `uijet.$element`
-                             .appendTo(parent);
+            $dragee.addClass('uijet_dragee');
+            // and append it the `uijet.$element` if needed
+            if ( dragee.parentNode !== parent ) {
+                $dragee.appendTo(parent);
+            }
             return this;
         },
         // ### widget._getDragElement
