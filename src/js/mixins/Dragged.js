@@ -37,7 +37,7 @@
                 // set the delay in ms
                 delay = this.options.drag_delay || 150,
                 is_cloned = that.options.drag_clone,
-                START_E, MOVE_E, END_E, $dragee;
+                old_style_value, START_E, MOVE_E, END_E, $dragee;
             // set the events names
             if ( has_touch ) {
                 START_E = 'touchstart';
@@ -50,8 +50,17 @@
             }
             // set the start event on the drag_element, if set, or the top container
             ($drag_element && $drag_element.length ? $drag_element : $el).one(START_E, function (down_e) {
-                // clone if required to
-                $dragee = is_cloned ? $el.clone() : $el;
+                if ( is_cloned ) {
+                    // clone if required to
+                    $dragee = $el.clone();
+                }
+                // if not cloned
+                else {
+                    // the dragee is the element itself
+                    $dragee = $el;
+                    // save the old position
+                    old_style_value = window.getComputedStyle($dragee[0], null).getPropertyValue(style_prop);
+                }
                 // get the start event object  
                 //TODO: this is adapted for iPad touch event object handling, need to test/implement the rest
                 var down_pos = has_touch ? down_e.originalEvent.touches[0] : down_e,
@@ -116,6 +125,7 @@
                                 //TODO: make the animation property value (translate, etc.) as a return value of a generic method of uijet  
                                 //TODO: add option to opt or fallback to top/left  
                                 var trans;
+                                //TODO: this will override other transforms
                                 // if `axis` is set then animate only along that axis
                                 if ( axis ) {
                                     el.style[style_prop] = 'translate' + axis + '(' + (axis === 'X' ? x_pos : y_pos) + 'px)';
@@ -149,6 +159,10 @@
                                     // if not specified otherwise remove and delete the clone
                                     $dragee.remove();
                                     $dragee = null;
+                                }
+                                if ( ! is_cloned ) {
+                                    $dragee.removeClass('uijet_dragee');
+                                    $dragee[0].style[style_prop] = old_style_value;
                                 }
                             }
                             // clear end event handlers
