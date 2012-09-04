@@ -576,6 +576,8 @@
             touch           : (function () {
                 return ('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch;
             }()),
+            transform       : !!getStyleProperty('transform'),
+            transition      : !!getStyleProperty('transition'),
             '3d'            : !!getStyleProperty('perspective'),
             transitionend   : (function (name) {
                 return name ? ({
