@@ -200,10 +200,10 @@
                                     'px;width:' + orig.offsetWidth +
                                     'px;height:' + orig.offsetHeight + 'px';
             // add the `uijet_dragee` class to the dragged element
-            $dragee.addClass('uijet_dragee');
+            dragee.classList.add('uijet_dragee');
             // and append it the `uijet.$element` if needed
             if ( dragee.parentNode !== parent ) {
-                $dragee.appendTo(parent);
+                parent.appendChild(dragee);
             }
             return this;
         },
