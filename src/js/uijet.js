@@ -175,6 +175,29 @@
         });
         return obj;
     }
+    // ### Utils.getStyle
+    // @sign: getStyle(el)
+    // @return: `CSSStyleDeclaration`
+    // Gets the computed style object (`CSSStyleDeclaration`) of an `HTMLElement` `el`.
+    //
+    // @sign: getStyle(el, prop)
+    // @return: css_value
+    // Gets the computed value of the given style `prop` for element `el`.
+    //
+    // @sign: getStyle(el, prop || `null`, pseudo)
+    // @return: `CSSStyleDeclaration` OR css_value
+    // Gets the computed style object of a pseudo-element `pseudo` of an `HTMLElement` `el`.
+    // To get the entire style object use `null` for the `prop` argument.
+    //
+    // @sign: getStyle(el, prop || `null`, pseudo || `null`, win)
+    // @return: `CSSStyleDeclaration` OR css_value
+    // Gets the computed style object of a pseudo-element `pseudo` of an `HTMLElement` `el`, in `window` `win`.
+    // To get the entire style object use `null` for the `prop` argument.
+    // To get the style of the element use `null` for the `pseudo` argument.
+    function getStyle (el, prop, pseudo, win) {
+        var style = (win || _window).getComputedStyle(el, pseudo || null);
+        return prop ? style.getPropertyValue(prop) : style;
+    }
     // ### Utils.returnOf
     // Wrapper for checking if a variable is a function and return its returned value or else simply return it.
     function returnOf (arg, ctx) {
@@ -1641,6 +1664,7 @@
         isFunc          : isFunc,
         toArray         : toArray,
         returnOf        : returnOf,
+        getStyle        : getStyle,
         getStyleProperty: getStyleProperty,
         getOffsetOf     : getOffsetOf,
         // wrap these objects since they point to native objects which is forbidden  
