@@ -59,7 +59,7 @@
                     // the dragee is the element itself
                     $dragee = $el;
                     // save the old position
-                    old_style_value = window.getComputedStyle($dragee[0], null).getPropertyValue(style_prop);
+                    old_style_value = uijet.Utils.getStyle($dragee[0], style_prop);
                 }
                 // get the start event object  
                 //TODO: this is adapted for iPad touch event object handling, need to test/implement the rest
@@ -105,7 +105,7 @@
                         // remove the delay test handlers
                         cancelHandler();
                         // prepare the visual dragee
-                        that._initDragee($el, $dragee);
+                        that._initDragee($el, is_cloned && $dragee);
                         if ( is_cloned ) {
                             el = dragee;
                         }
@@ -190,7 +190,7 @@
         _initDragee      : function ($orig, $dragee) {
             var parent = this.options.drag_parent || uijet.$element[0],
                 orig = $orig[0],
-                dragee = $dragee[0],
+                dragee = $dragee ? $dragee[0] : orig,
                 offset;
             // get the offset of the original element from the `uijet.$element`
             offset = uijet.Utils.getOffsetOf(orig, parent);
