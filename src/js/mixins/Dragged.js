@@ -10,6 +10,7 @@
 }(function ($, uijet) {
     uijet.Mixin('Dragged', {
         dragged             : true,
+        _cached_drag_styles : ['top', 'left', 'width', 'height'],
         // ### widget.bindDrag
         // @sign: bindDrag([over_callback], [axis])  
         // @return: this
@@ -37,7 +38,8 @@
                 // set the delay in ms
                 delay = this.options.drag_delay || 150,
                 is_cloned = that.options.drag_clone,
-                old_style_value, START_E, MOVE_E, END_E, $dragee;
+                START_E, MOVE_E, END_E, $dragee;
+            this._cached_drag_styles.push(style_prop);
             // set the events names
             if ( has_touch ) {
                 START_E = 'touchstart';
@@ -58,8 +60,6 @@
                 else {
                     // the dragee is the element itself
                     $dragee = $el;
-                    // save the old position
-                    old_style_value = uijet.Utils.getStyle($dragee[0], style_prop);
                 }
                 // get the start event object  
                 //TODO: this is adapted for iPad touch event object handling, need to test/implement the rest
@@ -104,11 +104,15 @@
                         that.dragging = true;
                         // remove the delay test handlers
                         cancelHandler();
-                        // prepare the visual dragee
-                        that._initDragee($el, is_cloned && $dragee);
                         if ( is_cloned ) {
                             el = dragee;
                         }
+                        else {
+                            // if dragging the original cache its old style
+                            that._cacheStyle(dragee);
+                        }
+                        // prepare the visual dragee
+                        that._initDragee($el, is_cloned && $dragee);
                         // notify user of start
                         that.notify(true, 'post_drag_start', down_e, $dragee);
                         // bind the move handler to the drag move event
@@ -162,7 +166,7 @@
                                 }
                                 if ( ! is_cloned ) {
                                     $dragee.removeClass('uijet_dragee');
-                                    $dragee[0].style[style_prop] = old_style_value;
+                                    that._clearCachedStyle(dragee);
                                 }
                             }
                             // clear end event handlers
@@ -187,7 +191,7 @@
         // @return: this
         //
         // Initializes the dragged element. Sets its position, dimensions and other styles.
-        _initDragee      : function ($orig, $dragee) {
+        _initDragee         : function ($orig, $dragee) {
             var parent = this.options.drag_parent || uijet.$element[0],
                 orig = $orig[0],
                 dragee = $dragee ? $dragee[0] : orig,
@@ -213,7 +217,7 @@
         //
         // Checks if the `drag_element` option is set and returns a jQuery-wrapped element from it.
         // That drag start event will be contained to that element alone (defaults to the widget's top container).
-        _getDragElement : function () {
+        _getDragElement     : function () {
             var option, $el;
             // if the option is set
             if ( option = this.options.drag_element ) {
@@ -232,6 +236,36 @@
                 }
             }
             return $el;
+        },
+        // ### widget._cacheStyle
+        // @sign: _cacheStyle(el)  
+        // @return: this
+        //
+        // Caches the top, left, height and width style properties of the given `el` element.
+        _cacheStyle         : function (el) {
+            var style = uijet.Utils.getStyle(el),
+                i = 0, prop;
+            this.dragee_style_cache = {};
+            
+            for ( ; prop = this._cached_drag_styles[i++]; ) {
+                this.dragee_style_cache[prop] = style.getPropertyValue(prop);
+            }
+            return this;
+        },
+        // ### widget._clearCachedStyle
+        // @sign: _clearCachedStyle(el)  
+        // @return: this
+        //
+        // Re-sets the style properties of element `el` and deletes the old cache.
+        _clearCachedStyle   : function (el) {
+            var cache = this.dragee_style_cache,
+                style = uijet.Utils.getStyle(el),
+                prop;
+            for ( prop in cache ) {
+                style.setProperty(prop, cache[prop]);
+            }
+            delete this.dragee_style_cache;
+            return this;
         }
     });
 }));
