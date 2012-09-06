@@ -264,7 +264,7 @@
                 style = el.style,
                 prop;
             for ( prop in cache ) {
-                style.setProperty(prop, cache[prop]);
+                style[prop] = cache[prop];
             }
             delete this.dragee_style_cache;
             return this;
