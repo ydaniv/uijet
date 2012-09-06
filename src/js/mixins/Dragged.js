@@ -31,6 +31,7 @@
                 $el = (this.$wrapper || this.$element),
                 has_touch = uijet.support.touch,
                 requestAnimFrame = uijet.Utils.requestAnimFrame,
+                cancelAnimFrame = uijet.Utils.cancelAnimFrame,
                 // get the prefixed `transform` property
                 style_prop = uijet.Utils.getStyleProperty('transform'),
                 // get the element used for starting drag
@@ -124,7 +125,7 @@
                                 // calculate deltas
                                 x_pos = move_pos.pageX - start_event_pos.x,
                                 y_pos = move_pos.pageY - start_event_pos.y;
-                            requestAnimFrame(function () {
+                            that._last_drag_anim = requestAnimFrame(function () {
                                 //TODO: add transform support check  
                                 //TODO: make the animation property value (translate, etc.) as a return value of a generic method of uijet  
                                 //TODO: add option to opt or fallback to top/left  
@@ -165,6 +166,7 @@
                                     $dragee = null;
                                 }
                                 if ( ! is_cloned ) {
+                                    cancelAnimFrame(that._last_drag_anim);
                                     $dragee.removeClass('uijet_dragee');
                                     that._clearCachedStyle(dragee);
                                 }
@@ -259,7 +261,7 @@
         // Re-sets the style properties of element `el` and deletes the old cache.
         _clearCachedStyle   : function (el) {
             var cache = this.dragee_style_cache,
-                style = uijet.Utils.getStyle(el),
+                style = el.style,
                 prop;
             for ( prop in cache ) {
                 style.setProperty(prop, cache[prop]);
