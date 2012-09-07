@@ -102,9 +102,18 @@
                         .one(END_E, cancelHandler);
                     // if passed delay test activate draggable state
                     uijet.when(dfrd.promise()).then(function () {
+                        var continue_drag;
                         that.dragging = true;
                         // remove the delay test handlers
                         cancelHandler();
+                        // notify user drag is about to start
+                        continue_drag = that.notify(true, 'pre_drag_start', down_e, $dragee);
+                        // bail out
+                        if ( typeof continue_drag == 'boolean' ) {
+                            // if `true` re-bind drag, otherwise bind on a basis of drag_once option
+                            continue_drag ? that.bindDrag(over_callback, axis) : _finally();
+                            return;
+                        }
                         if ( is_cloned ) {
                             el = dragee;
                         }
@@ -114,7 +123,7 @@
                         }
                         // prepare the visual dragee
                         that._initDragee($el, is_cloned && $dragee);
-                        // notify user of start
+                        // notify user drag is started
                         that.notify(true, 'post_drag_start', down_e, $dragee);
                         // bind the move handler to the drag move event
                         $doc.on(MOVE_E, function (move_e) {
