@@ -375,7 +375,7 @@ h1, h2, h3, h4, h5, p, ul {
 }
 .uijet_dragee {
     position: absolute !important;
-    z-index: 1001;
+    z-index: 1001 !important;
     margin: 0 !important;
     -webkit-box-shadow: 0 0 8px 2px rgba(66, 66, 66, .5);
     -moz-box-shadow: 0 0 8px 2px rgba(66, 66, 66, .5);
