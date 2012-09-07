@@ -130,13 +130,15 @@
                                 //TODO: make the animation property value (translate, etc.) as a return value of a generic method of uijet  
                                 //TODO: add option to opt or fallback to top/left  
                                 var trans;
-                                //TODO: this will override other transforms
-                                // if `axis` is set then animate only along that axis
-                                if ( axis ) {
-                                    el.style[style_prop] = 'translate' + axis + '(' + (axis === 'X' ? x_pos : y_pos) + 'px)';
-                                } else {
-                                    trans = x_pos + 'px,' + y_pos+ 'px';
-                                    el.style[style_prop] = uijet.support['3d'] ? 'translate3d(' + trans + ',0)' : 'translate(' + trans + ')';
+                                if ( that.dragging ) {
+                                    //TODO: this will override other transforms
+                                    // if `axis` is set then animate only along that axis
+                                    if ( axis ) {
+                                        el.style[style_prop] = 'translate' + axis + '(' + (axis === 'X' ? x_pos : y_pos) + 'px)';
+                                    } else {
+                                        trans = x_pos + 'px,' + y_pos+ 'px';
+                                        el.style[style_prop] = uijet.support['3d'] ? 'translate3d(' + trans + ',0)' : 'translate(' + trans + ')';
+                                    }
                                 }
                             });
                             // call the over callback
