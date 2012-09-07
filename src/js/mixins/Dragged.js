@@ -38,7 +38,7 @@
                 $drag_element = this._getDragElement(),
                 // set the delay in ms
                 delay = this.options.drag_delay || 150,
-                is_cloned = that.options.drag_clone,
+                is_cloned = this.options.drag_clone,
                 START_E, MOVE_E, END_E, $dragee;
             this._cached_drag_styles.push(style_prop);
             // set the events names
@@ -83,8 +83,8 @@
                             dfrd.reject();
                         } else {
                             // remove the move and end handlers
-                            $doc.unbind(MOVE_E, delayHandler)
-                                .unbind(END_E, cancelHandler);
+                            $doc.off(MOVE_E, delayHandler)
+                                .off(END_E, cancelHandler);
                         }
                     },
                     // a callback to clean up
@@ -93,6 +93,8 @@
                         that.options.drag_once || that.bindDrag(over_callback, axis);
                     },
                     dfrd = uijet.Promise();
+                // notify user of drag start event - before dragging conditions (e.g. drag_delay) are met
+                that.notify(true, 'pre_drag_init', down_e, $dragee, start_event_pos);
                 // confine the dragging to the primary mouse button or touch
                 if ( has_touch || down_pos.which === 1 ) {
                     // in this stage we're just checking if this is really a case of dragging  
@@ -102,7 +104,7 @@
                         .one(END_E, cancelHandler);
                     // if passed delay test activate draggable state
                     uijet.when(dfrd.promise()).then(function () {
-                        var continue_drag;
+                        var continue_drag, moveHandler, endHandler;
                         that.dragging = true;
                         // remove the delay test handlers
                         cancelHandler();
@@ -125,13 +127,13 @@
                         that._initDragee($el, is_cloned && $dragee);
                         // notify user drag is started
                         that.notify(true, 'post_drag_start', down_e, $dragee);
-                        // bind the move handler to the drag move event
-                        $doc.on(MOVE_E, function (move_e) {
+                        // define the drag move handler
+                        moveHandler = function (move_e) {
                             // On iPad this captures the event and prevent trickling - so quick-fix is to prevent default
                             down_e.preventDefault();
                             // get the move event object
                             var move_pos = has_touch ? move_e.originalEvent.touches[0] : move_e,
-                                // calculate deltas
+                            // calculate deltas
                                 x_pos = move_pos.pageX - start_event_pos.x,
                                 y_pos = move_pos.pageY - start_event_pos.y;
                             that._last_drag_anim = requestAnimFrame(function () {
@@ -155,8 +157,9 @@
                                 dx  : x_pos,
                                 dy  : y_pos
                             }, $dragee);
-                        //bind the drag end handler to a single end event
-                        }).one(END_E, function (up_e) {
+                            //bind the drag end handler to a single end event
+                        };
+                        endHandler = function (up_e) {
                             var up_pos, end_position;
                             // if we passed the delay
                             if ( up_e.timeStamp - start_time >= delay ) {
@@ -186,7 +189,11 @@
                             $doc.off(MOVE_E);
                             // clean up
                             _finally();
-                        });
+                        };
+                        // bind the move handler to the drag move event
+                        $doc.on(MOVE_E, moveHandler)
+                            // bind the end hanler to the drag end event
+                            .one(END_E, endHandler);
                     // make sure we clean up if drag is rejected
                     }, function () {
                         cancelHandler();
