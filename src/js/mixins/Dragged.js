@@ -298,7 +298,7 @@
         //
         // Caches the top, left, height and width style properties of the given `el` element.
         _cacheStyle         : function (el) {
-            var style = uijet.Utils.getStyle(el),
+            var style = el.style,
                 i = 0, prop;
             this.dragee_style_cache = {};
             
