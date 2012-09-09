@@ -18,13 +18,13 @@
         // Sets the widget in a draggable state.  
         // `over_callback` is called every time the mouse/touchmove event is fired.  
         // The over callback takes the move event object as first argument, an `Object` with `dx` and `dy` properties
-        // for the x and y deltas respectively and the jQuery-wrapped clone of element as third argument.  
+        // for the x and y deltas respectively and the jQuery-wrapped dragged element, or it's clone, as third argument.  
         // If `axis` is supplied - as a `String`: `'X'` or `'Y'`- the drag will be enabled in that axis only.  
         // Callbacks for drag start and end can be registered via the signals `post_drag_start` and `post_drag_end`
         // respectively.
-        // The start callback takes the mousedown/touchstart event object as first argument and and the clone as second.  
+        // The start callback takes the mousedown/touchstart event object as first argument and and the dragged element or it's clone as second.  
         // The end callback takes the mouseup/touchend event objet as first argument, the end position object -
-        // with the keys: x, y, dx, dy - as second and the clone as third argument.
+        // with the keys: x, y, dx, dy - as second and the dragged element or it's clone as third argument.
         bindDrag            : function (over_callback, axis) {
             var that = this,
                 // get the top container of the widget
