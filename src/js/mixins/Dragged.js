@@ -74,10 +74,20 @@
             var that = this,
                 // get the top container of the widget
                 $el = (this.$wrapper || this.$element),
+                el = $el[0],
                 // set the delay in ms
                 delay = this.options.drag_delay || 150,
                 is_cloned = this.options.drag_clone,
-                START_E, MOVE_E, END_E, $dragee;
+                // get the start event object  
+                //TODO: this is adapted for iPad touch event object handling, need to test/implement the rest
+                down_pos = has_touch ? down_e.originalEvent.touches[0] : down_e,
+                // set position
+                start_event_pos = { y : down_pos.pageY, x : down_pos.pageX },
+                $doc = $(document),
+                dfrd = uijet.Promise(),
+                start_time = down_e.timeStamp,
+                _finally, delayHandler, cancelHandler,
+                MOVE_E, END_E, $dragee, dragee;
             this._cached_drag_styles.push(style_prop);
             // set the events names
             if ( has_touch ) {
@@ -96,37 +106,30 @@
                 // the dragee is the element itself
                 $dragee = $el;
             }
-            // get the start event object  
-            //TODO: this is adapted for iPad touch event object handling, need to test/implement the rest
-            var down_pos = has_touch ? down_e.originalEvent.touches[0] : down_e,
-                // set position
-                start_event_pos = { y : down_pos.pageY, x : down_pos.pageX },
-                el = $el[0],
-                $doc = $(document),
-                dragee = $dragee[0],
-                start_time = down_e.timeStamp,
-                // a lambda for checking if the set delay time has passed
-                delayHandler = function (move_e) {
-                    if ( move_e.timeStamp - start_time >= delay ) dfrd.resolve();
-                },
-                // a callback for canceling the drag
-                cancelHandler = function (up_e) {
-                    // if the end event was fired before the delay
-                    if ( up_e && dfrd.state() === 'pending' && up_e.timeStamp - start_time < delay ) {
-                        // cancel the drag
-                        dfrd.reject();
-                    } else {
-                        // remove the move and end handlers
-                        $doc.off(MOVE_E, delayHandler)
-                            .off(END_E, cancelHandler);
-                    }
-                },
-                // a callback to clean up
-                _finally = function () {
-                    // set again as draggable unless requested not to
-                    that.options.drag_once || that.bindDrag(that._dragover_callback, that._drag_axis);
-                },
-                dfrd = uijet.Promise();
+            dragee = $dragee[0];
+
+            // a lambda for checking if the set delay time has passed
+            delayHandler = function (move_e) {
+                if ( move_e.timeStamp - start_time >= delay ) dfrd.resolve();
+            };
+            // a callback for canceling the drag
+            cancelHandler = function (up_e) {
+                // if the end event was fired before the delay
+                if ( up_e && dfrd.state() === 'pending' && up_e.timeStamp - start_time < delay ) {
+                    // cancel the drag
+                    dfrd.reject();
+                } else {
+                    // remove the move and end handlers
+                    $doc.off(MOVE_E, delayHandler)
+                        .off(END_E, cancelHandler);
+                }
+            };
+            // a callback to clean up
+            _finally = function () {
+                // set again as draggable unless requested not to
+                that.options.drag_once || that.bindDrag(that._dragover_callback, that._drag_axis);
+            };
+
             // notify user of drag start event - before dragging conditions (e.g. drag_delay) are met
             this.notify(true, 'pre_drag_init', down_e, $dragee, start_event_pos);
             // confine the dragging to the primary mouse button or touch
@@ -168,29 +171,14 @@
                         // get the move event object
                         var move_pos = has_touch ? move_e.originalEvent.touches[0] : move_e,
                             // calculate deltas
-                            x_pos = move_pos.pageX - start_event_pos.x,
-                            y_pos = move_pos.pageY - start_event_pos.y;
-                        that._last_drag_anim = requestAnimFrame(function () {
-                            //TODO: add transform support check  
-                            //TODO: make the animation property value (translate, etc.) as a return value of a generic method of uijet  
-                            //TODO: add option to opt or fallback to top/left  
-                            var trans;
-                            if ( that.dragging ) {
-                                //TODO: this will override other transforms
-                                // if `axis` is set then animate only along that axis
-                                if ( that._drag_axis ) {
-                                    el.style[style_prop] = 'translate' + that._drag_axis + '(' + (that._drag_axis === 'X' ? x_pos : y_pos) + 'px)';
-                                } else {
-                                    trans = x_pos + 'px,' + y_pos+ 'px';
-                                    el.style[style_prop] = uijet.support['3d'] ? 'translate3d(' + trans + ',0)' : 'translate(' + trans + ')';
-                                }
-                            }
-                        });
+                            deltas = {
+                                dx  : move_pos.pageX - start_event_pos.x,
+                                dy  : move_pos.pageY - start_event_pos.y
+                            };
+                        // move the element to its new position using deltas (dx, dy)
+                        that._drag(el, deltas);
                         // call the over callback
-                        that._dragover_callback && that._dragover_callback(move_e, {
-                            dx  : x_pos,
-                            dy  : y_pos
-                        }, $dragee);
+                        that._dragover_callback && that._dragover_callback(move_e, deltas, $dragee);
                     };
                     endHandler = function (up_e) {
                         var up_pos, end_position;
@@ -291,6 +279,34 @@
                 $el = (this.$wrapper || this.$element);
             }
             return $el;
+        },
+        // ### widget._drag
+        // @sign: _drag(el, deltas)  
+        // @return: this
+        //
+        // Moves the element `ele to its new position.using `deltas`
+        _drag               : function (el, deltas) {
+            var that = this;
+            this._last_drag_anim = requestAnimFrame(function () {
+                //TODO: add transform support check  
+                //TODO: make the animation property value (translate, etc.) as a return value of a generic method of uijet  
+                //TODO: add option to opt or fallback to top/left  
+                var trans;
+                if ( that.dragging ) {
+                    //TODO: this will override other transforms
+                    // if `axis` is set then animate only along that axis
+                    if ( that._drag_axis ) {
+                        trans = that._drag_axis === 'X' ? deltas.dx : deltas.dy;
+                        el.style[style_prop] = 'translate' + that._drag_axis + '(' + trans + 'px)';
+                    } else {
+                        trans = deltas.dx + 'px,' + deltas.dy+ 'px';
+                        el.style[style_prop] = uijet.support['3d'] ?
+                            'translate3d(' + trans + ',0)' :
+                            'translate(' + trans + ')';
+                    }
+                }
+            });
+            return this;
         },
         // ### widget._cacheStyle
         // @sign: _cacheStyle(el)  
