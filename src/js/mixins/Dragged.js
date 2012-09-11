@@ -294,8 +294,9 @@
         _getScrolledParent  : function (el) {
             var parent = el.parentNode,
                 scrolled_re = /auto|scroll/,
+                top_parent = document.documentElement,
                 overflow;
-            while ( parent && parent != document ) {
+            while ( parent && parent != top_parent ) {
                 overflow = uijet.Utils.getStyle(parent, 'overflow');
                 if ( scrolled_re.test(overflow) ) {
                     break;
