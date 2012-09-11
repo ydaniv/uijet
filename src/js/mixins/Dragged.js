@@ -87,8 +87,10 @@
                 dfrd = uijet.Promise(),
                 start_time = down_e.timeStamp,
                 _finally, delayHandler, cancelHandler,
-                MOVE_E, END_E, $dragee, dragee;
+                MOVE_E, END_E, $draggee, draggee;
             this._cached_drag_styles.push(style_prop);
+            // get the scrolled parent of this element
+            this._scrolled_parent = this._getScrolledParent(el);
             // set the events names
             if ( has_touch ) {
                 MOVE_E = 'touchmove';
@@ -99,14 +101,14 @@
             }
             if ( is_cloned ) {
                 // clone if required to
-                $dragee = $el.clone();
+                $draggee = $el.clone();
             }
             // if not cloned
             else {
-                // the dragee is the element itself
-                $dragee = $el;
+                // the draggee is the element itself
+                $draggee = $el;
             }
-            dragee = $dragee[0];
+            draggee = $draggee[0];
 
             // a lambda for checking if the set delay time has passed
             delayHandler = function (move_e) {
@@ -131,7 +133,7 @@
             };
 
             // notify user of drag start event - before dragging conditions (e.g. drag_delay) are met
-            this.notify(true, 'pre_drag_init', down_e, $dragee, start_event_pos);
+            this.notify(true, 'pre_drag_init', down_e, $draggee, start_event_pos);
             // confine the dragging to the primary mouse button or touch
             if ( has_touch || down_pos.which === 1 ) {
                 // in this stage we're just checking if this is really a case of dragging  
@@ -146,7 +148,7 @@
                     // remove the delay test handlers
                     cancelHandler();
                     // notify user drag is about to start
-                    continue_drag = that.notify(true, 'pre_drag_start', down_e, $dragee);
+                    continue_drag = that.notify(true, 'pre_drag_start', down_e, $draggee);
                     // bail out
                     if ( typeof continue_drag == 'boolean' ) {
                         // if `true` re-bind drag, otherwise bind on a basis of drag_once option
@@ -154,16 +156,16 @@
                         return;
                     }
                     if ( is_cloned ) {
-                        el = dragee;
+                        el = draggee;
                     }
                     else {
                         // if dragging the original cache its old style
-                        that._cacheStyle(dragee);
+                        that._cacheStyle(draggee);
                     }
-                    // prepare the visual dragee
-                    that._initDragee($el, is_cloned && $dragee);
+                    // prepare the visual draggee
+                    that._initdraggee($el, is_cloned && $draggee);
                     // notify user drag is started
-                    that.notify(true, 'post_drag_start', down_e, $dragee);
+                    that.notify(true, 'post_drag_start', down_e, $draggee);
                     // define the drag move handler
                     moveHandler = function (move_e) {
                         // On iPad this captures the event and prevent trickling - so quick-fix is to prevent default
@@ -178,7 +180,7 @@
                         // move the element to its new position using deltas (dx, dy)
                         that._drag(el, deltas);
                         // call the over callback
-                        that._dragover_callback && that._dragover_callback(move_e, deltas, $dragee);
+                        that._dragover_callback && that._dragover_callback(move_e, deltas, $draggee);
                     };
                     endHandler = function (up_e) {
                         var up_pos, end_position;
@@ -195,15 +197,15 @@
                             };
                             that.dragging = false;
                             // notify user of drag end
-                            if ( that.notify(true, 'post_drag_end', up_e, end_position, $dragee) !== false && is_cloned ) {
+                            if ( that.notify(true, 'post_drag_end', up_e, end_position, $draggee) !== false && is_cloned ) {
                                 // if not specified otherwise remove and delete the clone
-                                $dragee.remove();
-                                $dragee = null;
+                                $draggee.remove();
+                                $draggee = null;
                             }
                             if ( ! is_cloned ) {
                                 cancelAnimFrame(that._last_drag_anim);
-                                $dragee.removeClass('uijet_dragee');
-                                that._clearCachedStyle(dragee);
+                                $draggee.removeClass('uijet_draggee');
+                                that._clearCachedStyle(draggee);
                             }
                         }
                         // clear end event handlers
@@ -225,28 +227,28 @@
                 _finally();
             }
         },
-        // ### widget._initDragee
-        // @sign: _initDragee($original, $dragee)  
+        // ### widget._initdraggee
+        // @sign: _initdraggee($original, $draggee)  
         // @return: this
         //
         // Initializes the dragged element. Sets its position, dimensions and other styles.
-        _initDragee         : function ($orig, $dragee) {
+        _initdraggee         : function ($orig, $draggee) {
             var parent = this.options.drag_parent || uijet.$element[0],
                 orig = $orig[0],
-                dragee = $dragee ? $dragee[0] : orig,
+                draggee = $draggee ? $draggee[0] : orig,
                 offset;
             // get the offset of the original element from the `uijet.$element`
             offset = uijet.Utils.getOffsetOf(orig, parent);
-            // set the position and dimensions of the `$dragee`
-            dragee.style.cssText += 'left:' + offset.x +
+            // set the position and dimensions of the `$draggee`
+            draggee.style.cssText += 'left:' + offset.x +
                                     'px;top:' + offset.y +
                                     'px;width:' + orig.offsetWidth +
                                     'px;height:' + orig.offsetHeight + 'px';
-            // add the `uijet_dragee` class to the dragged element
-            dragee.classList.add('uijet_dragee');
+            // add the `uijet_draggee` class to the dragged element
+            draggee.classList.add('uijet_draggee');
             // and append it the `uijet.$element` if needed
-            if ( dragee.parentNode !== parent ) {
-                parent.appendChild(dragee);
+            if ( draggee.parentNode !== parent ) {
+                parent.appendChild(draggee);
             }
             return this;
         },
@@ -279,6 +281,24 @@
                 $el = (this.$wrapper || this.$element);
             }
             return $el;
+        },
+        // ### widget._getScrolledParent
+        // @sign: _getScrolledParent(el)  
+        // @return: scrolled_parent
+        //
+        // Returns the scrolled parent element of the element `el`.
+        _getScrolledParent  : function (el) {
+            var parent = el.parentNode,
+                scrolled_re = /auto|scroll/,
+                overflow;
+            while ( parent && parent != document ) {
+                overflow = uijet.Utils.getStyle(parent, 'overflow');
+                if ( scrolled_re.test(overflow) ) {
+                    break;
+                }
+                parent = parent.parentNode;
+            }
+            return parent;
         },
         // ### widget._drag
         // @sign: _drag(el, deltas)  
@@ -316,10 +336,10 @@
         _cacheStyle         : function (el) {
             var style = el.style,
                 i = 0, prop;
-            this.dragee_style_cache = {};
+            this.draggee_style_cache = {};
             
             for ( ; prop = this._cached_drag_styles[i++]; ) {
-                this.dragee_style_cache[prop] = style.getPropertyValue(prop);
+                this.draggee_style_cache[prop] = style.getPropertyValue(prop);
             }
             return this;
         },
@@ -329,13 +349,13 @@
         //
         // Re-sets the style properties of element `el` and deletes the old cache.
         _clearCachedStyle   : function (el) {
-            var cache = this.dragee_style_cache,
+            var cache = this.draggee_style_cache,
                 style = el.style,
                 prop;
             for ( prop in cache ) {
                 style[prop] = cache[prop];
             }
-            delete this.dragee_style_cache;
+            delete this.draggee_style_cache;
             return this;
         }
     });
