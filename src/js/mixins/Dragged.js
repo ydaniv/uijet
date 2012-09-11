@@ -91,6 +91,10 @@
             this._cached_drag_styles.push(style_prop);
             // get the scrolled parent of this element
             this._scrolled_parent = this._getScrolledParent(el);
+            this._initial_scroll = {
+                y   : this._scrolled_parent.scrollTop,
+                x   : this._scrolled_parent.scrollLeft
+            };
             // set the events names
             if ( has_touch ) {
                 MOVE_E = 'touchmove';
@@ -174,8 +178,8 @@
                         var move_pos = has_touch ? move_e.originalEvent.touches[0] : move_e,
                             // calculate deltas
                             deltas = {
-                                dx  : move_pos.pageX - start_event_pos.x,
-                                dy  : move_pos.pageY - start_event_pos.y
+                                dx  : move_pos.pageX - start_event_pos.x + that._scrolled_parent.scrollLeft - that._initial_scroll.x,
+                                dy  : move_pos.pageY - start_event_pos.y + that._scrolled_parent.scrollTop - that._initial_scroll.y
                             };
                         // move the element to its new position using deltas (dx, dy)
                         that._drag(el, deltas);
