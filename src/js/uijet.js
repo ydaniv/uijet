@@ -150,7 +150,7 @@
     // if no arguments are supplied then return `undefined`
     function toArray (obj) {
         var arr;
-        if ( isArgs(obj) ) {
+        if ( isArgs(obj) || /object .*List/.test(objToString.call(obj)) ) {
             // convert to `Array`
             arr = arraySlice.call(obj);
         } else if ( isArr(obj) ) {
