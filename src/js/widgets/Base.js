@@ -196,8 +196,7 @@
             // unregister from uijet
             this.unregister()
             // remove DOM elements
-                .remove()
-                ._finally();
+                .remove();
             return this;
         },
         // ### widget.destroyContained
