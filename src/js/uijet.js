@@ -584,6 +584,29 @@
                 })[name] : name;
             }([getStyleProperty('transition')]))
         },
+        // ### uijet.use
+        // @sign: use(props, host, [context])  
+        // @return: uijet
+        //
+        // Adds functionality to another object `host` by extending it with the `props` object.  
+        // If `host` is not specified or `null` it's the `uijet` object by default.  
+        // If `context` object is specified the properties of `props` are coppied and all methods will be bound to it.
+        use                 : function (props, host, context) {
+            // get the host object or use uijet
+            var _host = host || this, m, dup;
+            // if `context` is an `object`
+            if ( isObj(context) ) {
+                dup = {};
+                // loop over `props`
+                for ( m in props ) {
+                    // create a duplicate of `props` and bind every method to `context`
+                    dup[m] = isFunc(props[m]) ? props[m].bind(context) : props[m];
+                }
+            }
+            // extend `host` with the duplicate or simply `props`
+            extend(true, _host, dup || props);
+            return this;
+        },
         // ### uijet.Widget
         // @sign: Widget(name, props, [deps])  
         // @return: uijet
