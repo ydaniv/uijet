@@ -28,7 +28,6 @@
         views = {},
         visualizers = {},
         serializers = {},
-        resources = {},
         // caching built predefined widgets' classes
         widget_classes = {},
         // caching pre-built predefined widgets' classes  
@@ -495,33 +494,6 @@
         }
     };
 
-    function Resource (config) {
-        this.signals_cache = {};
-        this.signals = Object.create(this.signals_cache);
-        extend(this, config);
-    }
-
-    Resource.prototype = {
-        constructor : Resource,
-        defer           : function (promise, callback, error) {
-            // if we did not get a callback param
-            if ( ! callback ) {
-                // use `fetch` as a callback
-                callback = this.fetch;
-            }
-            return this._super(promise, callback, error);
-        },
-        get         : function (key) {},
-        set         : function (key, value) {},
-        fetch       : function (context) {
-            $.ajax(this.getDataUrl(), {
-                context : this
-            });
-        },
-        send        : function () {},
-        clear       : function () {}
-    };
-
     // ### Utils.Create
     // @sign: Create(self, [extended], [as_constructor])  
     // @sign: Create(self, [as_constructor]])  
@@ -612,53 +584,6 @@
                 })[name] : name;
             }([getStyleProperty('transition')]))
         },
-        // ### uijet._defineWidget
-        // @sign: _defineWidget(name, props, [deps])  
-        // @return: uijet
-        //
-        // Caches a definition of a widget inside uijet,
-        // using `name` as the key and `props` as the definition.  
-        // Optional `deps` argument can be supplied for defining this widget on top of mixins and/or other widgets.
-        _defineWidget       : function (_name, _props, _deps) {
-            widget_definitions[_name] = {
-                proto   : _props,
-                deps    : _deps
-            };
-            return this;
-        },
-        // ### uijet._generateWidget
-        // @sign: _generateWidget(_props, [_mixins], [_widgets])  
-        // @return: widget_class
-        //
-        // Generate a widget class using `Create` with `uijet.BaseWidget` as the base prototype.
-        _generateWidget     : function (_props, _mixins, _widgets) {
-            // create the base class
-            var _class = Create(this.BaseWidget, true),
-                _mixin, _mixins_copy,
-                _widget, _widgets_copy;
-            // if we have mixins to mix then mix'em
-            if ( _mixins && _mixins.length ) {
-                _mixins_copy = toArray(_mixins);
-                while ( _mixin = _mixins_copy.shift() ) {
-                    if ( mixins[_mixin] ) {
-                        // just like stacking turtles
-                        _class = Create(mixins[_mixin], _class, true);
-                    }
-                }
-            }
-            // if we have widgets to build on then mix'em
-            if ( _widgets && _widgets.length ) {
-                _widgets_copy = toArray(_widgets);
-                while ( _widget = _widgets_copy.shift() ) {
-                    if ( widget_definitions[_widget] ) {
-                        // stack those madafakas
-                        _class = Create(widget_definitions[_widget].proto, _class, true);
-                    }
-                }
-            }
-            // put cherry on top
-            return Create(_props, _class, true);
-        },
         // ### uijet.Widget
         // @sign: Widget(name, props, [deps])  
         // @return: uijet
@@ -692,26 +617,6 @@
         // Define a mixin to be used by uijet.
         Mixin               : function (name, props) {
             mixins[name] = props;
-            return this;
-        },
-        // ### uijet.View
-        // @sign: View(name, widget)  
-        // @return: uijet
-        //
-        // Define and register a view to be used by uijet.
-        View                : function (name, widget) {
-            views[name] = widget;
-            return this;
-        },
-        // ### uijet.Form
-        // @sign: Form(name, widget)  
-        // @return: uijet
-        //
-        // Set a form's route to connect its submission with the widget's `send` method.
-        Form                : function (name, widget) {
-            this.options.routed ?
-                this.setRoute(widget, widget.getSendRoute(), 'send') :
-                this.subscribe(widget.id + '.submitted', widget.send, widget);
             return this;
         },
         // ### uijet.Adapter
@@ -749,9 +654,24 @@
             visualizers[name] = config;
             return this;
         },
-        Resource            : function (name, config) {
-            var Res = Create(Resource, Base, true);
-            resources[name] = new Res(config);
+        // ### uijet.View
+        // @sign: View(name, widget)  
+        // @return: uijet
+        //
+        // Define and register a view to be used by uijet.
+        View                : function (name, widget) {
+            views[name] = widget;
+            return this;
+        },
+        // ### uijet.Form
+        // @sign: Form(name, widget)  
+        // @return: uijet
+        //
+        // Set a form's route to connect its submission with the widget's `send` method.
+        Form                : function (name, widget) {
+            this.options.routed ?
+                this.setRoute(widget, widget.getSendRoute(), 'send') :
+                this.subscribe(widget.id + '.submitted', widget.send, widget);
             return this;
         },
         // ### uijet.init
@@ -864,6 +784,53 @@
                 // otherwise just init
                 return _init.call(this, options);
             }
+        },
+        // ### uijet._defineWidget
+        // @sign: _defineWidget(name, props, [deps])  
+        // @return: uijet
+        //
+        // Caches a definition of a widget inside uijet,
+        // using `name` as the key and `props` as the definition.  
+        // Optional `deps` argument can be supplied for defining this widget on top of mixins and/or other widgets.
+        _defineWidget       : function (_name, _props, _deps) {
+            widget_definitions[_name] = {
+                proto   : _props,
+                deps    : _deps
+            };
+            return this;
+        },
+        // ### uijet._generateWidget
+        // @sign: _generateWidget(_props, [_mixins], [_widgets])  
+        // @return: widget_class
+        //
+        // Generate a widget class using `Create` with `uijet.BaseWidget` as the base prototype.
+        _generateWidget     : function (_props, _mixins, _widgets) {
+            // create the base class
+            var _class = Create(this.BaseWidget, true),
+                _mixin, _mixins_copy,
+                _widget, _widgets_copy;
+            // if we have mixins to mix then mix'em
+            if ( _mixins && _mixins.length ) {
+                _mixins_copy = toArray(_mixins);
+                while ( _mixin = _mixins_copy.shift() ) {
+                    if ( mixins[_mixin] ) {
+                        // just like stacking turtles
+                        _class = Create(mixins[_mixin], _class, true);
+                    }
+                }
+            }
+            // if we have widgets to build on then mix'em
+            if ( _widgets && _widgets.length ) {
+                _widgets_copy = toArray(_widgets);
+                while ( _widget = _widgets_copy.shift() ) {
+                    if ( widget_definitions[_widget] ) {
+                        // stack those madafakas
+                        _class = Create(widget_definitions[_widget].proto, _class, true);
+                    }
+                }
+            }
+            // put cherry on top
+            return Create(_props, _class, true);
         },
         // ### uijet.registerWidget
         // @sign: registerWidget(widget)  
