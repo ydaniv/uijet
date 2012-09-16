@@ -17,7 +17,7 @@
                 // continue with original waking
                 return this._super(context);
             }
-            // it's not a specific call for this pane so it's the container's context
+            // it's not a specific call for this widget so it's the container's context
             this.container_context = context;
             return this._super();
         },
