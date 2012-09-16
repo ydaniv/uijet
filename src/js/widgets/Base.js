@@ -84,14 +84,13 @@
             return this;
         },
         // ### widget.wake
-        // @sign: wake([context[, more_context[, ...]]])  
+        // @sign: wake([context])  
         // @return: this
         //
         // *Lifecycle method*
         // Starts the widget up.  
         // This is the core action that gets all the data and performs all renderings.  
-        // May take an unlimited number of optional arguments which may serve as the data context
-        // for this instance to start itself with.
+        // Takes an optional `context` object.
         wake            : function (context) {
             var that = this,
                 old_context = this.context,
