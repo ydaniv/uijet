@@ -729,8 +729,6 @@
                 this.$element = $(_options && _options.element || 'body');
                 // sniff for iPad UA and perform optimizations accordingly
                 this.isiPad();
-                // initially not using a router
-                this.options.routed = false;
                 if ( _options ) {
                     if ( _options.route_prefix ) {
                         this.ROUTE_PREFIX = _options.route_prefix;
