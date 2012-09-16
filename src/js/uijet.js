@@ -1273,11 +1273,7 @@
             while ( l-- ) {
                 _widget = widgets[_contained[l]].self;
                 if ( _widget && ! _widget.options.dont_wake ) {
-                    deferreds.unshift(
-                        'wake_promise' in _widget.options ?
-                            _widget.defer(returnOf(_widget.options.wake_promise, _widget, context)) :
-                            _widget.wake(context)
-                    );
+                    deferreds.unshift(_widget.wake(context));
                 }
             }
             return deferreds;
