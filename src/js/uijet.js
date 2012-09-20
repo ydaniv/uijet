@@ -830,28 +830,29 @@
             var _class = Create(this.BaseWidget, true),
                 _mixin, _mixins_copy,
                 _widget, _widgets_copy;
-            // if we have mixins to mix then mix'em
-            if ( _mixins && _mixins.length ) {
-                _mixins_copy = toArray(_mixins);
-                while ( _mixin = _mixins_copy.shift() ) {
-                    if ( mixins[_mixin] ) {
-                        // just like stacking turtles
-                        _class = Create(mixins[_mixin], _class, true);
-                    }
-                }
-            }
             // if we have widgets to build on then mix'em
             if ( _widgets && _widgets.length ) {
                 _widgets_copy = toArray(_widgets);
                 while ( _widget = _widgets_copy.shift() ) {
                     if ( widget_definitions[_widget] ) {
-                        // stack those madafakas
+                        // just like stacking turtles
                         _class = Create(widget_definitions[_widget].proto, _class, true);
                     }
                 }
             }
-            // put cherry on top
-            return Create(_props, _class, true);
+            // now we add this widget to the stack
+            _class = Create(_props, _class, true);
+            // if we have mixins to mix then mix'em
+            if ( _mixins && _mixins.length ) {
+                _mixins_copy = toArray(_mixins);
+                while ( _mixin = _mixins_copy.shift() ) {
+                    if ( mixins[_mixin] ) {
+                        // stack those madafakas
+                        _class = Create(mixins[_mixin], _class, true);
+                    }
+                }
+            }
+            return _class;
         },
         // ### uijet.registerWidget
         // @sign: registerWidget(widget)  
