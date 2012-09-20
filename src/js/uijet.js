@@ -776,13 +776,21 @@
                     }
                     // after all parsing, loading, build and initializing was done
                     this.when(
-                        this.dfrd_parsing ? this.dfrd_parsing.promise() : {},
-                        // build and init declared widgets
-                        this.startWidgets(declared_widgets)
+                        // when finished parsing all widgets declarations in the HTML
+                        this.dfrd_parsing ? this.dfrd_parsing.promise() : {}
+
                     ).then(function () {
-                        that.initialized = true;
-                        // kick-start the GUI - unless ordered not to
-                        _options.dont_start || that.startup();
+                        // when parsing is done (or skipped)
+                        that.when(
+                            // build and init declared widgets
+                            that.startWidgets(declared_widgets)
+
+                        ).then(function () {
+                            //when all declared widgets are initialized, set `uijet.initialized` to `true`
+                            that.initialized = true;
+                            // kick-start the GUI - unless ordered not to
+                            _options.dont_start || that.startup();
+                        });
                     });
                 } else {
                     this.initialized = true;
@@ -1159,9 +1167,10 @@
                     var $this = $(this),
                         _type = $this.attr(TYPE_ATTR);
                     uijet.initialized ?
-                        uijet.declareWidgets({ type : _type, config : that.parseWidget($this) }) :
-                        uijet.startWidget(_type, that.parseWidget($this));
+                        uijet.startWidget(_type, that.parseWidget($this)) :
+                        uijet.declareWidgets({ type : _type, config : that.parseWidget($this) });
                 });
+            ! this.initialized && this.dfrd_parsing && this.dfrd_parsing.resolve();
             return this;
         },
         // ## uijet._parseScripts
