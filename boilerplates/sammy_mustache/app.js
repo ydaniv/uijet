@@ -1,10 +1,20 @@
-define([
-    'jquery',
-    'uijet_dir/uijet',
-    'sammy',
-    'mustache'
-], function ($, uijet) {
-
+// ### AMD wrapper
+(function (root, factory) {
+    if ( typeof define === 'function' && define.amd ) {
+        // for now we require jQuery
+        define([
+            'jquery',
+            'uijet_dir/uijet',
+            'sammy',
+            'mustache'
+        ], function ($, uijet) {
+            return (root.MyApp = factory($, uijet, root));
+        });
+    } else {
+        // if not using an AMD library set the global `uijet` namespace
+        root.MyApp = factory(root.jQuery, root.uijet, root);
+    }
+}(this, function ($, uijet, _window) {
     var _window = window,
         Sammy = _window.Sammy,
         BASE_PATH = '/',
@@ -28,25 +38,26 @@ define([
                 TEMPLATES_PATH = BASE_PATH + options.templates_path;
             }
 
-            uijet.init({
+            uijet.use({
+                publish     : this.publish,
+                subscribe   : this.subscribe,
+                unsubscribe : this.unsubscribe,
+                setRoute    : this.setRoute,
+                unsetRoute  : this.unsetRoute,
+                runRoute    : this.runRoute
+            })
+            .use({
+                engine              : function () {
+                    return Mustache.to_html(this.template, this.data || this.context, this.partials);
+                }
+            }, uijet.BaseWidget.prototype)
+            .init({
                 element             : '#main',
                 route_prefix        : '#/',
                 route_suffix        : '/',
                 animation_type      : 'fade',
-                submit_handled      : true, // forms' submit event is captured by Sammy
+//                submit_handled      : true, // Uncomment this line to allow Sammy to capture form submission
                 widgets             : options.widgets,
-                engine              : function () {
-                    return Mustache.to_html(this.template, this.data || this.context, this.partials);
-                },
-                methods_context     : this,
-                methods             : {
-                    publish     : this.publish,
-                    subscribe   : this.subscribe,
-                    unsubscribe : this.unsubscribe,
-                    setRoute    : this.setRoute,
-                    unsetRoute  : this.unsetRoute,
-                    runRoute    : this.runRoute
-                },
                 TEMPLATES_PATH      : TEMPLATES_PATH,
                 TEMPLATES_EXTENSION : TEMPLATES_EXTENSION,
                 pre_startup         : function () {
@@ -61,7 +72,7 @@ define([
             return this;
         },
         publish         : function (topic, data) {
-            this.app.trigger(topic, data);
+            MyApp.app.trigger(topic, data);
             return this;
         },
         subscribe       : function (topic, handler, context) {
@@ -71,11 +82,11 @@ define([
                 }
                 handler = handler.bind(context);
             }
-            this.app.bind(topic, handler);
+            MyApp.app.bind(topic, handler);
             return this;
         },
         unsubscribe     : function (topic, handler) {
-            this.app._unlisten(topic, handler);
+            MyApp.app._unlisten(topic, handler);
             return this;
         },
         setRoute        : function (widget, route, callback) {
@@ -90,7 +101,7 @@ define([
             if ( typeof callback != 'function' ) {
                 callback = widget.run
             }
-            this.app[method](route || widget.getRoute(), function (context) {
+            MyApp.app[method](route || widget.getRoute(), function (context) {
                 context = context ? context : context.params;
                 callback.call(widget, context);
             });
@@ -102,9 +113,9 @@ define([
                 method = route.method;
                 route = route.path;
             }
-            _route = this.app.lookupRoute(method, route || widget.getRoute());
+            _route = MyApp.app.lookupRoute(method, route || widget.getRoute());
             if ( _route ) {
-                _routes = this.app.routes[method];
+                _routes = MyApp.app.routes[method];
                 for ( var l = _routes.length; l-- ; ) {
                     if ( _route === _routes[l] ) {
                         _routes.splice(l, 1);
@@ -114,9 +125,9 @@ define([
             return this;
         },
         runRoute        : function (route, is_inner) {
-            is_inner ? this.app.runRoute('get', route) : this.app.setLocation(route);
-            if ( ! ~ this.ROUTES_SKIP_LIST.indexOf(route) ) {
-                this.last_route = {
+            is_inner ? MyApp.app.runRoute('get', route) : MyApp.app.setLocation(route);
+            if ( ! ~ MyApp.ROUTES_SKIP_LIST.indexOf(route) ) {
+                MyApp.last_route = {
                     route   : route,
                     inner   : is_inner
                 };
@@ -126,4 +137,4 @@ define([
     };
 
     return MyApp;
-});
+}));

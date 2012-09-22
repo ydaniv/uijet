@@ -9,11 +9,11 @@
             'director',
             'mustache'
         ], function ($, uijet, Ebox) {
-            return (root.Smarty = factory($, uijet, Ebox, root));
+            return (root.MyApp = factory($, uijet, Ebox, root));
         });
     } else {
         // if not using an AMD library set the global `uijet` namespace
-        root.Smarty = factory(root.jQuery, root.uijet, root.Eventbox, root);
+        root.MyApp = factory(root.jQuery, root.uijet, root.Eventbox, root);
     }
 }(this, function ($, uijet, Ebox, _window) {
     var Router = _window.Router().init(),
@@ -27,25 +27,26 @@
         AUTH                : '',
         ROUTES_SKIP_LIST    : ['/login/'],
         init            : function (options) {
-            uijet.init({
+            uijet.use({
+                publish     : this.publish,
+                subscribe   : this.subscribe,
+                unsubscribe : this.unsubscribe,
+                setRoute    : this.setRoute,
+                unsetRoute  : this.unsetRoute,
+                runRoute    : this.runRoute
+            })
+            .use({
+                engine  : function () {
+                    return Mustache.to_html(this.template, this.data || this.context, this.partials);
+                }
+            }, uijet.BaseWidget.prototype)
+            .init({
                 element             : '#main',
                 route_prefix        : '/',
                 route_suffix        : '/',
                 animation_type      : 'fade',
                 parse               : options.parse,
                 widgets             : options.widgets,
-                engine              : function () {
-                    return Mustache.to_html(this.template, this.data || this.context, this.partials);
-                },
-                methods_context     : this,
-                methods             : {
-                    publish     : this.publish,
-                    subscribe   : this.subscribe,
-                    unsubscribe : this.unsubscribe,
-                    setRoute    : this.setRoute,
-                    unsetRoute  : this.unsetRoute,
-                    runRoute    : this.runRoute
-                },
                 TEMPLATES_PATH      : TEMPLATES_PATH,
                 TEMPLATES_EXTENSION : TEMPLATES_EXTENSION
             });
@@ -94,8 +95,8 @@
         },
         runRoute        : function (route, is_inner) {
             is_inner ? Router.dispatch('on', route) : Router.setRoute(route);
-            if ( ! ~ this.ROUTES_SKIP_LIST.indexOf(route) ) {
-                this.last_route = {
+            if ( ! ~ MyApp.ROUTES_SKIP_LIST.indexOf(route) ) {
+                MyApp.last_route = {
                     route   : route,
                     inner   : is_inner
                 };
