@@ -136,10 +136,10 @@
                 that.options.drag_once || that.bindDrag(that._dragover_callback, that._drag_axis);
             };
 
-            // notify user of drag start event - before dragging conditions (e.g. drag_delay) are met
-            this.notify(true, 'pre_drag_init', down_e, $draggee, start_event_pos);
             // confine the dragging to the primary mouse button or touch
             if ( has_touch || down_pos.which === 1 ) {
+                // notify user of drag start event - before dragging conditions (e.g. drag_delay) are met
+                this.notify(true, 'pre_drag_init', down_e, $draggee, start_event_pos);
                 // in this stage we're just checking if this is really a case of dragging  
                 // bind the move event to the delay-check handler
                 $doc.on(MOVE_E, delayHandler)
