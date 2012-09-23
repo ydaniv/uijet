@@ -28,11 +28,13 @@
         views = {},
         visualizers = {},
         serializers = {},
-        // caching built predefined widgets' classes
-        widget_classes = {},
         // caching pre-built predefined widgets' classes  
         // `{ proto : widget_prototype, deps : dependencies }`
         widget_definitions = {},
+        // caching built pre-defined widgets' classes
+        widget_classes = {},
+        // caching built and mixed-in widgets' classes
+        widget_mixedin_classes = {},
         // constants
         TYPE_ATTR = 'data-uijet-type',
         ATTR_PREFIX = 'data-uijet-',
@@ -1004,7 +1006,7 @@
         // * __adapters__: a list of names of mixins to add to this instance.
         startWidget         : function (_type, _config, _skip_import) {
             var that = this,
-                _dfrd_start, _self, _w, l, _d, _c, _mixins, _adapters, _widgets;
+                _dfrd_start, _self, mixedin_type, _w, l, _d, _c, _mixins, _adapters, _widgets;
             // if not `true` then import dependencies first and then do the starting
             if ( ! _skip_import ) {
                 _dfrd_start = this.Promise();
@@ -1033,10 +1035,19 @@
                             _mixins = _d.deps.concat(_mixins);
                         }
                     }
-                    //TODO: here we can check if we have _type + _widgets.join('') + _mixins.join('') as key in cache
-                        // and use that class. If we don't have it we can cache _c under that key.
-                    // create a new class from the joined definitions
-                    _c = this._generateWidget(_d.proto, _mixins, _widgets);
+                    // generate a cache key from this recipe
+                    mixedin_type = _type + (_widgets ? _widgets.join('') : '') + _mixins.join('');
+                    // check if it exists in cache
+                    if ( mixedin_type in widget_mixedin_classes ) {
+                        // if we have a cached dish then serve it
+                        _c = widget_mixedin_classes[mixedin_type];
+                    }
+                    else {
+                        // create a new class from the joined definitions
+                        _c = this._generateWidget(_d.proto, _mixins, _widgets);
+                        // and cache it
+                        widget_mixedin_classes[mixedin_type] = _c;
+                    }
                 } else {
                     // just get the stored widget class definition
                     _c = widget_classes[_type];
