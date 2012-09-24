@@ -5,22 +5,24 @@
         define([
             'jquery',
             'uijet_dir/uijet',
-            'sammy',
-            'mustache'
-        ], function ($, uijet) {
-            return (root.MyApp = factory($, uijet, root));
+            'uijet_dir/modules/engine/mustache',
+            'uijet_dir/modules/pubsub/sammy',
+            'uijet_dir/modules/router/sammy'
+        ], function ($, uijet, engine, pubsub, router) {
+            return (root.MyApp = factory($, uijet, engine, pubsub, router, root));
         });
     } else {
         // if not using an AMD library set the global `uijet` namespace
-        root.MyApp = factory(root.jQuery, root.uijet, root);
+        root.MyApp = factory(root.jQuery, root.uijet, root.uijet_engine, root.uijet_pubsub, root.uijet_router, root);
     }
-}(this, function ($, uijet, _window) {
+}(this, function ($, uijet, engine, pubsub, router, _window) {
     var _window = window,
         Sammy = _window.Sammy,
         BASE_PATH = '/',
         TEMPLATES_PATH = BASE_PATH + 'static_path/myapp/templates/',
         TEMPLATES_EXTENSION = 'ms',
-        Mustache = _window.Mustache,
+        // plugging in template engine
+        Mustache = engine(),
         MyApp;
 
     MyApp =  {
@@ -28,30 +30,21 @@
         ROUTES_SKIP_LIST: ['#/login/'],
         init            : function (options) {
             var that = this;
-
+            // create a Sammy app, at least for a dummy use
             this.app = Sammy('#main', function (app) {
                 // #### Sammy app code here
             });
+            // plugging in pubsub
+            pubsub(this.app, this);
+            // plugging in router
+            router(this.app, this);
 
             this.options = options;
             if ( options.templates_path ) {
                 TEMPLATES_PATH = BASE_PATH + options.templates_path;
             }
 
-            uijet.use({
-                publish     : this.publish,
-                subscribe   : this.subscribe,
-                unsubscribe : this.unsubscribe,
-                setRoute    : this.setRoute,
-                unsetRoute  : this.unsetRoute,
-                runRoute    : this.runRoute
-            })
-            .use({
-                engine              : function () {
-                    return Mustache.to_html(this.template, this.data || this.context, this.partials);
-                }
-            }, uijet.BaseWidget.prototype)
-            .init({
+            uijet.init({
                 element             : '#main',
                 route_prefix        : '#/',
                 route_suffix        : '/',
@@ -69,69 +62,6 @@
         },
         startup         : function () {
             this.app.run(uijet.getCurrentView().getRoute());
-            return this;
-        },
-        publish         : function (topic, data) {
-            MyApp.app.trigger(topic, data);
-            return this;
-        },
-        subscribe       : function (topic, handler, context) {
-            if ( context ) {
-                if ( typeof handler == 'string' ) {
-                    handler = context[handler];
-                }
-                handler = handler.bind(context);
-            }
-            MyApp.app.bind(topic, handler);
-            return this;
-        },
-        unsubscribe     : function (topic, handler) {
-            MyApp.app._unlisten(topic, handler);
-            return this;
-        },
-        setRoute        : function (widget, route, callback) {
-            var method = 'get';
-            if ( uijet.Utils.isObj(route) ) {
-                method = route.method;
-                route = route.path;
-            }
-            if ( typeof callback == 'string' && widget[callback] ) {
-                callback =  widget[callback];
-            }
-            if ( typeof callback != 'function' ) {
-                callback = widget.run
-            }
-            MyApp.app[method](route || widget.getRoute(), function (context) {
-                context = context ? context : context.params;
-                callback.call(widget, context);
-            });
-            return this;
-        },
-        unsetRoute      : function (widget, route) {
-            var method = 'get', _route, _routes;
-            if ( uijet.Utils.isObj(route) ) {
-                method = route.method;
-                route = route.path;
-            }
-            _route = MyApp.app.lookupRoute(method, route || widget.getRoute());
-            if ( _route ) {
-                _routes = MyApp.app.routes[method];
-                for ( var l = _routes.length; l-- ; ) {
-                    if ( _route === _routes[l] ) {
-                        _routes.splice(l, 1);
-                    }
-                }
-            }
-            return this;
-        },
-        runRoute        : function (route, is_inner) {
-            is_inner ? MyApp.app.runRoute('get', route) : MyApp.app.setLocation(route);
-            if ( ! ~ MyApp.ROUTES_SKIP_LIST.indexOf(route) ) {
-                MyApp.last_route = {
-                    route   : route,
-                    inner   : is_inner
-                };
-            }
             return this;
         }
     };
