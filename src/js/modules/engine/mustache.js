@@ -10,7 +10,7 @@
 }(this, function (uijet) {
     return function () {
         uijet.use({
-            engine              : function () {
+            generate: function () {
                 return Mustache.to_html(this.template, this.data || this.context, this.partials);
             }
         }, uijet.BaseWidget.prototype);
