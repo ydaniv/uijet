@@ -738,35 +738,8 @@
                     if ( _options.route_suffix ) {
                         this.ROUTE_SUFFIX = _options.route_suffix;
                     }
-                    if ( _methods = _options.methods ) {
-                        if ( _options.methods_context ) {
-                            // bind each method to given context
-                            for ( k in _methods ) {
-                                _methods[k] = _methods[k].bind(_options.methods_context);
-                                k == 'setRoute' && (this.options.routed = true);
-                            }
-                        }
-                        // implement missing methods
-                        extend(this, _methods);
-                    }
-                    if ( _options.promises && isFunc(_options.promises.Promise) && isFunc(_options.promises.when) ) {
-                        this.Promise = _options.promises.Promise;
-                        this.when = _options.promises.when;
-                        if ( _options.promises.context ) {
-                            this.Promise = this.Promise.bind(_options.promises.context);
-                            this.when = this.when.bind(_options.promises.context);
-                        }
-                    } else {
-                        this.Promise = $.Deferred.bind($);
-                        this.when = $.when.bind($);
-                        this.options.promises = {
-                            context : $
-                        };
-                    }
-                    if ( _options.engine ) {
-                        //TODO: implement hacking into BaseWidget.prototype better  
-                        // set the template engine hook
-                        this.BaseWidget.prototype.generate = _options.engine;
+                    if ( 'setRoute' in this ) {
+                        this.options.routed = true;
                     }
                     // set default animation type
                     this.options.animation_type = _options.animation_type || 'slide';
