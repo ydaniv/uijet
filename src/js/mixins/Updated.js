@@ -56,7 +56,7 @@
                 }
             };
             // prepare for failing (of the children) first
-            _sequence = uijet.when.apply(uijet.options.promises.context, dfrds).fail(_fail);
+            _sequence = uijet.when.apply(uijet, dfrds).fail(_fail);
             // if `sync` option is set to `true` then wake only after they're all awake
             this.options.sync ? _sequence.done(_success): _success();
             return self_dfrd.promise();

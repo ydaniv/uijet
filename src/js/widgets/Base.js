@@ -117,7 +117,7 @@
             // wake up all contained widgets
             dfrds = this.wakeContained(context);
             // register a failure callback in case one of the children failed to wake up
-            _sequence = uijet.when.apply(uijet.options.promises.context, dfrds).fail(function () {
+            _sequence = uijet.when.apply(uijet, dfrds).fail(function () {
                 that.notify('wake_failed', arguments);
                 that.sleep();
             });

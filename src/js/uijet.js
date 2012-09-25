@@ -1112,7 +1112,7 @@
                 dfrd_starts[i] = this.startWidget(_c.type, _c.config);
                 i+=1;
             }
-            this.when.apply(this.options.promises.context, dfrd_starts).then(function () {
+            this.when.apply(this, dfrd_starts).then(function () {
                 dfrd.resolve();
             }, function () {
                 dfrd.reject();

@@ -63,7 +63,7 @@
                 };
             }
             // in case any of the children failed, fail this
-            _sequence = uijet.when.apply(uijet.options.promises.context, dfrds).fail(_fail);
+            _sequence = uijet.when.apply(uijet, dfrds).fail(_fail);
             // if `sync` option is `true` then call success after all children are awake
             this.options.sync ? _sequence.done(_success) : _success();
             return dfrd_wake ? dfrd_wake.promise() : {};
@@ -123,7 +123,7 @@
                     }(p, partials[p]));
                 }
                 // when all requests are resolved
-                uijet.when.apply(uijet.options.promises.context, requests).then(function () {
+                uijet.when.apply(uijet, requests).then(function () {
                     // set state to `has_tempalte`
                     that.has_template = true;
                     // tell the user we're done
@@ -164,7 +164,7 @@
             // if `defer_images` option is `> 0` then defer the flow till after the loading of images
             loadables = this.options.defer_images ? this.deferLoadables() : [{}];
             // after all was loaded or if ignored deferring it
-            uijet.when.apply(uijet.options.promises.context, loadables).then(function () {
+            uijet.when.apply(uijet, loadables).then(function () {
                 _super.call(that);
                 // if this widget is `scrolled` then prepare its `$element`'s size
                 that.scrolled && that._prepareScrolledSize();
