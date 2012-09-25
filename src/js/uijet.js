@@ -738,8 +738,12 @@
                     if ( _options.route_suffix ) {
                         this.ROUTE_SUFFIX = _options.route_suffix;
                     }
-                    if ( 'setRoute' in this ) {
+                    try {
+                        this.setRoute();
                         this.options.routed = true;
+                    }
+                    catch (e) {
+                        this.options.routed = false;
                     }
                     // set default animation type
                     this.options.animation_type = _options.animation_type || 'slide';
