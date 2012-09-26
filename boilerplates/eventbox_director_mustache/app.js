@@ -5,15 +5,16 @@
         define([
             'jquery',
             'uijet_dir/uijet',
+            'uijet_dir/modules/promises/jquery',
             'uijet_dir/modules/pubsub/eventbox',
             'uijet_dir/modules/router/director',
             'uijet_dir/modules/engine/mustache'
-        ], function ($, uijet, engine, pubsub, router) {
-            return (root.MyApp = factory($, uijet, engine, pubsub, router, root));
+        ], function ($, uijet, promises, engine, pubsub, router) {
+            return (root.MyApp = factory($, uijet, promises, engine, pubsub, router, root));
         });
     } else {
         // if not using an AMD library set the global `uijet` namespace
-        root.MyApp = factory(root.jQuery, root.uijet, root.uijet_engine, root.uijet_pubsub, root.uijet_router, root);
+        root.MyApp = factory(root.jQuery, root.uijet, root.uijet_promises, root.uijet_engine, root.uijet_pubsub, root.uijet_router, root);
     }
 }(this, function ($, uijet, engine, pubsub, router, _window) {
     var BASE_PATH = '/',
@@ -22,6 +23,8 @@
         // plugging in template engine
         Mustache = engine(),
         MyApp;
+
+    promises();
 
     MyApp =  {
         AUTH                : '',
