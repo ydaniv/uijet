@@ -33,7 +33,7 @@
                 // bind another click handler 
                 this.$element.click(function () {
                     // get `data_url` and run it as route, using `routing` option to determine whether it's inner
-                    that.runRoute(that.getDataUrl(), typeof routing == 'undefined' ?
+                    that.runRoute(that.getDataUrl().path, typeof routing == 'undefined' ?
                                                         true :
                                                         typeof routing == 'function' ?
                                                             ! routing.call(that, $(this)) :
@@ -54,10 +54,6 @@
             } else {
                 this._super(initial);
             }
-        },
-        // override the base method if it's overridden by mixins
-        getDataUrl      : function () {
-            return this.substitute(uijet.Utils.returnOf(this.options.data_url, this), this.context);
         }
     });
 }));

@@ -220,7 +220,7 @@
         // If the XHR failed then the `update_error` event is fired and, unless aborted, the promise is rejected.
         // Takes an optional argument `request_data` to be used as data for the request.
         update          : function (request_data) {
-            var dfrd_update, _success;
+            var dfrd_update, _success, url;
             // if there's no URL set or the pre_update signal returned `false` then bail
             if ( ! this.options.data_url || this.notify('pre_update') === false ) return {};
             // since this may take more then a few miliseconds then publish the `pre_load` event to allow the UI
@@ -240,9 +240,10 @@
                     dfrd_update.resolve();
                 }
             };
+            url = this.getDataUrl();
             // send XHR to update
-            $.ajax(this.getDataUrl(), {
-                type    : 'get',
+            $.ajax(url.path, {
+                type    : url.method,
                 data    : request_data,
                 dataType: 'json',
                 context : this
@@ -583,13 +584,44 @@
             return this;
         },
         // ### widget.getDataUrl
-        // @sign: getDataUrl()  
+        // @sign: getDataUrl([data_context])  
         // @return: data_url
         //
-        // Gets the URL used by the widget to fetch/send data.  
-        // Uses the instance's context object to replace params in the URL's pattern.
-        getDataUrl      : function () {
-            return this.substitute(uijet.Utils.returnOf(this.options.data_url, this), this.context);
+        // Gets the URL used by the widget to fetch data.  
+        // Takes an optional `Object` argument to be used as context for parsing the URL.
+        getDataUrl      : function (data_context) {
+            return this.getRestUrl(this.options.data_url, data_context);
+        },
+        // ### widget.getRestUrl
+        // @sign: getRestUrl(url, [context])  
+        // @return: rest_url
+        //
+        // Gets a RESTful object representation of a URL with a `path` and `method` values.  
+        // `url` can be either a `String` or an `Object` with a `path` and `method` values.  
+        // Takes an optional `Object` argument to be used as context for parsing the URL,
+        // by default uses `this.context`, and parses the URL using `this.substitute`.  
+        // `method` is `GET` by default.
+        getRestUrl      : function (_url, _context) {
+            var context = _context || this.context,
+                url = uijet.Utils.returnOf(_url, this, context),
+                path;
+            // if we have a URL to send to
+            if ( url ) {
+                if ( typeof url == 'string' ) {
+                    // parse the URL
+                    path = this.substitute(url, context);
+                }
+                else if ( uijet.Utils.isObj(url) ) {
+                    // or parse the URL under __path__
+                    path = this.substitute(url.path, context);
+                } else {
+                    return;
+                }
+                return {
+                    method: url.method || 'GET',
+                    path: path || (url.path ? url.path : url)
+                };
+            }
         },
         // ### widget.substitute
         // @sign: substitute(template, obj)  

@@ -74,29 +74,10 @@
         // You can insert params into the URL, and it will work just like `getDataUrl`.  
         // Takes an optional `send_context` object which can be used instead of `this.context` if the latter is
         // used for presentational context.  
-        // By default, the method is 'get'.  
+        // By default, the method is 'GET'.  
         // If `send_url` option isn't set it returns `undefined`.
         getSendUrl      : function (send_context) {
-            var url = uijet.Utils.returnOf(this.options.send_url, this),
-                context = send_context || this.context,
-                path;
-            // if we have a URL to send to
-            if ( url ) {
-                if ( typeof url == 'string' ) {
-                    // parse the URL
-                    path = this.substitute(url, context);
-                }
-                else if ( uijet.Utils.isObj(url) ) {
-                    // or parse the URL under __path__
-                    path = this.substitute(url.path, context);
-                } else {
-                    return;
-                }
-                return {
-                    method: url.method || 'get',
-                    path: path || (url.path ? url.path : url)
-                };
-            }
+            return this.getRestUrl(this.options.send_url, send_context);
         },
         // ### widget.getSerialized
         // @sign: getSerialized([request_data])  

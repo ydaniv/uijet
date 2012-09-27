@@ -121,12 +121,13 @@
         },
         // ### widget._getCacheKey
         // @sign: _getCacheKey()  
-        // @return: getDataUrl()
+        // @return: data_url
         //
         // Internal method that gets the key to be used to pull data from cache.  
         // In its base form it uses the URL used to ask for the same required data from server as the key.
         _getCacheKey : function () {
-            return this.getDataUrl();
+            var url = this.getDataUrl();
+            return url ? url.method + ':' + url.path : '';
         }
     });
 }));
