@@ -5,16 +5,14 @@
             return factory(uijet, Mustache);
         });
     } else {
-        root.uijet_engine = factory(uijet, root.Mustache);
+        factory(uijet, root.Mustache);
     }
 }(this, function (uijet, Mustache) {
-    return function () {
-        uijet.use({
-            generate: function () {
-                return Mustache.to_html(this.template, this.data || this.context, this.partials);
-            }
-        }, uijet.BaseWidget.prototype);
+    uijet.use({
+        generate: function () {
+            return Mustache.to_html(this.template, this.data || this.context, this.partials);
+        }
+    }, uijet.BaseWidget.prototype);
 
-        return Mustache;
-    };
+    return Mustache;
 }));

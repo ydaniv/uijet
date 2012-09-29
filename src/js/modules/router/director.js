@@ -5,10 +5,10 @@
             return factory(uijet, root);
         });
     } else {
-        root.uijet_router = factory(uijet, root);
+        uijet.router = factory(uijet, root);
     }
 }(this, function (uijet, root) {
-    return function (router, context) {
+    return function (router) {
         var Router;
         if ( router ) {
             Router = router;
@@ -44,7 +44,7 @@
                 is_inner ? Router.dispatch('on', route) : Router.setRoute(route);
                 return this;
             }
-        }, uijet, context);
+        });
 
         return Router;
     };

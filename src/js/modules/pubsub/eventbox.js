@@ -5,31 +5,29 @@
             return factory(uijet, Ebox);
         });
     } else {
-        root.uijet_pubusb = factory(uijet, Eventbox);
+        factory(uijet, root.Eventbox);
     }
 }(this, function (uijet, Ebox) {
-    return function (context) {
-        uijet.use({
-            publish         : function (topic, data) {
-                Ebox.notify(topic, data);
-                return this;
-            },
-            subscribe       : function (topic, handler, context) {
-                if ( context ) {
-                    if ( typeof handler == 'string' ) {
-                        handler = context[handler];
-                    }
-                    Ebox.bind(context);
+    uijet.use({
+        publish         : function (topic, data) {
+            Ebox.notify(topic, data);
+            return this;
+        },
+        subscribe       : function (topic, handler, context) {
+            if ( context ) {
+                if ( typeof handler == 'string' ) {
+                    handler = context[handler];
                 }
-                Ebox.listen(topic, handler);
-                return this;
-            },
-            unsubscribe     : function (topic, handler) {
-                Ebox.unlisten(topic, handler);
-                return this;
+                Ebox.bind(context);
             }
-        }, uijet, context);
+            Ebox.listen(topic, handler);
+            return this;
+        },
+        unsubscribe     : function (topic, handler) {
+            Ebox.unlisten(topic, handler);
+            return this;
+        }
+    }, uijet);
 
-        return Ebox;
-    };
+    return Ebox;
 }));

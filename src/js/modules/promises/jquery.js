@@ -5,15 +5,11 @@
             return factory(uijet, $);
         });
     } else {
-        root.uijet_promises = factory(uijet, root.jQuery);
+        factory(uijet, root.jQuery);
     }
 }(this, function (uijet, $) {
-    return function () {
-        uijet.use({
-            Promise : $.Deferred,
-            when    : $.when
-        }, uijet, $);
-
-        return $;
-    };
+    uijet.use({
+        Promise : $.Deferred,
+        when    : $.when
+    }, uijet, $);
 }));

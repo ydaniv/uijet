@@ -1,14 +1,14 @@
 // ### AMD wrapper
-(function (root, factory) {
+(function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet', 'sammy'], function (uijet) {
             return factory(uijet);
         });
     } else {
-        root.uijet_pubusb = factory(uijet);
+        uijet.pubusb = factory(uijet);
     }
 }(this, function (uijet) {
-    return function (app, context) {
+    return function (app) {
         uijet.use({
             publish         : function (topic, data) {
                 app.trigger(topic, data);
@@ -28,8 +28,6 @@
                 app._unlisten(topic, handler);
                 return this;
             }
-        }, uijet, context);
-
-        return app;
+        });
     };
 }));

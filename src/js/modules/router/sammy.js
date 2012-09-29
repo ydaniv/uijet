@@ -1,14 +1,14 @@
 // ### AMD wrapper
-(function (root, factory) {
+(function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet', 'sammy'], function (uijet) {
             return factory(uijet);
         });
     } else {
-        root.uijet_router = factory(uijet);
+        uijet.router = factory(uijet);
     }
 }(this, function (uijet) {
-    return function (app, context) {
+    return function (app) {
         uijet.use({
             setRoute        : function (widget, route, callback) {
                 var method = 'get';
@@ -49,8 +49,6 @@
                 is_inner ? app.runRoute('get', route) : app.setLocation(route);
                 return this;
             }
-        }, uijet, context);
-
-        return app;
+        });
     };
 }));
