@@ -242,12 +242,12 @@
             };
             url = this.getDataUrl();
             // send XHR to update
-            $.ajax(url.path, {
+            $.ajax(url.path, Utils.extend({
                 type    : url.method,
                 data    : request_data,
                 dataType: 'json',
                 context : this
-            }).done(_success)
+            }, this.options.update_config)).done(_success)
             .fail(function (response) {
                 // notify there was an error and allow user to continue with either:
                 //
@@ -603,7 +603,7 @@
         // `method` is `GET` by default.
         getRestUrl      : function (_url, _context) {
             var context = _context || this.context,
-                url = uijet.Utils.returnOf(_url, this, context),
+                url = Utils.returnOf(_url, this, context),
                 path;
             // if we have a URL to send to
             if ( url ) {
@@ -611,7 +611,7 @@
                     // parse the URL
                     path = this.substitute(url, context);
                 }
-                else if ( uijet.Utils.isObj(url) ) {
+                else if ( Utils.isObj(url) ) {
                     // or parse the URL under __path__
                     path = this.substitute(url.path, context);
                 } else {
@@ -855,5 +855,5 @@
         }
     };
 
-    return uijet.Utils.Create(Widget, uijet.Base, true);
+    return Utils.Create(Widget, uijet.Base, true);
 }));
