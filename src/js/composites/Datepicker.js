@@ -43,8 +43,11 @@
                     container   : id,
                     dont_wake   : true,
                     sync        : true,
+                    float_top   : function () {
+                        return this.$wrapper[0].offsetParent.offsetHeight;
+                    },
                     signals     : {
-                        pre_sleep       : function () {
+                        pre_sleep   : function () {
                             this.opened = false;
                         }
                     },
