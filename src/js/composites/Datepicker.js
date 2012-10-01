@@ -43,16 +43,7 @@
                     container   : id,
                     dont_wake   : true,
                     sync        : true,
-                    position    : {
-                        top : '-9000px'
-                    },
                     signals     : {
-                        pre_appear      : function () {
-                            this.$wrapper[0].style.top = button_height + 'px';
-                        },
-                        post_disappear  : function () {
-                            this.$wrapper[0].style.top = '-9000px';
-                        },
                         pre_sleep       : function () {
                             this.opened = false;
                         }
@@ -121,10 +112,13 @@
             // make sure the container is Floated
             if ( container_config.mixins ) {
                 container_config.mixins = uijet.Utils.toArray(container_config.mixins);
+                // check if we have Floated mixed-in
                 if ( ! ~ container_config.mixins.indexOf('Floated') ) {
-                    container_config.mixins.unshift('Floated');
+                    // put Floated at the top of the chain to make sure its `appear` and `disappear` are called first
+                    container_config.mixins.push('Floated');
                 }
             } else {
+                // just add it if otherwise
                 container_config.mixins = 'Floated';
             }
             // create the container Pane
