@@ -21,8 +21,19 @@
         },
         floated         : true,
         prepareElement  : function () {
+            var top = uijet.Utils.returnOf(this.options.float_top, this),
+                bottom_style, rule;
             this._super()
                 .setFloat();
+            // check if float_top option was set
+            if ( top ) {
+                // find the last stylesheet in the document
+                bottom_style = document.styleSheets[document.styleSheets.length - 1];
+                // create a rule of positioning this floatee using the value of `float_top` option
+                rule = this.$wrapper.attr('id') + '.float.show { top: ' + top + 'px; }';
+                // insert this rule at that stylesheet's end
+                bottom_style.insertRule(rule, bottom_style.cssRules.length);
+            }
             return this;
         },
         // ### widget.setFloat
@@ -37,6 +48,9 @@
                 // do this once
                 this.floating = true;
             }
+            // if there's a super method call it
+            // this enables custom widgets or mixins to predefine this method
+            this._super && this._super();
             return this;
         },
         appear          : function () {
