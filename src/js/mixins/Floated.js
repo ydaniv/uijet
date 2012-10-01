@@ -48,9 +48,17 @@
             return this;
         },
         disappear      : function () {
+            var that = this,
+                hide_handler = function () {
+                    // kick the element back to high heavens
+                    that.$wrapper.removeClass('show');
+                };
             this._super();
-            // kick the element back to high heavens
-            this.$wrapper.removeClass('show');
+            if ( this.transitioned && this.dfrd_transit ) {
+                this.dfrd_transit.then(hide_handler, hide_handler);
+            } else {
+                hide_handler();
+            }
             return this;
         }
     });
