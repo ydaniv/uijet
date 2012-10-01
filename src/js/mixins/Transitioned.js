@@ -57,7 +57,7 @@
             this.notify('pre_disappear');
             if ( no_transitions ) {
                 // in case we want to hide the widget without animation just fire the callback
-                _success()
+                _success();
             } else {
                 // transit out
                 uijet.when( this.transit('out') ).then(_success, function () {
