@@ -103,7 +103,8 @@
                         }
                     },
                     app_events  : {}
-                };
+                },
+                floated_index;
             this._super();
             // add user defined options to defaults for container
             container_config = uijet.Utils.extend(true, container_config, this.options.container_options || {});
@@ -115,11 +116,14 @@
             // make sure the container is Floated
             if ( container_config.mixins ) {
                 container_config.mixins = uijet.Utils.toArray(container_config.mixins);
+                floated_index = container_config.mixins.indexOf('Floated');
                 // check if we have Floated mixed-in
-                if ( ! ~ container_config.mixins.indexOf('Floated') ) {
-                    // put Floated at the top of the chain to make sure its `appear` and `disappear` are called first
-                    container_config.mixins.push('Floated');
+                if ( ~ floated_index ) {
+                    // remove Floated from mixins list
+                    container_config.mixins.splice(floated_index, 1);
                 }
+                // put Floated at the top of the chain to make sure its `appear` and `disappear` are called first
+                container_config.mixins.push('Floated');
             } else {
                 // just add it if otherwise
                 container_config.mixins = 'Floated';
