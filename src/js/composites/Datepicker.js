@@ -15,6 +15,11 @@
         factory(jQuery, uijet);
     }
 }(function ($, uijet) {
+
+    function isDate (obj) {
+        return Object.prototype.toString.call(obj) == '[object Date]';
+    }
+
     uijet.Widget('Datepicker', {
         options : {
             type_class: ['uijet_button','uijet_datepicker']
@@ -149,12 +154,36 @@
             uijet.startWidget('Button', {
                 element     : $next,
                 id          : id + '_next',
-                container   : id + '_container'
+                container   : id + '_container',
+                signals     : {
+                    pre_click   : function (e) {
+                        var max_date;
+                        if ( max_date = this.options.max_date ) {
+                            if ( ! isDate(max_date) ) {
+                                max_date = new Date(max_date);
+                                this.options.max_date = max_date;
+                            }
+                            return max_date.getMonth() < this.current_date.getMonth();
+                        }
+                    }
+                }
             });
             uijet.startWidget('Button', {
                 element     : $prev,
                 id          : id + '_prev',
-                container   : id + '_container'
+                container   : id + '_container',
+                signals     : {
+                    pre_click   : function (e) {
+                        var min_date;
+                        if ( min_date = this.options.min_date ) {
+                            if ( ! isDate(min_date) ) {
+                                min_date = new Date(min_date);
+                                this.options.min_date = min_date;
+                            }
+                            return min_date.getMonth() > this.current_date.getMonth();
+                        }
+                    }
+                }
             });
             return this;
         }
