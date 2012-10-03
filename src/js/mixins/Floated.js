@@ -30,7 +30,7 @@
                 // find the last stylesheet in the document
                 bottom_style = document.styleSheets[document.styleSheets.length - 1];
                 // create a rule of positioning this floatee using the value of `float_top` option
-                rule = this.$wrapper.attr('id') + '.float.show { top: ' + top + 'px; }';
+                rule = '#' + this.$wrapper.attr('id') + '.float.show { top: ' + top + 'px; }';
                 // insert this rule at that stylesheet's end
                 bottom_style.insertRule(rule, bottom_style.cssRules.length);
             }
