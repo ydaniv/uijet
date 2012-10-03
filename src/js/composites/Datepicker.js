@@ -22,8 +22,12 @@
 
     uijet.Widget('DatepickerList', {
         init        : function () {
-            var id = this.id.replace('_dateslist', '');
+            var id;
+            // do init
             this._super.apply(this, arguments);
+            // a bit of a hacky way to get the datepicker's original id
+            id = this.id.replace('_dateslist', '');
+            // subscribe to the next/prev clicks
             this.subscribe(id + '_next.clicked', function () {
                 var max_date, go_next = true;
                 if ( max_date = this.options.max_date ) {
