@@ -29,6 +29,7 @@
                 return this;
             },
             unsubscribe     : function (topic, handler) {
+                //TODO: this probably won't work since we're wrapping all handlers
                 app._unlisten(topic, handler);
                 return this;
             }

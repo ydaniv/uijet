@@ -28,6 +28,7 @@
             return this;
         },
         unsubscribe     : function (topic, handler) {
+            //TODO: this probably won't work since we're wrapping all handlers
             $.unsubscribe(topic, handler);
             return this;
         }
