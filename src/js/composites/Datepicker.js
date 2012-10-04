@@ -25,6 +25,8 @@
             this.opened = false;
             return this._super.apply(this, arguments);
         }
+    }, {
+        widgets : ['Pane']
     });
 
     uijet.Widget('DatepickerList', {
