@@ -218,6 +218,12 @@ body {
 /* Datepicker */
 /**************/
 
+.uijet_datepicker_container {
+    padding: 1em;
+}
+.uijet_datepicker_current_date {
+    margin-bottom: 1em;
+}
 .uijet_datepicker_list li {
     border: none;
     border-radius: 4px;
