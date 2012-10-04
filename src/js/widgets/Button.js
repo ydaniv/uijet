@@ -18,8 +18,13 @@
                     var _publish = this.notify(true, 'pre_click', e);
                     if ( _publish !== false ) {
                         // publish `clicked` event
-                        this.publish('clicked', this.context)
-                            .publish('app.clicked', this.id, true);
+                        this.publish('clicked', {
+                            context : this.context,
+                            event   : e
+                        }).publish('app.clicked', {
+                            id      : this.id,
+                            event   : e
+                        }, true);
                     }
                     return false;
                 }

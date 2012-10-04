@@ -170,8 +170,8 @@
                     sync        : true,
                     app_events  : {
                         // in order to stay as less obtrusive as possible sleep when this global event is triggered
-                        'app.clicked'   : function (_id) {
-                            if ( this.opened && (! _id || ! ~ _id.indexOf(id)) ) {
+                        'app.clicked'   : function (_data) {
+                            if ( this.opened && (! _data || ! _data.id || ! ~ _data.id.indexOf(id)) ) {
                                 this.sleep();
                             }
                         }
@@ -195,9 +195,9 @@
             // add user defined options to defaults for container
             container_config = uijet.Utils.extend(true, container_config, this.options.container_options || {});
             // add the waking event handler
-            container_config.app_events[id + '.clicked'] = function (e) {
+            container_config.app_events[id + '.clicked'] = function (data) {
                 this.opened = !this.opened;
-                this.opened ? this.wake({ event : e }) : this.sleep();
+                this.opened ? this.wake(data) : this.sleep();
             };
             container_config.app_events[id + '_dateslist._update_current_date'] = function (text) {
                 $current_date.text(text);
