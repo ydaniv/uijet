@@ -340,6 +340,9 @@ h1, h2, h3, h4, h5, p, ul {
     width: 14em;
     font-size: .8em;
 }
+.uijet_datepicker_container_wrapper {
+    width: auto;
+}
 .uijet_datepicker_current_date {
     display: inline-block;
     margin-top: 1em;
@@ -347,10 +350,10 @@ h1, h2, h3, h4, h5, p, ul {
     font-size: 1.1em;
     line-height: 100%;
 }
-.uijet_datepicker_dateslist {
+.uijet_datepicker_list {
     text-align: left;
 }
-.uijet_datepicker_dateslist li {
+.uijet_datepicker_list li {
     display: inline-block;
     width: 2em;
     height: 2em;
