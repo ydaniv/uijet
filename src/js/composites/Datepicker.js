@@ -20,6 +20,13 @@
         return Object.prototype.toString.call(obj) == '[object Date]';
     }
 
+    uijet.Widget('DatepickerContainer', {
+        sleep   : function () {
+            this.opened = false;
+            return this._super.apply(this, arguments);
+        }
+    });
+
     uijet.Widget('DatepickerList', {
         init        : function () {
             var id;
@@ -121,7 +128,7 @@
                 $container = $('<div/>', {
                     id      : id + '_container',
                     'class' : 'uijet_datepicker_container'
-                }).appendTo($el),
+                }),
                 // here's our heading which states current month and year
                 $current_date = $('<h1/>', {
                     'class' : 'uijet_datepicker_current_date'
@@ -149,11 +156,6 @@
                     sync        : true,
                     float_top   : function () {
                         return this.$wrapper[0].offsetParent.offsetHeight;
-                    },
-                    signals     : {
-                        pre_sleep   : function () {
-                            this.opened = false;
-                        }
                     },
                     app_events  : {
                         // in order to stay as less obtrusive as possible sleep when this global event is triggered
@@ -204,8 +206,22 @@
                 // just add it if otherwise
                 container_config.mixins = 'Floated';
             }
+            // if user hasn't overridden `element` option
+            if ( $container === container_config.element ) {
+                // if specified by the user
+                if ( container_config.dont_fix_overflow ) {
+                    // build the datepicker inside the containing Button widget
+                    // this generates a cleaner and self contained DOM structure
+                    $container.appendTo($el);
+                }
+                // otherwise
+                else {
+                    // build the datepicker in the app's top level element to fix the `overflow:hidden` on parent issue
+                    $container.appendTo(uijet.$element);
+                }
+            }
             // create the container Pane
-            uijet.startWidget('Pane', container_config);
+            uijet.startWidget('DatepickerContainer', container_config);
             // add user defined options to defaults for dates list
             dateslist_config = uijet.Utils.extend(true, dateslist_config, this.options.dateslist_options || {});
             // create the dates List
