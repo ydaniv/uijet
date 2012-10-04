@@ -21,15 +21,19 @@
     }
 
     uijet.Widget('DatepickerContainer', {
+        options : {
+            type_class  : ['uijet_pane', 'uijet_datepicker_container']
+        },
         sleep   : function () {
             this.opened = false;
             return this._super.apply(this, arguments);
         }
-    }, {
-        widgets : ['Pane']
     });
 
     uijet.Widget('DatepickerList', {
+        options : {
+            type_class  : ['uijet_list', 'uijet_datepicker_list']
+        },
         init        : function () {
             var id;
             // do init
