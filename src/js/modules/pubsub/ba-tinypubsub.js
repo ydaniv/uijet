@@ -8,19 +8,23 @@
         factory(uijet, root.jQuery);
     }
 }(this, function (uijet, $) {
+    // cache reference to Array's slice method
+    var arraySlice = window.Array.prototype.slice;
+
     uijet.use({
         publish         : function (topic, data) {
             $.publish(topic, data);
             return this;
         },
         subscribe       : function (topic, handler, ctx) {
-            if ( ctx ) {
-                if ( typeof handler == 'string' ) {
-                    handler = ctx[handler];
-                }
-                handler = handler.bind(ctx);
+            if ( ctx && typeof handler == 'string' ) {
+                handler = ctx[handler];
             }
-            $.subscribe(topic, handler);
+            $.subscribe(topic, function wrapper () {
+                // we need to lose the idle first `event` argument
+                var args = arraySlice.call(arguments, 1);
+                return handler.apply(ctx || this, args);
+            });
             return this;
         },
         unsubscribe     : function (topic, handler) {
