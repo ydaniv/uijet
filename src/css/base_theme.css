@@ -220,6 +220,9 @@ body {
 
 .uijet_datepicker_container {
     padding: 1em;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
 }
 .uijet_datepicker_current_date {
     margin-bottom: 1em;
