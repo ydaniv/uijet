@@ -24,6 +24,16 @@
         options : {
             type_class  : ['uijet_pane', 'uijet_datepicker_container']
         },
+        appear  : function () {
+            var offset, style;
+            if ( ! this.options.dont_fix_overflow ) {
+                offset = uijet.Utils.getOffsetOf(this.context.event.target, uijet.$element[0]);
+                style = this.$wrapper[0].style;
+                style.top = offset.y + 'px';
+                style.left = offset.x + 'px';
+            }
+            return this._super.apply(this, arguments);
+        },
         sleep   : function () {
             this.opened = false;
             return this._super.apply(this, arguments);
@@ -185,9 +195,9 @@
             // add user defined options to defaults for container
             container_config = uijet.Utils.extend(true, container_config, this.options.container_options || {});
             // add the waking event handler
-            container_config.app_events[id + '.clicked'] = function () {
+            container_config.app_events[id + '.clicked'] = function (e) {
                 this.opened = !this.opened;
-                this.opened ? this.wake() : this.sleep();
+                this.opened ? this.wake({ event : e }) : this.sleep();
             };
             container_config.app_events[id + '_dateslist._update_current_date'] = function (text) {
                 $current_date.text(text);
