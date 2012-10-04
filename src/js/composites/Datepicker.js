@@ -132,8 +132,7 @@
                 // create all the elements we need to construct our datepicker
                 // here is the Floated container
                 $container = $('<div/>', {
-                    id      : id + '_container',
-                    'class' : 'uijet_datepicker_container'
+                    id      : id + '_container'
                 }),
                 // here's our heading which states current month and year
                 $current_date = $('<h1/>', {
@@ -141,8 +140,7 @@
                 }).appendTo($container),
                 // and here is our list of dates
                 $dateslist = $('<ul/>', {
-                    id      : id + '_dateslist',
-                    'class' : 'uijet_datepicker_dateslist'
+                    id      : id + '_dateslist'
                 }).appendTo($container),
                 // this is the prev month button
                 $prev = $('<span/>', {
@@ -160,9 +158,6 @@
                     container   : id,
                     dont_wake   : true,
                     sync        : true,
-                    float_top   : function () {
-                        return this.$wrapper[0].offsetParent.offsetHeight;
-                    },
                     app_events  : {
                         // in order to stay as less obtrusive as possible sleep when this global event is triggered
                         'app.clicked'   : function (_id) {
@@ -219,6 +214,13 @@
                     // build the datepicker inside the containing Button widget
                     // this generates a cleaner and self contained DOM structure
                     $container.appendTo($el);
+                    // if `float_top` option is not set
+                    if ( ! ('float_top' in container_config) ) {
+                        // set it to place the container below the parent button
+                        container_config.float_top = function () {
+                            return this.$wrapper[0].offsetParent.offsetHeight;
+                        }
+                    }
                 }
                 // otherwise
                 else {
