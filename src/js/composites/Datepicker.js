@@ -149,6 +149,7 @@
         prepareElement  : function () {
             var id = this.id,
                 $el = this.$element,
+                datepiker_ops = this.options.datepicker || {},
                 // create all the elements we need to construct our datepicker
                 // here is the Floated container
                 $container = $('<div/>', {
@@ -203,7 +204,7 @@
             // prepare the element of the datepicker button
             this._super();
             // add user defined options to defaults for container
-            container_config = uijet.Utils.extend(true, container_config, this.options.container_options || {});
+            container_config = uijet.Utils.extend(true, container_config, datepiker_ops.container || {});
             // add the waking event handler
             container_config.app_events[id + '.clicked'] = function (data) {
                 this.opened = !this.opened;
@@ -251,20 +252,20 @@
             // create the container Pane
             uijet.startWidget('DatepickerContainer', container_config);
             // add user defined options to defaults for dates list
-            dateslist_config = uijet.Utils.extend(true, dateslist_config, this.options.dateslist_options || {});
+            dateslist_config = uijet.Utils.extend(true, dateslist_config, datepiker_ops.dateslist || {});
             // create the dates List
             uijet.startWidget('DatepickerList', dateslist_config);
             // create the next/prev buttons
-            uijet.startWidget('Button', {
+            uijet.startWidget('Button', uijet.Utils.extend(true, {
                 element     : $next,
                 id          : id + '_next',
                 container   : id + '_container'
-            });
-            uijet.startWidget('Button', {
+            }, datepiker_ops.next || {}));
+            uijet.startWidget('Button', uijet.Utils.extend(true, {
                 element     : $prev,
                 id          : id + '_prev',
                 container   : id + '_container'
-            });
+            }, datepiker_ops.prev || {}));
             return this;
         }
     }, {
