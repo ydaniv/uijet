@@ -21,10 +21,10 @@
     }
 
     uijet.Widget('DatepickerContainer', {
-        options : {
+        options     : {
             type_class  : ['uijet_pane', 'uijet_datepicker_container']
         },
-        appear  : function () {
+        appear      : function () {
             var offset, style;
             if ( ! this.options.dont_fix_overflow ) {
                 offset = uijet.Utils.getOffsetOf(this.context.event.target, uijet.$element[0]);
@@ -34,7 +34,17 @@
             }
             return this._super.apply(this, arguments);
         },
-        sleep   : function () {
+        disappear   : function () {
+            var style;
+            this._super.apply(this, arguments);
+            if ( ! this.options.dont_fix_overflow ) {
+                style = this.$wrapper[0].style;
+                style.removeProperty('top');
+                style.removeProperty('left');
+            }
+            return this;
+        },
+        sleep       : function () {
             this.opened = false;
             return this._super.apply(this, arguments);
         }
@@ -148,10 +158,6 @@
                 $current_date = $('<h1/>', {
                     'class' : 'uijet_datepicker_current_date'
                 }).appendTo($container),
-                // and here is our list of dates
-                $dateslist = $('<ul/>', {
-                    id      : id + '_dateslist'
-                }).appendTo($container),
                 // this is the prev month button
                 $prev = $('<span/>', {
                     id      : id + '_prev',
@@ -161,6 +167,10 @@
                 $next = $('<span/>', {
                     id      : id + '_next',
                     'class' : 'uijet_datepicker_arrow uijet_datepicker_next'
+                }).appendTo($container),
+                // and here is our list of dates
+                $dateslist = $('<ul/>', {
+                    id      : id + '_dateslist'
                 }).appendTo($container),
                 // lets configure our container widget
                 container_config = {
