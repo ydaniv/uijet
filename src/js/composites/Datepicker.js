@@ -62,15 +62,19 @@
             id = this.id.replace('_dateslist', '');
             // subscribe to the next/prev clicks
             this.subscribe(id + '_next.clicked', function () {
-                var max_date, go_next = true;
+                var max_year, current_year, max_date, go_next = true;
                 if ( max_date = this.options.max_date ) {
-                    go_next = max_date.getFullYear() >= this.current_date.getFullYear() && max_date.getMonth() > this.current_date.getMonth();
+                    max_year = max_date.getFullYear();
+                    current_year = this.current_date.getFullYear();
+                    go_next = max_year > current_year || (max_year === current_year && max_date.getMonth() > this.current_date.getMonth());
                 }
                 go_next && this.next_month();
             }).subscribe(id + '_prev.clicked', function () {
-                var min_date, go_prev = true;
+                var min_year, current_year, min_date, go_prev = true;
                 if ( min_date = this.options.min_date ) {
-                    go_prev = min_date.getFullYear() <= this.current_date.getFullYear() && min_date.getMonth() < this.current_date.getMonth();
+                    min_year = min_date.getFullYear();
+                    current_year = this.current_date.getFullYear();
+                    go_prev = min_year < current_year || (min_year === current_year && min_date.getMonth() < this.current_date.getMonth());
                 }
                 go_prev && this.prev_month();
             });
