@@ -62,15 +62,15 @@
             id = this.id.replace('_dateslist', '');
             // subscribe to the next/prev clicks
             this.subscribe(id + '_next.clicked', function () {
-                var go_next = true;
-                if ( this.options.max_date ) {
-                    go_next = this.options.max_date.getMonth() < this.current_date.getMonth();
+                var max_date, go_next = true;
+                if ( max_date = this.options.max_date ) {
+                    go_next = max_date.getFullYear() >= this.current_date.getFullYear() && max_date.getMonth() > this.current_date.getMonth();
                 }
                 go_next && this.next_month();
             }).subscribe(id + '_prev.clicked', function () {
-                var go_prev = true;
-                if ( this.options.min_date ) {
-                    go_prev = this.options.min_date.getMonth() > this.current_date.getMonth();
+                var min_date, go_prev = true;
+                if ( min_date = this.options.min_date ) {
+                    go_prev = min_date.getFullYear() <= this.current_date.getFullYear() && min_date.getMonth() < this.current_date.getMonth();
                 }
                 go_prev && this.prev_month();
             });
@@ -121,13 +121,13 @@
             if ( max_date = this.options.max_date ) {
                 // if we're on the same month as the `max_date`
                 if ( max_date.getMonth() === this.current_date.getMonth() ) {
-                    $($dates).slice(max_date.getDate() - 1).addClass('disabled');
+                    $($dates).slice(max_date.getDate()).addClass('disabled');
                 }
             }
             if ( min_date = this.options.min_date ) {
                 // if we're on the same month as the `min_date`
                 if ( min_date.getMonth() === this.current_date.getMonth() ) {
-                    $($dates).slice(0, min_date.getDate() - 1).addClass('disabled');
+                    $($dates).slice(0, min_date.getDate() - 2).addClass('disabled');
                 }
             }
 
@@ -213,9 +213,12 @@
                     element     : $dateslist,
                     container   : id + '_container',
                     signals     : {
-                        post_select : function ($selected) {
+                        post_select : function ($selected, e) {
                             // if this date is disabled bail out
-                            if ( $selected[0].classList.contains('disabled') ) return false;
+                            if ( $selected[0].classList.contains('disabled') ) {
+                                e.stopPropagation();
+                                return false;
+                            }
                             // set `current_date`
                             this.current_date.setDate(+$selected.text());
                             // publish the 'picked' event
