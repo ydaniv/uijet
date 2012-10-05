@@ -245,3 +245,8 @@ body {
 .uijet_datepicker_list li.disabled {
     color: #aaa;
 }
+.uijet_datepicker_list li.disabled:hover {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
