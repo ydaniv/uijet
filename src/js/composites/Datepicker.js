@@ -55,33 +55,38 @@
             type_class  : ['uijet_list', 'uijet_datepicker_list']
         },
         init        : function () {
-            var id;
+            var id, min_date, max_date;
             // do init
             this._super.apply(this, arguments);
             // a bit of a hacky way to get the datepicker's original id
             id = this.id.replace('_dateslist', '');
             // subscribe to the next/prev clicks
             this.subscribe(id + '_next.clicked', function () {
-                var max_date, go_next = true;
-                if ( max_date = this.options.max_date ) {
-                    if ( ! isDate(max_date) ) {
-                        max_date = new Date(max_date);
-                        this.options.max_date = max_date;
-                    }
-                    go_next = max_date.getMonth() < this.current_date.getMonth();
+                var go_next = true;
+                if ( this.options.max_date ) {
+                    go_next = this.options.max_date.getMonth() < this.current_date.getMonth();
                 }
                 go_next && this.next_month();
             }).subscribe(id + '_prev.clicked', function () {
-                var min_date, go_prev = true;
-                if ( min_date = this.options.min_date ) {
-                    if ( ! isDate(min_date) ) {
-                        min_date = new Date(min_date);
-                        this.options.min_date = min_date;
-                    }
-                    go_prev = min_date.getMonth() > this.current_date.getMonth();
+                var go_prev = true;
+                if ( this.options.min_date ) {
+                    go_prev = this.options.min_date.getMonth() > this.current_date.getMonth();
                 }
                 go_prev && this.prev_month();
             });
+            // make sure min/max dates are instances of `Date` object
+            if ( min_date = this.options.min_date ) {
+                if ( ! isDate(min_date) ) {
+                    min_date = new Date(min_date);
+                    this.options.min_date = min_date;
+                }
+            }
+            if ( min_date = this.options.min_date ) {
+                if ( ! isDate(min_date) ) {
+                    min_date = new Date(min_date);
+                    this.options.min_date = min_date;
+                }
+            }
             return this;
         },
         wake        : function () {
@@ -95,7 +100,7 @@
                 first = new Date(current_y, current_m, 1),
                 last = new Date(current_y, current_m, last_day),
                 day_offset = first.getDay(),
-                $dates;
+                $dates, min_date, max_date;
             this.current_date = current;
             // find the last date of the month
             while ( last.getMonth() > current_m ) {
@@ -111,6 +116,21 @@
             this.$element.html(html);
             $dates = this.$element.children();
             $dates.eq((this.current_date || now).getDate() - 1).addClass('selected');
+
+            // handle special cases
+            if ( max_date = this.options.max_date ) {
+                // if we're on the same month as the `max_date`
+                if ( max_date.getMonth() === this.current_date.getMonth() ) {
+                    $($dates).slice(max_date.getDate() - 1).addClass('disabled');
+                }
+            }
+            if ( min_date = this.options.min_date ) {
+                // if we're on the same month as the `min_date`
+                if ( min_date.getMonth() === this.current_date.getMonth() ) {
+                    $($dates).slice(0, min_date.getDate() - 1).addClass('disabled');
+                }
+            }
+
             // position the dates under the right days of the week using the offset
             this.$element[0]
                 .firstElementChild.style.marginLeft = 
@@ -194,11 +214,17 @@
                     container   : id + '_container',
                     signals     : {
                         post_select : function ($selected) {
+                            // if this date is disabled bail out
+                            if ( $selected[0].classList.contains('disabled') ) return false;
+                            // set `current_date`
                             this.current_date.setDate(+$selected.text());
+                            // publish the 'picked' event
                             this.publish(id + '.picked', this.current_date, true);
                         }
                     },
-                    app_events  : {}
+                    app_events  : {},
+                    min_date    : datepiker_ops.min_date,
+                    max_date    : datepiker_ops.max_date
                 },
                 floated_index;
             // prepare the element of the datepicker button

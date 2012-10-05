@@ -242,3 +242,6 @@ body {
 .uijet_list.uijet_datepicker_list li:last-child {
     border-radius: 4px;
 }
+.uijet_datepicker_list li.disabled {
+    color: #aaa;
+}
