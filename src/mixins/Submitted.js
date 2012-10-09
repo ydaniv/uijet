@@ -12,7 +12,7 @@
         submitted       : true,
         // ### widget.send
         // @sign: send([request_data])  
-        // @return: this OR $.ajax()
+        // @return: this OR uijet.xhr()
         //
         // Performs serialization of the `$element` using `getSerialized` and emits the data to
         // the URL got via `getSendUrl`.  
@@ -39,7 +39,7 @@
                     return this;
                 }
                 // otherwise make an XHR
-                return $.ajax(_url.path, {
+                return uijet.xhr(_url.path, {
                     type        : _url.method,
                     data        : _data,
                     contentType : this.options.send_content_type || 'application/x-www-form-urlencoded',

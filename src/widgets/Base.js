@@ -242,7 +242,7 @@
             };
             url = this.getDataUrl();
             // send XHR to update
-            $.ajax(url.path, Utils.extend({
+            uijet.xhr(url.path, Utils.extend({
                 type    : url.method,
                 data    : request_data,
                 dataType: 'json',

@@ -97,7 +97,7 @@
                 // if asked to refresh then invalidate cache
                 refresh && (this.has_template = false);
                 // request the template
-                requests.push($.ajax(this.getTemplateUrl(), {
+                requests.push(uijet.xhr(this.getTemplateUrl(), {
                     context : this
                 }).done(function (response) {
                     // cache result
@@ -114,7 +114,7 @@
                                            path + "." +
                                            uijet.options.TEMPLATES_EXTENSION;
                         // request that partial
-                        requests.push($.ajax(partial_path, {
+                        requests.push(uijet.xhr(partial_path, {
                             context : that
                         }).done(function (partial) {
                             // when done cache it
