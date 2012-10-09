@@ -5,28 +5,25 @@
         define([
             'jquery',
             'uijet_dir/uijet',
-            'uijet_dir/modules/promises/jquery',
             'uijet_dir/modules/engine/mustache',
             'uijet_dir/modules/pubsub/sammy',
-            'uijet_dir/modules/router/sammy'
-        ], function ($, uijet, promises, engine, pubsub, router) {
-            return (root.MyApp = factory($, uijet, promises, engine, pubsub, router, root));
+            'uijet_dir/modules/router/sammy',
+            'uijet_dir/modules/promises/jquery',
+            'uijet_dir/modules/xhr/jquery'
+        ], function ($, uijet, Mustache, pubsub, router) {
+            return (root.MyApp = factory($, uijet, Mustache, pubsub, router, root));
         });
     } else {
         // if not using an AMD library set the global `uijet` namespace
-        root.MyApp = factory(root.jQuery, root.uijet, root.uijet_promises, root.uijet_engine, root.uijet_pubsub, root.uijet_router, root);
+        root.MyApp = factory(root.jQuery, root.uijet, root.Mustache, root.uijet_pubsub, root.uijet_router, root);
     }
-}(this, function ($, uijet, promises, engine, pubsub, router, _window) {
+}(this, function ($, uijet, Mustache, pubsub, router, _window) {
     var _window = window,
         Sammy = _window.Sammy,
         BASE_PATH = '/',
         TEMPLATES_PATH = BASE_PATH + 'static_path/myapp/templates/',
         TEMPLATES_EXTENSION = 'ms',
-        // plugging in template engine
-        Mustache = engine(),
         MyApp;
-
-    promises();
 
     MyApp =  {
         AUTH            : '',
@@ -38,9 +35,9 @@
                 // #### Sammy app code here
             });
             // plugging in pubsub
-            pubsub(this.app, this);
+            pubsub(this.app);
             // plugging in router
-            router(this.app, this);
+            router(this.app);
 
             this.options = options;
             if ( options.templates_path ) {
