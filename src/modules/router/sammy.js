@@ -1,11 +1,11 @@
 // ### AMD wrapper
-(function (factory) {
+(function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet', 'sammy'], function (uijet) {
             return factory(uijet);
         });
     } else {
-        uijet.router = factory(uijet);
+        root.uijet.router = factory(uijet);
     }
 }(this, function (uijet) {
     return function (app) {

@@ -1,16 +1,16 @@
 // ### AMD wrapper
-(function (factory) {
+(function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet', 'sammy'], function (uijet) {
-            return factory(uijet);
+            return factory(root, uijet);
         });
     } else {
-        uijet.pubusb = factory(uijet);
+        root.uijet.pubusb = factory(root, uijet);
     }
-}(this, function (uijet) {
+}(this, function (root, uijet) {
     return function (app) {
         // cache reference to Array's slice method
-        var arraySlice = window.Array.prototype.slice;
+        var arraySlice = root.Array.prototype.slice;
 
         uijet.use({
             publish         : function (topic, data) {

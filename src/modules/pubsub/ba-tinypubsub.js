@@ -2,14 +2,14 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet', 'jquery', 'ba-tinypubsub'], function (uijet, $) {
-            return factory(uijet, $);
+            return factory(root, uijet, $);
         });
     } else {
-        factory(uijet, root.jQuery);
+        factory(root, uijet, root.jQuery);
     }
-}(this, function (uijet, $) {
+}(this, function (root, uijet, $) {
     // cache reference to Array's slice method
-    var arraySlice = window.Array.prototype.slice;
+    var arraySlice = root.Array.prototype.slice;
 
     uijet.use({
         publish         : function (topic, data) {
