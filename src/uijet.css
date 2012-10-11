@@ -207,6 +207,10 @@ h1, h2, h3, h4, h5, p, ul {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+.uijet_wrapper.float, .uijet_widget.float {
+    width: auto;
+    height: auto;
+}
 .uijet_wrapper.fixed, .uijet_widget.fixed, .layered {
     position: absolute;
 }
