@@ -10,7 +10,10 @@
 }(this, function (uijet, Mustache) {
     uijet.use({
         generate: function () {
-            return Mustache.to_html(this.template, this.data || this.context, this.partials);
+            return Mustache.render(this.template, this.data || this.context, this.partials);
+        },
+        compile : function (template, is_partial) {
+            return is_partial ? Mustache.compile(template) : Mustache.compilePartial(template);
         }
     }, uijet.BaseWidget.prototype);
 
