@@ -101,7 +101,7 @@
                     context : this
                 }).done(function (response) {
                     // cache result
-                    this.template = response;
+                    this.template = this.compile(response);
                 }).fail(failure));
                 // if we need to fetch partial templates
                 if ( partials ) {
@@ -118,7 +118,7 @@
                             context : that
                         }).done(function (partial) {
                             // when done cache it
-                            this.partials[name] = partial;
+                            this.partials[name] = this.compile(partial, true);
                         }).fail(failure));
                     }(p, partials[p]));
                 }

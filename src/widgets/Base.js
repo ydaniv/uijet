@@ -307,6 +307,16 @@
         generate        : function () {
             throw new Error('generate not implemented');
         },
+        // ### widget.compile
+        // @sign: compile(template, [is_partial])  
+        // @return: template OR compiled_template
+        //
+        // Compiles a template and returns a compiled version  of the template as a `Function`.
+        // By default it simply returns `template` and should be overridden with an implementation of the chosen engine.
+        // It takes an optional `is_partial` boolean that should note if `template` is a partial.
+        compile             : function (template, is_partial) {
+            return template;
+        },
         // ### widget.render
         // @sign: render()  
         // @return: this
