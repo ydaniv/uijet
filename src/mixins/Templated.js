@@ -118,7 +118,7 @@
                             context : that
                         }).done(function (partial) {
                             // when done cache it
-                            this.partials[name] = this.compile(partial, true);
+                            this.partials[name] = this.compile(partial, name);
                         }).fail(failure));
                     }(p, partials[p]));
                 }
