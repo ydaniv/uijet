@@ -10,6 +10,13 @@
 }(function (uijet, $) {
     uijet.Mixin('Templated', {
         templated       : true,
+        init            : function () {
+            this._super.apply(this, arguments);
+            if ( ! this.options.dont_fetch_template_on_init ) {
+                this.fetchTemplate();
+            }
+            return this;
+        },
         wake            : function (context) {
             var that = this,
                 old_context = this.context, do_render,
@@ -136,7 +143,7 @@
             // like a fulfilled promise
             return this;
         },
-        render              : function () {
+        render          : function () {
             // generate the HTML
             var _html = this.generate(),
                 dfrd = uijet.Promise(),
@@ -227,7 +234,7 @@
         // Gets the URL used by the widget to fetch its template.  
         // Uses uijet's `TEMPLATE_PATH` option as a prefix, followed by either `template_name` option or the `id`
         // property, with uijet's `TEMPLATES_EXTENSION` option as the extension suffix.
-        getTemplateUrl      : function () {
+        getTemplateUrl  : function () {
             return uijet.options.TEMPLATES_PATH + (this.options.template_name || this.id) + '.' + uijet.options.TEMPLATES_EXTENSION;
         }
     });
