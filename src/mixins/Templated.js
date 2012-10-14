@@ -87,6 +87,9 @@
         fetchTemplate   : function (refresh) {
             // if we don't have the template cached or was asked to refresh it
             if ( ! this.has_template || refresh ) {
+                if ( this._template_promise ) {
+                    return this._template_promise.promise();
+                }
                 // create a promise for retrieving all templates
                 var dfrd = uijet.Promise(),
                     // a stack for all template GET requests
@@ -98,9 +101,16 @@
                         // fail the whole fetching process
                         dfrd.reject();
                     },
+                    clear_promise = function () {
+                        delete that._template_promise;
+                    },
                     partials = this.options.partials,
                     partials_dir = this.options.partials_dir || '',
                     that = this, p;
+                // make sure we clear the promise from cache once it's done or failed
+                dfrd.then(clear_promise, clear_promise);
+                // cache the fetching promise
+                this._template_promise = dfrd;
                 // if asked to refresh then invalidate cache
                 refresh && (this.has_template = false);
                 // request the template
