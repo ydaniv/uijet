@@ -67,10 +67,10 @@
         // @return: this
         //
         // Registers the widget into the sandbox.  
-        // Hooks into uijet's `registerWidget`.
+        // Hooks into uijet's `register`.
         // *Note*: It is recommended to call `this._super` first thing when overriding this method.
         register        : function () {
-            uijet.registerWidget(this);
+            uijet.register(this);
             return this;
         },
         // ### widget.unregister
@@ -78,9 +78,9 @@
         // @return: this
         //
         // Unregisters the widget from the sandbox.  
-        // Hooks into uijet's `unregisterWidget`.
+        // Hooks into uijet's `unregister`.
         unregister      : function () {
-            uijet.unregisterWidget(this);
+            uijet.unregister(this);
             return this;
         },
         // ### widget.wake

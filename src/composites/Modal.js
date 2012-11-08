@@ -36,12 +36,12 @@
             // insert the overlay to the app's element's as its first child
             uijet.$element[0].insertBefore(overlay, uijet.$element[0].firstChild);
             // create the overlay widget
-            uijet.startWidget('Overlay', uijet.Utils.extend(true, {
+            uijet.start({ type: 'Overlay', config: uijet.Utils.extend(true, {
                 element     : overlay,
                 id          : overlay_id,
                 container   : this.id,
                 darken      : true
-            }, this.options.underlay_options || {}), true);
+            }, this.options.underlay_options || {}) }, true);
             // if we have buttons to create
             if ( buttons_configs = uijet.Utils.toArray(this.options.buttons) ) {
                 buttons = [];
@@ -52,7 +52,7 @@
                         config  : conf
                     });
                 }
-                uijet.startWidgets(buttons);
+                uijet.start(buttons);
             }
             return this;
         }

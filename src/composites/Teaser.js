@@ -52,19 +52,19 @@
             this._super();
             // Arrow Buttons
             if ( this.options.add_arrows ) {
-                dfrds.push(uijet.startWidget('Button', uijet.Utils.extend(true, {
+                dfrds.push(uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
                     element     : $('<span/>', {
                         'class' : 'uijet_teaser_arrow uijet_teaser_next',
                         id      : this.id + '_next'
                     }).appendTo(this.$wrapper),
                     container   : this.id
-                }, this.options.next_options || {})), uijet.startWidget('Button', uijet.Utils.extend(true, {
+                }, this.options.next_options || {}) }), uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
                     element     : $('<span/>', {
                         'class' : 'uijet_teaser_arrow uijet_teaser_prev',
                         id      : this.id + '_prev'
                     }).appendTo(this.$wrapper),
                     container   : this.id
-                }, this.options.prev_options || {})));
+                }, this.options.prev_options || {}) }));
                 // init options.app_events
                 this.options.app_events = {};
                 // subscribe to prev/next click events
@@ -98,12 +98,12 @@
                 preview_options = preview_user_ops ?
                     uijet.Utils.extend(true, preview_options, preview_user_ops) :
                     preview_options;
-                dfrds.push(uijet.startWidget('List', uijet.Utils.extend(true, {
+                dfrds.push(uijet.start({ type: 'List', config: uijet.Utils.extend(true, {
                         element     :  $('<ul/>', {
                             id  : this.id + '_preview'
                         }).appendTo(this.$wrapper)
                     }, preview_options)
-                ));
+                }));
             }
             this.dfrd_widgets = dfrds.length ? dfrds : [{}];
             return this;

@@ -33,7 +33,7 @@
                         config  : conf
                     });
                 }
-                uijet.startWidgets(buttons);
+                uijet.start(buttons);
             }
             return this;
         }

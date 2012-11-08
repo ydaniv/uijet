@@ -283,22 +283,22 @@
                 }
             }
             // create the container Pane
-            uijet.startWidget('DatepickerContainer', container_config);
+            uijet.start({ type: 'DatepickerContainer', config: container_config });
             // add user defined options to defaults for dates list
             dateslist_config = uijet.Utils.extend(true, dateslist_config, datepiker_ops.dateslist || {});
             // create the dates List
-            uijet.startWidget('DatepickerList', dateslist_config);
+            uijet.start({ type: 'DatepickerList', config: dateslist_config });
             // create the next/prev buttons
-            uijet.startWidget('Button', uijet.Utils.extend(true, {
+            uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
                 element     : $next,
                 id          : id + '_next',
                 container   : id + '_container'
-            }, datepiker_ops.next || {}));
-            uijet.startWidget('Button', uijet.Utils.extend(true, {
+            }, datepiker_ops.next || {}) });
+            uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
                 element     : $prev,
                 id          : id + '_prev',
                 container   : id + '_container'
-            }, datepiker_ops.prev || {}));
+            }, datepiker_ops.prev || {}) });
             return this;
         }
     }, {
