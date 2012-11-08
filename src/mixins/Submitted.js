@@ -29,6 +29,7 @@
             context = this.notify(true, 'pre_send');
             // set the URL for sending
             _url = this.getSendUrl(context);
+            // if there's a URI to send to
             if ( _url ) {
                 // if `route_send` option is `true`
                 if ( this.options.route_send ) {
@@ -53,6 +54,11 @@
                     // emit the `send_error` signal
                     this.notify.apply(that, [true, 'send_error'].concat(Array.prototype.slice.call(arguments)));
                 });
+            }
+            else {
+                // otherwise just publish 'sent' event with the data
+                this.publish('sent', _data);
+                return this;
             }
         },
         setInitOptions  : function () {
