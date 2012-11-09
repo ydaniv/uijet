@@ -48,7 +48,7 @@
             return this;
         },
         register        : function () {
-            var preview_options = {}, preview_user_ops, dfrds = [];
+            var preview_options = {}, preview_user_ops, dfrds = [], $ = uijet.$;
             this._super();
             // Arrow Buttons
             if ( this.options.add_arrows ) {

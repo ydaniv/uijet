@@ -41,7 +41,7 @@
                     that.runRoute(that.getDataUrl().path, typeof routing == 'undefined' ?
                                                         true :
                                                         typeof routing == 'function' ?
-                                                            ! routing.call(that, $(this)) :
+                                                            ! routing.call(that, uijet.$(this)) :
                                                             ! routing);
                 });
             }

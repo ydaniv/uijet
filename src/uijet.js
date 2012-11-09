@@ -10,8 +10,6 @@
         root.uijet = factory(root.jQuery, root);
     }
 }(this, function ($, _window) {
-    //TODO: create an adapter for XHR  
-    //TODO: create an adapter for DOM events  
     // cache some gloabls
     var Function = _window.Function,
         Object = _window.Object,
@@ -731,7 +729,7 @@
                     k;
                 this.options = _options || {};
                 // set top container
-                this.$element = $(_options && _options.element || 'body');
+                this.$element = this.$(_options && _options.element || 'body');
                 // sniff for iPad UA and perform optimizations accordingly
                 this.isiPad();
                 if ( _options ) {
@@ -1183,7 +1181,7 @@
         // and starts these widgets.  
         // This method looks for the `data-uijet-type` attribute on tags.
         parse               : function () {
-            var that = this;
+            var that = this, $ = this.$;
             this.$element.find('[' + TYPE_ATTR + ']')
                 .each(function () {
                     var $this = $(this),
@@ -1218,7 +1216,7 @@
         //          </script>
         //      </div>
         _parseScripts       : function ($el, config) {
-            var F = _window.Function;
+            var F = _window.Function, $ = this.$;
             $el.find('script').each(function () {
                 var $this = $(this),
                     type = $this.attr('type'),
@@ -1508,7 +1506,7 @@
                 this.is_iPad = true;
             }
             // prevent touchmove event of the viewport
-            this.is_iPad && $('body').attr('ontouchmove', "(function preventTouchMove(e){e.preventDefault();}(event));");
+            this.is_iPad && this.$('body').attr('ontouchmove', "(function preventTouchMove(e){e.preventDefault();}(event));");
             return this;
         },
         // ## uijet.transit

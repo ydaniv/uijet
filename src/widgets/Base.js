@@ -501,7 +501,7 @@
                 that = this;
             capture_href && (selector += ',a');
             this.$element.on('click', selector, function (e) {
-                var $this = $(this),
+                var $this = uijet.$(this),
                     is_anchor = this.tagName.toLowerCase() == 'a',
                     _route = that.substitute(
                         $this.attr(is_anchor && capture_href ? 'href' : 'data-uijet-route'),
@@ -590,7 +590,7 @@
                 // use the `element` argument or the option.
                 element = element || this.options.element;
                 // if it's not a jQuery object then wrap it
-                this.$element = element.jquery ? element : $(element);
+                this.$element = element.jquery ? element : uijet.$(element);
             }
             return this;
         },
@@ -681,7 +681,7 @@
         // Currently only used on iPad.  
         // Internally this toggles the `unshadow` class.
         unshadow        : function (elements, do_unshadow) {
-            uijet.is_iPad && $(elements).toggleClass('unshadow', typeof do_unshadow == 'boolean' ? do_unshadow : true);
+            uijet.is_iPad && uijet.$(elements).toggleClass('unshadow', typeof do_unshadow == 'boolean' ? do_unshadow : true);
             return this;
         },
         // ### widget.remove
@@ -727,7 +727,7 @@
                     classes = 'uijet_wrapper ' + Utils.toArray(this.options.type_class).join('_wrapper ') + '_wrapper';
                     this.options.wrapper_class && (classes += ' ' + this.options.wrapper_class);
                     // wrap and cache the wrapper
-                    this.$wrapper = this.$element.wrap($('<div/>', {
+                    this.$wrapper = this.$element.wrap(uijet.$('<div/>', {
                         'class' : classes,
                         id      : this.id + '_wrapper'
                     })).parent();
@@ -746,7 +746,7 @@
         _center         : function () {
             if ( ! this.$center_wrapper ) {
                 // wrap and cache the wrapper
-                this.$center_wrapper = this.$element.wrap($('<div/>', {
+                this.$center_wrapper = this.$element.wrap(uijet.$('<div/>', {
                     'class' : 'uijet_center_wrapper ' +
                         Utils.toArray(this.options.type_class).join('_center_wrapper ') +
                         '_center_wrapper'

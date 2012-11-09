@@ -125,13 +125,13 @@
             if ( max_date = this.options.max_date ) {
                 // if we're on the same month as the `max_date`
                 if ( max_date.getMonth() === this.current_date.getMonth() ) {
-                    $($dates).slice(max_date.getDate()).addClass('disabled');
+                    uijet.$($dates).slice(max_date.getDate()).addClass('disabled');
                 }
             }
             if ( min_date = this.options.min_date ) {
                 // if we're on the same month as the `min_date`
                 if ( min_date.getMonth() === this.current_date.getMonth() ) {
-                    $($dates).slice(0, min_date.getDate() - 2).addClass('disabled');
+                    uijet.$($dates).slice(0, min_date.getDate() - 2).addClass('disabled');
                 }
             }
 
@@ -171,7 +171,8 @@
             type_class: ['uijet_button','uijet_datepicker']
         },
         prepareElement  : function () {
-            var id = this.id,
+            var $ = uijet.$,
+                id = this.id,
                 $el = this.$element,
                 datepiker_ops = this.options.datepicker || {},
                 // create all the elements we need to construct our datepicker

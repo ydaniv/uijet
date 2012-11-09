@@ -44,7 +44,7 @@
                 // get the selected element  
                 // if `item_element` option is set get the closest `item_selector` stating from current element  
                 // if not then use current element
-                var $this = item_element ? $(this).closest(item_selector) : $(this),
+                var $this = item_element ? uijet.$(this).closest(item_selector) : uijet.$(this),
                 // notify the `post-select` signal
                     _continue = that.notify(true, 'post_select', $this, e);
                 // if `post_select signal` is handled and returns specifically `false` then prevent it
@@ -87,7 +87,7 @@
                 this.$selected = toggle;
                 toggle = true;
             } else if ( toggle && toggle.nodeType === 1) {
-                this.$selected = $(toggle);
+                this.$selected = uijet.$(toggle);
                 toggle = true;
             } else {
                 toggle = !!toggle;

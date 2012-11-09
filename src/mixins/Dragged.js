@@ -83,7 +83,7 @@
                 down_pos = has_touch ? down_e.originalEvent.touches[0] : down_e,
                 // set position
                 start_event_pos = { y : down_pos.pageY, x : down_pos.pageX },
-                $doc = $(document),
+                $doc = uijet.$(document),
                 dfrd = uijet.Promise(),
                 start_time = down_e.timeStamp,
                 _finally, delayHandler, cancelHandler,
@@ -268,7 +268,7 @@
             if ( option = this.options.drag_element ) {
                 // if it's an HTMLElement just wrap it
                 if ( option.nodeType === 1 ) {
-                    $el = $(option);
+                    $el = uijet.$(option);
                 // if it's a jQuery object we're set
                 } else if ( option.jquery ) {
                     $el = option;

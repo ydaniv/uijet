@@ -171,7 +171,7 @@
                 // if `insert_before` option is set it's used as a selector or element to indicate where to insert the
                 // generated HTML before.
                 if ( this.options.insert_before ) {
-                    $(_html).insertBefore(this.options.insert_before);
+                    uijet.$(_html).insertBefore(this.options.insert_before);
                 } else {
                     // just append the HTML at the end
                     this.$element.append(_html);
