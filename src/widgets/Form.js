@@ -44,7 +44,7 @@
             this._super();
             // check if there's no one else handling the form submit event, e.g. Sammy.js
             if ( ! uijet.options.submit_handled ) {
-                this.$element.bind('submit', function (e) {
+                this.$element.on('submit', function (e) {
                     // stop and prevent it
                     e.preventDefault();
                     e.stopPropagation();
