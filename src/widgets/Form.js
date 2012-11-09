@@ -17,7 +17,26 @@
         options         : {
             type_class  : 'uijet_form',
             serializer  : function () {
-                return this.$element.serialize();
+                var $fields = this.$element.find('[name]'),
+                    data = {};
+                $fields.forEach(function (field) {
+                    var name = field.name;
+                    // if this key already exists
+                    if ( name in data ) {
+                        // if it's corresponding value is not an `Array`
+                        if ( ! uijet.Utils.isArr(data[name]) ) {
+                            // wrap it in an `Array`
+                            data[name] = [data[name]];
+                        }
+                        // push the new value to the list
+                        data[name].push(field.value);
+                    }
+                    else {
+                        // otherwise just set this value
+                        data[name] = field.value;
+                    }
+                });
+                return data;
             }
         },
         register        : function () {
