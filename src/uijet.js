@@ -544,6 +544,16 @@
         return null;
     }
 
+    // ### Utils.contains
+    // @sign: contains(child, parent)  
+    // @return: is_contained
+    //
+    // Checks if the `Element` `a` contains the `Element` `b`.
+    // __Note__: `Node.compareDocumentPosition()` is not supported on IE8-
+    function contains (a, b) {
+        return b && !!( a.compareDocumentPosition( b ) & 16 );
+    }
+
     // ### Utils.getOffsetOf
     // @sign: getOffsetOf(child, parent)  
     // @return: offset_obj
@@ -553,8 +563,7 @@
     // If `child` is not a descendant of `parent` then the values will both be 0.
     function getOffsetOf (child, parent) {
         var result = { x: 0, y: 0 };
-        //TODO: uses jQuery.contains - might wanna lose it later
-        if ( ! child || ! parent || child === parent || ! $.contains(parent, child) ) return result;
+        if ( ! child || ! parent || child === parent || ! contains(parent, child) ) return result;
         do {
             if ( child === parent ) break;
             result.x += child.offsetLeft;
