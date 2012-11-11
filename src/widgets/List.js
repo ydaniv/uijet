@@ -40,7 +40,7 @@
                 this.$element.addClass(class_attrs.join(' '));
             }
             // delegate all clicks from `item_element` option as selector or `item_selector`  
-            this.$element.on(uijet.click_events.full, item_element || item_selector, function (e) {
+            this.$element.on(uijet.support.click_events.full, item_element || item_selector, function (e) {
                 // get the selected element  
                 // if `item_element` option is set get the closest `item_selector` stating from current element  
                 // if not then use current element

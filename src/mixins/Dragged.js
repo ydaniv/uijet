@@ -56,7 +56,7 @@
             // cache the bound handler to be able to remove specifically it later
             this._dragstart_handler = this._startHandler.bind(this);
             // set the start event on the drag_element, if set, or the top container
-            ($drag_element && $drag_element.length ? $drag_element : $el).one(uijet.click_events.start, this._dragstart_handler);
+            ($drag_element && $drag_element.length ? $drag_element : $el).one(uijet.support.click_events.start, this._dragstart_handler);
             return this;
         },
         //TODO: add docs
@@ -66,7 +66,7 @@
                 // get the top container of the widget
                 $el = (this.$wrapper || this.$element);
             // remove the set handler
-            ($drag_element && $drag_element.length ? $drag_element : $el).off(uijet.click_events.start, this._dragstart_handler);
+            ($drag_element && $drag_element.length ? $drag_element : $el).off(uijet.support.click_events.start, this._dragstart_handler);
             return this;
         },
         //TODO: add docs
@@ -96,8 +96,8 @@
                 x   : this._scrolled_parent.scrollLeft
             };
             // cache the events names
-            MOVE_E = uijet.click_events.move;
-            END_E = uijet.click_events.end;
+            MOVE_E = uijet.support.click_events.move;
+            END_E = uijet.support.click_events.end;
             if ( is_cloned ) {
                 // clone if required to
                 $draggee = $el.clone();
