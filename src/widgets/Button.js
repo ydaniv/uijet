@@ -26,7 +26,8 @@
                             event   : e
                         }, true);
                     }
-                    return false;
+                    e.preventDefault();
+                    e.stopPropagation();
                 }
             }
         },
@@ -36,7 +37,7 @@
             // if `data_url` option is set
             if ( this.options.data_url ) {
                 // bind another click handler 
-                this.$element.click(function () {
+                this.$element.on('click', function () {
                     // get `data_url` and run it as route, using `routing` option to determine whether it's inner
                     that.runRoute(that.getDataUrl().path, typeof routing == 'undefined' ?
                                                         true :
@@ -55,7 +56,7 @@
         },
         select          : function (initial) {
             if ( typeof initial == 'undefined' ) {
-                this.$element.click();
+                this.$element.trigger('click');
             } else {
                 this._super(initial);
             }

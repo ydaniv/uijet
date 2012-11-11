@@ -483,7 +483,7 @@
         select          : function (initial) {
             var $el;
             $el = typeof initial == 'function' ? initial.call(this) : this.$element.find(initial);
-            typeof $el.click == 'function' && $el.click();
+            typeof $el.trigger == 'function' && $el.trigger('click');
             return this;
         },
         // ### widget.captureRoutes

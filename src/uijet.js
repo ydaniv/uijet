@@ -1202,7 +1202,7 @@
             var pre_startup = this.options.pre_startup;
             isFunc(pre_startup) && pre_startup();
             // listen to clicks around the app to notify about idle user interaction
-            uijet.$element.click(function () {
+            uijet.$element.on('click', function () {
                 uijet.publish('app.clicked');
             });
             this.$element[0].style.visibility = 'visible';
