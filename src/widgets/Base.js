@@ -483,7 +483,7 @@
         select          : function (initial) {
             var $el;
             $el = typeof initial == 'function' ? initial.call(this) : this.$element.find(initial);
-            typeof $el.trigger == 'function' && $el.trigger('click');
+            typeof $el.trigger == 'function' && $el.trigger(uijet.click_events.full);
             return this;
         },
         // ### widget.captureRoutes
@@ -500,7 +500,7 @@
                 selector = '[data-uijet-route]',
                 that = this;
             capture_href && (selector += ',a');
-            this.$element.on('click', selector, function (e) {
+            this.$element.on(uijet.click_events.full, selector, function (e) {
                 var $this = uijet.$(this),
                     is_anchor = this.tagName.toLowerCase() == 'a',
                     _route = that.substitute(

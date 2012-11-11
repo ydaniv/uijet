@@ -56,7 +56,7 @@
         },
         select          : function (initial) {
             if ( typeof initial == 'undefined' ) {
-                this.$element.trigger('click');
+                this.$element.trigger(uijet.click_events.full);
             } else {
                 this._super(initial);
             }

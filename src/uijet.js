@@ -608,6 +608,11 @@
             touch           : (function () {
                 return ('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch;
             }()),
+            click_events    : (function () {
+                return uijet.support.touch ?
+                    { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
+                    { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' };
+            }()),
             transform       : !!getStyleProperty('transform'),
             transition      : !!getStyleProperty('transition'),
             '3d'            : !!getStyleProperty('perspective'),
@@ -1202,7 +1207,7 @@
             var pre_startup = this.options.pre_startup;
             isFunc(pre_startup) && pre_startup();
             // listen to clicks around the app to notify about idle user interaction
-            uijet.$element.on('click', function () {
+            uijet.$element.on(uijet.click_events.full, function () {
                 uijet.publish('app.clicked');
             });
             this.$element[0].style.visibility = 'visible';
