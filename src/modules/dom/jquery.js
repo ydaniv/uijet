@@ -11,4 +11,6 @@
     uijet.use({
         $   : $
     }, uijet);
+
+    return $;
 }));
