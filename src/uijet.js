@@ -1,15 +1,14 @@
 // ### AMD wrapper
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        // for now we require jQuery
-        define(['jquery'], function ($) {
-            return (root.uijet = factory($, root));
+        define(function () {
+            return factory(root);
         });
     } else {
         // if not using an AMD library set the global `uijet` namespace
-        root.uijet = factory(root.jQuery, root);
+        root.uijet = factory(root);
     }
-}(this, function ($, _window) {
+}(this, function (_window) {
     // cache some gloabls
     var Function = _window.Function,
         Object = _window.Object,
