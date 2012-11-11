@@ -280,6 +280,34 @@
         return target;
     }
 
+    // ### Utils.extendProxy
+    // @sign: extendProxy(target, source, context)  
+    // @return: target
+    //
+    // Deep-copies `source`'s properties to `target` while making sure all methods
+    // are bound to `context`.
+    // Usually used for `uijet.use`.
+    function extendProxy (target, source, context) {
+        var s;
+        // loop over source's properties
+        for ( s in source ) {
+            // if it's a `Function`
+            if ( isFunc(source[s]) ) {
+                // bind and copy it to target
+                target[s] = source[s].bind(context);
+            } else {
+                // otherwise just copy
+                target[s] = source[s];
+                // if it's an `Object`
+                if ( isObj(source[s]) ) {
+                    // go deeper to make sure every method is bound
+                    extendProxy(target[s], source[s], context);
+                }
+            }
+        }
+        return target;
+    }
+
     function process (data, processor, widget) {
         var key, val;
         if ( isObj(processor) ) {
@@ -602,18 +630,17 @@
         // If `context` object is specified the properties of `props` are coppied and all methods will be bound to it.
         use                 : function (props, host, context) {
             // get the host object or use uijet
-            var _host = host || this, m, dup;
-            // if `context` is an `object`
+            var _host = host || this, m;
+            // if `context` is an `Object`
             if ( isObj(context) ) {
-                dup = {};
-                // loop over `props`
-                for ( m in props ) {
-                    // create a duplicate of `props` and bind every method to `context`
-                    dup[m] = isFunc(props[m]) ? props[m].bind(context) : props[m];
-                }
+                // extend `host` with all methods bound to `context`
+                extendProxy(host, props, context);
             }
-            // extend `host` with the duplicate or simply `props`
-            extend(true, _host, dup || props);
+            // otherwise
+            else {
+                // simply extend `host` with `props`
+                extend(true, _host, props);
+            }
             return this;
         },
         // ### uijet.Widget
@@ -1683,6 +1710,7 @@
     uijet.Utils = {
         extend          : extend,
         extendProto     : extendProto,
+        extendProxy     : extendProxy,
         Create          : Create,
         isObj           : isObj,
         isArr           : isArr,
