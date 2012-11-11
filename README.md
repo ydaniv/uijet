@@ -32,7 +32,7 @@ Assuming you'll place all the 3rd party code under 'lib', it should look like:
             // rest of needed paths ...
         },
         callback: function () {
-            require([
+            requirejs([
                 'uijet',
                 'uijet_dir/modules/pubsub/eventbox',
                 'uijet_dir/modules/dom/jquery',
@@ -63,7 +63,7 @@ You can simply add those module adapters from UIjet's modules library and activa
 
     // ...
     callback: function () {
-        require([
+        requirejs([
             'uijet',
             'uijet_dir/modules/pubsub/eventbox',
             'uijet_dir/modules/dom/jquery',
