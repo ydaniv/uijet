@@ -62,6 +62,8 @@
                     return _window.clearTimeout(requestId);
                 };
         }()),
+        // check for touch support
+        has_touch = !!(('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
         // the sandbox
         uijet;
 
@@ -605,14 +607,10 @@
         ROUTE_SUFFIX        : '',
         // detected browser features
         support             : {
-            touch           : (function () {
-                return ('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch;
-            }()),
-            click_events    : (function () {
-                return uijet.support.touch ?
-                    { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
-                    { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' };
-            }()),
+            touch           : has_touch,
+            click_events    : has_touch ?
+                { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
+                { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' },
             transform       : !!getStyleProperty('transform'),
             transition      : !!getStyleProperty('transition'),
             '3d'            : !!getStyleProperty('perspective'),
