@@ -1,20 +1,20 @@
 // ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['jquery',
+        define([
             'uijet_dir/uijet',
             'uijet_dir/widgets/Base',
             'uijet_dir/widgets/Button',
             'uijet_dir/widgets/Pane',
             'uijet_dir/widgets/List',
             'uijet_dir/mixins/Floated'
-        ], function ($, uijet) {
-            return factory($, uijet);
+        ], function (uijet) {
+            return factory(uijet);
         });
     } else {
-        factory(jQuery, uijet);
+        factory(uijet);
     }
-}(function ($, uijet) {
+}(function (uijet) {
 
     function isDate (obj) {
         return Object.prototype.toString.call(obj) == '[object Date]';
@@ -137,7 +137,7 @@
 
             // position the dates under the right days of the week using the offset
             this.$element[0]
-                .firstElementChild.style.marginLeft = 
+                .firstElementChild.style.marginLeft =
                     day_offset * this.$element[0].firstElementChild.offsetWidth + 'px';
             // set current date title
             this.publish(

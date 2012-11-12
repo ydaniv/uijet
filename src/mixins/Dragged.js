@@ -1,17 +1,17 @@
 // ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['jquery', 'uijet_dir/uijet'], function ($, uijet) {
-            return factory($, uijet);
+        define(['uijet_dir/uijet'], function (uijet) {
+            return factory(uijet);
         });
     } else {
-        factory(jQuery, uijet);
+        factory(uijet);
     }
-}(function ($, uijet) {
+}(function (uijet) {
     var has_touch = uijet.support.touch,
         requestAnimFrame = uijet.Utils.requestAnimFrame,
         cancelAnimFrame = uijet.Utils.cancelAnimFrame,
-        // get the prefixed `transform` property
+    // get the prefixed `transform` property
         style_prop = uijet.Utils.getStyleProperty('transform');
 
     uijet.Mixin('Dragged', {
@@ -79,7 +79,7 @@
                 delay = this.options.drag_delay || 150,
                 is_cloned = this.options.drag_clone,
                 // get the start event object  
-                //TODO: this is adapted for iPad touch event object handling, need to test/implement the rest
+                //TODO: this is adapted for iOS touch event object handling, need to test/implement the rest
                 down_pos = has_touch ? down_e.originalEvent.touches[0] : down_e,
                 // set position
                 start_event_pos = { y : down_pos.pageY, x : down_pos.pageX },
@@ -255,7 +255,7 @@
         // @sign: _getDragElement  
         // @return: $element
         //
-        // Checks if the `drag_element` option is set and returns a jQuery-wrapped element from it.
+        // Checks if the `drag_element` option is set and returns a DOM query result object from it.
         // That drag start event will be contained to that element alone (defaults to the widget's top container).
         _getDragElement     : function () {
             var option, $el;
@@ -264,14 +264,17 @@
                 // if it's an HTMLElement just wrap it
                 if ( option.nodeType === 1 ) {
                     $el = uijet.$(option);
-                // if it's a jQuery object we're set
-                } else if ( option.jquery ) {
+                }
+                // if it's a DOM query result object we're set
+                else if ( option[0] && option[0].nodeType === 1 ) {
                     $el = option;
+                }
                 // if it's a `String` treat it as a selector inside the widget
-                } else if ( typeof option === 'string' ) {
+                else if ( typeof option === 'string' ) {
                     $el = (this.$wrapper || this.$element).find(option);
+                }
                 // if it's a `Function` call `uijet.Utils.returnOf` on it
-                } else if ( uijet.Utils.isFunc(option) ) {
+                else if ( uijet.Utils.isFunc(option) ) {
                     $el = uijet.Utils.returnOf(option, this);
                 }
             }
@@ -337,7 +340,7 @@
             var style = el.style,
                 i = 0, prop;
             this.draggee_style_cache = {};
-            
+
             for ( ; prop = this._cached_drag_styles[i++]; ) {
                 this.draggee_style_cache[prop] = style.getPropertyValue(prop);
             }

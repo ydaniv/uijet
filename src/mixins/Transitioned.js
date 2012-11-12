@@ -1,13 +1,13 @@
 // ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'jquery'], function (uijet, $) {
-            return factory(uijet, $);
+        define(['uijet_dir/uijet'], function (uijet) {
+            return factory(uijet);
         });
     } else {
-        factory(uijet, jQuery);
+        factory(uijet);
     }
-}(function (uijet, $) {
+}(function (uijet) {
     uijet.Mixin('Transitioned', {
         transitioned    : true,
         prepareElement  : function () {
@@ -62,7 +62,7 @@
                 // transit out
                 uijet.when( this.transit('out') ).then(_success, function () {
                     // make sure we unbind the transition-end event handler
-                    $el.unbind('transitionend webkitTransitionEnd');
+                    $el.off(uijet.support.transitionend);
                 });
             }
             return this;

@@ -1,13 +1,13 @@
 // ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'jquery'], function (uijet, $) {
-            return factory(uijet, $);
+        define(['uijet_dir/uijet'], function (uijet) {
+            return factory(uijet);
         });
     } else {
-        factory(uijet, jQuery);
+        factory(uijet);
     }
-}(function (uijet, $) {
+}(function (uijet) {
     uijet.Mixin('Templated', {
         templated       : true,
         init            : function () {
@@ -24,7 +24,7 @@
             // setting `context`
             this._setContext(context);
             // notify the `pre_wake` signal with the `old_context`
-                do_render = this.notify('pre_wake', old_context);
+            do_render = this.notify('pre_wake', old_context);
             // create a new deferred wake promise object
             dfrd_wake = uijet.Promise();
             // wake up the kids
@@ -122,14 +122,14 @@
                 }).fail(failure));
                 // if we need to fetch partial templates
                 if ( partials ) {
-                    this.partials || (this.partials = {}); 
+                    this.partials || (this.partials = {});
                     // loop over them
                     for ( p in partials ) (function (name, path) {
                         // build the path to each partial
                         var partial_path = uijet.options.TEMPLATES_PATH +
-                                           partials_dir +
-                                           path + "." +
-                                           uijet.options.TEMPLATES_EXTENSION;
+                                            partials_dir +
+                                            path + "." +
+                                            uijet.options.TEMPLATES_EXTENSION;
                         // request that partial
                         requests.push(uijet.xhr(partial_path, {
                             context : that

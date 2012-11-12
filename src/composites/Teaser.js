@@ -2,18 +2,18 @@
 // ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['jquery',
+        define([
             'uijet_dir/uijet',
             'uijet_dir/widgets/Base',
             'uijet_dir/widgets/List',
             'uijet_dir/mixins/Scrolled'
-        ], function ($, uijet) {
-            return factory($, uijet);
+        ], function (uijet) {
+            return factory(uijet);
         });
     } else {
-        factory(jQuery, uijet);
+        factory(uijet);
     }
-}(function ($, uijet) {
+}(function (uijet) {
     var ANIMATION_PROPS = {
         slide   : {
             prop    : uijet.Utils.getStyleProperty('transform'),
@@ -87,7 +87,7 @@
                     preview_user_ops && uijet.Utils.isFunc(preview_user_ops.next) ?
                         preview_user_ops.next :
                         function () {
-                            
+
                         };
                 preview_options.app_events[this.id + '.prev'] =
                     preview_user_ops && uijet.Utils.isFunc(preview_user_ops.prev) ?
@@ -152,7 +152,7 @@
             var that = this;
             this._fixPosition();
             this.$slides.removeClass('current')
-                       .eq(this.slide_index).addClass('current');
+                        .eq(this.slide_index).addClass('current');
             // cancel last animation if it's still in queue
             this.animation_id && uijet.Utils.cancelAnimFrame(this.animation_id);
             this.animation_id = uijet.animate(

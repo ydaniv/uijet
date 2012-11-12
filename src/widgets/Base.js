@@ -2,13 +2,13 @@
 (function (root, factory) {
     // set the BaseWidget class with the returned constructor function
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'jquery'], function (uijet, $) {
-            return (uijet.BaseWidget = factory(uijet, $, root));
+        define(['uijet_dir/uijet'], function (uijet) {
+            return (uijet.BaseWidget = factory(uijet, root));
         });
     } else {
-        root.uijet.BaseWidget = factory(root.uijet, root.jQuery, root);
+        root.uijet.BaseWidget = factory(root.uijet, root);
     }
-}(this, function (uijet, $, _window) {
+}(this, function (uijet, _window) {
     var Object = _window.Object,
         // cache the utilities namespace
         Utils = uijet.Utils,
@@ -140,7 +140,7 @@
         // This array is then handed into the deferring of this widget's `wake` call to check whether a child
         // failed to wake or to halt until all are awake in case of a `sync`=`true`.
         wakeContained   : function (context) {
-            // returns an array of jQuery deferreds
+            // returns an array of deferred objects' promises
             return uijet.wakeContained(this.id, context);
         },
         // ### widget.sleep
@@ -194,7 +194,7 @@
             this.app_events && this.unsubscribe(this.app_events);
             // unregister from uijet
             this.unregister()
-            // remove DOM elements
+                // remove DOM elements
                 .remove();
             return this;
         },
@@ -247,7 +247,8 @@
                 data    : request_data,
                 dataType: 'json',
                 context : this
-            }, this.options.update_config)).done(_success)
+            }, this.options.update_config))
+            .done(_success)
             .fail(function (response) {
                 // notify there was an error and allow user to continue with either:
                 //
@@ -285,7 +286,7 @@
         //
         // Sets the instance element's style in case the `style` option is set.  
         // It makes sure the the element is wrapped first and sets those style properties on the `$wrapper`.  
-        // It uses `jQuery.css` on the element with the option's value.  
+        // It uses a `jQuery.css` like operation on the wrapper element with the option's value.  
         // This is usually called once in the init sequence.
         setStyle        : function () {
             var _style = this.options.style;
@@ -337,7 +338,7 @@
         // If this option is set then the 'fixed' class is added to the `$wrapper`.
         // Then, if it's a `String` it is added as a class too.  
         // If ='center' then `_center` is called as well.  
-        // If it's an `Object` then it's used as argument for a `jQuery.css` call on the `$wrapper`.  
+        // If it's an `Object` then it's used as argument for a `jQuery.css` like call on the `$wrapper`.  
         // This is usually called once in the init sequence, then the option is deleted
         // to prevent unnecessary repeating of this call.
         position        : function () {
@@ -589,8 +590,8 @@
             if ( ! this.$element ) {
                 // use the `element` argument or the option.
                 element = element || this.options.element;
-                // if it's not a jQuery object then wrap it
-                this.$element = element.jquery ? element : uijet.$(element);
+                // if it's not a result object of the DOM library then wrap it
+                this.$element = element[0] ? element : uijet.$(element);
             }
             return this;
         },
@@ -676,7 +677,7 @@
         //
         // Used in platforms where CSS shadows creates big performance issues.  
         // Removes CSS box-shadows from the specified `elements` which is either HTML elements or a selector,
-        // passed to jQuery.  
+        // passed to `uijet.$`.  
         // If `do_ushadow` is a boolean it's used for toggeling the state. 
         // Currently only used on iPad.  
         // Internally this toggles the `unshadow` class.
@@ -766,7 +767,7 @@
                 __window = _window,
                 last_child = $children.get(-1),
                 size = { width: 0, height: 0 },
-            // since the default overflow of content is downward just get the last child's position + height
+                // since the default overflow of content is downward just get the last child's position + height
                 total_height = last_child && (last_child.offsetTop + last_child.offsetHeight) || 0,
                 total_width = 0,
                 l = $children.length;
@@ -821,7 +822,7 @@
         // @sign: _saveOriginal()  
         // @return: this
         //
-        // Sets `this.$original_children` with the `$element`'s children as a jQuery object if they aren't set yet.  
+        // Sets `this.$original_children` with the `$element`'s children as a DOM query result object if they aren't set yet.  
         // This is used to save reference to elements created by the user in the original markup, prior to rendering.
         _saveOriginal   : function () {
             // save a reference to the child nodes of the element prior to rendering

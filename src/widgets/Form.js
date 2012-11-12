@@ -3,16 +3,15 @@
     if ( typeof define === 'function' && define.amd ) {
         define([
             'uijet_dir/uijet',
-            'jquery',
             'uijet_dir/widgets/Base',
             'uijet_dir/mixins/Submitted'
-        ], function (uijet, $) {
-            return factory(uijet, $);
+        ], function (uijet) {
+            return factory(uijet);
         });
     } else {
-        factory(uijet, jQuery);
+        factory(uijet);
     }
-}(function (uijet, $) {
+}(function (uijet) {
     uijet.Widget('Form', {
         options         : {
             type_class  : 'uijet_form',
@@ -53,7 +52,7 @@
                 });
             } else {
                 // otherwise register this Form on the sandbox via `uijet.Form`
-               uijet.Form(this.id, this);
+                uijet.Form(this.id, this);
             }
             return this;
         },

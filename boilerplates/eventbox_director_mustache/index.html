@@ -7,22 +7,17 @@
     <script>
         var require = {
             baseUrl : '/static_path/js/',
-            deps    : ['jquery'],
             paths   : {
-                jquery      : 'lib/jquery',
                 uijet_dir   : 'lib/uijet',
                 plugins     : 'lib',
+                jquery      : 'lib/jquery',
                 eventbox    : 'lib/eventbox',
                 director    : 'lib/director',
                 mustache    : 'lib/mustache'
             },
             callback: function () {
-                requirejs(['jquery', 'my_app'], function ($, myApp) {
-                    myApp.init({
-                        widgets : [/*
-                         widgets declarations
-                         */]
-                    });
+                requirejs(['my_app'], function (myApp) {
+                    myApp.init();
                 });
             }
         };
@@ -31,8 +26,8 @@
     <title></title>
 </head>
 <body>
-    <div id="main">
-        <!-- Application markup -->
-    </div>
+<div id="main">
+    <!-- Application markup -->
+</div>
 </body>
 </html>

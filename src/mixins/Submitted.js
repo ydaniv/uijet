@@ -1,13 +1,13 @@
 // ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'jquery'], function (uijet, $) {
-            return factory(uijet, $);
+        define(['uijet_dir/uijet'], function (uijet) {
+            return factory(uijet);
         });
     } else {
-        factory(uijet, jQuery);
+        factory(uijet);
     }
-}(function (uijet, $) {
+}(function (uijet) {
     uijet.Mixin('Submitted', {
         submitted       : true,
         // ### widget.send
@@ -45,12 +45,14 @@
                     data        : _data,
                     contentType : this.options.send_content_type || 'application/x-www-form-urlencoded',
                     context     : this
-                }).done(function (response) {
+                })
+                .done(function (response) {
                     // notify `post_send_data` signal
                     this.notify(true, 'post_send_data', response);
                     // publish `post_send_data` event of this widget sandbox-wide
                     this.publish('post_send_data', response);
-                }).fail(function () {
+                })
+                .fail(function () {
                     // emit the `send_error` signal
                     this.notify.apply(that, [true, 'send_error'].concat(Array.prototype.slice.call(arguments)));
                 });

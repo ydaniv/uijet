@@ -1,33 +1,28 @@
 // ### AMD wrapper
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        // for now we require jQuery
         define([
-            'jquery',
             'uijet_dir/uijet',
+            'uijet_dir/modules/dom/jquery',
             'uijet_dir/modules/engine/mustache',
             'uijet_dir/modules/pubsub/sammy',
             'uijet_dir/modules/router/sammy',
             'uijet_dir/modules/promises/jquery',
             'uijet_dir/modules/xhr/jquery'
-        ], function ($, uijet, Mustache, pubsub, router) {
-            return (root.MyApp = factory($, uijet, Mustache, pubsub, router, root));
+        ], function (uijet, $, Mustache, pubsub, router) {
+            return (root.MyApp = factory(uijet, $, Mustache, pubsub, router, root));
         });
     } else {
         // if not using an AMD library set the global `uijet` namespace
-        root.MyApp = factory(root.jQuery, root.uijet, root.Mustache, root.uijet_pubsub, root.uijet_router, root);
+        root.MyApp = factory(root.uijet, root.jQuery, root.Mustache, root.uijet_pubsub, root.uijet_router, root);
     }
-}(this, function ($, uijet, Mustache, pubsub, router, _window) {
-    var _window = window,
-        Sammy = _window.Sammy,
-        BASE_PATH = '/',
-        TEMPLATES_PATH = BASE_PATH + 'static_path/myapp/templates/',
+}(this, function (uijet, $, Mustache, pubsub, router, _window) {
+    var Sammy = _window.Sammy,
+        TEMPLATES_PATH = '/static_path/myapp/templates/',
         TEMPLATES_EXTENSION = 'ms',
         MyApp;
 
     MyApp =  {
-        AUTH            : '',
-        ROUTES_SKIP_LIST: ['#/login/'],
         init            : function (options) {
             var that = this;
             // create a Sammy app, at least for a dummy use
@@ -50,7 +45,6 @@
                 route_suffix        : '/',
                 animation_type      : 'fade',
 //                submit_handled      : true, // Uncomment this line to allow Sammy to capture form submission
-                widgets             : options.widgets,
                 TEMPLATES_PATH      : TEMPLATES_PATH,
                 TEMPLATES_EXTENSION : TEMPLATES_EXTENSION,
                 pre_startup         : function () {
