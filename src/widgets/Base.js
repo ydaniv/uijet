@@ -591,7 +591,7 @@
                 // use the `element` argument or the option.
                 element = element || this.options.element;
                 // if it's not a result object of the DOM library then wrap it
-                this.$element = element[0] ? element : uijet.$(element);
+                this.$element = element[0].nodeType ? element : uijet.$(element);
             }
             return this;
         },
