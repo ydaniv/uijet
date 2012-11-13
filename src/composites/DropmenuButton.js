@@ -49,6 +49,7 @@
                     signals         : {
                         post_select : function ($selected, e) {
                             e.stopPropagation();
+                            this.dont_publish || this.publish('selected', $selected);
                             this.sleep();
                             return ! options.menu.dont_select;
                         },
