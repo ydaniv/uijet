@@ -89,6 +89,20 @@ h1, h2, h3, h4, h5, p, ul {
     display: table-cell;
     vertical-align: middle;
 }
+.uijet_app {
+    position: relative;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+.uijet_app.cover {
+    visibility: hidden;
+    position: fixed;
+}
+.uijet_app.ipad {
+    padding-top: 20px;
+}
 .uijet_bar.vertical {
     height: 100%;
 }
@@ -308,17 +322,6 @@ h1, h2, h3, h4, h5, p, ul {
 .reverse.slide_in {
     -webkit-transform: translate3d(100%,0,0);
     -moz-transform: translate(100%,0);
-}
-#main {
-    visibility: hidden;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-}
-#main.ipad {
-    padding-top: 20px;
 }
 
 .float {

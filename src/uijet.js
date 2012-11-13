@@ -768,8 +768,15 @@
                 this.options = _options || {};
                 // set top container
                 this.$element = this.$(_options && _options.element || 'body');
+                this.$element.addClass('uijet_app');
+                //TODO: this should be either removed or extended for all modern devices
                 // sniff for iPad UA and perform optimizations accordingly
                 this.isiPad();
+                // unless requested by the user
+                if ( ! (options && options.dont_cover) ) {
+                    // make the app contaier cover the entire viewport
+                    this.$element.addClass('cover');
+                }
                 if ( _options ) {
                     if ( _options.route_prefix ) {
                         this.ROUTE_PREFIX = _options.route_prefix;
