@@ -12,6 +12,8 @@
         factory(uijet);
     }
 }(function (uijet) {
+    var boolean_type_re = /checkbox|radio/i;
+
     uijet.Widget('Form', {
         options         : {
             type_class  : 'uijet_form',
@@ -20,19 +22,22 @@
                     data = {};
                 $fields.each(function (i, field) {
                     var name = field.name;
-                    // if this key already exists
-                    if ( name in data ) {
-                        // if it's corresponding value is not an `Array`
-                        if ( ! uijet.Utils.isArr(data[name]) ) {
-                            // wrap it in an `Array`
-                            data[name] = [data[name]];
+                    // if it's a checkbox or a radio field and not checked ignore
+                    if ( ! boolean_type_re.test(field.type) || field.checked ) {
+                        // if this key already exists
+                        if ( name in data ) {
+                            // if it's corresponding value is not an `Array`
+                            if ( ! uijet.Utils.isArr(data[name]) ) {
+                                // wrap it in an `Array`
+                                data[name] = [data[name]];
+                            }
+                            // push the new value to the list
+                            data[name].push(field.value);
                         }
-                        // push the new value to the list
-                        data[name].push(field.value);
-                    }
-                    else {
-                        // otherwise just set this value
-                        data[name] = field.value;
+                        else {
+                            // otherwise just set this value
+                            data[name] = field.value;
+                        }
                     }
                 });
                 return data;
