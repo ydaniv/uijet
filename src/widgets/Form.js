@@ -18,7 +18,7 @@
             serializer  : function () {
                 var $fields = this.$element.find('[name]'),
                     data = {};
-                $fields.each(function (field) {
+                $fields.each(function (i, field) {
                     var name = field.name;
                     // if this key already exists
                     if ( name in data ) {
