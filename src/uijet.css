@@ -90,6 +90,7 @@ h1, h2, h3, h4, h5, p, ul {
     vertical-align: middle;
 }
 .uijet_app {
+    visibility: hidden;
     position: relative;
     top: 0;
     bottom: 0;
@@ -97,7 +98,6 @@ h1, h2, h3, h4, h5, p, ul {
     left: 0;
 }
 .uijet_app.cover {
-    visibility: hidden;
     position: fixed;
 }
 .uijet_app.ipad {
