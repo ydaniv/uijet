@@ -83,7 +83,7 @@
         // will add the class and `false` will remove it.  
         // No arguments will be treated like `false`.
         setSelected     : function (toggle) {
-            if ( toggle && toggle.jquery ) {
+            if ( toggle && toggle[0] && toggle[0].nodeType ) {
                 this.$selected = toggle;
                 toggle = true;
             } else if ( toggle && toggle.nodeType === 1) {
