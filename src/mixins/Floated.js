@@ -42,7 +42,7 @@
             this._super && this._super();
             return this;
         },
-        render          : function () {
+        position        : function () {
             // if top position wasn't set
             if ( ! this._top_set ) {
                 // get the `float_top` option value if it is set
