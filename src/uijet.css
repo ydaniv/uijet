@@ -383,6 +383,9 @@ h1, h2, h3, h4, h5, p, ul {
     float: left;
     margin-left: 1em;
 }
+.uijet_dropmenubutton_wrapper {
+    overflow: visible;
+}
 .uijet_draggee {
     position: absolute !important;
     z-index: 1001 !important;
