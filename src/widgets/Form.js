@@ -17,9 +17,9 @@
     uijet.Widget('Form', {
         options         : {
             type_class  : 'uijet_form',
-            serializer  : function () {
+            serializer  : function (extra_data, as_defaults) {
                 var $fields = this.$element.find('[name]'),
-                    data = {};
+                    data = {}, args;
                 $fields.each(function (i, field) {
                     var name = field.name;
                     // if it's a checkbox or a radio field and not checked ignore
@@ -40,6 +40,11 @@
                         }
                     }
                 });
+                if ( uijet.Utils.isObj(extra_data) ) {
+                    args = [extra_data];
+                    args[as_defaults ? 'push' : 'shift'](data);
+                    uijet.Utils.extend.apply(uijet.Utils, args);
+                }
                 return data;
             }
         },
