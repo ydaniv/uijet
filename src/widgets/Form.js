@@ -42,7 +42,7 @@
                 });
                 if ( uijet.Utils.isObj(extra_data) ) {
                     args = [extra_data];
-                    args[as_defaults ? 'push' : 'shift'](data);
+                    args[as_defaults ? 'push' : 'unshift'](data);
                     uijet.Utils.extend.apply(uijet.Utils, args);
                 }
                 return data;
