@@ -20,13 +20,13 @@
         appear              : function () {
             var options = this.options;
             this._super.apply(this, arguments);
-            if ( options.auto_bind_drag ) {
+            if ( ! options.dont_auto_drag ) {
                 this.bindDrag(options.dragover_handler, options.drag_axis);
             }
             return this;
         },
         disappear           : function () {
-            if ( options.auto_bind_drag ) {
+            if ( ! options.dont_auto_drag ) {
                 this.unbindDrag();
             }
             this._super.apply(this, arguments);
