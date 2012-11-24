@@ -56,7 +56,7 @@
                         value = boolean_type_re.test(target.type) && ! target.checked ? false : uijet.$(target).val(),
                         excluded = uijet.Utils.returnOf(this.options.changed_exclude, this);
                     // if there aren't any excluded fields or this field is not in the excluded list then publish the changed event
-                    (!excluded || !~ excluded.indexOf(name)) && this.publish('_' + name + '.changed', value);
+                    (!excluded || !~ excluded.indexOf(name)) && uijet.publish(this.id + '_' + name + '.changed', value);
                 }
             }
         },
