@@ -46,6 +46,18 @@
                     uijet.Utils.extend.apply(uijet.Utils, args);
                 }
                 return data;
+            },
+            dom_events  : {
+                change  : function (e) {
+                    var target = e.target,
+                    // name is the `name` attribute and falls back to `id`
+                        name = target.name || target.id,
+                    // the published value either the `value` property or `false` if it's a checkbox and not checked
+                        value = boolean_type_re.test(target.type) && ! target.checked ? false : uijet.$(target).val(),
+                        excluded = uijet.Utils.returnOf(this.options.changed_exclude, this);
+                    // if there aren't any excluded fields or this field is not in the excluded list then publish the changed event
+                    (!excluded || !~ excluded.indexOf(name)) && this.publish('_' + name + '.changed', value);
+                }
             }
         },
         register        : function () {
