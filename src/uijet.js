@@ -1595,8 +1595,11 @@
                     _h = widget._total_height || 0;
                     if ( ! _h ) {
                         // calculate total height
-                        $el.children().each(function () {
-                            _h += this.offsetHeight;
+                        Array.prototype.reverse.call($el.children()).each(function () {
+                            var el_bottom = this.offsetTop + this.offsetHeight + (+getStyle(this, 'margin-bottom').slice(0, -2));
+                            if ( el_bottom > _h ) {
+                                _h = el_bottom;
+                            }
                         });
                     }
                     // unfold

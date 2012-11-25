@@ -312,6 +312,7 @@ h1, h2, h3, h4, h5, p, ul {
     opacity: 1;
 }
 .fold_out {
+    position: relative;
     height: 0;
     overflow-y: hidden;
 }
