@@ -218,7 +218,7 @@
                     element     : $dateslist,
                     container   : id + '_container',
                     signals     : {
-                        post_select : function ($selected, e) {
+                        pre_select  : function ($selected, e) {
                             // if this date is disabled bail out
                             if ( $selected[0].classList.contains('disabled') ) {
                                 e.stopPropagation();

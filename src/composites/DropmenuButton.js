@@ -47,11 +47,12 @@
                         return this._wrap().$wrapper[0].offsetParent.offsetHeight;
                     },
                     signals         : {
-                        post_select : function ($selected, e) {
+                        pre_select  : function ($selected, e) {
+                            var do_select = ! options.menu.dont_select;
                             e.stopPropagation();
-                            this.dont_publish || this.publish('selected', $selected);
+                            (this.dont_publish || ! do_select) || this.publish('selected', $selected);
                             this.sleep();
-                            return ! options.menu.dont_select;
+                            return do_select;
                         },
                         pre_sleep   : function () {
                             this.opened = false;

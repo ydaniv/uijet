@@ -45,15 +45,17 @@
                 // if `item_element` option is set get the closest `item_selector` stating from current element  
                 // if not then use current element
                 var $this = item_element ? uijet.$(this).closest(item_selector) : uijet.$(this),
-                // notify the `post-select` signal
-                    _continue = that.notify(true, 'post_select', $this, e);
-                // if `post_select signal` is handled and returns specifically `false` then prevent it
+                    // notify the `pre_select` signal
+                    _continue = that.notify(true, 'pre_select', $this, e);
+                // if `pre_select signal` is handled and returns specifically `false` then prevent it
                 if( _continue !== false ) {
                     // make sure this element still exists inside the DOM
                     if ( $this && $this.length && $this.parent().length ) {
+                        that.publish('selected', $this)
                         // cache  & paint selection
-                        that.setSelected($this);
+                            .setSelected($this);
                     }
+                    that.notify(true, 'post_select', $this, e);
                 }
             });
             this._super();
