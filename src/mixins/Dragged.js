@@ -11,12 +11,29 @@
     var has_touch = uijet.support.touch,
         requestAnimFrame = uijet.Utils.requestAnimFrame,
         cancelAnimFrame = uijet.Utils.cancelAnimFrame,
-    // get the prefixed `transform` property
-        style_prop = uijet.Utils.getStyleProperty('transform');
+        // get the prefixed `transform` property
+        style_prop = uijet.Utils.getStyleProperty('transform'),
+        translation_re = /translate(?:X|Y|Z|3d)?\(([^\)]+)\)/;
 
     uijet.Mixin('Dragged', {
         dragged             : true,
-        _cached_drag_styles : ['top', 'left', 'width', 'height'],
+        init                : function () {
+            this._super.apply(this, arguments);
+
+            var cached_styles = ['width', 'height'],
+                use_translate = uijet.support.transform && ! this.options.dont_translate;
+
+            this._use_translate = use_translate;
+            // handle the cached style properties
+            if ( use_translate ) {
+                cached_styles.push('top', 'left');
+                if ( this.options.drag_clone ) {
+                    cached_styles.push(style_prop);
+                }
+            }
+            this._cached_drag_styles = cached_styles;
+            return this;
+        },
         appear              : function () {
             var options = this.options;
             this._super.apply(this, arguments);
@@ -63,7 +80,7 @@
         unbindDrag          : function () {
             // get the element used for starting drag
             var $drag_element = this._getDragElement(),
-                // get the top container of the widget
+            // get the top container of the widget
                 $el = (this.$wrapper || this.$element);
             // remove the set handler
             ($drag_element && $drag_element.length ? $drag_element : $el).off(uijet.support.click_events.start, this._dragstart_handler);
@@ -81,14 +98,39 @@
                 // get the start event object  
                 //TODO: this is adapted for iOS touch event object handling, need to test/implement the rest
                 down_pos = has_touch ? down_e.originalEvent.touches[0] : down_e,
+                offset = uijet.Utils.getOffsetOf(el, this.options.drag_parent || uijet.$element[0]),
                 // set position
-                start_event_pos = { y : down_pos.pageY, x : down_pos.pageX },
+                start_position = {
+                    y   : down_pos.pageY,
+                    x   : down_pos.pageX,
+                    top : offset.y,
+                    left: offset.x
+                },
                 $doc = uijet.$(document),
                 dfrd = uijet.Promise(),
                 start_time = down_e.timeStamp,
+                initial_translation,
                 _finally, delayHandler, cancelHandler,
                 MOVE_E, END_E, $draggee, draggee;
-            this._cached_drag_styles.push(style_prop);
+
+            // must prevent default action here to prevent selection and prevent event trickling on iOS
+            down_e.preventDefault();
+
+            if ( this._use_translate ) {
+                initial_translation = el.style[style_prop];
+                initial_translation && (initial_translation = initial_translation.match(translation_re));
+                if ( initial_translation ) {
+                    initial_translation = initial_translation[1].split(',');
+                    if ( this._drag_axis ) {
+                        start_position[this._drag_axis.toLowerCase()] += (+initial_translation[0].slice(0, -2) || 0);
+                    }
+                    else {
+                        start_position.x += (+initial_translation[0].slice(0, -2) || 0);
+                        start_position.y += (+initial_translation[1].slice(0, -2) || 0);
+                    }
+                }
+            }
+
             // get the scrolled parent of this element
             this._scrolled_parent = this._getScrolledParent(el);
             this._initial_scroll = {
@@ -134,7 +176,7 @@
             // confine the dragging to the primary mouse button or touch
             if ( has_touch || down_pos.which === 1 ) {
                 // notify user of drag start event - before dragging conditions (e.g. drag_delay) are met
-                this.notify(true, 'pre_drag_init', down_e, $draggee, start_event_pos);
+                this.notify(true, 'pre_drag_init', down_e, $draggee, start_position);
                 // in this stage we're just checking if this is really a case of dragging  
                 // bind the move event to the delay-check handler
                 $doc.on(MOVE_E, delayHandler)
@@ -167,14 +209,16 @@
                     that.notify(true, 'post_drag_start', down_e, $draggee);
                     // define the drag move handler
                     moveHandler = function (move_e) {
-                        // On iPad this captures the event and prevent trickling - so quick-fix is to prevent default
-                        down_e.preventDefault();
                         // get the move event object
                         var move_pos = has_touch ? move_e.originalEvent.touches[0] : move_e,
+                            dx = move_pos.pageX - start_position.x + that._scrolled_parent.scrollLeft - that._initial_scroll.x,
+                            dy = move_pos.pageY - start_position.y + that._scrolled_parent.scrollTop - that._initial_scroll.y,
                             // calculate deltas
                             deltas = {
-                                dx  : move_pos.pageX - start_event_pos.x + that._scrolled_parent.scrollLeft - that._initial_scroll.x,
-                                dy  : move_pos.pageY - start_event_pos.y + that._scrolled_parent.scrollTop - that._initial_scroll.y
+                                dx  : dx,
+                                dy  : dy,
+                                left: start_position.left + dx,
+                                top : start_position.top + dy
                             };
                         // move the element to its new position using deltas (dx, dy)
                         that._drag(el, deltas);
@@ -195,12 +239,15 @@
                                 dy  : up_pos.pageY - down_pos.pageY
                             };
                             that.dragging = false;
-                            // notify user of drag end
-                            if ( that.notify(true, 'post_drag_end', up_e, end_position, $draggee) !== false && is_cloned ) {
-                                // if not specified otherwise remove and delete the clone
-                                $draggee.remove();
-                                $draggee = null;
+                            // if drag action wasn't canceled by user
+                            if ( that.notify(true, 'post_drag_end', up_e, end_position, $draggee) !== false ) {
+                                if ( is_cloned ) {
+                                    // if not specified otherwise remove and delete the clone
+                                    $draggee.remove();
+                                    $draggee = null;
+                                }
                             }
+                            // otherwise handle cancellation for non-cloned
                             if ( ! is_cloned ) {
                                 cancelAnimFrame(that._last_drag_anim);
                                 $draggee.removeClass('uijet_draggee');
@@ -240,9 +287,9 @@
             offset = uijet.Utils.getOffsetOf(orig, parent);
             // set the position and dimensions of the `$draggee`
             draggee.style.cssText += 'left:' + offset.x +
-                                    'px;top:' + offset.y +
-                                    'px;width:' + orig.offsetWidth +
-                                    'px;height:' + orig.offsetHeight + 'px';
+                'px;top:' + offset.y +
+                'px;width:' + orig.offsetWidth +
+                'px;height:' + orig.offsetHeight + 'px';
             // add the `uijet_draggee` class to the dragged element
             draggee.classList.add('uijet_draggee');
             // and append it the `uijet.$element` if needed
@@ -309,23 +356,37 @@
         //
         // Moves the element `ele to its new position.using `deltas`
         _drag               : function (el, deltas) {
-            var that = this;
+            var that = this,
+                use_translate = this._use_translate;
             this._last_drag_anim = requestAnimFrame(function () {
-                //TODO: add transform support check  
-                //TODO: make the animation property value (translate, etc.) as a return value of a generic method of uijet  
-                //TODO: add option to opt or fallback to top/left  
-                var trans;
+                //TODO: make the animation property value (translate, etc.) as a return value of a generic method of uijet
+                var horizontal, property, trans, px = 'px';
                 if ( that.dragging ) {
-                    //TODO: this will override other transforms
+                    //TODO: this will override other transforms  
                     // if `axis` is set then animate only along that axis
                     if ( that._drag_axis ) {
-                        trans = that._drag_axis === 'X' ? deltas.dx : deltas.dy;
-                        el.style[style_prop] = 'translate' + that._drag_axis + '(' + trans + 'px)';
-                    } else {
-                        trans = deltas.dx + 'px,' + deltas.dy+ 'px';
-                        el.style[style_prop] = uijet.support['3d'] ?
-                            'translate3d(' + trans + ',0)' :
-                            'translate(' + trans + ')';
+                        horizontal = that._drag_axis === 'X';
+
+                        if ( use_translate ) {
+                            trans = horizontal ? deltas.dx : deltas.dy;
+                            el.style[style_prop] = 'translate' + that._drag_axis + '(' + trans + 'px)';
+                        }
+                        else {
+                            property = horizontal ? 'left' : 'top';
+                            el.style[property] = deltas[property] + px;
+                        }
+                    }
+                    else {
+                        if ( use_translate ) {
+                            trans = deltas.dx + 'px,' + deltas.dy + px;
+                            el.style[style_prop] = uijet.support['3d'] ?
+                                'translate3d(' + trans + ',0)' :
+                                'translate(' + trans + ')';
+                        }
+                        else {
+                            el.style.top = deltas.top + px;
+                            el.style.left = deltas.left + px;
+                        }
                     }
                 }
             });
@@ -356,7 +417,12 @@
                 style = el.style,
                 prop;
             for ( prop in cache ) {
-                style[prop] = cache[prop];
+                if ( cache[prop] == null ) {
+                    style.removeProperty(prop);
+                }
+                else {
+                    style[prop] = cache[prop];
+                }
             }
             delete this.draggee_style_cache;
             return this;
