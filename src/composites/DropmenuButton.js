@@ -60,6 +60,10 @@
                     },
                     app_events      : drop_menu_events
                 }, options.menu || {}),
+                clicked_handler = function () {
+                    this.opened = !this.opened;
+                    this.opened ? this.wake() : this.sleep();
+                },
 
                 add_arrow = !!(options.add_arrow || options.arrow),
                 drop_menu, drop_arrow, floated_index;
@@ -83,10 +87,10 @@
                 }
             }
 
-            drop_menu_events[(drop_arrow_id || id) + '.clicked'] = function () {
-                this.opened = !this.opened;
-                this.opened ? this.wake() : this.sleep();
-            };
+            drop_menu_events[id + '.clicked'] = clicked_handler;
+            if ( drop_arrow_id ) {
+                drop_menu_events[drop_arrow_id + '.clicked'] = clicked_handler;
+            }
 
             // make sure menu element is set
             if ( ! drop_menu_config.element ) {
