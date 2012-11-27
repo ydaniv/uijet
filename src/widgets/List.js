@@ -78,13 +78,15 @@
         // @sign: setSelected()
         // @return: this
         //
-        // Sets the class of the element currently set in `this.$selected` to `selected` and removes it from its siblings.  
+        // Sets the class of the element currently set in `this.$selected` to `selected` and removes it from
+        // any previously selected items.  
         // If called with a jQuery object or an HTMLElement object it will set `this.$selected` to that element and then
         // set the class as above.  
         // If called with a boolean it will toggle the `selected` class on the currently `this.$selected` element. `true`
         // will add the class and `false` will remove it.  
         // No arguments will be treated like `false`.
         setSelected     : function (toggle) {
+            var $old = this.$selected;
             if ( toggle && toggle[0] && toggle[0].nodeType ) {
                 this.$selected = toggle;
                 toggle = true;
@@ -96,7 +98,7 @@
             }
             if ( this.$selected && this.$selected.parent().length ) {
                 if ( toggle ) {
-                    this.$selected.siblings().removeClass('selected');
+                    $old && $old.removeClass('selected');
                 }
                 this.$selected.toggleClass('selected', toggle);
             }
