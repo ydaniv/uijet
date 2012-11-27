@@ -37,9 +37,6 @@
                 // do this once
                 this.floating = true;
             }
-            // if there's a super method call it
-            // this enables custom widgets or mixins to predefine this method
-            this._super && this._super();
             return this;
         },
         position        : function () {
