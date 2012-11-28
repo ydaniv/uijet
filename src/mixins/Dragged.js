@@ -43,7 +43,7 @@
             return this;
         },
         disappear           : function () {
-            if ( ! options.dont_auto_drag ) {
+            if ( ! this.options.dont_auto_drag ) {
                 this.unbindDrag();
             }
             this._super.apply(this, arguments);
