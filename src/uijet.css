@@ -156,8 +156,14 @@ h1, h2, h3, h4, h5, p, ul {
     float: left;
     height: 100%;
 }
+.uijet_list.horizontal.align_center {
+    text-align: center;
+}
 .uijet_list.horizontal.align_center li {
     float: none;
+}
+.uijet_list.horizontal.align_right {
+    text-align: right;
 }
 .uijet_list.horizontal.align_right li {
     float: right;
