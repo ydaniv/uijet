@@ -213,15 +213,31 @@
                         var move_pos = has_touch ? move_e.originalEvent.touches[0] : move_e,
                             dx = move_pos.pageX - start_position.x + that._scrolled_parent.scrollLeft - that._initial_scroll.x,
                             dy = move_pos.pageY - start_position.y + that._scrolled_parent.scrollTop - that._initial_scroll.y,
-                            // calculate deltas
-                            deltas = {
-                                dx  : dx,
-                                dy  : dy,
-                                left: start_position.left + dx,
-                                top : start_position.top + dy
-                            };
+                            left = start_position.left + dx,
+                            top = start_position.top + dy,
+                            deltas = {};
+
+                        if ( that.options.drag_contain ) {
+                            left = left > that._drag_left_max ?
+                                that._drag_left_max :
+                                left < that._drag_left_min ?
+                                    that._drag_left_min :
+                                    left;
+                            top = top > that._drag_top_max ?
+                                that._drag_top_max :
+                                top < that._drag_top_min ?
+                                    that._drag_top_min :
+                                    top;
+                        }
+
+                        deltas = {
+                            dx  : left - start_position.left,
+                            dy  : top - start_position.top,
+                            left: left,
+                            top : top
+                        };
                         // move the element to its new position using deltas (dx, dy)
-                        that._drag(el, deltas);
+                        that.drag(el, deltas);
                         // call the over callback
                         that._dragover_callback && that._dragover_callback(move_e, deltas, $draggee);
                     };
@@ -296,6 +312,7 @@
             if ( draggee.parentNode !== parent ) {
                 parent.appendChild(draggee);
             }
+            this._contain(draggee, parent);
             return this;
         },
         // ### widget._getDragElement
@@ -350,18 +367,18 @@
             }
             return parent;
         },
-        // ### widget._drag
-        // @sign: _drag(el, deltas)  
+        // ### widget.drag
+        // @sign: drag(el, deltas, [force_move])  
         // @return: this
         //
-        // Moves the element `ele to its new position.using `deltas`
-        _drag               : function (el, deltas) {
+        // Moves the element `el` to its new position.using `deltas`
+        drag               : function (el, deltas, force_move) {
             var that = this,
                 use_translate = this._use_translate;
             this._last_drag_anim = requestAnimFrame(function () {
                 //TODO: make the animation property value (translate, etc.) as a return value of a generic method of uijet
                 var horizontal, property, trans, px = 'px';
-                if ( that.dragging ) {
+                if ( that.dragging || force_move ) {
                     //TODO: this will override other transforms  
                     // if `axis` is set then animate only along that axis
                     if ( that._drag_axis ) {
@@ -425,6 +442,21 @@
                 }
             }
             delete this.draggee_style_cache;
+            return this;
+        },
+        //TODO: add docs
+        _contain            : function (draggee, parent) {
+            var using_translate = this._use_translate, parent_style;
+            if ( this.options.drag_contain ) {
+                parent_style = uijet.Utils.getStyle(parent);
+                //TODO: add support for containing drag when using transform:translate
+                if ( ! using_translate ) {
+                    this._drag_left_min = 0;
+                    this._drag_left_max = +parent_style.width.slice(0, -2) - draggee.offsetWidth;
+                    this._drag_top_min = 0;
+                    this._drag_top_max = +parent_style.height.slice(0, -2) - draggee.offsetHeight;
+                }
+            }
             return this;
         }
     });
