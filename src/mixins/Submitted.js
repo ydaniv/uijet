@@ -23,45 +23,60 @@
             var that = this,
                 _data = this.getSerialized(request_data),
                 _inner = typeof this.options.inner_route == 'boolean' ? this.options.inner_route : true,
+                dfrd = uijet.Promise(),
                 _url, context;
-            this.serialize(_data);
-            // notify the `pre_send` signal and allow user to set the context
-            context = this.notify(true, 'pre_send');
-            // set the URL for sending
-            _url = this.getSendUrl(context);
-            // if there's a URI to send to
-            if ( _url ) {
-                // if `route_send` option is `true`
-                if ( this.options.route_send ) {
-                    // if using a router then run the URL as a route, otherwise publish it
-                    uijet.options.routed ?
-                        this.runRoute(_url.path + _data, _inner) :
-                        this.publish('sent', { url: _url, data: _data });
-                    return this;
-                }
-                // otherwise make an XHR
-                return uijet.xhr(_url.path, {
-                    type        : _url.method,
-                    data        : _data,
-                    contentType : this.options.send_content_type || 'application/x-www-form-urlencoded',
-                    context     : this
+            uijet.when( this.validate(_data) )
+                // passed validation
+                .done(function () {
+
+                    that.serialize(_data);
+                    // notify the `pre_send` signal and allow user to set the context
+                    context = that.notify(true, 'pre_send');
+                    // set the URL for sending
+                    _url = that.getSendUrl(context);
+                    // if there's a URI to send to
+                    if ( _url ) {
+                        // if user chose to send the data as a route or an event
+                        if ( that.options.route_send ) {
+                            // if using a router then run the URL as a route, otherwise publish it
+                            uijet.options.routed ?
+                                that.runRoute(_url.path + _data, _inner) :
+                                that.publish('sent', { url: _url, data: _data });
+                            dfrd.resolve();
+                            return;
+                        }
+                        // otherwise make an XHR
+                        uijet.xhr(_url.path, {
+                            type        : _url.method,
+                            data        : _data,
+                            contentType : that.options.send_content_type || 'application/x-www-form-urlencoded',
+                            context     : that
+                        })
+                        .done(function (response) {
+                            dfrd.resolve(response);
+                            // notify `post_send_data` signal
+                            this.notify(true, 'post_send_data', response);
+                            // publish `post_send_data` event of this widget sandbox-wide
+                            this.publish('post_send_data', response);
+                        })
+                        .fail(function () {
+                            dfrd.reject();
+                            // emit the `send_error` signal
+                            this.notify.apply(that, [true, 'send_error'].concat(Array.prototype.slice.call(arguments)));
+                        });
+                    }
+                    else {
+                        // otherwise just publish 'sent' event with the data
+                        that.publish('sent', _data);
+                        dfrd.resolve();
+                    }
                 })
-                .done(function (response) {
-                    // notify `post_send_data` signal
-                    this.notify(true, 'post_send_data', response);
-                    // publish `post_send_data` event of this widget sandbox-wide
-                    this.publish('post_send_data', response);
-                })
-                .fail(function () {
-                    // emit the `send_error` signal
-                    this.notify.apply(that, [true, 'send_error'].concat(Array.prototype.slice.call(arguments)));
+                // failed validation
+                .fail(function (failed) {
+                    dfrd.reject(failed);
+                    that.notify(true, 'not_valid', failed, _data);
                 });
-            }
-            else {
-                // otherwise just publish 'sent' event with the data
-                this.publish('sent', _data);
-                return this;
-            }
+            return dfrd.promise();
         },
         setInitOptions  : function () {
             this._super();
@@ -71,6 +86,44 @@
                 this.getSerialized = this.options.serializer;
             }
             return this;
+        },
+        //TODO: add docs
+        validate        : function (_data) {
+            var validators = this.options.validators,
+                returnOf = uijet.Utils.returnOf,
+                isObj = uijet.Utils.isObj,
+                promise = uijet.Promise(),
+                valid = true,
+                failed = {},
+                deferred = [],
+                v, check;
+
+            if ( isObj(validators) ) {
+                for ( v in validators ) {
+                    if ( v in _data) {
+                        check = returnOf(validators[v], this, _data[v], _data);
+                        if ( ! check ) {
+                            valid = false;
+                            failed[v] = _data[v];
+                        }
+                        else if ( isObj(check) ) {
+                            deferred.push(check);
+                        }
+                    }
+                }
+            }
+
+            uijet.when.apply(uijet, deferred).then(
+                function () {
+                    valid ? promise.resolve() : promise.reject(failed);
+                },
+                function (failure) {
+                    failed['__deferred'] = failure;
+                    promise.reject(failed);
+                }
+            );
+
+            return promise.promise();
         },
         // ### widget.getSendUrl
         // @sign: getSendUrl([send_context])  
