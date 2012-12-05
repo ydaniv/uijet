@@ -27,15 +27,7 @@
                 drop_menu_id = id + '_dropmenu',
                 options = this.options.dropmenubutton,
                 drop_arrow_id, drop_arrow_config,
-                // configure the dropdown menu
-                drop_menu_events = {
-                    // in order to stay as less obtrusive as possible sleep when this global event is triggered
-                    'app.clicked'   : function (_data) {
-                        if ( this.opened && (!_data || ! _data.id || ! ~ _data.id.indexOf(id)) ) {
-                            this.sleep();
-                        }
-                    }
-                },
+            // configure the dropdown menu
                 drop_menu_config = uijet.Utils.extend(true, {
                     id              : drop_menu_id,
                     container       : id,
@@ -58,8 +50,16 @@
                             this.opened = false;
                         }
                     },
-                    app_events      : drop_menu_events
+                    app_events      : {
+                        // in order to stay as less obtrusive as possible sleep when this global event is triggered
+                        'app.clicked'   : function (_data) {
+                            if ( this.opened && (!_data || ! _data.id || ! ~ _data.id.indexOf(id)) ) {
+                                this.sleep();
+                            }
+                        }
+                    }
                 }, options.menu || {}),
+                drop_menu_events = drop_menu_config.app_events,
                 clicked_handler = function () {
                     this.opened = !this.opened;
                     this.opened ? this.wake() : this.sleep();
