@@ -1602,6 +1602,9 @@
                             }
                         });
                     }
+                    if ( ! _h ) {
+                        _h = $el[0].offsetParent.offsetHeight - $el[0].offsetTop;
+                    }
                     // unfold
                     this.animate($el, 'height', _h + 'px');
                 } else {
