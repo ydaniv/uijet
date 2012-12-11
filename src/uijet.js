@@ -195,8 +195,18 @@
     // To get the entire style object use `null` for the `prop` argument.
     // To get the style of the element use `null` for the `pseudo` argument.
     function getStyle (el, prop, pseudo, win) {
-        var style = (win || _window).getComputedStyle(el, pseudo || null);
-        return prop ? style.getPropertyValue(prop) : style;
+        var style = (win || _window).getComputedStyle(el, pseudo || null), res, p;
+        if ( prop ) {
+            if ( isArr(prop) ) {
+                res = {};
+                for ( var i = 0 ; p = prop[i++] ; ) {
+                    res[p] = style.getPropertyValue(p);
+                }
+                return res;
+            }
+            return style.getPropertyValue(prop);
+        }
+        return style;
     }
     // ### Utils.returnOf
     // Wrapper for checking if a variable is a function and return its returned value or else simply return it.
