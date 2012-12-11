@@ -74,7 +74,7 @@
             var _size = this._getSize(), el = this.$element[0];
             //TODO: need to support a scroll on both dimensions  
             // make the `$element`'s size as big as its content if it's smaller
-            if ( this.options.horizontal ) {
+            if ( this.options.horizontal && ! this.options.grid_layout ) {
                 if ( el.offsetWidth < _size.width ) {
                     this.$element[0].style.width = _size.width + 'px';
                 }

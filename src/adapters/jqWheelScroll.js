@@ -12,7 +12,7 @@
             var that = this, el, is_horizontal,
                 jqS_ops = {};
             if ( switch_on ) {
-                if ( is_horizontal = this.options.horizontal ) {
+                if ( is_horizontal = (this.options.horizontal  && ! this.options.grid_layout) ) {
                     jqS_ops.horizontal = true;
                     jqS_ops.vertical = false;
                 }

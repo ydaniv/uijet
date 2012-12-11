@@ -17,7 +17,7 @@
                     this.iScroll.refresh();
                 } else {
                     this._wrap();
-                    if ( this.options.horizontal ) {
+                    if ( this.options.horizontal && ! this.options.grid_layout ) {
                         iS_ops.vScroll = false;
                         iS_ops.vScrollbar = false;
                     }
