@@ -61,8 +61,10 @@
                 }, options.menu || {}),
                 drop_menu_events = drop_menu_config.app_events,
                 clicked_handler = function (data) {
+                    var target = data.event.target,
+                        top = (this.$wrapper || this.$element)[0];
                     // always close if clicked on the menu, otherwise toggle
-                    this.opened = data.event.target === this.$element[0] && ! this.opened;
+                    this.opened = !(target === top || uijet.$.contains(top, target)) && ! this.opened;
                     this.opened ? this.wake() : this.sleep();
                 },
 
