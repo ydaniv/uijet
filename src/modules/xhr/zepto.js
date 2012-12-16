@@ -40,11 +40,11 @@
                 delete options.success;
                 delete options.error;
                 delete options.complete;
-                // copy `options`
+
                 uijet.Utils.extend(_options, options);
             }
-            //
-            $.ajax(options);
+
+            $.ajax(_options);
             return promise;
         }
     }, uijet);
