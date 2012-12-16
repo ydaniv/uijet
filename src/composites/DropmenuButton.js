@@ -60,8 +60,9 @@
                     }
                 }, options.menu || {}),
                 drop_menu_events = drop_menu_config.app_events,
-                clicked_handler = function () {
-                    this.opened = !this.opened;
+                clicked_handler = function (data) {
+                    // always close if clicked on the menu, otherwise toggle
+                    this.opened = data.event.target === this.$element[0] && ! this.opened;
                     this.opened ? this.wake() : this.sleep();
                 },
 
