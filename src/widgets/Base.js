@@ -164,7 +164,9 @@
                     .sleepContained()
                     .awake = false;
                 // perform destroy if asked to
-                this.options.destroy_on_sleep && this.destroy();
+                if ( this.options.destroy_on_sleep ) {
+                    return this.destroy();
+                }
                 this.notify('post_sleep');
             }
             return this._finally();
@@ -194,8 +196,9 @@
             this.app_events && this.unsubscribe(this.app_events);
             // unregister from uijet
             this.unregister()
-                // remove DOM elements
+                .unbindAll()
                 .remove();
+
             return this;
         },
         // ### widget.destroyContained
