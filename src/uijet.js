@@ -1640,6 +1640,8 @@
                     // fold
                     this.animate($el, 'height', 0);
                 }
+                // if transitionend event is not supported assuming there's no transition
+                trans_end_event || requestAnimFrame(transitionendHandler);
             } else {
                 has_class_name = $el.hasClass(class_name);
                 // if we're transitioning the element in and it's already in OR
