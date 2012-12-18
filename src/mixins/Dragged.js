@@ -307,7 +307,7 @@
                 'px;width:' + orig.offsetWidth +
                 'px;height:' + orig.offsetHeight + 'px';
             // add the `uijet_draggee` class to the dragged element
-            draggee.classList.add('uijet_draggee');
+            ($draggee || $orig).addClass('uijet_draggee');
             // and append it the `uijet.$element` if needed
             if ( draggee.parentNode !== parent ) {
                 parent.appendChild(draggee);
