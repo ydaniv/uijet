@@ -220,7 +220,7 @@
                     signals     : {
                         pre_select  : function ($selected, e) {
                             // if this date is disabled bail out
-                            if ( $selected[0].classList.contains('disabled') ) {
+                            if ( $selected.hasClass('disabled') ) {
                                 e.stopPropagation();
                                 return false;
                             }

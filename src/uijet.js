@@ -25,7 +25,7 @@
         views = {},
         visualizers = {},
         serializers = {},
-        // caching pre-built predefined widgets' classes  
+        // caching pre-built predefined widgets' classes
         // `{ proto : widget_prototype, deps : dependencies }`
         widget_definitions = {},
         // caching built pre-defined widgets' classes
@@ -533,6 +533,23 @@
         }
     };
 
+    //TODO: add docs
+    function normalizeDeps (deps) {
+        if ( ! deps ) return;
+        var deps_as_obj = isObj(deps),
+            _deps = {};
+        // if `deps` is an `Object`
+        if ( deps_as_obj ) {
+            // convert the dependecies inside it to `Array`s
+            _deps.mixins = toArray(deps.mixins);
+            _deps.widgets = toArray(deps.widgets);
+        } else {
+            // otherwise, it's just a list of mixins name, just copy it
+            _deps.mixins = toArray(deps);
+        }
+        return _deps;
+    }
+
     // ### Utils.Create
     // @sign: Create(self, [extended], [as_constructor])  
     // @sign: Create(self, [as_constructor]])  
@@ -664,24 +681,13 @@
         // If `deps` is an `Object` it has to contain a `mixins` and/or `widgets` keys
         // which values will also be normalized into `Array`s.
         Widget              : function (name, props, deps) {
-            var deps_as_obj = isObj(deps),
-                _deps;
-            // if `deps` is an `Object` 
-            if ( deps_as_obj ) {
-                _deps = {};
-                // convert the dependecies inside it to `Array`s
-                _deps.mixins = toArray(deps.mixins);
-                _deps.widgets = toArray(deps.widgets);
-            } else {
-                // otherwise, it's just a list of mixins name, just copy it
-                _deps = toArray(deps);
-            }
+            var _deps = normalizeDeps(deps);
             // Cache the widget's definition for JIT creation
             this._define(name, props, _deps);
             // finally create and cache the class
-            widget_classes[name] = deps_as_obj ?
+            widget_classes[name] = _deps ?
                 this._generate(props, _deps.mixins, _deps.widgets) :
-                this._generate(props, _deps);
+                this._generate(props);
             return this;
         },
         // ### uijet.Mixin
@@ -858,7 +864,7 @@
         // Optional `deps` argument can be supplied for defining this widget on top of mixins and/or other widgets.
         _define             : function (_name, _props, _deps) {
             widget_definitions[_name] = {
-                proto   : _props,
+                proto   : Create(_props, true),
                 deps    : _deps
             };
             return this;
@@ -871,8 +877,9 @@
         _generate           : function (_props, _mixins, _widgets) {
             // create the base class
             var _class = Create(this.BaseWidget, true),
-                _mixin, _mixins_copy,
-                _widget, _widgets_copy;
+                _mixins_copy = toArray(_mixins),
+                _mixins_to_use = [],
+                _mixin, _widget, _widgets_copy;
             // if we have widgets to build on then mix'em
             if ( _widgets && _widgets.length ) {
                 // copy widgets dependencies
@@ -884,23 +891,35 @@
                         // add them to the chain
                         // just like stacking turtles
                         _class = Create(widget_definitions[_widget].proto, _class, true);
+                        // check if they have dependencies
+                        if ( widget_definitions[_widget].deps && widget_definitions[_widget].deps.mixins ) {
+                            _mixins_to_use = toArray(widget_definitions[_widget].deps.mixins);
+                        }
                     }
                 }
             }
             // now we add this widget to the stack
             _class = Create(_props, _class, true);
             // if we have mixins to mix then mix'em
-            if ( _mixins && _mixins.length ) {
-                // copy mixins dependencies
-                _mixins_copy = toArray(_mixins);
-                // loop over them
-                while ( _mixin = _mixins_copy.shift() ) {
-                    // if they're defined
-                    if ( mixins[_mixin] ) {
-                        // add them to the chain
-                        // stack those madafakas
-                        _class = Create(mixins[_mixin], _class, true);
+            if ( _mixins_copy ) {
+                // if a widget in dependencies had mixins in its dependencies
+                if ( _mixins_to_use.length ) {
+                    for ( var m = _mixins_to_use.length; _mixin = _mixins_to_use[--m]; ) {
+                        // add every mixin form the parents' mixins that's not in the list to its beginning
+                        if ( !~ _mixins_copy.indexOf(_mixin) ) {
+                            _mixins_copy.unshift(_mixin);
+                        }
                     }
+                }
+                // copy mixins dependencies
+                _mixins_to_use = _mixins_copy;
+            }
+            while ( _mixin = _mixins_to_use.shift() ) {
+                // if they're defined
+                if ( mixins[_mixin] ) {
+                    // add them to the chain
+                    // stack those madafakas
+                    _class = Create(mixins[_mixin], _class, true);
                 }
             }
             return _class;
@@ -1621,6 +1640,8 @@
                     // fold
                     this.animate($el, 'height', 0);
                 }
+                // if transitionend event is not supported assuming there's no transition
+                trans_end_event || requestAnimFrame(transitionendHandler);
             } else {
                 has_class_name = $el.hasClass(class_name);
                 // if we're transitioning the element in and it's already in OR
