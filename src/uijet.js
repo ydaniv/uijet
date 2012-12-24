@@ -305,14 +305,14 @@
             // if it's a `Function`
             if ( isFunc(source[s]) ) {
                 // bind and copy it to target
-                target[s] = source[s].bind(context);
+                target[s] = context ? source[s].bind(context) : source[s];
             } else {
                 // otherwise just copy
                 target[s] = source[s];
                 // if it's an `Object`
                 if ( isObj(source[s]) ) {
-                    // go deeper to make sure every method is bound
-                    extendProxy(target[s], source[s], context);
+                    // from this point the context is available, no need to bind
+                    extendProxy(target[s], source[s]);
                 }
             }
         }
