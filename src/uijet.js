@@ -32,6 +32,8 @@
         widget_classes = {},
         // caching built and mixed-in widgets' classes
         widget_mixedin_classes = {},
+        // caching widgets declarations factories
+        widget_factories = {},
         // constants
         TYPE_ATTR = 'data-uijet-type',
         ATTR_PREFIX = 'data-uijet-',
@@ -63,6 +65,13 @@
         }()),
         // check for touch support
         has_touch = !!(('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
+        // ### Utils.isArr
+        // utility for checking if param is an Array
+        isArr = (function () {
+            return Array.isArray || function (obj) {
+                return objToString.call(obj) == '[object Array]';
+            };
+        }()),
         // the sandbox
         uijet;
 
@@ -129,11 +138,6 @@
     // utility for checking if param is an Obejct
     function isObj (obj) {
         return objToString.call(obj) == '[object Object]';
-    }
-    // ### Utils.isArr
-    // utility for checking if param is an Array
-    function isArr (obj) {
-        return objToString.call(obj) == '[object Array]';
     }
     // ### Utils.isFunc
     // utility for checking if param is a Function
@@ -716,6 +720,18 @@
             adapters[name] = adapter;
             return this;
         },
+        // ### uijet.Factory
+        // @sign: Factory(name, declaration)  
+        // @return: uijet
+        //
+        // Define a factory of a widget declaration for re-use.
+        Factory             : function (name, declaration) {
+            widget_factories[name] = function (config) {
+                config && extend(true, declaration.config, config);
+                return declaration;
+            };
+            return this;
+        },
         // ### uijet.Serializer
         // @sign: Serializer(name, serializer)  
         // @return: uijet
@@ -931,9 +947,13 @@
         // Performs the work for the `uijet.start` API call.
         _start              : function (_widget, _skip_import) {
             var that = this,
-                _type = _widget.type,
-                _config = _widget.config,
+                _factory = _widget.factory, _type, _config,
                 _dfrd_start, _self, mixedin_type, _w, l, _d, _c, _mixins, _adapters, _widgets;
+            if ( _factory && widget_factories[_factory] ) {
+                _widget = widget_factories[_factory](_config);
+            }
+            _type = _widget.type;
+            _config = _widget.config;
             // if not `true` then import dependencies first and then do the starting
             if ( ! _skip_import ) {
                 _dfrd_start = this.Promise();
@@ -944,7 +964,7 @@
                     return this;
                 };
                 // do import
-                this.importModules([{type: _type, config: _config}], _self);
+                this.importModules([_widget], _self);
                 return _dfrd_start.promise();
             } else {
                 // do start  
@@ -979,7 +999,7 @@
                     // just get the stored widget class definition
                     _c = widget_classes[_type];
                 }
-                // craete a new widget instance from that class
+                // create a new widget instance from that class
                 _w = new _c();
                 // if we have adapters to use
                 if ( _adapters = toArray(_config.adapters) ) {
@@ -1199,10 +1219,12 @@
             if ( typeof _window.require == 'function' ) {
                 // iterate over list of widgets
                 for ( var i = 0 ; _w = _widgets[i] ; i++ ) {
-                    // build widget's path
-                    _m_type = widgets_prefix + _w.type;
-                    // if this widget type wasn't loaded and isn't in the dependencies list then add it
-                    (widget_classes[_w.type] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
+                    if ( _w.type ) {
+                        // build widget's path
+                        _m_type = widgets_prefix + _w.type;
+                        // if this widget type wasn't loaded and isn't in the dependencies list then add it
+                        (widget_classes[_w.type] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
+                    }
                     // check for adapters option
                     if ( _m_list = toArray(_w.config.adapters) ) {
                         for ( var n = 0 ; _m = _m_list[n++] ; ) {
