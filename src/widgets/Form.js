@@ -21,6 +21,7 @@
                 var $fields = this.$element.find('[name]'),
                     data = {}, args;
                 $fields.each(function (i, field) {
+                    if ( field.disabled ) return;
                     var name = field.name;
                     // if it's a checkbox or a radio field and not checked ignore
                     if ( ! boolean_type_re.test(field.type) || field.checked ) {
