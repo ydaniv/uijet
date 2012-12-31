@@ -11,7 +11,7 @@
     // UIjet is using jQuery.Deferred's API for pomises
     // so we'll adapt when.js's API to it
     uijet.use({
-        Promise : function () {
+        Promise     : function () {
 
             var deferred = when.defer(),
                 _promise = deferred.promise,
@@ -36,20 +36,20 @@
             // polyfill deferred.done() and deferred.fail()
             deferred.done = function (callback) {
                 var others = Array.prototype.slice.call(arguments, 1), c;
-                deferred.then(callback);
+                deferred.promise.then(callback);
                 if ( others.length ) {
                     while ( c = others.shift() ) {
-                        deferred.then(c);
+                        deferred.promise.then(c);
                     }
                 }
                 return deferred;
             };
             deferred.fail = function (callback) {
                 var others = Array.prototype.slice.call(arguments, 1), c;
-                deferred.then(undefined, callback);
+                deferred.promise.then(undefined, callback);
                 if ( others.length ) {
                     while ( c = others.shift() ) {
-                        deferred.then(undefined, c);
+                        deferred.promise.then(undefined, c);
                     }
                 }
                 return deferred;
@@ -57,8 +57,11 @@
 
             return deferred;
         },
-        when    : function () {
+        when        : function () {
             return when.all(arguments);
+        },
+        isPromise   : function (obj) {
+            return obj && (uijet.isFunc(obj.then) || obj.promise && uijet.isFunc(obj.promise.then));
         }
     }, uijet, when);
 

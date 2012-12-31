@@ -9,7 +9,10 @@
     }
 }(this, function (uijet, $) {
     uijet.use({
-        Promise : $.Deferred,
-        when    : $.when
+        Promise     : $.Deferred,
+        when        : $.when,
+        isPromise   : function (obj) {
+            return obj && uijet.isFunc(obj.then);
+        }
     }, uijet, $);
 }));

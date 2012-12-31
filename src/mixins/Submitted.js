@@ -100,13 +100,13 @@
 
             if ( isObj(validators) ) {
                 for ( v in validators ) {
-                    if ( v in _data) {
+                    if ( v in _data ) {
                         check = returnOf(validators[v], this, _data[v], _data);
                         if ( ! check ) {
                             valid = false;
                             failed[v] = _data[v];
                         }
-                        else if ( isObj(check) ) {
+                        else if ( uijet.isPromise(check) ) {
                             deferred.push(check);
                         }
                     }
