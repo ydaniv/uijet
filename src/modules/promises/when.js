@@ -61,7 +61,7 @@
             return when.all(arguments);
         },
         isPromise   : function (obj) {
-            return obj && (uijet.isFunc(obj.then) || obj.promise && uijet.isFunc(obj.promise.then));
+            return obj && (uijet.Utils.isFunc(obj.then) || obj.promise && uijet.Utils.isFunc(obj.promise.then));
         }
     }, uijet, when);
 

@@ -12,7 +12,7 @@
         Promise     : $.Deferred,
         when        : $.when,
         isPromise   : function (obj) {
-            return obj && uijet.isFunc(obj.then);
+            return obj && uijet.Utils.isFunc(obj.then);
         }
     }, uijet, $);
 }));
