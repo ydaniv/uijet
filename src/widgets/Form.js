@@ -70,8 +70,8 @@
                     // stop and prevent it
                     e.preventDefault();
                     e.stopPropagation();
-                    // instead call `send`
-                    that.send();
+                    // instead call `submit`
+                    that.submit();
                 });
             } else {
                 // otherwise register this Form on the sandbox via `uijet.Form`
@@ -91,20 +91,20 @@
             }
             return this;
         },
-        // ### widget.getSendRoute
-        // @sign: getSendRoute()  
-        // @return: send_route OR `null`
+        // ### widget.getSubmitRoute
+        // @sign: getSubmitRoute()  
+        // @return: submit_route OR `null`
         //
         // Returns an `Object` with __method__ and __path__ keys which represent a RESTful route, which
         // is the route that's called when the form is submitted.  
-        // Checks the `send_route` option, if it's an `Object` then use its path value, or if it's a `String`
+        // Checks the `submit_route` option, if it's an `Object` then use its path value, or if it's a `String`
         // then use it as __path__.  
         // If this option isn't set check for the `actoin` attribute of `$element`.  
         // If that isn't set too then return `null`.  
         // if this option isn`t set, check for the method value or check the `method` attribute on `$element`, or
         // simply use 'get'.
-        getSendRoute    : function () {
-            var route = this.options.send_route,
+        getSubmitRoute  : function () {
+            var route = this.options.submit_route,
                 path = route ? route.path || route : this.$element.attr('action');
             return path ? { method: route && route.method || this.$element.attr('method') || 'get', path: path } : null;
         },
