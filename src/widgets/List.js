@@ -46,7 +46,7 @@
                 // if not then use current element
                 var $this = item_element ? uijet.$(this).closest(item_selector) : uijet.$(this),
                     // notify the `pre_select` signal
-                    _continue = that.notify(true, 'pre_select', $this, e);
+                    _continue = that.notify('pre_select', $this, e);
                 // if `pre_select signal` is handled and returns specifically `false` then prevent it
                 if( _continue !== false ) {
                     // make sure this element still exists inside the DOM
@@ -55,7 +55,7 @@
                         // cache  & paint selection
                             .setSelected($this);
                     }
-                    that.notify(true, 'post_select', $this, e);
+                    that.notify('post_select', $this, e);
                 }
             });
             this._super();

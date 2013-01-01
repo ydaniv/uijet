@@ -46,16 +46,16 @@
         },
         _openHandler    : function (e) {
             this.socket_promise.resolve(e);
-            this.notify(true, 'socket_open', e);
+            this.notify('socket_open', e);
         },
         _closeHandler   : function (e) {
-            this.notify(true, 'socket_close', e);
+            this.notify('socket_close', e);
         },
         _messageHandler : function (e) {
-            this.notify(true, 'socket_message', e);
+            this.notify('socket_message', e);
         },
         _errorHandler   : function (e) {
-            this.notify(true, 'socket_error', e);
+            this.notify('socket_error', e);
         }
     });
 }));

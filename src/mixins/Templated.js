@@ -24,7 +24,7 @@
             // setting `context`
             this._setContext(context);
             // notify the `pre_wake` signal with the `old_context`
-            do_render = this.notify('pre_wake', old_context);
+            do_render = this.notify(true, 'pre_wake', old_context);
             // create a new deferred wake promise object
             dfrd_wake = uijet.Promise();
             // wake up the kids
@@ -32,7 +32,7 @@
             // in case of failure
             _fail = function () {
                 // notify failure signal
-                var retry = that.notify.apply(that, ['wake_failed'].concat(Array.prototype.slice.call(arguments)));
+                var retry = that.notify.apply(that, [true, 'wake_failed'].concat(Array.prototype.slice.call(arguments)));
                 if ( retry ) {
                     // if user asked to retry the wake again
                     that.wake();
@@ -49,7 +49,7 @@
                 that.bindAll()
                     .appear()
                     .awake = true;
-                that.notify('post_wake');
+                that.notify(true, 'post_wake');
                 dfrd_wake.resolve();
                 that._finally();
             };
@@ -97,7 +97,7 @@
                     // an error callback handler
                     failure = function (response) {
                         // tell the user we failed
-                        this.notify.apply(this, ['fetchTemplate_error'].concat(uijet.Utils.toArray(arguments)));
+                        this.notify.apply(this, [true, 'fetchTemplate_error'].concat(uijet.Utils.toArray(arguments)));
                         // fail the whole fetching process
                         dfrd.reject();
                     },
@@ -144,7 +144,7 @@
                     // set state to `has_tempalte`
                     that.has_template = true;
                     // tell the user we're done
-                    that.notify('post_fetch_template');
+                    that.notify(true, 'post_fetch_template');
                     // resolve the entire fetching promise
                     dfrd.resolve();
                 });
@@ -160,13 +160,13 @@
                 loadables, that = this, _super = this._super,
                 do_insert;
             // notify `pre_render` with the generate HTML
-            this.notify('pre_render', _html);
+            this.notify(true, 'pre_render', _html);
             // remove the old rendered content
             this._clearRendered();
             // and append the new  
             // allow the user to specify his own method of inserting the HTML
             // if this signal returns `false` we'll skip the lines below
-            do_insert = this.notify('pre_html_insert', _html);
+            do_insert = this.notify(true, 'pre_html_insert', _html);
             if ( do_insert !== false ) {
                 // if `insert_before` option is set it's used as a selector or element to indicate where to insert the
                 // generated HTML before.
@@ -185,7 +185,7 @@
                 _super.call(that);
                 // if this widget is `scrolled` then prepare its `$element`'s size
                 that.scrolled && that._prepareScrolledSize();
-                that.notify('post_render');
+                that.notify(true, 'post_render');
                 uijet.publish('post_load');
                 dfrd.resolve();
             });

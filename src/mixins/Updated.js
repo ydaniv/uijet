@@ -17,7 +17,7 @@
             // set the `context`
             this._setContext(context);
             // notify the `pre_wake` signal with `old_context`
-            do_update = this.notify('pre_wake', old_context);
+            do_update = this.notify(true, 'pre_wake', old_context);
             // if this is not the updater then it receives data through `context`
             if ( ! this.options.data_url ) {
                 // set `data`
@@ -31,7 +31,7 @@
                     .bindAll()
                     .appear()
                     .awake = true;
-                that.notify('post_wake');
+                that.notify(true, 'post_wake');
                 self_dfrd.resolve();
                 // make sure we tell the UI that the long wait comes to an end
                 that.publish('post_load', null, true);
@@ -39,7 +39,7 @@
             };
             // store the fail callback
             _fail = function () {
-                that.notify('wake_failed', arguments);
+                that.notify(true, 'wake_failed', arguments);
                 self_dfrd.reject();
                 that.publish('post_load', null, true);
                 that.sleep();

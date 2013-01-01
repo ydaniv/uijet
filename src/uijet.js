@@ -450,20 +450,20 @@
             return this;
         },
         // ### widget.notify
-        // @sign: notify(topic [, args]) OR notify(persist, topic [, args])  
+        // @sign: notify([once, ] topic [, args])  
         // @return: handler() OR undefined
         //
         // Triggers a signal's handler using `topic` as its type, and returns the result of that call.  
         // If the first argument supplied to `notify` is a `Boolean` it is used to determine whether
         // multiple calls can be made to this type during the same single call to a _lifecycle_ method.  
         // All subsequent arguments are sent to the handler as parameters.  
-        // If the `topic` isn't found or it has fired and not set as persistent, then nothing happens
+        // If the `topic` isn't found or it has fired and was set to fire once, then nothing happens
         // and `undefined` is returned.
         notify          : function (topic) {
-            var handler, own_args_len = 1, args, persist = false;
-            // if first argument is a boolean it means it's a directive to whether persist this signal or not
+            var handler, own_args_len = 1, args, once = false;
+            // if first argument is a boolean it means it's a directive to whether this signal is triggered once
             if ( typeof topic == 'boolean' && topic ) {
-                persist = true;
+                once = true;
                 handler = this.signals[arguments[1]];
                 own_args_len += 1;
             } else {
@@ -471,8 +471,8 @@
             }
             if ( handler ) {
                 args = arraySlice.call(arguments, own_args_len);
-                // if not to persist then mask this signal's handler with null
-                persist || (this.signals[topic] = null);
+                // if `once` is `true` then mask this signal's handler with `null`
+                once || (this.signals[topic] = null);
                 return handler.apply(this, args);
             }
         },
@@ -763,11 +763,11 @@
         // @sign: Form(name, widget)  
         // @return: uijet
         //
-        // Set a form's route to connect its submission with the widget's `send` method.
+        // Set a form's route to connect its submission with the widget's `submit` method.
         Form                : function (name, widget) {
             this.options.routed ?
-                this.setRoute(widget, widget.getSendRoute(), 'send') :
-                this.subscribe(widget.id + '.submitted', widget.send, widget);
+                this.setRoute(widget, widget.getSubmitRoute(), 'submit') :
+                this.subscribe(widget.id + '.submitted', widget.submit, widget);
             return this;
         },
         // ### uijet.init
@@ -1343,7 +1343,7 @@
                     case 'uijet/style':
                     case 'uijet/position':
                     case 'uijet/data_url':
-                    case 'uijet/send_url':
+                    case 'uijet/submit_url':
                     case 'uijet/routing':
                         config[option_name] = fn;
                         break;
@@ -1527,7 +1527,7 @@
         // It is possible to supply `route` as an `object` when other characteristics of the route
         // need to be taken into account, such as the REST method, etc.
         // An optional third argument `callback` can be used to replace the default `uijet.run` method.
-        // For example, if you need to set a route of a Form's submit with the send method.
+        // For example, if you need to set a route of a Form's submit with the submit method.
         setRoute            : function (widget, route, callback) {
             throw new Error('uijet.setRoute not implemented');
         },

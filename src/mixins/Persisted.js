@@ -14,14 +14,14 @@
         update      : function (invalidate_cache) {
             var success, key;
             // allow the user to override the cache invalidation flag
-            invalidate_cache = this.notify('pre_persisted_update', invalidate_cache);
+            invalidate_cache = this.notify(true, 'pre_persisted_update', invalidate_cache);
             // if set to `true` then invalidate
             if ( invalidate_cache === true ) {
                 this.has_data = false;
             } else {
                 // or fetch from cache  
                 // notify the `pre_fetchcache` signal and allow the user to set the key to use
-                key = this.notify('pre_fetchcache');
+                key = this.notify(true, 'pre_fetchcache');
                 success = this.fetchCache(key);
             }
             if ( success && this.has_data ) {
@@ -47,7 +47,7 @@
         // This method is the public API to be overridden by adapters.
         fetchCache  : function (key) {
             var success = this._fetchCache(key);
-            success && this.notify('post_fetchcache', this.data);
+            success && this.notify(true, 'post_fetchcache', this.data);
             return success;
         },
         // ### widget.updateCache

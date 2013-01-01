@@ -176,7 +176,7 @@
             // confine the dragging to the primary mouse button or touch
             if ( has_touch || down_pos.which === 1 ) {
                 // notify user of drag start event - before dragging conditions (e.g. drag_delay) are met
-                this.notify(true, 'pre_drag_init', down_e, $draggee, start_position);
+                this.notify('pre_drag_init', down_e, $draggee, start_position);
                 // in this stage we're just checking if this is really a case of dragging  
                 // bind the move event to the delay-check handler
                 $doc.on(MOVE_E, delayHandler)
@@ -189,7 +189,7 @@
                     // remove the delay test handlers
                     cancelHandler();
                     // notify user drag is about to start
-                    continue_drag = that.notify(true, 'pre_drag_start', down_e, $draggee);
+                    continue_drag = that.notify('pre_drag_start', down_e, $draggee);
                     // bail out
                     if ( typeof continue_drag == 'boolean' ) {
                         // if `true` re-bind drag, otherwise bind on a basis of drag_once option
@@ -206,7 +206,7 @@
                     // prepare the visual draggee
                     that._initdraggee($el, is_cloned && $draggee);
                     // notify user drag is started
-                    that.notify(true, 'post_drag_start', down_e, $draggee);
+                    that.notify('post_drag_start', down_e, $draggee);
                     // define the drag move handler
                     moveHandler = function (move_e) {
                         // get the move event object
@@ -256,7 +256,7 @@
                             };
                             that.dragging = false;
                             // if drag action wasn't canceled by user
-                            if ( that.notify(true, 'post_drag_end', up_e, end_position, $draggee) !== false ) {
+                            if ( that.notify('post_drag_end', up_e, end_position, $draggee) !== false ) {
                                 if ( is_cloned ) {
                                     // if not specified otherwise remove and delete the clone
                                     $draggee.remove();

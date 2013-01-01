@@ -12,7 +12,7 @@
     // by default bind this click/tap event handler
     dom_events[uijet.support.click_events.full] = function (e) {
         // publish the `pre_click` signal and allow user to disable `clicked` event
-        var _publish = this.notify(true, 'pre_click', e);
+        var _publish = this.notify('pre_click', e);
         if ( _publish !== false ) {
             // publish `clicked` event
             this.publish('clicked', {

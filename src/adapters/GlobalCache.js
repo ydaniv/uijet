@@ -20,11 +20,11 @@
                     return this.has_data = false;
                 }
             }
-            this.notify('post_fetchcache', this.data);
+            this.notify(true, 'post_fetchcache', this.data);
             return true;
         },
         updateCache     : function (key, data) {
-            this.notify('pre_updatecache', key, data);
+            this.notify(true, 'pre_updatecache', key, data);
             this._updateCache(key, data);
             uijet.cache[key] = data;
             return this;

@@ -51,7 +51,7 @@
                 .register()
                 // cache reference to initial markup that was coded into the element by user
                 ._saveOriginal();
-            this.notify('post_init');
+            this.notify(true, 'post_init');
             return this;
         },
         defer           : function (promise, callback, error) {
@@ -100,7 +100,7 @@
             // set the the context data if any
             this._setContext(context);
             // fire pre_wake signal
-            this.notify('pre_wake', old_context);
+            this.notify(true, 'pre_wake', old_context);
             // the rest of the tasks needed to be performed
             success = function () {
                 // there was context to change but if we're set then bail out
@@ -111,14 +111,14 @@
                         .appear()
                         .awake = true;
                 }
-                that.notify('post_wake');
+                that.notify(true, 'post_wake');
                 that._finally();
             };
             // wake up all contained widgets
             dfrds = this.wakeContained(context);
             // register a failure callback in case one of the children failed to wake up
             _sequence = uijet.when.apply(uijet, dfrds).fail(function () {
-                that.notify('wake_failed', arguments);
+                that.notify(true, 'wake_failed', arguments);
                 that.sleep();
             });
             // if this widget is to be wake up in sync with its children then let it call
@@ -155,7 +155,7 @@
         sleep           : function (no_transitions) {
             // continue only if we're awake
             if ( this.awake ) {
-                this.notify('pre_sleep');
+                this.notify(true, 'pre_sleep');
                 // unbind DOM events
                 this.unbindAll()
                     // hide
@@ -167,7 +167,7 @@
                 if ( this.options.destroy_on_sleep ) {
                     return this.destroy();
                 }
-                this.notify('post_sleep');
+                this.notify(true, 'post_sleep');
             }
             return this._finally();
         },
@@ -189,7 +189,7 @@
         // Clean up all related data, DOM and memory related to this instance.  
         // This method is not called by default.
         destroy         : function () {
-            this.notify('pre_destroy');
+            this.notify(true, 'pre_destroy');
             // perform a recursive destruction down the widget tree
             this.destroyContained();
             // unsubscribe to app events
@@ -239,7 +239,7 @@
                     dfrd_update.reject(response);
                 } else {
                     // if success notify a signal that we have `data` and resolve the promise
-                    this.notify(true, 'post_fetch_data', response);
+                    this.notify('post_fetch_data', response);
                     dfrd_update.resolve();
                 }
             };
@@ -258,7 +258,7 @@
                 // * __success flow__: success callback is sent as the last argument to the signal's handler
                 // * __failrue flow__: in case anything but `false` is returned from `update_error` handler
                 // * __or abort it all__: return `false` from `update_error` handler
-                var _abort_fail = this.notify.apply(this, [true, 'update_error'].concat(arraySlice.call(arguments), _success.bind(this)));
+                var _abort_fail = this.notify.apply(this, ['update_error'].concat(arraySlice.call(arguments), _success.bind(this)));
                 if ( _abort_fail !== false ) {
                     // publish an error has occurred with `update`
                     this.publish('update_error', response, true);
@@ -329,7 +329,7 @@
         // Renders the instance.  
         // In its base form this it's just a placeholder.
         render          : function () {
-            this.notify('pre_render');
+            this.notify(true, 'pre_render');
             return this;
         },
         // ### widget.position
@@ -368,9 +368,9 @@
         //
         // Makes the instance's element appear (initially `visibility` is set to `hidden`).
         appear          : function () {
-            this.notify('pre_appear');
+            this.notify(true, 'pre_appear');
             this._setCloak(false)
-                .notify('post_appear');
+                .notify(true, 'post_appear');
             return this;
         },
         // ### widget.disappear
@@ -380,7 +380,7 @@
         // Makes the instance's element disappear, basically setting `visibility` to `hidden`.
         disappear       : function () {
             this._setCloak(true)
-                .notify('post_disappear');
+                .notify(true, 'post_disappear');
             return this;
         },
         // ### widget.bind

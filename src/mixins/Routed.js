@@ -22,7 +22,7 @@
             return this._super();
         },
         destroy         : function () {
-            this.notify('pre_destroy');
+            this.notify(true, 'pre_destroy');
             this.unregisterRoutes()
                 ._super();
             return this;
@@ -131,7 +131,7 @@
         // Used as a callback from a route to `wake` up a widget, sending it the `context` object
         // of params from the URL.
         run             : function (context) {
-            this.notify('pre_run', context);
+            this.notify(true, 'pre_run', context);
             this.wake(context, true);
             return this;
         }
