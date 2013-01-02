@@ -472,7 +472,7 @@
             if ( handler ) {
                 args = arraySlice.call(arguments, own_args_len);
                 // if `once` is `true` then mask this signal's handler with `null`
-                once || (this.signals[topic] = null);
+                once && (this.signals[topic] = null);
                 return handler.apply(this, args);
             }
         },
