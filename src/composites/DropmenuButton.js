@@ -24,7 +24,7 @@
                 ._wrap();
 
             var id = this.id,
-                drop_menu_id = id + '_dropmenu',
+                drop_menu_id = id + '_menu',
                 options = this.options.dropmenubutton,
                 drop_arrow_id, drop_arrow_config,
             // configure the dropdown menu
@@ -34,7 +34,7 @@
                     dont_wake       : true,
                     sync            : true,
                     dont_select     : true,
-                    extra_class     : 'uijet_dropmenu',
+                    extra_class     : 'uijet_menu',
                     float_top       : function () {
                         return this._wrap().$wrapper[0].offsetParent.offsetHeight;
                     },
