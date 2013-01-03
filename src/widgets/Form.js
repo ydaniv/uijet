@@ -19,26 +19,27 @@
             type_class  : 'uijet_form',
             serializer  : function (extra_data, as_defaults) {
                 var $fields = this.$element.find('[name]'),
+                    submit_unchecked = this.options.submit_unchecked,
                     data = {}, args;
                 $fields.each(function (i, field) {
                     if ( field.disabled ) return;
                     var name = field.name;
-                    // if it's a checkbox or a radio field and not checked ignore
-                    if ( ! boolean_type_re.test(field.type) || field.checked ) {
-                        // if this key already exists
-                        if ( name in data ) {
-                            // if it's corresponding value is not an `Array`
-                            if ( ! uijet.Utils.isArr(data[name]) ) {
-                                // wrap it in an `Array`
-                                data[name] = [data[name]];
-                            }
-                            // push the new value to the list
-                            data[name].push(field.value);
+                    // if it's a checkbox or a radio field,
+                    // not checked and `submit_unchecked` option is not `true` then ignore
+                    if ( ! submit_unchecked && boolean_type_re.test(field.type) && ! field.checked ) return;
+                    // if this key already exists
+                    if ( name in data ) {
+                        // if it's corresponding value is not an `Array`
+                        if ( ! uijet.Utils.isArr(data[name]) ) {
+                            // wrap it in an `Array`
+                            data[name] = [data[name]];
                         }
-                        else {
-                            // otherwise just set this value
-                            data[name] = field.value;
-                        }
+                        // push the new value to the list
+                        data[name].push(field.value);
+                    }
+                    else {
+                        // otherwise just set this value
+                        data[name] = field.value;
                     }
                 });
                 if ( uijet.Utils.isObj(extra_data) ) {
