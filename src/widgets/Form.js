@@ -19,7 +19,6 @@
             type_class  : 'uijet_form',
             serializer  : function (extra_data, as_defaults) {
                 var $fields = this.$element.find('[name]'),
-                    submit_unchecked = this.options.submit_unchecked,
                     data = {}, args;
                 $fields.each(function (i, field) {
                     if ( field.disabled ) return;
