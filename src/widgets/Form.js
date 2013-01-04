@@ -24,9 +24,8 @@
                 $fields.each(function (i, field) {
                     if ( field.disabled ) return;
                     var name = field.name;
-                    // if it's a checkbox or a radio field,
-                    // not checked and `submit_unchecked` option is not `true` then ignore
-                    if ( ! submit_unchecked && boolean_type_re.test(field.type) && ! field.checked ) return;
+                    // if it's a checkbox or a radio field and not checked then ignore
+                    if ( boolean_type_re.test(field.type) && ! field.checked ) return;
                     // if this key already exists
                     if ( name in data ) {
                         // if it's corresponding value is not an `Array`
