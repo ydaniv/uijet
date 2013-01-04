@@ -61,9 +61,7 @@
                     // update the widget and get the template
                     uijet.when( that.update(), that.fetchTemplate() ).then(function () {
                         // render it
-                        uijet.when ( that.render() ).then(_activate,
-                        // fail render
-                        _fail);
+                        that.render().then(_activate, _fail);
                     },
                     // fail update/fetch template
                     _fail);
@@ -155,40 +153,50 @@
         },
         render          : function () {
             // generate the HTML
-            var _html = this.generate(),
+            var that = this, _super = this._super,
                 dfrd = uijet.Promise(),
-                loadables, that = this, _super = this._super,
-                do_insert;
-            // notify `pre_render` with the generate HTML
-            this.notify(true, 'pre_render', _html);
-            // remove the old rendered content
-            this._clearRendered();
-            // and append the new  
-            // allow the user to specify his own method of inserting the HTML
-            // if this signal returns `false` we'll skip the lines below
-            do_insert = this.notify(true, 'pre_html_insert', _html);
-            if ( do_insert !== false ) {
-                // if `insert_before` option is set it's used as a selector or element to indicate where to insert the
-                // generated HTML before.
-                if ( this.options.insert_before ) {
-                    uijet.$(_html).insertBefore(this.options.insert_before);
-                } else {
-                    // just append the HTML at the end
-                    this.$element.append(_html);
-                }
+                _html, loadables, do_insert;
+
+            if ( ! this.has_template ) {
+                // if `render` was called directly then add a convenience call to fetchTemplate
+                this.fetchTemplate().then(function () {
+                    that.render().then(dfrd.resolve, dfrd.reject);
+                }, dfrd.reject);
             }
-            this.has_content = true;
-            // if `defer_images` option is `> 0` then defer the flow till after the loading of images
-            loadables = this.options.defer_images ? this.deferLoadables() : [{}];
-            // after all was loaded or if ignored deferring it
-            uijet.when.apply(uijet, loadables).then(function () {
-                _super.call(that);
-                // if this widget is `scrolled` then prepare its `$element`'s size
-                that.scrolled && that._prepareScrolledSize();
-                that.notify(true, 'post_render');
-                uijet.publish('post_load');
-                dfrd.resolve();
-            });
+            else {
+                _html = this.generate();
+    
+                // notify `pre_render` with the generate HTML
+                this.notify(true, 'pre_render', _html);
+                // remove the old rendered content
+                this._clearRendered();
+                // and append the new  
+                // allow the user to specify his own method of inserting the HTML
+                // if this signal returns `false` we'll skip the lines below
+                do_insert = this.notify(true, 'pre_html_insert', _html);
+                if ( do_insert !== false ) {
+                    // if `insert_before` option is set it's used as a selector or element to indicate where to insert the
+                    // generated HTML before.
+                    if ( this.options.insert_before ) {
+                        uijet.$(_html).insertBefore(this.options.insert_before);
+                    } else {
+                        // just append the HTML at the end
+                        this.$element.append(_html);
+                    }
+                }
+                this.has_content = true;
+                // if `defer_images` option is `> 0` then defer the flow till after the loading of images
+                loadables = this.options.defer_images ? this.deferLoadables() : [{}];
+                // after all was loaded or if ignored deferring it
+                uijet.when.apply(uijet, loadables).then(function () {
+                    _super.call(that);
+                    // if this widget is `scrolled` then prepare its `$element`'s size
+                    that.scrolled && that._prepareScrolledSize();
+                    that.notify(true, 'post_render');
+                    uijet.publish('post_load');
+                    dfrd.resolve();
+                });
+            }
             return dfrd.promise();
         },
         // ### widget.deferLoadables
