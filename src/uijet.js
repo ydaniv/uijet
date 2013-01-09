@@ -11,7 +11,7 @@
     var Function = _window.Function,
         Object = _window.Object,
         Array = _window.Array,
-        BROWSER_PREFIX = { style : ['webkit', 'Moz', 'O', 'ms'], prop : ['WebKit', 'webkit', 'moz', 'o', 'ms'] },
+        BROWSER_PREFIX = { style : ['webkit', 'Moz', 'O', 'ms'], prop : ['WebKit', 'webkit', 'moz', 'o', 'ms'], matches: {} },
         // native utilities caching
         objToString = Object.prototype.toString,
         arraySlice = Array.prototype.slice,
@@ -592,12 +592,32 @@
     function getStyleProperty (prop) {
         var style = _window.document.body.style,
             cases = BROWSER_PREFIX.style,
-            prefix, res, i = 0;
+            prefix, camelized, i = 0;
+        // return un-prefixed if found
         if ( prop in style) return prop;
-        prop = prop[0].toUpperCase() + prop.slice(1);
-        while ( prefix = cases[i++] ) {
-            if ( (prefix +  prop) in style )
-                return prefix +  prop;
+        if ( prop in BROWSER_PREFIX.matches ) {
+            // return the cached property name
+            return BROWSER_PREFIX.matches[prop];
+        }
+        else {
+            // executed once per property
+            camelized = prop[0].toUpperCase() + prop.slice(1);
+            if ( prefix = BROWSER_PREFIX.prefix ) {
+                if ( (prefix +  camelized) in style ) {
+                    BROWSER_PREFIX.matches[prop] = prefix +  camelized;
+                    return prefix +  camelized;
+                }
+            }
+            else {
+                // executed once until a match is found
+                while ( prefix = cases[i++] ) {
+                    if ( (prefix +  camelized) in style ) {
+                        BROWSER_PREFIX.prefix = prefix;
+                        BROWSER_PREFIX.matches[prop] = prefix +  camelized;
+                        return prefix +  camelized;
+                    }
+                }
+            }
         }
         return null;
     }
