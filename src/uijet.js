@@ -757,17 +757,6 @@
             views[name] = widget;
             return this;
         },
-        // ### uijet.Form
-        // @sign: Form(name, widget)  
-        // @return: uijet
-        //
-        // Set a form's route to connect its submission with the widget's `submit` method.
-        Form                : function (name, widget) {
-            this.options.routed ?
-                this.setRoute(widget, widget.getSubmitRoute(), 'submit') :
-                this.subscribe(widget.id + '.submitted', widget.submit, widget);
-            return this;
-        },
         // ### uijet.init
         // @sign: init([options])  
         // @return: uijet

@@ -72,9 +72,6 @@
                     // instead call `submit`
                     that.submit();
                 });
-            } else {
-                // otherwise register this Form on the sandbox via `uijet.Form`
-                uijet.Form(this.id, this);
             }
             return this;
         },
