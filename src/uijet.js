@@ -55,8 +55,9 @@
                 };
         }()),
         cancelAnimFrame = (function () {
-            return getPrefixed('CancelRequestAnimationFrame', _window)  ||
-                getPrefixed('CancelAnimationFrame', _window)            ||
+            return _window.cancelAnimationFrame                      ||
+                getPrefixed('CancelRequestAnimationFrame', _window)  ||
+                getPrefixed('CancelAnimationFrame', _window)         ||
                 function( requestId ){
                     return _window.clearTimeout(requestId);
                 };
