@@ -1,11 +1,9 @@
-// ### AMD wrapper
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(function () {
             return factory(root);
         });
     } else {
-        // if not using an AMD library set the global `uijet` namespace
         root.uijet = factory(root);
     }
 }(this, function (_window) {
@@ -75,7 +73,7 @@
         // the sandbox
         uijet;
 
-    // a simple shim of Function.bind to support Safari -5 - mostly old iOS
+    // a simple shim of Function.bind to support Safari 5- (mostly old iOS) and Android <4
     if ( typeof Function.bind != 'function' ) {
         Function.prototype.bind = function (scope) {
             var _self = this,
@@ -1711,15 +1709,15 @@
             }
             return this;
         },
-        // ## uijet.switchCurrent
-        // @sign: switchCurrent(widget)  
+        // ## uijet.switchLayer
+        // @sign: switchLayer(widget)  
         // @return: uijet
         //
         // Takes a widget and makes sure all its siblings, who share the same direct parent DOM Node, awake
         // and are set to `current` state, do not have the `current` class set on their top element and their
         // state is switched to `awake`.  
         // At the end adds the `current` class to the widget's top element.
-        switchCurrent       : function (widget) {
+        switchLayer         : function (widget) {
             var container_id = widgets[widget.id].container,
                 siblings = container_id ? widgets[container_id].contained || [] : [], sibling,
                 _parent = (widget.$wrapper || widget.$element)[0].parentNode,
@@ -1762,7 +1760,7 @@
             while ( part = parts[i++], typeof part == 'string' ) {
                 // if it's a named argument
                 if ( part[0] === ':' ) {
-                    // then add it to the conetxt by name
+                    // then add it to the context by name
                     context[part.slice(1)] = args_array.shift();
                     n += 1;
                 } else if ( ~ part.indexOf('(') ) {
