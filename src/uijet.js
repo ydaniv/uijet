@@ -36,8 +36,8 @@
         TYPE_ATTR = 'data-uijet-type',
         ATTR_PREFIX = 'data-uijet-',
         TOP_ADAPTER_NAME = 'TopAdapter',
-        getPrefixed = function (name, obj, is_prop) {
-            var cases = BROWSER_PREFIX[is_prop ? 'prop' : 'style'],
+        getPrefixed = function (name, obj) {
+            var cases = BROWSER_PREFIX.prop,
                 len = cases.length, prop;
             while ( len-- ) {
                 if ( prop = obj[cases[len] + name] ) {
