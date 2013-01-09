@@ -360,13 +360,6 @@ video:focus {
 .uijet_form label.error {
     margin-bottom: 0;
 }
-.uijet_form input[type=text] {
-    -webkit-appearance: none;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
-    padding: 5px 3px;
-}
 .uijet_list {
     width: 100%;
     list-style: none;
