@@ -483,7 +483,30 @@
         // It's a hook into `uijet.subscribe` only the `handler` is bound to `this`.  
         //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
         subscribe       : function (topic, handler) {
-            var _h = handler.bind(this);
+            var that = this,
+                apply_args = false,
+                _h;
+            if ( typeof handler == 'string' ) {
+                if ( handler[handler.length - 1] == '+' ) {
+                    apply_args = true;
+                    handler = handler.slice(0, -1);
+                }
+                if ( isFunc(this[handler]) ) {
+                    _h = function () {
+                        that[handler].apply(that, apply_args ? arguments : []);
+                    };
+                }
+                else if ( isFunc(this.signals_cache[handler]) ) {
+                    _h = function () {
+                        var args = toArray(arguments);
+                        args.unshift(handler);
+                        that.notify.apply(that, apply_args ? args : [handler]);
+                    };
+                }
+            }
+            else {
+                _h = handler.bind(this);
+            }
             // add this handler to `app_events` to allow quick unsubscribing later
             this.app_events[topic] = _h;
             uijet.subscribe(topic, _h);
