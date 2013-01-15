@@ -485,9 +485,10 @@
         // Otherwise (usually a `String`) find this element inside `this.$element` using `initial` as selector
         // and perform the click on the result.
         select          : function (initial) {
-            var $el;
+            var event_type = this.options.click_event,
+                $el;
             $el = typeof initial == 'function' ? initial.call(this) : this.$element.find(initial);
-            typeof $el.trigger == 'function' && $el.trigger(uijet.support.click_events.full);
+            typeof $el.trigger == 'function' && $el.trigger(event_type || uijet.support.click_events.full);
             return this;
         },
         // ### widget.captureRoutes
