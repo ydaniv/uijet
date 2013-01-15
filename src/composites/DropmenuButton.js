@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
@@ -27,7 +26,7 @@
                 drop_menu_id = id + '_menu',
                 options = this.options.dropmenubutton,
                 drop_arrow_id, drop_arrow_config,
-            // configure the dropdown menu
+                // configure the dropdown menu
                 drop_menu_config = uijet.Utils.extend(true, {
                     id              : drop_menu_id,
                     container       : id,
@@ -61,10 +60,16 @@
                 }, options.menu || {}),
                 drop_menu_events = drop_menu_config.app_events,
                 clicked_handler = function (data) {
-                    var target = data.event.target,
+                    var target, top;
+                    if ( ! data || data === true ) {
+                        this.opened = typeof data == 'boolean' ? data : ! this.opened;
+                    }
+                    else {
+                        target = data.event.target;
                         top = (this.$wrapper || this.$element)[0];
-                    // always close if clicked on the menu, otherwise toggle
-                    this.opened = !(target === top || uijet.$.contains(top, target)) && ! this.opened;
+                        // always close if clicked on the menu, otherwise toggle
+                        this.opened = !(target === top || uijet.$.contains(top, target)) && ! this.opened;
+                    }
                     this.opened ? this.wake() : this.sleep();
                 },
 
