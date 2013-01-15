@@ -8,45 +8,14 @@
     }
 }(function (uijet) {
 
-    var dom_events = {};
-    // by default bind this click/tap event handler
-    dom_events[uijet.support.click_events.full] = function (e) {
-        // publish the `pre_click` signal and allow user to disable `clicked` event
-        var _publish = this.notify('pre_click', e);
-        if ( _publish !== false ) {
-            // publish `clicked` event
-            this.publish('clicked', {
-                context : this.context,
-                event   : e
-            }).publish('app.clicked', {
-                id      : this.id,
-                event   : e
-            }, true);
-        }
-        e.preventDefault();
-        e.stopPropagation();
-    };
-
     uijet.Widget('Button', {
         options         : {
             type_class  : 'uijet_button',
-            dont_wrap   : true,
-            dom_events  : dom_events
+            dont_wrap   : true
         },
         setInitOptions  : function () {
-            var that = this, routing = that.options.routing;
             this._super();
-            // if `data_url` option is set
-            if ( this.options.data_url ) {
-                // bind another click handler 
-                this.$element.on(uijet.support.click_events.full, function () {
-                    // get `data_url` and run it as route, using `routing` option to determine whether it's inner
-                    that.runRoute(
-                        that.getDataUrl().path,
-                        typeof routing == 'undefined' ? true : ! uijet.returnOf(routing, that, uijet.$(this))
-                    );
-                });
-            }
+            this.bind(this.options.click_event || uijet.support.click_events.full, this.click);
             return this;
         },
         render          : function () {
@@ -61,6 +30,35 @@
             } else {
                 this._super(initial);
             }
+        },
+        click           : function (e) {
+            var routing = this.options.routing,
+                // user to disable `clicked` event
+                _publish = this.notify('pre_click', e);
+            if ( _publish !== false ) {
+                // if `data_url` option is set
+                if ( this.options.data_url ) {
+                    var url = this.getDataUrl().path;
+                    // use the generated URL as a route to run
+                    uijet.options.routed ?
+                        this.runRoute(
+                            url,
+                            typeof routing == 'undefined' ? true : ! uijet.returnOf(routing, this, uijet.$(this))
+                        ) :
+                        // or simply publish it if not using a router
+                        this.publish(url);
+                }
+                this.publish('clicked', {
+                    context : this.context,
+                    event   : e
+                }).publish('app.clicked', {
+                    id      : this.id,
+                    event   : e
+                }, true);
+            }
+            e.preventDefault();
+            e.stopPropagation();
+            return this;
         }
     });
 }));
