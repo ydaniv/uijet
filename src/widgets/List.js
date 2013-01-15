@@ -25,6 +25,7 @@
                 item_element = this.options.item_element,
                 _horizontal = this.options.horizontal,
                 class_attrs = [],
+                click_event = this.options.click_event,
                 _align;
             // if `horizontal` option is set
             if ( _horizontal ) {
@@ -40,7 +41,7 @@
                 this.$element.addClass(class_attrs.join(' '));
             }
             // delegate all clicks from `item_element` option as selector or `item_selector`  
-            this.$element.on(uijet.support.click_events.full, item_element || item_selector, function (e) {
+            this.$element.on(click_event || uijet.support.click_events.full, item_element || item_selector, function (e) {
                 // get the selected element  
                 // if `item_element` option is set get the closest `item_selector` stating from current element  
                 // if not then use current element
