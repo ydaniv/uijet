@@ -29,8 +29,8 @@
             }
             return this;
         },
-        scrollTo    : function (element) {
-            this.iScroll && this.iScroll.scrollToElement(element.jquery ? element[0] : element);
+        scrollTo    : function (element, time) {
+            this.iScroll && this.iScroll.scrollToElement(element.jquery ? element[0] : element, time);
         }
     });
 }));
