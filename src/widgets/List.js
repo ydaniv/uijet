@@ -1,12 +1,11 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
-                'uijet_dir/uijet',
-                'uijet_dir/widgets/Base'
-            ], function (uijet) {
-                return factory(uijet);
-            });
+            'uijet_dir/uijet',
+            'uijet_dir/widgets/Base'
+        ], function (uijet) {
+            return factory(uijet);
+        });
     } else {
         factory(uijet);
     }
@@ -46,14 +45,14 @@
                 // if `item_element` option is set get the closest `item_selector` stating from current element  
                 // if not then use current element
                 var $this = item_element ? uijet.$(this).closest(item_selector) : uijet.$(this),
-                    // notify the `pre_select` signal
+                    // allow user to bail from selection
                     _continue = that.notify('pre_select', $this, e);
                 // if `pre_select signal` is handled and returns specifically `false` then prevent it
                 if( _continue !== false ) {
                     // make sure this element still exists inside the DOM
                     if ( $this && $this.length && $this.parent().length ) {
                         that.publish('selected', $this)
-                        // cache  & paint selection
+                        // cache & paint selection
                             .setSelected($this);
                     }
                     that.notify('post_select', $this, e);
