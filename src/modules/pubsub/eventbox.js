@@ -9,21 +9,18 @@
     }
 }(this, function (uijet, Ebox) {
     uijet.use({
-        publish         : function (topic, data) {
+        publish     : function (topic, data) {
             Ebox.notify(topic, data);
             return this;
         },
-        subscribe       : function (topic, handler, context) {
-            if ( context ) {
-                if ( typeof handler == 'string' ) {
-                    handler = context[handler];
-                }
-                Ebox.bind(context);
+        subscribe   : function (topic, handler, context) {
+            if ( context && typeof handler == 'string' ) {
+                handler = context[handler];
             }
             Ebox.listen(topic, handler);
             return this;
         },
-        unsubscribe     : function (topic, handler) {
+        unsubscribe : function (topic, handler) {
             Ebox.unlisten(topic, handler);
             return this;
         }
