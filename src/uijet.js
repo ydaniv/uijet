@@ -509,7 +509,7 @@
             }
             // add this handler to `app_events` to allow quick unsubscribing later
             this.app_events[topic] = _h;
-            uijet.subscribe(topic, _h);
+            uijet.subscribe(topic, _h, this);
             return this;
         },
         // ### widget.unsubscribe
@@ -520,7 +520,10 @@
         // all handlers under that `topic`.  
         // It's a hook into `uijet.unsubscribe`.
         unsubscribe     : function (topic, handler) {
-            uijet.unsubscribe(topic, handler);
+            if ( ! handler && this.app_events ) {
+                handler = this.app_events[topic];
+            }
+            uijet.unsubscribe(topic, handler, this);
             return this;
         },
         // ### widget.publish
