@@ -135,7 +135,7 @@
             if ( transit_type in this.special_animations ) {
                 var end = this.special_animations[transit_type].call(this, widget, is_direction_in);
                 // if transitionend event is not supported assuming there's no transition
-                end === false || requestAnimFrame(transitionendHandler);
+                (end === false || ! trans_end_event) && requestAnimFrame(transitionendHandler);
             }
             else {
                 has_class_name = $el.hasClass(class_name);
