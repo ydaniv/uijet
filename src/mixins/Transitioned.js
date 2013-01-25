@@ -41,10 +41,7 @@
                 _success();
             } else {
                 // transit out
-                uijet.when( this.transit('out') ).then(_success, function () {
-                    // make sure we unbind the transition-end event handler
-                    $el.off(uijet.support.transitionend);
-                });
+                uijet.when( this.transit('out') ).then(_success);
             }
             return this;
         },
@@ -65,15 +62,9 @@
             });
             return this.dfrd_transit.promise();
         },
-        unbind          : function () {
-            // make sure we rollback the transit
-            this.dfrd_transit && this.dfrd_transit.reject();
-            this._super();
-            return this;
-        },
         sleepContained  : function () {
             var _super = this._super, that = this;
-            uijet.when ( this.dfrd_transit.promise() ).then( function () {
+            uijet.when( this.dfrd_transit.promise() ).then(function () {
                 _super.call(that);
             });
             return this;
