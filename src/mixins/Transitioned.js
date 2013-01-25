@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet'], function (uijet) {
@@ -10,24 +9,6 @@
 }(function (uijet) {
     uijet.Mixin('Transitioned', {
         transitioned    : true,
-        prepareElement  : function () {
-            this.notify(true, 'pre_prepareelement');
-            // initialy set the __animation_type_out__ `class`
-            this.$element.addClass((this.options.animation_type || uijet.options.animation_type) + '_out');
-            this._super();
-            return this;
-        },
-        _wrap           : function () {
-            // cache the __animation_type_out__ `class`
-            var class_name = (this.options.animation_type || uijet.options.animation_type) + '_out';
-            // do wrapping
-            this._super();
-            // add this class to the `$wrapper`
-            this.$wrapper.addClass(class_name);
-            // and remove it from the `$element`
-            this.$element.removeClass(class_name);
-            return this;
-        },
         appear          : function () {
             var that = this, _super = this._super;
             this.notify(true, 'pre_appear');

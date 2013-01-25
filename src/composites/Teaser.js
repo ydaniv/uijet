@@ -149,7 +149,9 @@
             return this._super();
         },
         scrollTo        : function () {
-            var that = this;
+            var that = this,
+                anim_props = {};
+            anim_props[this.animation_prop] = uijet.Utils.returnOf(this.animation_type.value, this, this.slide_index);
             this._fixPosition();
             this.$slides.removeClass('current')
                         .eq(this.slide_index).addClass('current');
@@ -157,8 +159,7 @@
             this.animation_id && uijet.Utils.cancelAnimFrame(this.animation_id);
             this.animation_id = uijet.animate(
                 this.$element,
-                this.animation_prop,
-                uijet.Utils.returnOf(this.animation_type.value, this, this.slide_index),
+                anim_props,
                 function () {
                     that.last_index = that.slide_index;
                 }
