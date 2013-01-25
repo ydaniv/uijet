@@ -114,7 +114,7 @@
                 requests.push(uijet.xhr(this.getTemplateUrl())
                     .done(function (response) {
                         // cache result
-                        this.template = this.compile(response);
+                        that.template = that.compile(response);
                     })
                     .fail(failure)
                 );
