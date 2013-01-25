@@ -38,6 +38,33 @@
             // and remove it from the `$element`
             this.$element.removeClass(class_name);
             return this;
+        },
+        disappear       : function (no_transitions) {
+            var that = this,
+                // caching super method for calling it later inside an async function
+                _super = this._super,
+                $el = this.$wrapper || this.$element,
+                // store the animation callback
+                _success = function () {
+                    // make invisible
+                    that._setCloak(true);
+                    // clear classes related to active state
+                    $el.removeClass('current reverse');
+                    _super.call(that, no_transitions);
+                };
+            this.notify(true, 'pre_disappear');
+            if ( no_transitions ) {
+                // in case we want to hide the widget without animation just fire the callback
+                _success();
+            }
+            else {
+                // transit out
+                uijet.when( this.transit('out') ).then(_success, function () {
+                    // make sure we unbind the transition-end event handler
+                    $el.off(uijet.support.transitionend);
+                });
+            }
+            return this;
         }
     });
 
