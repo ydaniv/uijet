@@ -87,7 +87,7 @@
                         _h = $el[0].offsetParent.offsetHeight - $el[0].offsetTop;
                     }
                     // unfold
-                    this.animate($el, { height : _h });
+                    this.animate($el, { height : _h + 'px' });
                 } else {
                     // fold
                     this.animate($el, { height : 0 });
