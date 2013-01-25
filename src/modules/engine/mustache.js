@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet', 'mustache', 'uijet_dir/widgets/Base'], function (uijet, Mustache) {
@@ -12,8 +11,8 @@
         generate: function () {
             return this.template(this.data || this.context, this.partials);
         },
-        compile : function (template, partial) {
-            return partial ? Mustache.compilePartial(partial, template) : Mustache.compile(template);
+        compile : function (template) {
+            return Mustache.compile(template);
         }
     }, uijet.BaseWidget.prototype);
 

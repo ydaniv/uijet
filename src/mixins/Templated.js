@@ -112,12 +112,13 @@
                 // if asked to refresh then invalidate cache
                 refresh && (this.has_template = false);
                 // request the template
-                requests.push(uijet.xhr(this.getTemplateUrl(), {
-                    context : this
-                }).done(function (response) {
-                    // cache result
-                    this.template = this.compile(response);
-                }).fail(failure));
+                requests.push(uijet.xhr(this.getTemplateUrl())
+                    .done(function (response) {
+                        // cache result
+                        this.template = this.compile(response);
+                    })
+                    .fail(failure)
+                );
                 // if we need to fetch partial templates
                 if ( partials ) {
                     this.partials || (this.partials = {});
@@ -129,12 +130,13 @@
                                             path + "." +
                                             uijet.options.TEMPLATES_EXTENSION;
                         // request that partial
-                        requests.push(uijet.xhr(partial_path, {
-                            context : that
-                        }).done(function (partial) {
-                            // when done cache it
-                            this.partials[name] = this.compile(partial, name);
-                        }).fail(failure));
+                        requests.push(uijet.xhr(partial_path)
+                            .done(function (partial) {
+                                // when done cache it
+                                that.partials[name] = partial;
+                            })
+                            .fail(failure)
+                        );
                     }(p, partials[p]));
                 }
                 // when all requests are resolved
