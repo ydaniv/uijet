@@ -87,10 +87,10 @@
                         _h = $el[0].offsetParent.offsetHeight - $el[0].offsetTop;
                     }
                     // unfold
-                    this.animate($el, 'height', _h + 'px');
+                    this.animate($el, { height : _h });
                 } else {
                     // fold
-                    this.animate($el, 'height', 0);
+                    this.animate($el, { height : 0 });
                 }
                 return uijet.support.transitionend;
             }
