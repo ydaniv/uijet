@@ -20,7 +20,7 @@
 
     // add methods to the Transitioned mixin that will init the animation state with the `<type>_out` class
     // on the top element
-    uijet.extend(transitioned, {
+    uijet.Utils.extend(transitioned, {
         prepareElement  : function () {
             this.notify(true, 'pre_prepareelement');
             // initialy set the __animation_type_out__ `class`
