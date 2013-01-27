@@ -21,6 +21,7 @@
         declared_widgets = [],
         widgets = {},
         views = {},
+        resources = {},
         visualizers = {},
         serializers = {},
         // caching pre-built predefined widgets' classes
@@ -372,7 +373,24 @@
         }
     }
 
+    function copyStaticMethods (source, target) {
+        for ( var m in source )
+            if ( source.hasOwnProperty(m) && isFunc(source[m]) )
+                target[m] = source[m];
+        return target;
+    }
+
     function Base () {}
+
+    Base.extend = function (props) {
+        return extend(true, this.prototype, props);
+    };
+    Base.derive = function derive (child) {
+        return copyStaticMethods(this, Create(child, this, true));
+    };
+    Base.inherit = function inherit (parent) {
+        return copyStaticMethods(this, Create(this, parent, true));
+    };
 
     Base.prototype = {
         constructor : Base,
@@ -786,6 +804,15 @@
             };
             return this;
         },
+        Resource            : function (name, resource) {
+            if ( arguments.length === 1 ) {
+                if ( name in resources ) {
+                    return resources[name];
+                }
+            }
+            resources[name] = resource;
+            return this;
+        },
         // ### uijet.Serializer
         // @sign: Serializer(name, serializer)  
         // @return: uijet
@@ -935,7 +962,7 @@
         // Generate a widget class using `Create` with `uijet.BaseWidget` as the base prototype.
         _generate           : function (_props, _mixins, _widgets) {
             // create the base class
-            var _class = Create(this.BaseWidget, true),
+            var _class = this.BaseWidget,
                 _mixins_copy = toArray(_mixins),
                 _mixins_to_use = [],
                 _mixin, _widget, _widgets_copy;

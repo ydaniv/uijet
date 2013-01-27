@@ -871,5 +871,6 @@
         }
     };
 
-    return Utils.Create(Widget, uijet.Base, true);
+//    return Utils.Create(Widget, uijet.Base, true);
+    return uijet.Base.derive(Widget);
 }));
