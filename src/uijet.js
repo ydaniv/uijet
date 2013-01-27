@@ -910,7 +910,7 @@
                         // when parsing is done (or skipped)
                         that.when(
                             // build and init declared widgets
-                            that.start(declared_widgets)
+                            that.start(declared_widgets, true)
 
                         ).then(function () {
                             //when all declared widgets are initialized, set `uijet.initialized` to `true`
@@ -931,15 +931,9 @@
                 // add these to the declared ones
                 this.declare(options.widgets);
             }
-            // if we're in AMD mode
-            if ( typeof _window.require == 'function' ) {
-                // import all the modules we need (Mixins, Widgets, Adapters, 3rd party...)  
-                // and initialization will start when done
-                return this.importModules(declared_widgets, _init.bind(this, options));
-            } else {
-                // otherwise just init
-                return _init.call(this, options);
-            }
+            // import all the modules we need (Mixins, Widgets, Adapters, 3rd party...)  
+            // and initialization will start when done
+            return this.importModules(declared_widgets, _init.bind(this, options));
         },
         // ### uijet._define
         // @sign: _define(name, props, [deps])  
@@ -1239,7 +1233,7 @@
         // Returns a promise that's resolved after all the `widgets` started successfully or
         // rejects this promise if there's an error.
         start               : function (_widgets, _skip_import) {
-            var i, that, dfrd, dfrd_starts, _c;
+            var i, dfrd, dfrd_starts, _c;
             // if `_widgets` is an `Object`
             if ( isObj(_widgets) ) {
                 // do the starting
@@ -1248,22 +1242,16 @@
             // if it's an `Array`
             else if ( isArr(_widgets) ) {
                 i = 0;
-                that = this;
                 dfrd = this.Promise();
                 dfrd_starts = [];
                 // loop over the widget declarations in it
                 while ( _c = _widgets[i] ) {
                     // and start every one of them
-                    dfrd_starts[i] = this._start(_c);
+                    dfrd_starts[i] = this._start(_c, _skip_import);
                     i+=1;
                 }
                 // when all `_widgets` finished starting
-                this.when.apply(this, dfrd_starts).then(function () {
-                    // resolve the promise
-                    dfrd.resolve();
-                }, function () {
-                    dfrd.reject();
-                });
+                this.when.apply(this, dfrd_starts).then(dfrd.resolve, dfrd.reject);
                 // return a promise of all `_widgets` started
                 return dfrd.promise();
             }
