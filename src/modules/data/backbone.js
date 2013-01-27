@@ -20,4 +20,6 @@
             Collection  : Backbone.Collection.extend.bind(Backbone.Collection)
         }
     });
+
+    return Backbone;
 }));
