@@ -12,7 +12,20 @@
     }
 }(this, function (uijet, Backbone) {
 
+    var baseRegister = uijet.BaseWidget.prototype.register;
+
     uijet.Base.extend(Backbone.Events);
+
+    uijet.BaseWidget.prototype.register = function () {
+        var resource;
+        baseRegister.call(this);
+
+        if ( resource = this.options.resource ) {
+            this.resource = uijet.Resource(resource);
+        }
+
+        return this;
+    };
 
     uijet.use({
         data: {
