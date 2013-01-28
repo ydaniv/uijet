@@ -37,9 +37,9 @@
             return when.all(arguments);
         },
         isPromise   : function (obj) {
-            return obj && (uijet.Utils.isFunc(obj.then) || obj.promise && uijet.Utils.isFunc(obj.promise.then));
+            return when.isPromise(obj);
         }
-    }, uijet, when);
+    });
 
     return when;
 }));
