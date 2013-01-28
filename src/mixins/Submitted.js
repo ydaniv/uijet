@@ -25,57 +25,61 @@
                 _inner = typeof this.options.inner_route == 'boolean' ? this.options.inner_route : true,
                 dfrd = uijet.Promise(),
                 _url, context;
-            uijet.when( this.validate(_data) )
-                // passed validation
-                .done(function () {
-
-                    that.serialize(_data);
-                    // notify the `pre_submit` signal and allow user to set the context
-                    context = that.notify('pre_submit');
-                    // set the URL for submitting
-                    _url = that.getSubmitUrl(context);
-                    // if there's a URI to submit to
-                    if ( _url ) {
-                        // if user chose to submit the data as a route or an event
-                        if ( that.options.route_submit ) {
-                            // if using a router then run the URL as a route, otherwise publish it
-                            uijet.options.routed ?
-                                that.runRoute(_url.path + _data, _inner) :
-                                that.publish('submitted', { url: _url, data: _data });
-                            dfrd.resolve();
-                            return;
+            this.validate(_data)
+                .then(
+                    // passed validation
+                    function () {
+                        that.serialize(_data);
+                        // notify the `pre_submit` signal and allow user to set the context
+                        context = that.notify('pre_submit');
+                        // set the URL for submitting
+                        _url = that.getSubmitUrl(context);
+                        // if there's a URI to submit to
+                        if ( _url ) {
+                            // if user chose to submit the data as a route or an event
+                            if ( that.options.route_submit ) {
+                                // if using a router then run the URL as a route, otherwise publish it
+                                uijet.options.routed ?
+                                    that.runRoute(_url.path + _data, _inner) :
+                                    that.publish('submitted', { url: _url, data: _data });
+                                dfrd.resolve();
+                                return;
+                            }
+                            // otherwise make an XHR
+                            uijet.xhr(_url.path, {
+                                type        : _url.method,
+                                data        : _data,
+                                contentType : that.options.submit_content_type || 'application/x-www-form-urlencoded',
+                                context     : that
+                            })
+                            .then(
+                                function (response) {
+                                    dfrd.resolve(response);
+                                    // notify `post_submit_data` signal
+                                    this.notify('post_submit_data', response);
+                                    // publish `post_submit_data` event of this widget sandbox-wide
+                                    this.publish('post_submit_data', response);
+                                },
+                                function () {
+                                    dfrd.reject();
+                                    // emit the `submit_error` signal
+                                    this.notify.apply(that, ['submit_error'].concat(Array.prototype.slice.call(arguments)));
+                                }
+                            );
                         }
-                        // otherwise make an XHR
-                        uijet.xhr(_url.path, {
-                            type        : _url.method,
-                            data        : _data,
-                            contentType : that.options.submit_content_type || 'application/x-www-form-urlencoded',
-                            context     : that
-                        })
-                        .done(function (response) {
-                            dfrd.resolve(response);
-                            // notify `post_submit_data` signal
-                            this.notify('post_submit_data', response);
-                            // publish `post_submit_data` event of this widget sandbox-wide
-                            this.publish('post_submit_data', response);
-                        })
-                        .fail(function () {
-                            dfrd.reject();
-                            // emit the `submit_error` signal
-                            this.notify.apply(that, ['submit_error'].concat(Array.prototype.slice.call(arguments)));
-                        });
+                        else {
+                            // otherwise just publish 'submitted' event with the data
+                            that.publish('submitted', _data);
+                            dfrd.resolve();
+                        }
+                    },
+                    // failed validation
+                    function (failed) {
+                        dfrd.reject(failed);
+                        that.notify('not_valid', failed, _data);
                     }
-                    else {
-                        // otherwise just publish 'submitted' event with the data
-                        that.publish('submitted', _data);
-                        dfrd.resolve();
-                    }
-                })
-                // failed validation
-                .fail(function (failed) {
-                    dfrd.reject(failed);
-                    that.notify('not_valid', failed, _data);
-                });
+                );
+
             return dfrd.promise();
         },
         setInitOptions  : function () {

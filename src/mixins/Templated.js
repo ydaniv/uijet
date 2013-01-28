@@ -58,18 +58,24 @@
             } else {
                 _success = function () {
                     // update the widget and get the template
-                    uijet.when( that.update(), that.fetchTemplate() ).then(function () {
-                        // render it
-                        that.render().then(_activate, _fail);
-                    },
-                    // fail update/fetch template
-                    _fail);
+                    uijet.when( that.update(), that.fetchTemplate() )
+                        .then(
+                            function () {
+                                // render it
+                                that.render().then(_activate, _fail);
+                            },
+                            // fail update/fetch template
+                            _fail
+                        );
                 };
             }
-            // in case any of the children failed, fail this
-            _sequence = uijet.when.apply(uijet, dfrds).fail(_fail);
+            _sequence = uijet.when.apply(uijet, dfrds);
             // if `sync` option is `true` then call success after all children are awake
-            this.options.sync ? _sequence.done(_success) : _success();
+            _sequence.then(
+                this.options.sync ? _success : _success(),
+                _fail
+            );
+
             return dfrd_wake ? dfrd_wake.promise() : {};
         },
         // ### widget.fetchTemplate
@@ -112,11 +118,10 @@
                 refresh && (this.has_template = false);
                 // request the template
                 requests.push(uijet.xhr(this.getTemplateUrl())
-                    .done(function (response) {
+                    .then(function (response) {
                         // cache result
                         that.template = that.compile(response);
-                    })
-                    .fail(failure)
+                    }, failure)
                 );
                 // if we need to fetch partial templates
                 if ( partials ) {
@@ -130,11 +135,10 @@
                                             uijet.options.TEMPLATES_EXTENSION;
                         // request that partial
                         requests.push(uijet.xhr(partial_path)
-                            .done(function (partial) {
+                            .then(function (partial) {
                                 // when done cache it
                                 that.partials[name] = partial;
-                            })
-                            .fail(failure)
+                            }, failure)
                         );
                     }(p, partials[p]));
                 }

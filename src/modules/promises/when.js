@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet', 'when'], function (uijet, when) {
@@ -8,8 +7,7 @@
         factory(uijet, root.when);
     }
 }(this, function (uijet, when, undefined) {
-    // UIjet is using jQuery.Deferred's API for pomises
-    // so we'll adapt when.js's API to it
+
     uijet.use({
         Promise     : function () {
 
@@ -31,28 +29,6 @@
 
             deferred.state = function () {
                 return state;
-            };
-
-            // polyfill deferred.done() and deferred.fail()
-            deferred.done = function (callback) {
-                var others = Array.prototype.slice.call(arguments, 1), c;
-                deferred.promise.then(callback);
-                if ( others.length ) {
-                    while ( c = others.shift() ) {
-                        deferred.promise.then(c);
-                    }
-                }
-                return deferred;
-            };
-            deferred.fail = function (callback) {
-                var others = Array.prototype.slice.call(arguments, 1), c;
-                deferred.promise.then(undefined, callback);
-                if ( others.length ) {
-                    while ( c = others.shift() ) {
-                        deferred.promise.then(undefined, c);
-                    }
-                }
-                return deferred;
             };
 
             return deferred;

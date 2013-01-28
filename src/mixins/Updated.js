@@ -55,10 +55,12 @@
                     _activate();
                 }
             };
-            // prepare for failing (of the children) first
-            _sequence = uijet.when.apply(uijet, dfrds).fail(_fail);
+            _sequence = uijet.when.apply(uijet, dfrds);
             // if `sync` option is set to `true` then wake only after they're all awake
-            this.options.sync ? _sequence.done(_success): _success();
+            _sequence.then(
+                this.options.sync ? _success: _success(),
+                _fail
+            );
             return self_dfrd.promise();
         }
     });

@@ -116,15 +116,19 @@
             };
             // wake up all contained widgets
             dfrds = this.wakeContained(context);
-            // register a failure callback in case one of the children failed to wake up
-            _sequence = uijet.when.apply(uijet, dfrds).fail(function () {
-                that.notify(true, 'wake_failed', arguments);
-                that.sleep();
-            });
+
+            _sequence = uijet.when.apply(uijet, dfrds);
+
             // if this widget is to be wake up in sync with its children then let it call
-            // success once they're done
+            // success once they're done, or fail if any fails
             // otherwise call success
-            this.options.sync ? _sequence.done(success) : success();
+            _sequence.then(
+                this.options.sync ? success : success(),
+                function () {
+                    that.notify(true, 'wake_failed', arguments);
+                    that.sleep();
+                }
+            );
             return this;
         },
         // ### widget.wakeContained
@@ -251,20 +255,22 @@
                 dataType: 'json',
                 context : this
             }, this.options.update_config))
-            .done(_success)
-            .fail(function (response) {
-                // notify there was an error and allow user to continue with either:
-                //
-                // * __success flow__: success callback is sent as the last argument to the signal's handler
-                // * __failrue flow__: in case anything but `false` is returned from `update_error` handler
-                // * __or abort it all__: return `false` from `update_error` handler
-                var _abort_fail = this.notify.apply(this, ['update_error'].concat(arraySlice.call(arguments), _success.bind(this)));
-                if ( _abort_fail !== false ) {
-                    // publish an error has occurred with `update`
-                    this.publish('update_error', response, true);
-                    dfrd_update.reject(response);
+            .then(
+                _success,
+                function (response) {
+                    // notify there was an error and allow user to continue with either:
+                    //
+                    // * __success flow__: success callback is sent as the last argument to the signal's handler
+                    // * __failrue flow__: in case anything but `false` is returned from `update_error` handler
+                    // * __or abort it all__: return `false` from `update_error` handler
+                    var _abort_fail = this.notify.apply(this, ['update_error'].concat(arraySlice.call(arguments), _success.bind(this)));
+                    if ( _abort_fail !== false ) {
+                        // publish an error has occurred with `update`
+                        this.publish('update_error', response, true);
+                        dfrd_update.reject(response);
+                    }
                 }
-            });
+            );
             return dfrd_update.promise();
         },
         // ### widget.prepareElement
