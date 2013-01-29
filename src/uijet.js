@@ -1,4 +1,11 @@
-(function (root, factory) {
+/** @license BSD License (c) copyright Yehonatan Daniv */
+/*!
+ * Copyright 2011-2013 Yehonatan Daniv under the terms of the BSD:
+ * https://raw.github.com/ydaniv/uijet/master/LICENSE
+ * 
+ * @version: 0.0.1
+ */
+;(function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(function () {
             return factory(root);
@@ -7,7 +14,9 @@
         root.uijet = factory(root);
     }
 }(this, function (_window) {
-    // cache some gloabls
+    /*
+     * UIjet's globals and some local caching of stuff from global namespace
+     */
     var Function = _window.Function,
         Object = _window.Object,
         Array = _window.Array,
@@ -34,9 +43,14 @@
         // caching widgets declarations factories
         widget_factories = {},
         // constants
-        TYPE_ATTR = 'data-uijet-type',
-        ATTR_PREFIX = 'data-uijet-',
         TOP_ADAPTER_NAME = 'TopAdapter',
+        /**
+         * Searches for a prefixed name of `name` inside `obj`.
+         * 
+         * @param name {String} name to search for
+         * @param obj {Object} the source object search in
+         * @return prefixed {String|null}
+         */
         getPrefixed = function (name, obj) {
             var cases = BROWSER_PREFIX.prop,
                 len = cases.length, prop;
@@ -47,7 +61,9 @@
             }
             return null;
         },
-        // a polyfill for requestAnimationFrame
+        /**
+         * Polyfill for requestAnimationFrame
+         */
         requestAnimFrame = (function () {
             return _window.requestAnimationFrame ||
                 getPrefixed('RequestAnimationFrame', _window) ||
@@ -55,6 +71,9 @@
                     return _window.setTimeout(callback, 1000 / 60);
                 };
         }()),
+        /**
+         * Polyfill for cancelAnimationFrame
+         */
         cancelAnimFrame = (function () {
             return _window.cancelAnimationFrame                      ||
                 getPrefixed('CancelRequestAnimationFrame', _window)  ||
@@ -65,8 +84,14 @@
         }()),
         // check for touch support
         has_touch = !!(('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
-        // ### Utils.isArr
-        // utility for checking if param is an Array
+        /**
+         * Checks if argument `obj` is an `Array`.
+         * Uses {@link Array.isArray} by default if it exists.
+         * 
+         * @memberOf Utils
+         * @param obj {*} target object to check
+         * @return is_array {Boolean} whether `obj` is an `Array`
+         */
         isArr = (function () {
             return Array.isArray || function (obj) {
                 return objToString.call(obj) == '[object Array]';
@@ -134,24 +159,44 @@
             return this.replace(/^\s+|\s+$/g,'');
         };
     }
-    // ### Utils.isObj
-    // utility for checking if param is an Obejct
+    /**
+     * Checks if argument `obj` is an `Object`.
+     *
+     * @memberOf Utils
+     * @param obj {*} target object to check
+     * @return {Boolean} whether `obj` is an `Object`
+     */
     function isObj (obj) {
         return objToString.call(obj) == '[object Object]';
     }
-    // ### Utils.isFunc
-    // utility for checking if param is a Function
+    /**
+     * Checks if argument `obj` is an `Function`.
+     *
+     * @memberOf Utils
+     * @param obj {*} target object to check
+     * @return {Boolean} whether `obj` is an `Function`
+     */
     function isFunc (obj) {
         return typeof obj == 'function';
     }
-    // ### Utils.isArgs
-    // utility for checking if param is the `arguments` object
+    /**
+     * Checks if argument `obj` is an `Arguments` object.
+     *
+     * @memberOf Utils
+     * @param obj {*} target object to check
+     * @return {Boolean} whether `obj` is an `Arguments` object
+     */
     function isArgs (obj) {
         return objToString.call(obj) == '[object Arguments]';
     }
-    // ### Utils.toArray
-    // utility for either wrapping a param with an `Array` or return a copy of that array  
-    // if no arguments are supplied then return `undefined`
+    /**
+     * Utility for either wrapping an argument with an `Array` or return a copy of that array.
+     * If no arguments are supplied then return `undefined`.
+     *
+     * @memberOf Utils
+     * @param obj {*} target object to check
+     * @return copy {Array|undefined}
+     */
     function toArray (obj) {
         var arr;
         if ( isArgs(obj) || /object .*List/.test(objToString.call(obj)) ) {
@@ -166,38 +211,22 @@
         }
         return arr;
     }
-    // ### Utils.mapAttributes
-    // utility for iterating over an attributes list, picking those that begin with `data-uijet-`
-    // and returns a map of the name - without the prefix - to the value OR `true` if empty
-    function mapAttributes (attrs_list) {
-        var obj = {},
-            re = RegExp('^' + ATTR_PREFIX+ '([-_\\w]+)');
-        Array.prototype.forEach.call(attrs_list, function (attr) {
-            if ( ~ attr.name.search(re) ) {
-                obj[attr.name.match(re)[1]] = attr.value === '' ? true : attr.value;
-            }
-        });
-        return obj;
-    }
-    // ### Utils.getStyle
-    // @sign: getStyle(el)
-    // @return: `CSSStyleDeclaration`
-    // Gets the computed style object (`CSSStyleDeclaration`) of an `HTMLElement` `el`.
-    //
-    // @sign: getStyle(el, prop)
-    // @return: css_value
-    // Gets the computed value of the given style `prop` for element `el`.
-    //
-    // @sign: getStyle(el, prop || `null`, pseudo)
-    // @return: `CSSStyleDeclaration` OR css_value
-    // Gets the computed style object of a pseudo-element `pseudo` of an `HTMLElement` `el`.
-    // To get the entire style object use `null` for the `prop` argument.
-    //
-    // @sign: getStyle(el, prop || `null`, pseudo || `null`, win)
-    // @return: `CSSStyleDeclaration` OR css_value
-    // Gets the computed style object of a pseudo-element `pseudo` of an `HTMLElement` `el`, in `window` `win`.
-    // To get the entire style object use `null` for the `prop` argument.
-    // To get the style of the element use `null` for the `pseudo` argument.
+    /**
+     * Gets the computed style object (`CSSStyleDeclaration`) of an `HTMLElement` `el`.
+     * If `prop` is supplied they return it's value.
+     * If a list of properties `prop` is supplied then return a corresponding list of values.
+     * An optional pseudo-element argument can be used to fetch its style.
+     * If the element is a decendent of a window object that isn't this global namespace
+     * you can supply that window object as fourth argument.
+     *
+     * @memberOf Utils
+     * 
+     * @param el {HTMLElement} the element to use
+     * @param [prop] {String|Array} the property to fetch or list of properties
+     * @param [pseudo] {String} a name of a pseudo-element of that element to get its style
+     * @param [win] {HTMLWindowElement} The window element that element `el` belongs to
+     * @return style {String|Array|CSSStyleDeclaration} the read-only style object of that element or the value[s] of that property[ies]
+     */
     function getStyle (el, prop, pseudo, win) {
         var style = (win || _window).getComputedStyle(el, pseudo || null), res, p;
         if ( prop ) {
@@ -698,6 +727,7 @@
     uijet =  {
         ROUTE_PREFIX        : '',
         ROUTE_SUFFIX        : '',
+        init_queue          : [],
         // detected browser features
         support             : {
             touch           : has_touch,
@@ -866,11 +896,12 @@
             var _init = function (_options) {
                 var _methods = {},
                     that = this,
-                    k;
+                    k, dfrd, q;
                 this.options = _options || {};
                 // set top container
                 this.$element = this.$(_options && _options.element || 'body');
                 this.$element.addClass('uijet_app');
+
                 //TODO: this should be either removed or extended for all modern devices
                 // sniff for iPad UA and perform optimizations accordingly
                 this.isiPad();
@@ -895,29 +926,31 @@
                     }
                     // set default animation type
                     this.options.animation_type = _options.animation_type || 'slide';
-                    // if the user told us to look in the DOM
-                    if ( _options.parse ) {
-                        this.dfrd_parsing = this.Promise();
-                        // parse the DOM for widgets
-                        this.parse();
+
+                    if ( q = this.init_queue.length ) {
+                        while ( q-- ) {
+                            dfrd = this.init_queue[q];
+                            if ( isFunc(dfrd) ) {
+                                this.init_queue[q] = dfrd.call(this);
+                            }
+                        }
                     }
-                    // after all parsing, loading, build and initializing was done
-                    this.when(
-                        // when finished parsing all widgets declarations in the HTML
-                        this.dfrd_parsing ? this.dfrd_parsing.promise() : {}
+                    else {
+                        this.init_queue = [{}];
+                    }
 
+                    this.when.apply(this,
+                        // when finished all deferreds in init queue
+                        this.init_queue
+                        
                     ).then(function () {
-                        // when parsing is done (or skipped)
-                        that.when(
-                            // build and init declared widgets
-                            that.start(declared_widgets, true)
+                        // build and init declared widgets
+                        that.start(declared_widgets, true); 
 
-                        ).then(function () {
-                            //when all declared widgets are initialized, set `uijet.initialized` to `true`
-                            that.initialized = true;
-                            // kick-start the GUI - unless ordered not to
-                            _options.dont_start || that.startup();
-                        });
+                        //when all declared widgets are initialized, set `uijet.initialized` to `true`
+                        that.initialized = true;
+                        // kick-start the GUI - unless ordered not to
+                        _options.dont_start || that.startup();
                     });
                 } else {
                     this.initialized = true;
@@ -1326,121 +1359,6 @@
             this.$element[0].style.visibility = 'visible';
             this.publish('startup');
             return this;
-        },
-        // ## uijet.parse
-        // @sign: parse()  
-        // @return: uijet
-        //
-        // Searches the DOM, starting from the container element, for all widget definitions inside the markup
-        // and starts these widgets.  
-        // This method looks for the `data-uijet-type` attribute on tags.
-        parse               : function () {
-            var that = this, $ = this.$;
-            this.$element.find('[' + TYPE_ATTR + ']')
-                .each(function () {
-                    var $this = $(this),
-                        _type = $this.attr(TYPE_ATTR),
-                        _widget = { type : _type, config : that.parseWidget($this) };
-                    uijet.initialized ?
-                        uijet.start(_widget) :
-                        uijet.declare(_widget);
-                });
-            ! this.initialized && this.dfrd_parsing && this.dfrd_parsing.resolve();
-            return this;
-        },
-        // ## uijet._parseScripts
-        // @sign: _parseScripts($element, config)  
-        // @return: uijet
-        //
-        // Looks for script tags inside the widget's element, given as a jQuery object in `$element`,
-        // parses their attributes and `innerHTML` and adds them as widget options on the given `config` object.  
-        // Looks for the `type` attribute to specify the type of option to be set.  
-        // If the option is an event then it looks for a `data-uijet-event` attribute which specifies the type
-        // of the event to be listened to.  
-        // For arguments passed to the event handler it looks for a `data-uijet-args` attribute, which is a list
-        // of argument names separated by ','.  
-        // The body of the tag is used as the function body.  
-        // Example markup:
-        //
-        //      <div id="my_list" data-uijet-type="List">
-        //          <script type="uijet/app_event"
-        //                  data-uijet-event="my_list_container_pane.post_wake"
-        //                  data-uijet-args="event, data">
-        //              this.wake(data);
-        //          </script>
-        //      </div>
-        _parseScripts       : function ($el, config) {
-            var F = _window.Function, $ = this.$;
-            $el.find('script').each(function () {
-                var $this = $(this),
-                    type = $this.attr('type'),
-                    // get attributes and normalize it into an `Array`, their names and `Boolean` values
-                    attrs = mapAttributes($this[0].attributes),
-                    // extract the option name from the type
-                    option_name = type.match(/uijet\/(\w+)/),
-                    _fn_args, fn;
-                // get the `string` from the matches if got any
-                option_name = option_name ? option_name[1] : '';
-                // if we have an `args` attribute split it to an `Array` and trim their names
-                _fn_args = attrs.args && attrs.args.length ? attrs.args.split(/\s*,\s*/) : [];
-                // add function body
-                _fn_args.push(this.innerHTML);
-                // create the function
-                fn = F.apply(null, _fn_args);
-                // set it as an option on the `config` object
-                switch ( type ) {
-                    case 'uijet/signal':
-                    case 'uijet/app_event':
-                    case 'uijet/dom_event':
-                        option_name = option_name + 's';
-                        config[option_name] = config[option_name] || {};
-                        config[option_name][attrs.event] = fn;
-                        break;
-                    case 'uijet/initial':
-                    case 'uijet/serializer':
-                    case 'uijet/style':
-                    case 'uijet/position':
-                    case 'uijet/data_url':
-                    case 'uijet/submit_url':
-                    case 'uijet/routing':
-                        config[option_name] = fn;
-                        break;
-                }
-                // clean the DOM
-                $this.remove();
-            });
-            return this;
-        },
-        // ## uijet.parseWidget
-        // @sign: parseWidget($element)  
-        // @return: config
-        //
-        // Parses a widget's configuration from the DOM.  
-        // Takes a jQuery object containing the widget's element and parses its attributes and inner script tags.  
-        // For complete compliance with HTML5 and non-conflict approach it parses only attributes
-        // prefixed with `data-uijet-`. The name of the attribute following this prefix is the same
-        // as option it matches.  
-        // For boolean options that are equal `true` you can simply use the name of that attribute with no value,
-        // example:
-        //
-        //      <div data-uijet-type="List" data-uijet-horizontal>...</div>
-        //
-        // Returns a config object to be used in `uijet.start()` call.  
-        // For options with function as a value read the `uijet._parseScripts` docs.
-        parseWidget         : function ($el) {
-            var attrs = mapAttributes($el[0].attributes),
-                _ops_string = attrs['config'],
-                _config;
-            if ( _ops_string ) {
-                delete attrs['config'];
-                try {
-                    _config = JSON.parse(_ops_string);
-                } catch (e) {}
-                extend(attrs, _config);
-            }
-            this._parseScripts($el, attrs);
-            attrs['element'] = $el;
-            return attrs;
         },
         // ## uijet.wakeContained
         // @sign: wakeContained(id, [context])  
