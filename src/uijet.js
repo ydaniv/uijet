@@ -110,55 +110,6 @@
             };
         };
     }
-    // a simple shim for Object.create
-    if ( typeof Object.create != 'function' ) {
-        Object.create = function (o) {
-            if ( arguments.length > 1 ) {
-                throw new Error('Object.create implementation only accepts the first parameter.');
-            }
-            function F () {}
-            F.prototype = o;
-            return new F();
-        };
-    }
-    // shim for Array.indexOf
-    if ( typeof Array.prototype.indexOf != 'function' ) {
-        Array.prototype.indexOf = function (searchElement /*, fromIndex */ ) {
-            if ( this == null ) {
-                throw new TypeError();
-            }
-            var t = Object(this);
-            var len = t.length >>> 0;
-            if ( len === 0 ) {
-                return -1;
-            }
-            var n = 0;
-            if ( arguments.length > 0 ) {
-                n = Number(arguments[1]);
-                if ( n != n ) { // shortcut for verifying if it's NaN  
-                    n = 0;
-                } else if ( n != 0 && n != Infinity && n != -Infinity ) {
-                    n = (n > 0 || -1) * Math.floor(Math.abs(n));
-                }
-            }
-            if ( n >= len ) {
-                return -1;
-            }
-            var k = n >= 0 ? n : Math.max(len - Math.abs(n), 0);
-            for ( ; k < len ; k++ ) {
-                if ( k in t && t[k] === searchElement ) {
-                    return k;
-                }
-            }
-            return -1;
-        };
-    }
-    // shim String.trim
-    if( typeof String.prototype.trim != 'function' ) {
-        _window.String.prototype.trim = function () {
-            return this.replace(/^\s+|\s+$/g,'');
-        };
-    }
     /**
      * Checks if argument `obj` is an `Object`.
      *
