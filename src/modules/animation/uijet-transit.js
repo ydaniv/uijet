@@ -59,7 +59,7 @@
             }
             else {
                 // transit out
-                uijet.when( this.transit('out') ).then(_success, function () {
+                this.transit('out').then(_success, function () {
                     // make sure we unbind the transition-end event handler
                     $el.off(uijet.support.transitionend);
                 });
