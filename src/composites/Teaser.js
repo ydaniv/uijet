@@ -122,13 +122,12 @@
             var that = this,
                 args = arguments,
                 _super = this._super;
-            uijet.when.apply(uijet, this.dfrd_widgets).then(function () {
+            return uijet.when.apply(uijet, this.dfrd_widgets).then(function () {
                 _super.apply(that, args);
                 that.last_index = 1;
                 that.slide_index = 1;
                 that._setTimeout(true);
             });
-            return this;
         },
         sleep           : function () {
             this.timeout && clearTimeout(this.timeout);
@@ -136,15 +135,9 @@
             return this;
         },
         render          : function () {
-            var dfrd,
-                that = this;
             if ( this.options.cycle && this.templated ) {
-                dfrd = uijet.Promise();
-                uijet.when(this._super()).then(function () {
-                    that._prepareSlides();
-                    dfrd.resolve();
-                });
-                return dfrd.promise();
+                return this._super()
+                        .then(this._prepareSlides.bind(this), uijet.Utils.rethrow);
             }
             return this._super();
         },

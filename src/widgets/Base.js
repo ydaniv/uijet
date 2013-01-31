@@ -117,19 +117,16 @@
             // wake up all contained widgets
             dfrds = this.wakeContained(context);
 
-            _sequence = uijet.when.apply(uijet, dfrds);
-
             // if this widget is to be wake up in sync with its children then let it call
             // success once they're done, or fail if any fails
             // otherwise call success
-            _sequence.then(
+            return uijet.when.apply(uijet, dfrds).then(
                 this.options.sync ? success : success(),
                 function () {
                     that.notify(true, 'wake_failed', arguments);
                     that.sleep();
                 }
             );
-            return this;
         },
         // ### widget.wakeContained
         // @sign: wakeContained([context])  

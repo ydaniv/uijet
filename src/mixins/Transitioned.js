@@ -41,7 +41,7 @@
                 _success();
             } else {
                 // transit out
-                uijet.when( this.transit('out') ).then(_success);
+                this.transit('out').then(_success);
             }
             return this;
         },
@@ -64,9 +64,9 @@
         },
         sleepContained  : function () {
             var _super = this._super, that = this;
-            uijet.when( this.dfrd_transit.promise() ).then(function () {
+            this.dfrd_transit.then(function () {
                 _super.call(that);
-            });
+            }, uijet.Utils.rethrow);
             return this;
         }
     });

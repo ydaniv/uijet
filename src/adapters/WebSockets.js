@@ -39,8 +39,7 @@
                 }
                 this.socket.send(msg);
             } else {
-                uijet.when( this.open() )
-                    .then(this.send.bind(this, msg));
+                this.open().then(this.send.bind(this, msg), uijet.Utils.rethrow);
             }
             return this;
         },

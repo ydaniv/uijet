@@ -75,7 +75,7 @@
                 };
             this._super();
             if ( this.transitioned && this.dfrd_transit ) {
-                this.dfrd_transit.then(hide_handler, hide_handler);
+                this.dfrd_transit.always(hide_handler);
             } else {
                 hide_handler();
             }

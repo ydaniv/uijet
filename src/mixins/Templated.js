@@ -29,14 +29,14 @@
             // wake up the kids
             dfrds = this.wakeContained(context);
             // in case of failure
-            _fail = function () {
+            _fail = function (e) {
                 // notify failure signal
                 var retry = that.notify.apply(that, [true, 'wake_failed'].concat(Array.prototype.slice.call(arguments)));
                 if ( retry ) {
                     // if user asked to retry the wake again
                     that.wake();
                 } else {
-                    dfrd_wake.reject();
+                    dfrd_wake.reject(e);
                     // inform UI the process is done
                     that.publish('post_load', null, true);
                     that.sleep();
@@ -59,19 +59,12 @@
                 _success = function () {
                     // update the widget and get the template
                     uijet.when( that.update(), that.fetchTemplate() )
-                        .then(
-                            function () {
-                                // render it
-                                that.render().then(_activate, _fail);
-                            },
-                            // fail update/fetch template
-                            _fail
-                        );
+                        .then(that.render.bind(that), _fail)
+                        .then(_activate, _fail);
                 };
             }
-            _sequence = uijet.when.apply(uijet, dfrds);
             // if `sync` option is `true` then call success after all children are awake
-            _sequence.then(
+            uijet.when.apply(uijet, dfrds).then(
                 this.options.sync ? _success : _success(),
                 _fail
             );
@@ -159,14 +152,12 @@
         render          : function () {
             // generate the HTML
             var that = this, _super = this._super,
-                dfrd = uijet.Promise(),
-                _html, loadables, do_insert;
+                dfrd, _html, loadables, do_insert;
 
             if ( ! this.has_template ) {
                 // if `render` was called directly then add a convenience call to fetchTemplate
-                this.fetchTemplate().then(function () {
-                    that.render().then(dfrd.resolve, dfrd.reject);
-                }, dfrd.reject);
+                dfrd = this.fetchTemplate()
+                    .then(that.render.bind(that), uijet.Utils.rethrow);
             }
             else {
                 _html = this.generate();
@@ -193,7 +184,7 @@
                 // if `defer_images` option is `> 0` then defer the flow till after the loading of images
                 loadables = this.options.defer_images ? this.deferLoadables() : [{}];
                 // after all was loaded or if ignored deferring it
-                uijet.when.apply(uijet, loadables).then(function () {
+                dfrd = uijet.when.apply(uijet, loadables).then(function () {
                     _super.call(that);
                     // if this widget is `scrolled` then prepare its `$element`'s size
                     that.scrolled && that._prepareScrolledSize();
