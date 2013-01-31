@@ -60,8 +60,8 @@
                                     // publish `post_submit_data` event of this widget sandbox-wide
                                     this.publish('post_submit_data', response);
                                 },
-                                function () {
-                                    dfrd.reject();
+                                function (e) {
+                                    dfrd.reject(e);
                                     // emit the `submit_error` signal
                                     this.notify.apply(that, ['submit_error'].concat(Array.prototype.slice.call(arguments)));
                                 }
