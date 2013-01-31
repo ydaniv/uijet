@@ -148,7 +148,7 @@
                     // remove day of month
                     .replace(/\s[0-9]+,/, '')
             );
-            this._super.apply(this, arguments);
+            return this._super.apply(this, arguments);
         },
         next_month  : function () {
             if ( this.month === void 0 ) this.month = 0;
