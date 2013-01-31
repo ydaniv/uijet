@@ -160,6 +160,7 @@
                     .then(that.render.bind(that), uijet.Utils.rethrow);
             }
             else {
+                dfrd = uijet.Promise();
                 _html = this.generate();
     
                 // notify `pre_render` with the generate HTML
@@ -184,7 +185,7 @@
                 // if `defer_images` option is `> 0` then defer the flow till after the loading of images
                 loadables = this.options.defer_images ? this.deferLoadables() : [{}];
                 // after all was loaded or if ignored deferring it
-                dfrd = uijet.when(loadables).then(function () {
+                uijet.when(loadables).then(function () {
                     _super.call(that);
                     // if this widget is `scrolled` then prepare its `$element`'s size
                     that.scrolled && that._prepareScrolledSize();
