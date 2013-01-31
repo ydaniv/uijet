@@ -33,13 +33,9 @@
 
             return deferred;
         },
-        when        : function () {
-            return when.all(arguments);
-        },
-        isPromise   : function (obj) {
-            return when.isPromise(obj);
-        }
-    });
+        when        : when.all,
+        isPromise   : when.isPromise
+    }, uijet, when);
 
     return when;
 }));

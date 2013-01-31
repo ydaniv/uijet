@@ -897,19 +897,16 @@
                         this.init_queue = [{}];
                     }
 
-                    this.when.apply(this,
-                        // when finished all deferreds in init queue
-                        this.init_queue
-                        
-                    ).then(function () {
-                        // build and init declared widgets
-                        that.start(declared_widgets, true); 
-
-                        //when all declared widgets are initialized, set `uijet.initialized` to `true`
-                        that.initialized = true;
-                        // kick-start the GUI - unless ordered not to
-                        _options.dont_start || that.startup();
-                    });
+                    this.when( this.init_queue )
+                        .then(function () {
+                            // build and init declared widgets
+                            that.start(declared_widgets, true); 
+    
+                            //when all declared widgets are initialized, set `uijet.initialized` to `true`
+                            that.initialized = true;
+                            // kick-start the GUI - unless ordered not to
+                            _options.dont_start || that.startup();
+                        });
                 } else {
                     this.initialized = true;
                     // no options - kick-start
@@ -1241,7 +1238,7 @@
                     i+=1;
                 }
                 // return a promise of all `_widgets` started
-                return this.when.apply(this, dfrd_starts);
+                return this.when(dfrd_starts);
             }
             throw new Error('`widgets` must be either an Object or an Array. Instead got: ' + objToString.call(_widgets));
         },

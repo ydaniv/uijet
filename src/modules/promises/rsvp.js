@@ -33,8 +33,8 @@
         Promise     : function () {
             return new RSVP.Promise();
         },
-        when        : function () {
-            return root.all(arguments);
+        when        : function (promises) {
+            return root.all(promises);
         },
         isPromise   : function (obj) {
             return obj && uijet.Utils.isFunc(obj.then);

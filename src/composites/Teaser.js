@@ -122,7 +122,7 @@
             var that = this,
                 args = arguments,
                 _super = this._super;
-            return uijet.when.apply(uijet, this.dfrd_widgets).then(function () {
+            return uijet.when(this.dfrd_widgets).then(function () {
                 _super.apply(that, args);
                 that.last_index = 1;
                 that.slide_index = 1;

@@ -117,7 +117,7 @@
                 }
             }
 
-            uijet.when.apply(uijet, deferred).then(
+            uijet.when(deferred).then(
                 function () {
                     valid ? promise.resolve() : promise.reject(failed);
                 },

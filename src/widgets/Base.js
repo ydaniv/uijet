@@ -120,7 +120,7 @@
             // if this widget is to be wake up in sync with its children then let it call
             // success once they're done, or fail if any fails
             // otherwise call success
-            return uijet.when.apply(uijet, dfrds).then(
+            return uijet.when(dfrds).then(
                 this.options.sync ? success : success(),
                 function () {
                     that.notify(true, 'wake_failed', arguments);

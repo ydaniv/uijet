@@ -10,7 +10,9 @@
 }(this, function (uijet, $) {
     uijet.use({
         Promise     : $.Deferred,
-        when        : $.when,
+        when        : function (dfrds) {
+            return $.when.apply($, dfrds);
+        },
         isPromise   : function (obj) {
             return obj && uijet.Utils.isFunc(obj.then);
         }
