@@ -197,6 +197,11 @@
     function returnOf (arg, ctx) {
         return isFunc(arg) ? arg.apply(ctx || _window, arraySlice.call(arguments, 2)) : arg;
     }
+
+    function rethrow (err) {
+        if ( err.stack && err.message ) throw err;
+        else throw new Error(err);
+    }
     // ### Utils.extend
     // @sign: extend(target, source[, source1[, ...]])  
     // @sign: extend(bool, target, source[, source1[, ...]])  
@@ -421,9 +426,11 @@
                     }
                 }
             }
-            uijet.when(promise)
-                .then(callback.bind(this), error && error.bind(this));
-            return this;
+            return uijet.when(promise)
+                .then(
+                    callback.bind(this),
+                    error ? error.bind(this) : uijet.Utils.rethrow
+                );
         },
         // ### widget.listen
         // @sign: listen(topic, handler)  
@@ -1217,7 +1224,7 @@
         // Returns a promise that's resolved after all the `widgets` started successfully or
         // rejects this promise if there's an error.
         start               : function (_widgets, _skip_import) {
-            var i, dfrd, dfrd_starts, _c;
+            var i, dfrd_starts, _c;
             // if `_widgets` is an `Object`
             if ( isObj(_widgets) ) {
                 // do the starting
@@ -1226,7 +1233,6 @@
             // if it's an `Array`
             else if ( isArr(_widgets) ) {
                 i = 0;
-                dfrd = this.Promise();
                 dfrd_starts = [];
                 // loop over the widget declarations in it
                 while ( _c = _widgets[i] ) {
@@ -1234,10 +1240,8 @@
                     dfrd_starts[i] = this._start(_c, _skip_import);
                     i+=1;
                 }
-                // when all `_widgets` finished starting
-                this.when.apply(this, dfrd_starts).then(dfrd.resolve, dfrd.reject);
                 // return a promise of all `_widgets` started
-                return dfrd.promise();
+                return this.when.apply(this, dfrd_starts);
             }
             throw new Error('`widgets` must be either an Object or an Array. Instead got: ' + objToString.call(_widgets));
         },
@@ -1610,6 +1614,7 @@
             return context;
         }
     };
+
     // set a namespace on uijet for utility functions.
     uijet.Utils = {
         extend          : extend,
@@ -1621,6 +1626,7 @@
         isFunc          : isFunc,
         toArray         : toArray,
         returnOf        : returnOf,
+        rethrow         : rethrow,
         getStyle        : getStyle,
         getStyleProperty: getStyleProperty,
         getOffsetOf     : getOffsetOf,
@@ -1629,7 +1635,8 @@
         requestAnimFrame: function (f) { return requestAnimFrame(f); },
         cancelAnimFrame : function (id) { return cancelAnimFrame(id); }
     };
+
     uijet.Base = Base;
-    // return the module
+
     return uijet;
 }));
