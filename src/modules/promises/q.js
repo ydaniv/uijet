@@ -29,7 +29,8 @@
 
             return deferred;
         },
-        when        : Q.all,
+        when        : Q.when,
+        whenAll     : Q.all,
         isPromise   : Q.isPromise
     }, uijet, Q);
 

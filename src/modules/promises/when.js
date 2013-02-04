@@ -33,7 +33,8 @@
 
             return deferred;
         },
-        when        : when.all,
+        whenAll     : when.all,
+        when        : when,
         isPromise   : when.isPromise
     }, uijet, when);
 

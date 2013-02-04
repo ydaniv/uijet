@@ -33,7 +33,10 @@
         Promise     : function () {
             return new RSVP.Promise();
         },
-        when        : function (promises) {
+        when        : function (promise) {
+            return this.isPromise(promise) ? promise : this.Promise().resolve(promise);
+        },
+        whenAll     : function (promises) {
             return root.all(promises);
         },
         isPromise   : function (obj) {
