@@ -379,59 +379,6 @@
 
     Base.prototype = {
         constructor : Base,
-        // ### instance.defer
-        // @sign: defer(promise, [callback], [error])
-        // @return: this
-        //
-        // Takes a `promise` object as first argument and calls either `callback` or `error` depending on
-        // whether that promise was resolved or rejected.  
-        // If `callback` is a `Function` it is used as the `done` callback for `promise`.  
-        // If `callback` is a `String` and it is a name of a method of this instance, that method is used
-        // as the `done` callback.  
-        // If there's no such method, it is published as an app event, sending the data sent to `resolve/resolveWith`
-        // to the `publish` call as data.  
-        // If `error` is supplied it is treated like `callback`,
-        // only it is triggered as the callback for `fail` of `promise`.  
-        // All callbacks, success and failure, are run in the context of this instance.
-        defer           : function (promise, callback, error) {
-            var cb, err;
-            // if callback param is a `String`
-            if ( typeof callback == 'string' ) {
-                // check if it's a method of this instance
-                if ( isFunc(this[callback]) ) {
-                    callback = this[callback];
-                }
-                // otherwise just publish it as an app event
-                else {
-                    cb = callback;
-                    callback = function (arg) {
-                        uijet.publish(cb, arg);
-                    };
-                }
-            }
-            // if we got an error param
-            if ( error ) {
-                // if it's a `String`
-                if ( typeof error == 'string' ) {
-                    // check if it's a method of this instance
-                    if ( isFunc(this[error]) ) {
-                        error = this[error];
-                    }
-                    // otherwise publish it as an app event
-                    else {
-                        err = error;
-                        error = function (arg) {
-                            uijet.publish(err, arg);
-                        };
-                    }
-                }
-            }
-            return uijet.when(promise)
-                .then(
-                    callback.bind(this),
-                    error ? error.bind(this) : uijet.Utils.rethrow
-                );
-        },
         // ### widget.listen
         // @sign: listen(topic, handler)  
         // @return: this

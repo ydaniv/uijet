@@ -54,14 +54,6 @@
             this.notify(true, 'post_init');
             return this;
         },
-        defer           : function (promise, callback, error) {
-            // if we did not get a callback param
-            if ( ! callback ) {
-                // use wake as callback
-                callback = this.wake;
-            }
-            return this._super(promise, callback, error);
-        },
         // ### widget.register
         // @sign: register()  
         // @return: this
