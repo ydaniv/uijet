@@ -11,11 +11,12 @@
     uijet.use({
         Promise     : function () {
 
-            var deferred = Q.defer();
+            var deferred = Q.defer(),
+                promise = deferred.promise;
 
             // turn promise property to a callable
             deferred.promise = function () {
-                return this.promise;
+                return promise;
             };
 
             deferred.state = function () {
