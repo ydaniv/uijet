@@ -21,7 +21,7 @@
         baseRegister.call(this);
 
         if ( resource = this.options.resource ) {
-            this.resource = uijet.Resource(resource);
+            this.resource = new uijet.Resource(resource)();
         }
 
         return this;
