@@ -28,10 +28,8 @@
     };
 
     uijet.use({
-        data: {
-            Model       : Backbone.Model.extend.bind(Backbone.Model),
-            Collection  : Backbone.Collection.extend.bind(Backbone.Collection)
-        }
+        Model       : Backbone.Model.extend.bind(Backbone.Model),
+        Collection  : Backbone.Collection.extend.bind(Backbone.Collection)
     });
 
     return Backbone;
