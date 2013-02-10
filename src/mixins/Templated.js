@@ -152,15 +152,14 @@
         render          : function () {
             // generate the HTML
             var that = this, _super = this._super,
-                dfrd, _html, loadables, do_insert;
+                _html, loadables, do_insert;
 
             if ( ! this.has_template ) {
                 // if `render` was called directly then add a convenience call to fetchTemplate
-                dfrd = this.fetchTemplate()
+                return this.fetchTemplate()
                     .then(that.render.bind(that), uijet.Utils.rethrow);
             }
             else {
-                dfrd = uijet.Promise();
                 _html = this.generate();
     
                 // notify `pre_render` with the generate HTML
@@ -185,16 +184,14 @@
                 // if `defer_images` option is `> 0` then defer the flow till after the loading of images
                 loadables = this.options.defer_images ? this.deferLoadables() : [{}];
                 // after all was loaded or if ignored deferring it
-                uijet.whenAll(loadables).then(function () {
+                return uijet.whenAll(loadables).then(function () {
                     _super.call(that);
                     // if this widget is `scrolled` then prepare its `$element`'s size
                     that.scrolled && that._prepareScrolledSize();
                     that.notify(true, 'post_render');
                     uijet.publish('post_load');
-                    dfrd.resolve();
                 });
             }
-            return dfrd.promise();
         },
         // ### widget.deferLoadables
         // @sign: deferLoadables()  
