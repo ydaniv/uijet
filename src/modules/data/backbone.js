@@ -17,13 +17,19 @@
     uijet.Base.extend(Backbone.Events);
 
     uijet.BaseWidget.prototype.register = function () {
-        var resource, bindings, type, handler;
+        var default_events = { change : 'render' },
+            resource, bindings, type, handler;
         baseRegister.call(this);
 
         if ( resource = this.options.resource ) {
             this.resource = new uijet.Resource(resource)();
 
-            if ( bindings = this.options.data_events ) {
+            bindings = 'data_events' in this.options ?
+                            this.options.data_events :
+                            uijet.options.data_events ?
+                                uijet.options.data_events :
+                                default_events;
+            if ( bindings ) {
                 for ( type in bindings ) {
                     if ( typeof handler == 'string' ) {
                         handler = this[handler];
