@@ -71,7 +71,7 @@
     uijet.use({
         special_animations  : {
             fold: function (widget, is_in) {
-                var $el = widget.$element, _h;
+                var $el = widget.$wrapper || widget.$element, _h;
                 if ( is_in ) {
                     _h = widget._total_height || 0;
                     if ( ! _h ) {
