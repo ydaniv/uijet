@@ -90,7 +90,7 @@
                     this.animate($el, { height : _h + 'px' });
                 } else {
                     // fold
-                    this.animate($el, { height : 0 });
+                    this.animate($el, { height : '0px' });
                 }
                 return uijet.support.transitionend;
             }
