@@ -1,6 +1,5 @@
-/** @license BSD License (c) copyright Yehonatan Daniv */
-/*!
- * Copyright 2011-2013 Yehonatan Daniv under the terms of the BSD:
+/**!
+ * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  * 
  * @version: 0.0.1
@@ -85,10 +84,10 @@
         // check for touch support
         has_touch = !!(('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
         /**
-         * Checks if argument `obj` is an `Array`.
-         * Uses {@link Array.isArray} by default if it exists.
+         * Checks if given argument is an `Array`.
+         * Uses @see Array.isArray by default if it exists.
          * 
-         * @memberOf Utils
+         * @namespace Utils
          * @param obj {*} target object to check
          * @return is_array {Boolean} whether `obj` is an `Array`
          */
@@ -111,9 +110,9 @@
         };
     }
     /**
-     * Checks if argument `obj` is an `Object`.
+     * Checks if given argument is an `Object`.
      *
-     * @memberOf Utils
+     * @namespace Utils
      * @param obj {*} target object to check
      * @return {Boolean} whether `obj` is an `Object`
      */
@@ -123,7 +122,7 @@
     /**
      * Checks if argument `obj` is an `Function`.
      *
-     * @memberOf Utils
+     * @namespace Utils
      * @param obj {*} target object to check
      * @return {Boolean} whether `obj` is an `Function`
      */
@@ -131,9 +130,9 @@
         return typeof obj == 'function';
     }
     /**
-     * Checks if argument `obj` is an `Arguments` object.
+     * Checks if given argument is an `Arguments` object.
      *
-     * @memberOf Utils
+     * @namespace Utils
      * @param obj {*} target object to check
      * @return {Boolean} whether `obj` is an `Arguments` object
      */
@@ -142,9 +141,10 @@
     }
     /**
      * Utility for either wrapping an argument with an `Array` or return a copy of that array.
-     * If no arguments are supplied then return `undefined`.
+     * If an array-like object is given then converts it into a plain `Array`.
+     * If the argument supplied is `undefined` or no arguments are supplied then returns `undefined`.
      *
-     * @memberOf Utils
+     * @namespace Utils
      * @param obj {*} target object to check
      * @return copy {Array|undefined}
      */
@@ -170,8 +170,7 @@
      * If the element is a decendent of a window object that isn't this global namespace
      * you can supply that window object as fourth argument.
      *
-     * @memberOf Utils
-     * 
+     * @namespace Utils
      * @param el {HTMLElement} the element to use
      * @param [prop] {String|Array} the property to fetch or list of properties
      * @param [pseudo] {String} a name of a pseudo-element of that element to get its style
@@ -192,26 +191,43 @@
         }
         return style;
     }
-    // ### Utils.returnOf
+    /**
+     * Checks if given argument is `Function`, and either calls it with
+     * optional second argument as its context or simply returns it if it's not callable.
+     * 
+     * @namespace Utils
+     * @param arg {*} argument to check if callable and return its call or itself if not
+     * @param [ctx] {Object} context object to use for the call
+     * @returns {*} the argument or its `.call()`'s product.
+     */
     // Wrapper for checking if a variable is a function and return its returned value or else simply return it.
     function returnOf (arg, ctx) {
         return isFunc(arg) ? arg.apply(ctx || _window, arraySlice.call(arguments, 2)) : arg;
     }
 
+    /**
+     * Rethrows an `Error` object or throws a new one if the given argument is not an `Error`.
+     * 
+     * @namespace Utils
+     * @param [err] {Error|String}
+     */
     function rethrow (err) {
-        if ( err.stack && err.message ) throw err;
+        if ( err && err.stack && err.message ) throw err;
         else throw new Error(err);
     }
-    // ### Utils.extend
-    // @sign: extend(target, source[, source1[, ...]])  
-    // @sign: extend(bool, target, source[, source1[, ...]])  
-    // @return: target
-    //
-    // Deep (or shallow) copy objects (Arrays are shallow copied).  
-    // If first argument is `true` then deep copy.  
-    // First (or second of first is a Boolean) argument is the target.  
-    // All following arguments are source objects.  
-    // Objects are copied to target from left to right.
+
+    /**
+     * Shallow (or deep) copy `Object`s (`Array`s are shallow copied).
+     * If first argument is `true` then does a deep copy.
+     * First (or second if first is a `Boolean`) argument is the target object to copy to,
+     * all subsequent arguments are source objects to copy from.
+     * Objects are copied to target from left to right.
+     * 
+     * @namespace Utils
+     * @params target {Object|Boolean} the target object or `true` for deep copying
+     * @params [source...] {Object} the target object if deep copying or a source object(s)
+     * @returns target {Object} the target object
+     */
     function extend () {
         var args = arraySlice.call(arguments),
             target = args.shift(),
@@ -240,19 +256,23 @@
         return target;
     }
 
-    // ### Utils.extendProto
-    // @sign: extendProto(target, source[, source1[, ...]])  
-    // @return: target
-    //
-    // Deep copy (prototype) objects (Arrays are shalow copied).  
-    // First argument is the target.  
-    // All following arguments are source objects.  
-    // Objects are copied to target from left to right.  
-    // If a property of same name exists in both source and target:
-    //
-    // * object: deep copy.
-    // * function: target method is wrapped to support a super call to the source method.
-    // * else: shallow copy.
+    /**
+     * Deep copy (prototype) objects (Arrays are shallow copied), @see extend.
+     * If a property of same name exists in both source and target then if that property is:
+     * 
+     * * Object: deep copy.
+     * * Function: target method is wrapped to support a super call to the source method.
+     * * otherwise: shallow copy 
+     * 
+     * First argument is the target object to copy to,
+     * All subsequent arguments are source objects to copy from.
+     * Objects are copied to target from left to right.
+     * 
+     * @namespace Utils
+     * @params target {Object} the target object
+     * @params [source...] {Object} the source object(s)
+     * @returns target {Object} the target object
+     */
     function extendProto () {
         var args = arraySlice.call(arguments),
             target = args.shift(),
@@ -280,13 +300,16 @@
         return target;
     }
 
-    // ### Utils.extendProxy
-    // @sign: extendProxy(target, source, context)  
-    // @return: target
-    //
-    // Deep-copies `source`'s properties to `target` while making sure all methods
-    // are bound to `context`.
-    // Usually used for `uijet.use`.
+    /**
+     * Shallow copy properties while making sure functions are bound to `context`, @see extend.
+     * Usually used in `uijet.use()`.
+     * 
+     * @namespace Utils
+     * @param target {Object} target object to extend
+     * @param source {Object} source object to copy from
+     * @param [context] {Object} optional context object to bind `Function` properties to
+     * @returns target {Object} the target object
+     */
     function extendProxy (target, source, context) {
         var s;
         // loop over source's properties
@@ -308,6 +331,16 @@
         return target;
     }
 
+    /**
+     * Takes an object of data and a map of corresponding structure with `Function`s as values
+     * to process that data.
+     * Used by @see Visualizer and @see Serializer to process incoming/outgoing data
+     * between widgets, DOM and forms to server and storage.
+     * 
+     * @param data {Object} the data object to process
+     * @param processor {Object} a map of properties in `data` to functions that process their values
+     * @param widget {Widget} a widget instance
+     */
     function process (data, processor, widget) {
         var key, val;
         if ( isObj(processor) ) {
@@ -358,6 +391,14 @@
         }
     }
 
+    /**
+     * Copies `Function` own properties of one object to another,
+     * mainly for copying static methods between constructors.
+     * 
+     * @param source {Function} source constructor to take methods from
+     * @param target {Function} target constructor for copying the methods to 
+     * @returns target {Function} the target constructor
+     */
     function copyStaticMethods (source, target) {
         for ( var m in source )
             if ( source.hasOwnProperty(m) && isFunc(source[m]) )
@@ -365,34 +406,67 @@
         return target;
     }
 
+    /**
+     * Base class for components.
+     * Defines events and signals API and some OO extensions.
+     * 
+     * @class
+     * @constructor Base
+     */
     function Base () {}
 
+    /**
+     * Extends this class' prototype with another object's properties.
+     * 
+     * @param props {Object} properties to deep copy to the `prototype`
+     * @returns prototype {Object} the prototype of this class
+     */
     Base.extend = function (props) {
         return extend(true, this.prototype, props);
     };
+    /**
+     * Creates a new class that is composed of the given class or Object and inherits this class.
+     *
+     * @param child {Object|Function} the child class or Object that will be copied and used to inherit this class
+     * @returns derivative {Function} constructor of the new created class
+     */
     Base.derive = function derive (child) {
         return copyStaticMethods(this, Create(child, this, true));
     };
+    /**
+     * Creates a new class that is composed of this class and will inherit the given class or Object.
+     *
+     * @param parent {Object} the parent class or Object that will be copied and used as the parent of this class
+     * @returns inherited {Function} constructor of the new created class
+     */
     Base.inherit = function inherit (parent) {
         return copyStaticMethods(this, Create(this, parent, true));
     };
 
+    /**
+     * Public, inheritable methods of @see Base class.
+     * 
+     * @memberOf Base
+     */
     Base.prototype = {
         constructor : Base,
-        // ### widget.listen
-        // @sign: listen(topic, handler)  
-        // @return: this
-        //
-        // Sets a `handler` function on the given signal with `topic` as its type.
+        /**
+         * Registers a handler for the given type.
+         * 
+         * @param topic {String} the signal's type to register
+         * @param handler {Function} the signal's handler to register
+         * @returns this {Object}
+         */
         listen          : function (topic, handler) {
             this.signals_cache[topic] = handler;
             return this;
         },
-        // ### widget.unlisten
-        // @sign: unlisten(topic)  
-        // @return: this
-        //
-        // Removes a handler from the given signal with `topic` as its type.
+        /**
+         * Removes a handler of the given type.
+         *
+         * @param topic {String} the signal's type to remove
+         * @returns this {Object}
+         */
         unlisten        : function (topic) {
             if ( this.signals_cache[topic] ) {
                 delete this.signals[topic];
@@ -400,16 +474,16 @@
             }
             return this;
         },
-        // ### widget.notify
-        // @sign: notify([once, ] topic [, args])  
-        // @return: handler() OR undefined
-        //
-        // Triggers a signal's handler using `topic` as its type, and returns the result of that call.  
-        // If the first argument supplied to `notify` is a `Boolean` it is used to determine whether
-        // multiple calls can be made to this type during the same single call to a _lifecycle_ method.  
-        // All subsequent arguments are sent to the handler as parameters.  
-        // If the `topic` isn't found or it has fired and was set to fire once, then nothing happens
-        // and `undefined` is returned.
+        /**
+         * Triggers a signal of the given type and returns the result of its call.
+         * If no handler was registered for that signal returns `undefined`.
+         * If the first argument is a `Boolean` it is used to determine whether to make sure this
+         * signal is triggered *once* during current lifecycle stage.
+         * Base does not define a `_finally` method that is used to clean up these "once" states. 
+         * 
+         * @param topic {String|Boolean}
+         * @returns result {*} returned result of the triggered handler or `undefined`
+         */
         notify          : function (topic) {
             var handler, own_args_len = 1, args, once = false;
             // if first argument is a boolean it means it's a directive to whether this signal is triggered once
@@ -427,12 +501,17 @@
                 return handler.apply(this, args);
             }
         },
-        // ### widget.subscribe
-        // @sign: subscribe(topic, handler)  
-        // @return: this
-        //
-        // Subscribes a `handler` to a custom event with `topic` as type.  
-        // It's a hook into `uijet.subscribe` only the `handler` is bound to `this`.  
+        /**
+         * Registers the given handler under the given type `topic`.
+         * If `handler` is a `Function` it is bound to this instance as its context.
+         * If `handler` is a `String` it is used to find a method of same name to use as handler.
+         * If no method was found then a signal with same type's handler is used.
+         * If `handler` is a `String` and starts with a '+' then the `arguments` supplied to this handler will be passed to that method/signal handler.
+         * 
+         * @param topic {String} the type of the handler to register
+         * @param handler {Function|String} the handler to register or a name of a method of this instance or a signal's handler to use as handler
+         * @returns this {Object}
+         */
         //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
         subscribe       : function (topic, handler) {
             var that = this,
@@ -464,13 +543,14 @@
             uijet.subscribe(topic, _h, this);
             return this;
         },
-        // ### widget.unsubscribe
-        // @sign: unsubscribe(topic, [handler])  
-        // @return: this
-        //
-        // Unsubscribes a handler of a custom event with `topic` as type, if `handler` is supplied, OR
-        // all handlers under that `topic`.  
-        // It's a hook into `uijet.unsubscribe`.
+        /**
+         * Removes a handler from the registered events.
+         * If `handler` is not supplied then the handler that is currently registered for the given `topic` is used.
+         * 
+         * @param topic {String} the event type to remove from registry
+         * @param [handler] {Function} the handler to remove from the registry
+         * @returns this {Object}
+         */
         unsubscribe     : function (topic, handler) {
             if ( ! handler && this.app_events ) {
                 handler = this.app_events[topic];
@@ -478,16 +558,17 @@
             uijet.unsubscribe(topic, handler, this);
             return this;
         },
-        // ### widget.publish
-        // @sign: publish(topic, [data], [is_global])  
-        // @return: this
-        //
-        // Triggers a custom event with type `topic`, handing it `data` as an argument.  
-        // If `is_global` is NOT set to `true` then the topic is prefixed with `this.id` and a '.'.  
-        // It's a hook into `uijet.publish`.
-        publish         : function (topic, data, global) {
-            topic = global ? topic : this.id + '.' + topic;
-            uijet.publish(topic, data);
+        /**
+         * Triggers an event of given type `topic`.
+         * If `data` is supplied it is handed over to the handler as an argument.
+         * `topic` is always prefixed with `this.id + '.'`.
+         * 
+         * @param topic {String} the type of the event to trigger
+         * @param [data] {*} argument to pass to the event's handler as data
+         * @returns {*}
+         */
+        publish         : function (topic, data) {
+            uijet.publish(this.id + '.' + topic, data);
             return this;
         },
         // ### widget.visualize
