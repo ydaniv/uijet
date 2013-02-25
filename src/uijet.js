@@ -1,8 +1,8 @@
 /**!
+ * UIjet UI Framework
+ * @version: 0.0.2
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
- * 
- * @version: 0.0.1
  */
 ;(function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
@@ -30,8 +30,6 @@
         widgets = {},
         views = {},
         resources = {},
-        visualizers = {},
-        serializers = {},
         // caching pre-built predefined widgets' classes
         // `{ proto : widget_prototype, deps : dependencies }`
         widget_definitions = {},
@@ -332,66 +330,6 @@
     }
 
     /**
-     * Takes an object of data and a map of corresponding structure with `Function`s as values
-     * to process that data.
-     * Used by @see Visualizer and @see Serializer to process incoming/outgoing data
-     * between widgets, DOM and forms to server and storage.
-     * 
-     * @param data {Object} the data object to process
-     * @param processor {Object} a map of properties in `data` to functions that process their values
-     * @param widget {Widget} a widget instance
-     */
-    function process (data, processor, widget) {
-        var key, val;
-        if ( isObj(processor) ) {
-            for ( key in processor ) {
-                if ( isObj(processor[key]) ) {
-                    if ( isObj(data) && data.hasOwnProperty(key) ) {
-                        if ( isObj(data[key]) || isArr(data[key]) ) {
-                            process(data[key], processor[key], widget);
-                        }
-                        else {
-                            data[key] = processor[key];
-                        }
-                    }
-                    else if ( isArr(data) ) {
-                        data.forEach(function (item, i) {
-                            if ( isObj(item) || isArr(item) ) {
-                                process(item, processor[key], widget);
-                            }
-                            else {
-                                data[i] = processor[key];
-                            }
-                        });
-                    }
-                }
-                else {
-                    if ( isObj(data) ) {
-                        val = returnOf(processor[key], widget, data[key], data);
-                        if ( data.hasOwnProperty(key) || val !== void 0 ) {
-                            data[key] = val;
-                        }
-                    }
-                    else if ( isArr(data) ) {
-                        data.forEach(function (item, i) {
-                            var val;
-                            if ( isObj(item) ) {
-                                val = returnOf(processor[key], widget, item[key], item, i, data);
-                                if ( item.hasOwnProperty(key) || val !== void 0 ) {
-                                    item[key] = val
-                                }
-                            }
-                            else {
-                                data[i] = returnOf(processor[key], widget, data[i], item, i, data);
-                            }
-                        });
-                    }
-                }
-            }
-        }
-    }
-
-    /**
      * Copies `Function` own properties of one object to another,
      * mainly for copying static methods between constructors.
      * 
@@ -570,28 +508,6 @@
         publish         : function (topic, data) {
             uijet.publish(this.id + '.' + topic, data);
             return this;
-        },
-        // ### widget.visualize
-        // @sign: visualize(data)  
-        // @return: this
-        //
-        // Takes an `Object` or an `Array` and visualizes it using the visualizers configured in the `visualizers` option.
-        visualize       : function (data) {
-            if ( this.options.visualizers ) {
-                uijet.visualize(data, this.options.visualizers, this);
-            }
-            return this;
-        },
-        // ### widget.serialize
-        // @sign: serialize(data)  
-        // @return: this
-        //
-        // Takes an `Object` or an `Array` and serializes it using the serializers configured in the `serializers` option.
-        serialize       : function (data) {
-            if ( this.options.serializers ) {
-                uijet.serialize(data, this.options.serializers, this);
-            }
-            return this;
         }
     };
 
@@ -711,6 +627,7 @@
     }
     // ### uijet namespace
     uijet =  {
+        version             : '0.0.2',
         ROUTE_PREFIX        : '',
         ROUTE_SUFFIX        : '',
         init_queue          : [],
@@ -827,24 +744,6 @@
                 }
             }
             resources[name] = resource;
-            return this;
-        },
-        // ### uijet.Serializer
-        // @sign: Serializer(name, serializer)  
-        // @return: uijet
-        //
-        // Define an serializer to be used by uijet.
-        Serializer          : function (name, config) {
-            serializers[name] = config;
-            return this;
-        },
-        // ### uijet.Visualizer
-        // @sign: Visualizer(name, visualizer)  
-        // @return: uijet
-        //
-        // Define an visualizer to be used by uijet.
-        Visualizer          : function (name, config) {
-            visualizers[name] = config;
             return this;
         },
         // ### uijet.View
@@ -1389,49 +1288,6 @@
                         _w = widgets[_contained[l]].self;
                         _w.destroy();
                     }
-                }
-            }
-            return this;
-        },
-        // ## uijet.visualize
-        // @sign: visualize(data, visualizers, [widget])  
-        // @return: uijet
-        //
-        // Takes a `data` object and a name or a list of names of visualizers and uses those visualizers to process
-        // that data.  
-        // Takes an optional third argument `widget` - an instance object - that can be used as the context for evaluating
-        // the visualizers' callbacks.
-        visualize           : function (data, vizers, widget) {
-            this._process_data(visualizers, data, vizers, widget);
-            return this;
-        },
-        // ## uijet.serialize
-        // @sign: serialize(data, serializers, [widget])  
-        // @return: uijet
-        //
-        // Takes a `data` object and a name or a list of names of serializers and uses those serializers to process
-        // that data.
-        // Takes an optional third argument `widget` - an instance object - that can be used as the context for evaluating
-        // the serializers' callbacks.
-        serialize           : function (data, sezers, widget) {
-            this._process_data(serializers, data, sezers, widget);
-            return this;
-        },
-        // ## uijet._process_data
-        // @sign: visualize(data, names, [widget])  
-        // @return: uijet
-        //
-        // Takes a `data` object and a name or a list of names of visualizers and uses those visualizers to process
-        // this data.
-        _process_data       : function (processors, data, using, widget) {
-            var name;
-            using = toArray(using);
-            // loop over the processors' names we have to use
-            while ( name = using.shift() ) {
-                // if this processor exist in the given group
-                if ( name in processors ) {
-                    // process it
-                    process(data, processors[name], widget);
                 }
             }
             return this;

@@ -663,8 +663,6 @@
             if ( typeof success != 'undefined' && ! success ) {
                 return this;
             }
-            // pass data through visualizers
-            this.visualize(data);
             // set data
             this.data = this.data ? Utils.returnOf(this.options.extend_data, this, data) || data : data;
             this.has_data = true;

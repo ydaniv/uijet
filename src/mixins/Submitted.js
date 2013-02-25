@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet'], function (uijet) {
@@ -29,7 +28,6 @@
                 .then(
                     // passed validation
                     function () {
-                        that.serialize(_data);
                         // notify the `pre_submit` signal and allow user to set the context
                         context = that.notify('pre_submit');
                         // set the URL for submitting
