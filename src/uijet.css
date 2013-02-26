@@ -344,9 +344,6 @@ video:focus {
 .uijet_app.ipad {
     padding-top: 20px;
 }
-.uijet_bar.vertical {
-    height: 100%;
-}
 .uijet_button, .uijet_form button, .uijet_form input[type=submit], .uijet_form input[type=button] {
     display: inline-block;
     padding: 1em;
