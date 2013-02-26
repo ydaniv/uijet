@@ -267,34 +267,31 @@
         // @return: this
         //
         // Prepares the instance's element by setting attributes and styles.  
-        // In its basic format adds classes and calls `setStyle` and `position`.  
+        // In its basic format adds classes and calls `style` and `position`.  
         // This is usually called once in the init sequence.
         prepareElement  : function () {
             var classes = 'uijet_widget ' +
                 Utils.toArray(this.options.type_class).join(' ');
             this.options.extra_class && (classes += ' ' + this.options.extra_class);
             this.$element.addClass(classes);
-            this.setStyle()
+            this.style(Utils.returnOf(this.options.style, this))
                 .position();
             return this;
         },
-        // ### widget.setStyle
-        // @sign: setStyle()  
+        // ### widget.style
+        // @sign: style()  
         // @return: this
         //
         // Sets the instance element's style in case the `style` option is set.  
         // It makes sure the the element is wrapped first and sets those style properties on the `$wrapper`.  
         // It uses a `jQuery.css` like operation on the wrapper element with the option's value.  
         // This is usually called once in the init sequence.
-        setStyle        : function () {
-            var _style = this.options.style;
-            if ( _style ) {
-                if ( Utils.isFunc(_style) ) {
-                    _style = Utils.returnOf(_style, this);
-                }
-                this._wrap()
-                    .$wrapper.css(_style);
+        style           : function (style, value) {
+            if ( ! arguments.length || (value === void 0 && typeof style == 'string') || Utils.isArr(style) ) {
+                return Utils.getStyle(this.$wrapper[0], style);
             }
+            this._wrap()
+                .$wrapper.css(style, value);
             return this;
         },
         // # -NOT IMPLEMENTED-
