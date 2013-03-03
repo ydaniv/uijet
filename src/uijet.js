@@ -20,6 +20,7 @@
         Object = _window.Object,
         Array = _window.Array,
         BROWSER_PREFIX = { style : ['webkit', 'Moz', 'O', 'ms'], prop : ['WebKit', 'webkit', 'moz', 'o', 'ms'], matches: {} },
+        OPPOSITES = {top:'bottom',bottom:'top',right:'left',left:'right'},
         // native utilities caching
         objToString = Object.prototype.toString,
         arraySlice = Array.prototype.slice,
@@ -27,7 +28,7 @@
         mixins = {},
         adapters = {},
         declared_widgets = [],
-        widgets = {},
+        widgets = { __app__: { contained : []} },
         views = {},
         resources = {},
         // caching pre-built predefined widgets' classes
@@ -1090,6 +1091,10 @@
                 // keep walking
                 _parent = _parent.parentNode;
             }
+            if ( ! _current.container ) {
+                widgets.__app__.contained.push(_id);
+                _current.container = '__app__';
+            }
             return this;
         },
         // ## uijet.unregister
@@ -1291,6 +1296,39 @@
                 }
             }
             return this;
+        },
+        //TODO: add docs
+        position            : function (widget, exclude) {debugger;
+            var container_id = widgets[widget.id].container,
+                siblings = container_id ? widgets[container_id].contained || [] : [], sibling,
+                position = {position: 'absolute', top: 0, bottom: 0, right: 0, left: 0},
+                set_style = false,
+                processed_position, p, len;
+            if ( exclude && (len = exclude.length) ) {
+                while ( len-- ) {
+                    delete position[exclude[len]];
+                    delete position[OPPOSITES[exclude[len]]];
+                }
+                delete position.position;
+            }
+            else {
+                exclude = '';
+            }
+            for ( len = siblings.length; len--; ) {
+                sibling = siblings[len];
+                if ( sibling == widget.id ) continue;
+                if ( processed_position = widgets[sibling].self.processed_position ) {
+                    set_style = true;
+                    for ( p in processed_position ) {
+                        !~ exclude.indexOf(p) && (position[p] = processed_position[p]);
+                    }
+                }
+            }
+            if ( set_style ) {
+                if ( 'left' in position || 'right' in position ) position.width = 'auto';
+                if ( 'top' in position || 'bottom' in position ) position.height = 'auto';
+                widget.style(position);
+            }
         },
         // # -NOT IMPLEMENTED-
         // ## uijet.publish

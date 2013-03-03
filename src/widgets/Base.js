@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (root, factory) {
     // set the BaseWidget class with the returned constructor function
     if ( typeof define === 'function' && define.amd ) {
@@ -15,9 +14,9 @@
         // constructor for BaseWidget
         Widget = function () {},
         arraySlice = _window.Array.prototype.slice,
-        CONFIG_ATTR = 'data-uijet-config',
-        TYPE_ATTR = 'data-uijet-type',
-        SUBSTITUTE_REGEX = /\{([^\s\}]+)\}/g,
+        SUBSTITUTE_RE = /\{([^\s\}]+)\}/g,
+        POSITION_RE = /(fluid|top|bottom|right|left):?(\d+)?([^\d\|]+)?\|?(\d+)?([\D]+)?/,
+        DIMENSIONS = {top:'height',bottom:'height',right:'width',left:'width'},
         widget_id_index = 0;
 
     Widget.prototype = {
@@ -45,10 +44,10 @@
                 ._setCloak(true)
                 // parse the rest of the options, like events handling, etc.
                 .setInitOptions()
-                // wrapping, styling, positioning, etc.
-                .prepareElement()
                 // if there's sandbox registry any required
                 .register()
+                // wrapping, styling, positioning, etc.
+                .prepareElement()
                 // cache reference to initial markup that was coded into the element by user
                 ._saveOriginal();
             this.notify(true, 'post_init');
@@ -271,11 +270,13 @@
         // This is usually called once in the init sequence.
         prepareElement  : function () {
             var classes = 'uijet_widget ' +
-                Utils.toArray(this.options.type_class).join(' ');
+                    Utils.toArray(this.options.type_class).join(' '),
+                style = Utils.returnOf(this.options.style, this),
+                position = Utils.returnOf(this.options.position, this);
             this.options.extra_class && (classes += ' ' + this.options.extra_class);
             this.$element.addClass(classes);
-            this.style(Utils.returnOf(this.options.style, this))
-                .position();
+            position && this.position(position);
+            style && this.style(style);
             return this;
         },
         // ### widget.style
@@ -292,6 +293,91 @@
             }
             this._wrap()
                 .$wrapper.css(style, value);
+            return this;
+        },
+        // ### widget.position
+        // @sign: position()  
+        // @return: this
+        //
+        // Positions the instance's element if the `position` option is set.  
+        // Makes sure the element is wrapped first.  
+        // If this option is set then the 'fixed' class is added to the `$wrapper`.
+        // Then, if it's a `String` it is added as a class too.  
+        // If ='center' then `_center` is called as well.  
+        // If it's an `Object` then it's used as argument for a `jQuery.css` like call on the `$wrapper`.  
+        // This is usually called once in the init sequence, then the option is deleted
+        // to prevent unnecessary repeating of this call.
+        position        : function (position) {
+            var side, processed, style, has_fluid_side, exclude = [];
+            this._wrap();
+
+            if ( typeof position == 'string') {
+                if ( position == 'center') {
+                    this._center();
+                }
+                else if ( position == 'fluid' ) {
+                    uijet.position(this);
+                }
+                else {
+                    processed = {};
+                    style = {};
+                    position.split(' ').forEach(function (pair) {
+                        var match = POSITION_RE.exec(pair),
+                            side = match && match[1],
+                            number, size_unit, padding_unit;
+
+                        if ( side ) {
+                            if ( side === 'fluid' ) {
+                                has_fluid_side = true;
+                                return;
+                            }
+                            else {
+                                exclude.push(side);
+                                if ( match[3] == 'fluid' ) {
+                                    has_fluid_side = true;
+                                    return;
+                                }
+                            }
+
+                            size_unit = match[3] || 'px';
+                            padding_unit = match[5] || 'px';
+
+                            // add padding or stick to side
+                            number = +match[4];
+                            // cache the numeric part
+                            processed[side] = number || 0;
+                            // add the units part for styling
+                            number = number ?
+                                padding_unit ?
+                                    number + padding_unit :
+                                    number :
+                                0;
+                            style[side] = number;
+
+                            // process width/height if found
+                            number = +match[2];
+                            if ( number ) {
+                                // if using the same unit or no units (no need to calc)
+                                if ( padding_unit === size_unit ) {
+                                    // aggregate that dimension's length and add the unit
+                                    processed[side] = (processed[side] + number) + size_unit;
+                                }
+                                style[DIMENSIONS[side]] = number + (size_unit || 0);
+                            }
+                        }
+                    });
+                    // cache the parsed position for quick JIT positioning of fluid siblings
+                    this.processed_position = processed;
+                    style.position = 'absolute';
+                    // continue to next if statement passing the parsed `style` object
+                    position = style;
+                    // use `uijet.position` to position according to this widget's siblings
+                    has_fluid_side && uijet.position(this, exclude);
+                }
+            }
+            if ( Utils.isObj(position) ) {
+                this.style(position);
+            }
             return this;
         },
         // # -NOT IMPLEMENTED-
@@ -322,36 +408,6 @@
         // In its base form this it's just a placeholder.
         render          : function () {
             this.notify(true, 'pre_render');
-            return this;
-        },
-        // ### widget.position
-        // @sign: position()  
-        // @return: this
-        //
-        // Positions the instance's element if the `position` option is set.  
-        // Makes sure the element is wrapped first.  
-        // If this option is set then the 'fixed' class is added to the `$wrapper`.
-        // Then, if it's a `String` it is added as a class too.  
-        // If ='center' then `_center` is called as well.  
-        // If it's an `Object` then it's used as argument for a `jQuery.css` like call on the `$wrapper`.  
-        // This is usually called once in the init sequence, then the option is deleted
-        // to prevent unnecessary repeating of this call.
-        position        : function () {
-            var _pos = this.options.position;
-            if ( _pos ) {
-                this._wrap()
-                    .$wrapper.addClass('fixed');
-                if ( typeof _pos == 'string') {
-                    this.$wrapper.addClass( _pos);
-                    if ( _pos == 'center') {
-                        this._center();
-                    }
-                } else if ( Utils.isObj(_pos) ) {
-                    this.$wrapper.css(_pos);
-                }
-                // no need to position twice
-                delete this.options.position;
-            }
             return this;
         },
         // ### widget.appear
@@ -640,7 +696,7 @@
         // This method is used in `getDataUrl`.
         substitute      : function(template, obj) {
             var n = 0;
-            return template.replace(SUBSTITUTE_REGEX, function(match, key){
+            return template.replace(SUBSTITUTE_RE, function(match, key){
                 return Utils.isObj(obj) ? obj[key] : obj[n++];
             });
         },
