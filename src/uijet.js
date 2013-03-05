@@ -559,13 +559,15 @@
         return as_constructor ? F : new F();
     }
 
-    // ### Utils.getStyleProperty
-    // @sign: getStyleProperty(prop)  
-    // @return: prefixed_prop OR `null`
-    //
-    // Checks whether a CSS feature is supported in the browser
-    // and if so, return its supported name, i.e. with vendor prefix, if needed.
-    // Otherwise it returns `null` to indicate a lack of support.
+    /**
+     * Returns the specific name of a style property in the current user-agent, meaning, with the proper vendor
+     * prefix if needed and found.
+     * If there's no match, prefixed or not, returns `null`.
+     * Can also be used to check for the support of that CSS feature in current user-agent.
+     * 
+     * @param prop {String} an un-prefixed name of a style property
+     * @returns prefixed {String|null} the matching name of this property for the current user-agent
+     */
     function getStyleProperty (prop) {
         var style = _window.document.body.style,
             cases = BROWSER_PREFIX.style,
@@ -598,24 +600,27 @@
         }
         return null;
     }
-
-    // ### Utils.contains
-    // @sign: contains(child, parent)  
-    // @return: is_contained
-    //
-    // Checks if the `Element` `a` contains the `Element` `b`.
-    // __Note__: `Node.compareDocumentPosition()` is not supported on IE8-
+    /**
+     * Checks if the first element contains the second element.
+     * 
+     * __Note__: `Node.compareDocumentPosition()` is not supported on IE8
+     * 
+     * @param a {HTMLElement} container element
+     * @param b {HTMLElement} contained element
+     * @returns contained {boolean} whether container contains contained
+     */
     function contains (a, b) {
         return b && !!( a.compareDocumentPosition( b ) & 16 );
     }
-
-    // ### Utils.getOffsetOf
-    // @sign: getOffsetOf(child, parent)  
-    // @return: offset_obj
-    //
-    // Returns the offset in pixels of an element from another element as an `Object`
-    // with the keys `x` and `y` and its left and top values corresponding.  
-    // If `child` is not a descendant of `parent` then the values will both be 0.
+    /**
+     * Gets the offset of `child` relative to `parent`.
+     * 
+     * __note__: if `child` is not child of `parent` then the returned result will show only `0`s.
+     * 
+     * @param child {HTMLElement} child element to get its offset
+     * @param parent {HTMLElement} parent element to use as relative offset parent
+     * @returns offset {Object} an object with `x` and `y` keys and `Number`s as values representing offset in pixels.
+     */
     function getOffsetOf (child, parent) {
         var result = { x: 0, y: 0 };
         if ( ! child || ! parent || child === parent || ! contains(parent, child) ) return result;
@@ -626,7 +631,12 @@
         } while ( child = child.offsetParent );
         return result;
     }
-    // ### uijet namespace
+
+    /**
+     * The sandbox module.
+     * 
+     * @namespace uijet
+     */
     uijet =  {
         version             : '0.0.2',
         ROUTE_PREFIX        : '',
@@ -636,6 +646,7 @@
         support             : {
             touch           : has_touch,
             click_events    : has_touch ?
+                //TODO: replace with Zepto's gestures
                 { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
                 { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' },
             transform       : !!getStyleProperty('transform'),
