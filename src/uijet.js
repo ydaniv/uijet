@@ -544,7 +544,10 @@
         var is_proto_f = isFunc(proto),
             is_extends_f = isFunc(_extends),
             _proto = is_proto_f ? proto.prototype : proto;
-        function F () {}
+        function F () {
+            is_extends_f && _extends.call(this);
+            is_proto_f && proto.call(this);
+        }
         if ( typeof _extends == 'boolean' ) {
             as_constructor = _extends; _extends = null;
         }
@@ -555,7 +558,6 @@
             );
         }
         F.prototype = _proto;
-        _proto.constructor = is_proto_f ? proto : is_extends_f ? _extends : F;
         return as_constructor ? F : new F();
     }
 
