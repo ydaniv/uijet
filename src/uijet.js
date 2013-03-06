@@ -662,15 +662,18 @@
                 })[name] : name;
             }([getStyleProperty('transition')]))
         },
-        // ### uijet.use
-        // @sign: use(props, host, [context])  
-        // @return: uijet
-        //
-        // Adds functionality to another object `host` by extending it with the `props` object.  
-        // If `host` is not specified or `null` it's the `uijet` object by default.  
-        // If `context` object is specified the properties of `props` are coppied and all methods will be bound to it.
+        /**
+         * Adds functionality to a host object by copying the properties of `props` to the `host` object
+         * or `uijet` by default.
+         * If `context` is supplied then uses it to bind all the properties of `props` to it.
+         * 
+         * @param props {Object} the properties to mix-in to the host
+         * @param [host] {Object} host object to add these properties to, can be skipped by passing `null`
+         * @param [context] {Object} a context object to bind the mixed-in properties to
+         * @returns this {Object}
+         */
         use                 : function (props, host, context) {
-            // get the host object or use uijet
+            // get the host object or use `uijet`
             var _host = host || this, m;
             // if `context` is an `Object`
             if ( isObj(context) ) {
@@ -684,29 +687,32 @@
             }
             return this;
         },
-        // ### uijet.Widget
-        // @sign: Widget(name, props, [deps])  
-        // @return: uijet
-        //
-        // Define and generate a widget class.  
-        // `deps` is normalized into a list of names if it's a `String`.  
-        // If `deps` is an `Object` it has to contain a `mixins` and/or `widgets` keys
-        // which values will also be normalized into `Array`s.
-        Widget              : function (name, props, deps) {
+        /**
+         * Defines a new widget class.
+         * This class can later be instantiated in the UI or re-used as a dependency. 
+         * 
+         * @param type {String} this widget's type
+         * @param props {Object} properties defined by this widget
+         * @param [deps] {String|Array|Object} dependencies for this widget
+         * @returns this {Object}
+         */
+        Widget              : function (type, props, deps) {
             var _deps = normalizeDeps(deps);
             // Cache the widget's definition for JIT creation
-            this._define(name, props, _deps);
-            // finally create and cache the class
-            widget_classes[name] = _deps ?
+            this._define(type, props, _deps);
+            // create and cache the class
+            widget_classes[type] = _deps ?
                 this._generate(props, _deps.mixins, _deps.widgets) :
                 this._generate(props);
             return this;
         },
-        // ### uijet.Mixin
-        // @sign: Mixin(name, props)  
-        // @return: uijet
-        //
-        // Define a mixin to be used by uijet.
+        /**
+         * Gets a mixin by name or defines a new mixin for widgets.
+         * 
+         * @param name {String} name of the mixin to get/define
+         * @param [props] {Object} properties defined by this mixin
+         * @returns this|mixin {Object}
+         */
         Mixin               : function (name, props) {
             if ( arguments.length === 1 ) {
                 if ( name in mixins )
@@ -715,33 +721,40 @@
             mixins[name] = props;
             return this;
         },
-        // ### uijet.Adapter
-        // @sign: Adapter(name, [adapter])  
-        // @return: uijet
-        //
-        // Define an adapter to be used by uijet.  
-        // If `name` is omitted and the `adapter` object is given as first and only argument
-        // then it is used as a top level adapter which overrides all other widget instances.  
-        // Useful when you need to specify your custom methods that will override all others.  
-        // Internally uses the name `TopAdapter`.
-        Adapter             : function (name, adapter) {
+        /**
+         * Gets an adapter by name or defines a new adapter for widgets.
+         * If `props` is omitted and `name` is a:
+         * 
+         * * String: Gets an adapter by this name
+         * * Object: Defines a new adapter that will be added at the top of every widget and overrides everything else
+         * 
+         * @param name {String|Object} a name of an existing or a new adapter or properties for a `TopAdapter` definition
+         * @param [props] {Object} properties of the new adapter
+         * @returns this|adapter {Object}
+         */
+        Adapter             : function (name, props) {
             if ( arguments.length === 1 ) {
                 if ( typeof name == 'string' && name in adapters ) {
                     return adapters[name];
                 }
                 else if ( isObj(name) ) {
-                    adapter = name;
+                    props = name;
                     name = TOP_ADAPTER_NAME;
                 }
             }
-            adapters[name] = adapter;
+            adapters[name] = props;
             return this;
         },
-        // ### uijet.Factory
-        // @sign: Factory(name, declaration)  
-        // @return: uijet
-        //
-        // Define a factory of a widget declaration for re-use.
+        /**
+         * Defines a lazy factory of a widget declaration.
+         * This declaration can be re-used to prevent repetition of common properties.
+         * 
+         * __note__: the config of this declaration is copied to every generated instance so make sure you don't leak references.
+         * 
+         * @param name {String} identifier for this widget factory
+         * @param declaration {Object} a viable object for `uijet.declare()`
+         * @returns this {Object}
+         */
         Factory             : function (name, declaration) {
             widget_factories[name] = function (config) {
                 config && extend(true, declaration.config, config);
@@ -749,6 +762,13 @@
             };
             return this;
         },
+        /**
+         * Gets a resource by name or defines a new resource class.
+         * 
+         * @param name {String} identifier for that resource class
+         * @param [resource] {Object} this resource's prototype
+         * @returns this|resource {Object}
+         */
         Resource            : function (name, resource) {
             if ( arguments.length === 1 ) {
                 if ( name in resources ) {
