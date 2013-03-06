@@ -32,8 +32,6 @@
         // For now this options is mandatory, mainly because it must contain the `element` option.
         init            : function (options) {
             // ready...
-            this.signals_cache = {};
-            this.signals = Object.create(this.signals_cache);
             // FIGHT!
             this.setOptions(options)
                 // set .id

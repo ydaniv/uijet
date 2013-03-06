@@ -352,7 +352,10 @@
      * @class
      * @constructor Base
      */
-    function Base () {}
+    function Base () {
+        this.signals_cache = {};
+        this.signals = Object.create(this.signals_cache);
+    }
 
     /**
      * Extends this class' prototype with another object's properties.
