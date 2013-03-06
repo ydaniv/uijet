@@ -1,0 +1,6 @@
+{
+    "amd"   : {},
+    "volo"  : {
+        "baseDir"   : "src"
+    }
+}
