@@ -643,7 +643,7 @@
      * @namespace uijet
      */
     uijet =  {
-        version             : '0.0.2',
+        version             : '0.0.3',
         ROUTE_PREFIX        : '',
         ROUTE_SUFFIX        : '',
         init_queue          : [],
