@@ -762,8 +762,13 @@
          */
         Factory             : function (name, declaration) {
             widget_factories[name] = function (config) {
-                config && extend(true, declaration.config, config);
-                return declaration;
+                // create a copy of the original declaration
+                var copy = { type : declaration.type };
+                // make sure the original `config` object is copied
+                copy.config = extend({}, declaration.config);
+                // mix in additional configurations
+                config && extend(true, copy.config, config);
+                return copy;
             };
             return this;
         },
