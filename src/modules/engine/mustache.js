@@ -9,7 +9,7 @@
 }(this, function (uijet, Mustache) {
     uijet.use({
         generate: function () {
-            return this.template(this.data || this.context, this.partials);
+            return this.template(this.getData(), this.partials);
         },
         compile : function (template) {
             return Mustache.compile(template);

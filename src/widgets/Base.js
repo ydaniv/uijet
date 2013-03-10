@@ -698,6 +698,10 @@
                 return Utils.isObj(obj) ? obj[key] : obj[n++];
             });
         },
+        //TODO: add docs
+        getData         : function () {
+            return this.data || this.context;
+        },
         // ### widget.setData
         // @sign: setData(data)  
         // @return: this
