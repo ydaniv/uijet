@@ -1,6 +1,6 @@
 /**!
  * UIjet UI Framework
- * @version: 0.0.4
+ * @version 0.0.5
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
@@ -643,9 +643,9 @@
      * @namespace uijet
      */
     uijet =  {
-        version             : '0.0.4',
-        ROUTE_PREFIX        : '',
-        ROUTE_SUFFIX        : '',
+        version             : '0.0.5',
+        route_prefix        : '',
+        route_suffix        : '',
         init_queue          : [],
         // detected browser features
         support             : {
@@ -839,10 +839,10 @@
                 }
                 if ( _options ) {
                     if ( _options.route_prefix ) {
-                        this.ROUTE_PREFIX = _options.route_prefix;
+                        this.route_prefix = _options.route_prefix;
                     }
                     if ( _options.route_suffix ) {
-                        this.ROUTE_SUFFIX = _options.route_suffix;
+                        this.route_suffix = _options.route_suffix;
                     }
                     try {
                         this.setRoute();

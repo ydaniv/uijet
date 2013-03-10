@@ -122,10 +122,10 @@
                     // loop over them
                     for ( p in partials ) (function (name, path) {
                         // build the path to each partial
-                        var partial_path = uijet.options.TEMPLATES_PATH +
+                        var partial_path = uijet.options.templates_path +
                                             partials_dir +
                                             path + "." +
-                                            uijet.options.TEMPLATES_EXTENSION;
+                                            uijet.options.templates_extension;
                         // request that partial
                         requests.push(uijet.xhr(partial_path)
                             .then(function (partial) {
@@ -244,10 +244,10 @@
         // @return: template_url
         //
         // Gets the URL used by the widget to fetch its template.  
-        // Uses uijet's `TEMPLATE_PATH` option as a prefix, followed by either `template_name` option or the `id`
-        // property, with uijet's `TEMPLATES_EXTENSION` option as the extension suffix.
+        // Uses uijet's `templates_path` option as a prefix, followed by either `template_name` option or the `id`
+        // property, with uijet's `templates_extension` option as the extension suffix.
         getTemplateUrl  : function () {
-            return uijet.options.TEMPLATES_PATH + (this.options.template_name || this.id) + '.' + uijet.options.TEMPLATES_EXTENSION;
+            return uijet.options.templates_path + (this.options.template_name || this.id) + '.' + uijet.options.templates_extension;
         }
     });
 }));
