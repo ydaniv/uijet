@@ -1339,7 +1339,7 @@
             return this;
         },
         //TODO: add docs
-        position            : function (widget, exclude) {debugger;
+        position            : function (widget, exclude) {
             var container_id = widgets[widget.id].container,
                 siblings = container_id ? widgets[container_id].contained || [] : [], sibling,
                 position = {position: 'absolute', top: 0, bottom: 0, right: 0, left: 0},
