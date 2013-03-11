@@ -3,29 +3,12 @@
 <head>
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1"/>
-    <link rel="stylesheet" href="/static_path/css/uijet.css"/>
-    <link rel="stylesheet" href="/static_path/css/my_app.css"/>
-    <script>
-        var require = {
-            baseUrl : '/static_path/js/',
-            paths   : {
-                uijet_dir   : 'lib/uijet',
-                plugins     : 'lib',
-                jquery      : 'lib/zepto',
-                eventbox    : 'lib/eventbox'
-            },
-            callback: function () {
-                requirejs(['my_app'], function (myApp) {
-                    myApp.init();
-                });
-            }
-        };
-    </script>
-    <script src="/static_path/js/require.js"></script>
-    <title></title>
+    <link rel="stylesheet" href="/path_to/myapp.css"/>
+    <script src="/path_to/require.js" data-main="/path_to/main"></script>
+    <title>My App</title>
 </head>
 <body>
-<div id="main">
+<div id="main" class="uijet_app">
     <!-- Application markup -->
 </div>
 </body>

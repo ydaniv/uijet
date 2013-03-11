@@ -84,8 +84,8 @@
         // Sets the `route` option and then registers it with the router via the sandbox.  
         // If `route` argument is supplied as a `String` it uses it.  
         // If `route` option is already set then unset it and set again with the new.  
-        // If no arguments and `route` option is not set then it is set to `this.id`, prefixed by `uijet.ROUTE_PREFIX`
-        // and suffixed by `uijet.ROUTE_SUFFIX`.  
+        // If no arguments and `route` option is not set then it is set to `this.id`, prefixed by `uijet.route_prefix`
+        // and suffixed by `uijet.route_suffix`.  
         //TODO: implement replacing a current route and setting another route (alias) separately
         setRoute        : function (route) {
             var _ops_route = this.options.route;
@@ -98,7 +98,7 @@
                 }
             } else if ( ! _ops_route ) {
                 // create a default route and store it
-                this.options.route = uijet.ROUTE_PREFIX + this.id + uijet.ROUTE_SUFFIX;
+                this.options.route = uijet.route_prefix + this.id + uijet.route_suffix;
             }
             uijet.setRoute(this);
             return this;

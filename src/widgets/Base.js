@@ -32,8 +32,6 @@
         // For now this options is mandatory, mainly because it must contain the `element` option.
         init            : function (options) {
             // ready...
-            this.signals_cache = {};
-            this.signals = Object.create(this.signals_cache);
             // FIGHT!
             this.setOptions(options)
                 // set .id
@@ -699,6 +697,10 @@
             return template.replace(SUBSTITUTE_RE, function(match, key){
                 return Utils.isObj(obj) ? obj[key] : obj[n++];
             });
+        },
+        //TODO: add docs
+        getData         : function () {
+            return this.data || this.context;
         },
         // ### widget.setData
         // @sign: setData(data)  
