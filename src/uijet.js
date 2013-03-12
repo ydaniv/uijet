@@ -790,19 +790,20 @@
             return this;
         },
         /**
-         * Gets a resource by name or defines a new resource class.
-         * 
+         * Gets a resource instance by name or registers a new resource instance.
+         *
          * @param name {String} identifier for that resource class
-         * @param [resource] {Object} this resource's prototype
-         * @returns this|resource {Object}
+         * @param [resource] {Object} this resource's constructor
+         * @param [initial] {Object|Array} initial data for the generated instance
+         * @returns this|resource_instance {Object}
          */
-        Resource            : function (name, resource) {
+        Resource            : function (name, resource, initial) {
             if ( arguments.length === 1 ) {
                 if ( name in resources ) {
                     return resources[name];
                 }
             }
-            resources[name] = resource;
+            resources[name] = uijet.newResource(resource);
             return this;
         },
         // ### uijet.View
