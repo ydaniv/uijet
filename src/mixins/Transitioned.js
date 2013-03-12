@@ -17,7 +17,7 @@
             // make visible
             this._setCloak(false);
             // start transitioning in
-            uijet.when( this.transit('in') ).then(function () {
+            this.transit('in').then(function () {
                 _super.call(that);
             });
             return this;
@@ -52,19 +52,20 @@
         // Performs the transition by hooking into `uijet.transit`.
         transit         : function (dir) {
             // create a promise object
-            this.dfrd_transit = uijet.Promise();
+            this.transit_dfrd = uijet.Promise();
+            this.transit_promise = this.transit_dfrd.promise();
             // do transition
             uijet.transit(this, dir, function () {
                 // get this widget off the top
                 (this.$wrapper || this.$element).removeClass('z_top');
-                this.dfrd_transit.resolve();
+                this.transit_dfrd.resolve();
                 this.notify(true, 'post_transit', dir);
             });
-            return this.dfrd_transit.promise();
+            return this.transit_promise;
         },
         sleepContained  : function () {
             var _super = this._super, that = this;
-            this.dfrd_transit.then(function () {
+            this.transit_promise.then(function () {
                 _super.call(that);
             }, uijet.Utils.rethrow);
             return this;

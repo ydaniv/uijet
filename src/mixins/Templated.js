@@ -19,7 +19,7 @@
         wake            : function (context) {
             var that = this,
                 old_context = this.context, do_render,
-                dfrd_wake, dfrds, _fail, _success, _activate, _sequence;
+                dfrd_wake, promises, _fail, _success, _activate;
             // setting `context`
             this._setContext(context);
             // notify the `pre_wake` signal with the `old_context`
@@ -27,7 +27,7 @@
             // create a new deferred wake promise object
             dfrd_wake = uijet.Promise();
             // wake up the kids
-            dfrds = this.wakeContained(context);
+            promises = this.wakeContained(context);
             // in case of failure
             _fail = function (e) {
                 // notify failure signal
@@ -64,7 +64,7 @@
                 };
             }
             // if `sync` option is `true` then call success after all children are awake
-            uijet.whenAll(dfrds).then(
+            uijet.whenAll(promises).then(
                 this.options.sync ? _success : _success(),
                 _fail
             );
@@ -83,11 +83,9 @@
         fetchTemplate   : function (refresh) {
             // if we don't have the template cached or was asked to refresh it
             if ( ! this.has_template || refresh ) {
-                if ( this._template_promise ) {
-                    return this._template_promise.promise();
-                }
+                if ( this._template_promise ) return this._template_promise;
                 // create a promise for retrieving all templates
-                var dfrd = uijet.Promise(),
+                var dfrd = uijet.Promise(), promise = dfrd.promise(),
                     // a stack for all template GET requests
                     requests = [],
                     // an error callback handler
@@ -104,9 +102,9 @@
                     partials_dir = this.options.partials_dir || '',
                     that = this, p;
                 // make sure we clear the promise from cache once it's done or failed
-                dfrd.then(clear_promise, clear_promise);
+                promise.then(clear_promise, clear_promise);
                 // cache the fetching promise
-                this._template_promise = dfrd;
+                this._template_promise = promise;
                 // if asked to refresh then invalidate cache
                 refresh && (this.has_template = false);
                 // request the template
@@ -144,7 +142,7 @@
                     // resolve the entire fetching promise
                     dfrd.resolve();
                 });
-                return dfrd.promise();
+                return promise;
             }
             // like a fulfilled promise
             return this;
@@ -207,11 +205,12 @@
                 _html = this.$element[0].innerHTML,
                 // match all URLs of images in the HTML
                 _inlines = _html.match(/url\(['"]?([\w\/:\.-]*)['"]?\)/),
-                src, _img, dfrd, deferreds = [],
+                promises = [],
                 _inlines_resolver = function () {
                     _img = null;
                     dfrd.resolve();
-                };
+                },
+                src, _img, dfrd;
             if ( _inlines && _inlines[1] ) {
                 _img = new Image();
                 dfrd = uijet.Promise();
@@ -223,7 +222,7 @@
                     _img.onload = _inlines_resolver;
                     _img.onerror = _inlines_resolver;
                 }
-                deferreds.push(dfrd.promise());
+                promises.push(dfrd.promise());
             }
             $imgs.each(function (i, img) {
                 var _dfrd, _resolver;
@@ -235,9 +234,9 @@
                     img.onload = _resolver;
                     img.onerror = _resolver;
                 }
-                deferreds.push(_dfrd.promise());
+                promises.push(_dfrd.promise());
             });
-            return deferreds.length ? deferreds : [{}];
+            return promises.length ? promises : [{}];
         },
         // ### widget.getTemplateUrl
         // @sign: getTemplateUrl()  

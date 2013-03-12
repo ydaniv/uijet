@@ -183,7 +183,7 @@
                     // and a single drag end to the cancel handler
                     .one(END_E, cancelHandler);
                 // if passed delay test activate draggable state
-                dfrd.then(function () {
+                dfrd.promise().then(function () {
                     var continue_drag, moveHandler, endHandler;
                     that.dragging = true;
                     // remove the delay test handlers

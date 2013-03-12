@@ -94,10 +94,10 @@
             var validators = this.options.validators,
                 returnOf = uijet.Utils.returnOf,
                 isObj = uijet.Utils.isObj,
-                promise = uijet.Promise(),
+                deferred = uijet.Promise(),
                 valid = true,
                 failed = {},
-                deferred = [],
+                promises = [],
                 v, check;
 
             if ( isObj(validators) ) {
@@ -109,23 +109,23 @@
                             failed[v] = _data[v];
                         }
                         else if ( uijet.isPromise(check) ) {
-                            deferred.push(check);
+                            promises.push(check);
                         }
                     }
                 }
             }
 
-            uijet.whenAll(deferred).then(
+            uijet.whenAll(promises).then(
                 function () {
-                    valid ? promise.resolve() : promise.reject(failed);
+                    valid ? deferred.resolve() : deferred.reject(failed);
                 },
                 function (failure) {
                     failed['__deferred'] = failure;
-                    promise.reject(failed);
+                    deferred.reject(failed);
                 }
             );
 
-            return promise.promise();
+            return deferred.promise();
         },
         // ### widget.getSubmitUrl
         // @sign: getSubmitUrl([submit_context])  
