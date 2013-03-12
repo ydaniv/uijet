@@ -44,7 +44,7 @@
         TOP_ADAPTER_NAME = 'TopAdapter',
         /**
          * Searches for a prefixed name of `name` inside `obj`.
-         * 
+         *
          * @param name {String} name to search for
          * @param obj {Object} the source object search in
          * @return prefixed {String|null}
@@ -85,7 +85,7 @@
         /**
          * Checks if given argument is an `Array`.
          * Uses @see Array.isArray by default if it exists.
-         * 
+         *
          * @namespace Utils
          * @param obj {*} target object to check
          * @return is_array {Boolean} whether `obj` is an `Array`
@@ -193,20 +193,19 @@
     /**
      * Checks if given argument is `Function`, and either calls it with
      * optional second argument as its context or simply returns it if it's not callable.
-     * 
+     *
      * @namespace Utils
      * @param arg {*} argument to check if callable and return its call or itself if not
      * @param [ctx] {Object} context object to use for the call
      * @returns {*} the argument or its `.call()`'s product.
      */
-    // Wrapper for checking if a variable is a function and return its returned value or else simply return it.
     function returnOf (arg, ctx) {
         return isFunc(arg) ? arg.apply(ctx || _window, arraySlice.call(arguments, 2)) : arg;
     }
 
     /**
      * Rethrows an `Error` object or throws a new one if the given argument is not an `Error`.
-     * 
+     *
      * @namespace Utils
      * @param [err] {Error|String}
      */
@@ -221,7 +220,7 @@
      * First (or second if first is a `Boolean`) argument is the target object to copy to,
      * all subsequent arguments are source objects to copy from.
      * Objects are copied to target from left to right.
-     * 
+     *
      * @namespace Utils
      * @params target {Object|Boolean} the target object or `true` for deep copying
      * @params [source...] {Object} the target object if deep copying or a source object(s)
@@ -258,15 +257,15 @@
     /**
      * Deep copy (prototype) objects (Arrays are shallow copied), @see extend.
      * If a property of same name exists in both source and target then if that property is:
-     * 
+     *
      * * Object: deep copy.
      * * Function: target method is wrapped to support a super call to the source method.
-     * * otherwise: shallow copy 
-     * 
+     * * otherwise: shallow copy
+     *
      * First argument is the target object to copy to,
      * All subsequent arguments are source objects to copy from.
      * Objects are copied to target from left to right.
-     * 
+     *
      * @namespace Utils
      * @params target {Object} the target object
      * @params [source...] {Object} the source object(s)
@@ -302,7 +301,7 @@
     /**
      * Shallow copy properties while making sure functions are bound to `context`, @see extend.
      * Usually used in `uijet.use()`.
-     * 
+     *
      * @namespace Utils
      * @param target {Object} target object to extend
      * @param source {Object} source object to copy from
@@ -333,9 +332,9 @@
     /**
      * Copies `Function` own properties of one object to another,
      * mainly for copying static methods between constructors.
-     * 
+     *
      * @param source {Function} source constructor to take methods from
-     * @param target {Function} target constructor for copying the methods to 
+     * @param target {Function} target constructor for copying the methods to
      * @returns target {Function} the target constructor
      */
     function copyStaticMethods (source, target) {
@@ -348,7 +347,7 @@
     /**
      * Base class for components.
      * Defines events and signals API and some OO extensions.
-     * 
+     *
      * @class
      * @constructor Base
      */
@@ -359,7 +358,7 @@
 
     /**
      * Extends this class' prototype with another object's properties.
-     * 
+     *
      * @param props {Object} properties to deep copy to the `prototype`
      * @returns prototype {Object} the prototype of this class
      */
@@ -387,14 +386,14 @@
 
     /**
      * Public, inheritable methods of @see Base class.
-     * 
+     *
      * @memberOf Base
      */
     Base.prototype = {
         constructor : Base,
         /**
          * Registers a handler for the given type.
-         * 
+         *
          * @param topic {String} the signal's type to register
          * @param handler {Function} the signal's handler to register
          * @returns this {Object}
@@ -421,8 +420,8 @@
          * If no handler was registered for that signal returns `undefined`.
          * If the first argument is a `Boolean` it is used to determine whether to make sure this
          * signal is triggered *once* during current lifecycle stage.
-         * Base does not define a `_finally` method that is used to clean up these "once" states. 
-         * 
+         * Base does not define a `_finally` method that is used to clean up these "once" states.
+         *
          * @param topic {String|Boolean}
          * @returns result {*} returned result of the triggered handler or `undefined`
          */
@@ -449,7 +448,7 @@
          * If `handler` is a `String` it is used to find a method of same name to use as handler.
          * If no method was found then a signal with same type's handler is used.
          * If `handler` is a `String` and starts with a '+' then the `arguments` supplied to this handler will be passed to that method/signal handler.
-         * 
+         *
          * @param topic {String} the type of the handler to register
          * @param handler {Function|String} the handler to register or a name of a method of this instance or a signal's handler to use as handler
          * @returns this {Object}
@@ -488,7 +487,7 @@
         /**
          * Removes a handler from the registered events.
          * If `handler` is not supplied then the handler that is currently registered for the given `topic` is used.
-         * 
+         *
          * @param topic {String} the event type to remove from registry
          * @param [handler] {Function} the handler to remove from the registry
          * @returns this {Object}
@@ -504,7 +503,7 @@
          * Triggers an event of given type `topic`.
          * If `data` is supplied it is handed over to the handler as an argument.
          * `topic` is always prefixed with `this.id + '.'`.
-         * 
+         *
          * @param topic {String} the type of the event to trigger
          * @param [data] {*} argument to pass to the event's handler as data
          * @returns {*}
@@ -569,7 +568,7 @@
      * prefix if needed and found.
      * If there's no match, prefixed or not, returns `null`.
      * Can also be used to check for the support of that CSS feature in current user-agent.
-     * 
+     *
      * @param prop {String} an un-prefixed name of a style property
      * @returns prefixed {String|null} the matching name of this property for the current user-agent
      */
@@ -607,9 +606,9 @@
     }
     /**
      * Checks if the first element contains the second element.
-     * 
+     *
      * __Note__: `Node.compareDocumentPosition()` is not supported on IE8
-     * 
+     *
      * @param a {HTMLElement} container element
      * @param b {HTMLElement} contained element
      * @returns contained {boolean} whether container contains contained
@@ -619,9 +618,9 @@
     }
     /**
      * Gets the offset of `child` relative to `parent`.
-     * 
+     *
      * __note__: if `child` is not child of `parent` then the returned result will show only `0`s.
-     * 
+     *
      * @param child {HTMLElement} child element to get its offset
      * @param parent {HTMLElement} parent element to use as relative offset parent
      * @returns offset {Object} an object with `x` and `y` keys and `Number`s as values representing offset in pixels.
@@ -639,7 +638,7 @@
 
     /**
      * The sandbox module.
-     * 
+     *
      * @namespace uijet
      */
     uijet =  {
@@ -652,8 +651,8 @@
             touch           : has_touch,
             click_events    : has_touch ?
                 //TODO: replace with Zepto's gestures
-                { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
-                { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' },
+            { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
+            { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' },
             transform       : !!getStyleProperty('transform'),
             transition      : !!getStyleProperty('transition'),
             '3d'            : !!getStyleProperty('perspective'),
@@ -671,7 +670,7 @@
          * Adds functionality to a host object by copying the properties of `props` to the `host` object
          * or `uijet` by default.
          * If `context` is supplied then uses it to bind all the properties of `props` to it.
-         * 
+         *
          * @param props {Object} the properties to mix-in to the host
          * @param [host] {Object} host object to add these properties to, can be skipped by passing `null`
          * @param [context] {Object} a context object to bind the mixed-in properties to
@@ -694,8 +693,8 @@
         },
         /**
          * Defines a new widget class.
-         * This class can later be instantiated in the UI or re-used as a dependency. 
-         * 
+         * This class can later be instantiated in the UI or re-used as a dependency.
+         *
          * @param type {String} this widget's type
          * @param props {Object} properties defined by this widget
          * @param [deps] {String|Array|Object} dependencies for this widget
@@ -713,7 +712,7 @@
         },
         /**
          * Gets a mixin by name or defines a new mixin for widgets.
-         * 
+         *
          * @param name {String} name of the mixin to get/define
          * @param [props] {Object} properties defined by this mixin
          * @returns this|mixin {Object}
@@ -729,10 +728,10 @@
         /**
          * Gets an adapter by name or defines a new adapter for widgets.
          * If `props` is omitted and `name` is a:
-         * 
+         *
          * * String: Gets an adapter by this name
          * * Object: Defines a new adapter that will be added at the top of every widget and overrides everything else
-         * 
+         *
          * @param name {String|Object} a name of an existing or a new adapter or properties for a `TopAdapter` definition
          * @param [props] {Object} properties of the new adapter
          * @returns this|adapter {Object}
@@ -753,9 +752,9 @@
         /**
          * Defines a lazy factory of a widget declaration.
          * This declaration can be re-used to prevent repetition of common properties.
-         * 
+         *
          * __note__: the config of this declaration is copied to every generated instance so make sure you don't leak references.
-         * 
+         *
          * @param name {String} identifier for this widget factory
          * @param declaration {Object} a viable object for `uijet.declare()`
          * @returns this {Object}
@@ -869,8 +868,8 @@
                     this.when( this.init_queue )
                         .then(function () {
                             // build and init declared widgets
-                            that.start(declared_widgets, true); 
-    
+                            that.start(declared_widgets, true);
+
                             //when all declared widgets are initialized, set `uijet.initialized` to `true`
                             that.initialized = true;
                             // kick-start the GUI - unless ordered not to
@@ -1343,6 +1342,7 @@
             var container_id = widgets[widget.id].container,
                 siblings = container_id ? widgets[container_id].contained || [] : [], sibling,
                 position = {position: 'absolute', top: 0, bottom: 0, right: 0, left: 0},
+                processed = {},
                 set_style = false,
                 processed_position, p, len;
             if ( exclude && (len = exclude.length) ) {
@@ -1361,9 +1361,22 @@
                 if ( processed_position = widgets[sibling].self.processed_position ) {
                     set_style = true;
                     for ( p in processed_position ) {
-                        !~ exclude.indexOf(p) && (position[p] = processed_position[p]);
+                        if ( !~ exclude.indexOf(p) ) {
+                            if ( p in processed ) {
+                                if ( processed[p].unit === processed_position[p].unit &&
+                                    processed[p].size < processed_position[p].size ) {
+                                    processed[p].size = processed_position[p].size;
+                                }
+                            }
+                            else {
+                                processed[p] = processed_position[p];
+                            }
+                        }
                     }
                 }
+            }
+            for ( p in processed ) {
+                position[p] = processed[p].size + processed[p].unit;
             }
             if ( set_style ) {
                 if ( 'left' in position || 'right' in position ) position.width = 'auto';

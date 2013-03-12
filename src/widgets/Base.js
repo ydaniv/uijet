@@ -322,7 +322,7 @@
                     position.split(' ').forEach(function (pair) {
                         var match = POSITION_RE.exec(pair),
                             side = match && match[1],
-                            number, size_unit, padding_unit;
+                            number, size_unit, margin_unit;
 
                         if ( side ) {
                             if ( side === 'fluid' ) {
@@ -338,16 +338,16 @@
                             }
 
                             size_unit = match[3] || 'px';
-                            padding_unit = match[5] || 'px';
+                            margin_unit = match[5] || 'px';
 
                             // add padding or stick to side
                             number = +match[4];
                             // cache the numeric part
-                            processed[side] = number || 0;
+                            processed[side] = { size : number || 0 };
                             // add the units part for styling
                             number = number ?
-                                padding_unit ?
-                                    number + padding_unit :
+                                margin_unit ?
+                                    number + margin_unit :
                                     number :
                                 0;
                             style[side] = number;
@@ -356,9 +356,10 @@
                             number = +match[2];
                             if ( number ) {
                                 // if using the same unit or no units (no need to calc)
-                                if ( padding_unit === size_unit ) {
+                                if ( margin_unit === size_unit ) {
                                     // aggregate that dimension's length and add the unit
-                                    processed[side] = (processed[side] + number) + size_unit;
+                                    processed[side].size = (processed[side].size + number);
+                                    processed[side].unit = size_unit;
                                 }
                                 style[DIMENSIONS[side]] = number + (size_unit || 0);
                             }
