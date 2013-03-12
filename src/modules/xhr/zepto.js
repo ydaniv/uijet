@@ -33,7 +33,7 @@
             // if we have a configuration `Object` then use it
             if ( uijet.Utils.isObj(options) ) {
                 // move success/error/complete callbacks to the deferred object's callbacks
-                deferred.then(options.success, options.error);
+                promise.then(options.success, options.error);
                 if ( options.complete ) {
                     promise.always(options.complete);
                 }
