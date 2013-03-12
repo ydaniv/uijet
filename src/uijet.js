@@ -513,8 +513,19 @@
             return this;
         }
     };
-
-    //TODO: add docs
+    /**
+     * Nomalizes a name of a dependency or an array names of dependencies into a standard dependencies object
+     * with `mixins` and `widgets` keys containing `Array`s of names of mixins and widgets.
+     *
+     * According to the `deps` argument it behaves as follows:
+     * * `String` it's assumed to be a name of a mixin.
+     * * `Array` it's assumed to be a list of mixin names.
+     * * `Object` it's assumed to be a standard dependencies object and its `mixins` and `widgets` keys are normalized to `Array`s.
+     * * Falsy arguments yield `undefined`
+     *
+     * @param deps {*} the dependencies to normalize into an `Object`
+     * @return deps {Object|undefined} a standard dependencies object
+     */
     function normalizeDeps (deps) {
         if ( ! deps ) return;
         var deps_as_obj = isObj(deps),
@@ -531,6 +542,13 @@
         return _deps;
     }
 
+    /**
+     *
+     * @param proto {Function|Object}
+     * @param _extends {Function|Object} a constructor of a class to inherit from or simply an object to add to the prototype chain
+     * @param as_constructor {Boolean} whether to return the new created class' constructor or instance
+     * @return created {Function|Object} the new created class constructor or its instance
+     */
     // ### Utils.Create
     // @sign: Create(self, [extended], [as_constructor])  
     // @sign: Create(self, [as_constructor]])  
