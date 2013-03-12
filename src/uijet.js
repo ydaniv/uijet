@@ -985,8 +985,9 @@
         // Performs the work for the `uijet.start` API call.
         _start              : function (_widget, _skip_import) {
             var that = this,
-                _factory = _widget.factory, _type, _config,
-                _dfrd_start, _self, mixedin_type, _w, l, _d, _c, _mixins, _adapters, _widgets;
+                _factory = _widget.factory,
+                _config = _widget.config,
+                _type, _dfrd_start, _self, mixedin_type, _w, l, _d, _c, _mixins, _adapters, _widgets;
             if ( _factory && widget_factories[_factory] ) {
                 _widget = widget_factories[_factory](_config);
             }
