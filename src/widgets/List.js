@@ -45,13 +45,13 @@
                 // if `item_element` option is set get the closest `item_selector` stating from current element  
                 // if not then use current element
                 var $this = item_element ? uijet.$(this).closest(item_selector) : uijet.$(this),
-                    // allow user to bail from selection
-                    _continue = that.notify('pre_select', $this, e);
+                    // allow user to set the selected event's data or bail from selection
+                    transfer = that.notify('pre_select', $this, e);
                 // if `pre_select signal` is handled and returns specifically `false` then prevent it
-                if( _continue !== false ) {
+                if( transfer !== false ) {
                     // make sure this element still exists inside the DOM
                     if ( $this && $this.length && $this.parent().length ) {
-                        that.publish('selected', $this)
+                        that.publish('selected', transfer === void 0 ? $this : transfer)
                         // cache & paint selection
                             .setSelected($this);
                     }
