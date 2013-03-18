@@ -45,9 +45,9 @@
         /**
          * Searches for a prefixed name of `name` inside `obj`.
          *
-         * @param name {String} name to search for
-         * @param obj {Object} the source object search in
-         * @return prefixed {String|null}
+         * @param {String} name           - name to search for
+         * @param {Object} obj            - the source object search in
+         * @return {String|null} prefixed - the prefixed property or `null` if not found
          */
         getPrefixed = function (name, obj) {
             var cases = BROWSER_PREFIX.prop,
@@ -86,9 +86,8 @@
          * Checks if given argument is an `Array`.
          * Uses @see Array.isArray by default if it exists.
          *
-         * @namespace Utils
-         * @param obj {*} target object to check
-         * @return is_array {Boolean} whether `obj` is an `Array`
+         * @param {*} obj             - target object to check
+         * @return {Boolean} is_array - whether `obj` is an `Array`
          */
         isArr = (function () {
             return Array.isArray || function (obj) {
@@ -98,7 +97,7 @@
         // the sandbox
         uijet;
 
-    // a simple shim of Function.bind to support Safari 5- (mostly old iOS) and Android <4
+    /** a simple shim of Function.bind to support Safari 5- (mostly old iOS) and Android <4 */
     if ( typeof Function.bind != 'function' ) {
         Function.prototype.bind = function (scope) {
             var _self = this,
@@ -111,9 +110,8 @@
     /**
      * Checks if given argument is an `Object`.
      *
-     * @namespace Utils
-     * @param obj {*} target object to check
-     * @return {Boolean} whether `obj` is an `Object`
+     * @param {*} obj              - target object to check
+     * @return {Boolean} is_object - whether `obj` is an `Object`
      */
     function isObj (obj) {
         return objToString.call(obj) == '[object Object]';
@@ -121,9 +119,8 @@
     /**
      * Checks if argument `obj` is an `Function`.
      *
-     * @namespace Utils
-     * @param obj {*} target object to check
-     * @return {Boolean} whether `obj` is an `Function`
+     * @param {*} obj                - target object to check
+     * @return {Boolean} is_function - whether `obj` is an `Function`
      */
     function isFunc (obj) {
         return typeof obj == 'function';
@@ -131,9 +128,8 @@
     /**
      * Checks if given argument is an `Arguments` object.
      *
-     * @namespace Utils
-     * @param obj {*} target object to check
-     * @return {Boolean} whether `obj` is an `Arguments` object
+     * @param {*} obj                 - target object to check
+     * @return {Boolean} is_arguments - whether `obj` is an `Arguments` object
      */
     function isArgs (obj) {
         return objToString.call(obj) == '[object Arguments]';
@@ -143,9 +139,8 @@
      * If an array-like object is given then converts it into a plain `Array`.
      * If the argument supplied is `undefined` or no arguments are supplied then returns `undefined`.
      *
-     * @namespace Utils
-     * @param obj {*} target object to check
-     * @return copy {Array|undefined}
+     * @param {*} obj                 - target object to check
+     * @return {Array|undefined} copy - an `Array` copy of `obj` or `undefined`
      */
     function toArray (obj) {
         var arr;
@@ -169,12 +164,11 @@
      * If the element is a decendent of a window object that isn't this global namespace
      * you can supply that window object as fourth argument.
      *
-     * @namespace Utils
-     * @param el {HTMLElement} the element to use
-     * @param [prop] {String|Array} the property to fetch or list of properties
-     * @param [pseudo] {String} a name of a pseudo-element of that element to get its style
-     * @param [win] {HTMLWindowElement} The window element that element `el` belongs to
-     * @return style {String|Array|CSSStyleDeclaration} the read-only style object of that element or the value[s] of that property[ies]
+     * @param {HTMLElement} el                          - the element to use
+     * @param {String|Array} [prop]                     - the property to fetch or list of properties
+     * @param {String} [pseudo]                         - a name of a pseudo-element of that element to get its style
+     * @param {HTMLWindowElement} [win]                 - The window element that element `el` belongs to
+     * @return {String|Array|CSSStyleDeclaration} style - the read-only style object of that element or the value[s] of that property[ies]
      */
     function getStyle (el, prop, pseudo, win) {
         var style = (win || _window).getComputedStyle(el, pseudo || null), res, p;
@@ -194,10 +188,9 @@
      * Checks if given argument is `Function`, and either calls it with
      * optional second argument as its context or simply returns it if it's not callable.
      *
-     * @namespace Utils
-     * @param arg {*} argument to check if callable and return its call or itself if not
-     * @param [ctx] {Object} context object to use for the call
-     * @returns {*} the argument or its `.call()`'s product.
+     * @param {*} arg        - argument to check if callable and return its call or itself if not
+     * @param {Object} [ctx] - context object to use for the call
+     * @returns {*} product  - the argument or its `.call()`'s product.
      */
     function returnOf (arg, ctx) {
         return isFunc(arg) ? arg.apply(ctx || _window, arraySlice.call(arguments, 2)) : arg;
@@ -206,8 +199,8 @@
     /**
      * Rethrows an `Error` object or throws a new one if the given argument is not an `Error`.
      *
-     * @namespace Utils
-     * @param [err] {Error|String}
+     * @param {Error|String} [err] - an error to rethrow or a `String` message to use for throwing a new `Error`.
+     * @throws {*}
      */
     function rethrow (err) {
         if ( err && err.stack && err.message ) throw err;
@@ -221,10 +214,9 @@
      * all subsequent arguments are source objects to copy from.
      * Objects are copied to target from left to right.
      *
-     * @namespace Utils
-     * @params target {Object|Boolean} the target object or `true` for deep copying
-     * @params [source...] {Object} the target object if deep copying or a source object(s)
-     * @returns target {Object} the target object
+     * @params {Object|Boolean} target - the target object or `true` for deep copying
+     * @params {Object} [source...]    - the target object if deep copying or a source object(s)
+     * @returns {Object} target        - the target object
      */
     function extend () {
         var args = arraySlice.call(arguments),
@@ -266,10 +258,9 @@
      * All subsequent arguments are source objects to copy from.
      * Objects are copied to target from left to right.
      *
-     * @namespace Utils
-     * @params target {Object} the target object
-     * @params [source...] {Object} the source object(s)
-     * @returns target {Object} the target object
+     * @params {Object} target      - the target object
+     * @params {Object} [source...] - the source object(s)
+     * @returns {Object} target     - the target object
      */
     function extendProto () {
         var args = arraySlice.call(arguments),
@@ -302,11 +293,10 @@
      * Shallow copy properties while making sure functions are bound to `context`, @see extend.
      * Usually used in `uijet.use()`.
      *
-     * @namespace Utils
-     * @param target {Object} target object to extend
-     * @param source {Object} source object to copy from
-     * @param [context] {Object} optional context object to bind `Function` properties to
-     * @returns target {Object} the target object
+     * @param {Object} target    - target object to extend
+     * @param {Object} source    - source object to copy from
+     * @param {Object} [context] - optional context object to bind `Function` properties to
+     * @returns {Object} target  - the target object
      */
     function extendProxy (target, source, context) {
         var s;
@@ -333,9 +323,9 @@
      * Copies `Function` own properties of one object to another,
      * mainly for copying static methods between constructors.
      *
-     * @param source {Function} source constructor to take methods from
-     * @param target {Function} target constructor for copying the methods to
-     * @returns target {Function} the target constructor
+     * @param {Function} source   - source constructor to take methods from
+     * @param {Function} target   - target constructor for copying the methods to
+     * @returns {Function} target - the target constructor
      */
     function copyStaticMethods (source, target) {
         for ( var m in source )
@@ -348,8 +338,8 @@
      * Base class for components.
      * Defines events and signals API and some OO extensions.
      *
-     * @class
-     * @constructor Base
+     * @constructor
+     * @class Base
      */
     function Base () {
         this.signals_cache = {};
@@ -359,6 +349,7 @@
     /**
      * Extends this class' prototype with another object's properties.
      *
+     * @static
      * @param props {Object} properties to deep copy to the `prototype`
      * @returns prototype {Object} the prototype of this class
      */
@@ -368,6 +359,7 @@
     /**
      * Creates a new class that is composed of the given class or Object and inherits this class.
      *
+     * @static
      * @param child {Object|Function} the child class or Object that will be copied and used to inherit this class
      * @returns derivative {Function} constructor of the new created class
      */
@@ -377,6 +369,7 @@
     /**
      * Creates a new class that is composed of this class and will inherit the given class or Object.
      *
+     * @static
      * @param parent {Object} the parent class or Object that will be copied and used as the parent of this class
      * @returns inherited {Function} constructor of the new created class
      */
@@ -386,8 +379,6 @@
 
     /**
      * Public, inheritable methods of @see Base class.
-     *
-     * @memberOf Base
      */
     Base.prototype = {
         constructor : Base,
@@ -543,23 +534,15 @@
     }
 
     /**
-     *
+     * Creates a new class from a given prototype object or a constructor function,
+     * optionally inheriting the prototype/constructor `_extends`.
+     * Returns an instance of the created class or, optionally, the class itself.
+     * 
      * @param proto {Function|Object}
      * @param _extends {Function|Object} a constructor of a class to inherit from or simply an object to add to the prototype chain
      * @param as_constructor {Boolean} whether to return the new created class' constructor or instance
      * @return created {Function|Object} the new created class constructor or its instance
      */
-    // ### Utils.Create
-    // @sign: Create(self, [extended], [as_constructor])  
-    // @sign: Create(self, [as_constructor]])  
-    // @return: self (class or instance)
-    //
-    // Create a class with `self` specifying the top level and `extended` the rest of the prototype chain
-    // using `extendProto` for inheritance.  
-    // Both `self` and `extended` can be either an `Object` or a constructor function.  
-    // In the latter the `prototype` property is used.  
-    // If `as_constructor` flag is passed and `true` the returned result is a constructor function,  
-    // otherwise it is an instance of that class.
     function Create (proto, _extends, as_constructor) {
         var is_proto_f = isFunc(proto),
             is_extends_f = isFunc(_extends),
@@ -664,13 +647,22 @@
         route_prefix        : '',
         route_suffix        : '',
         init_queue          : [],
-        // detected browser features
+        /**
+         * Detected browser features
+         * 
+         * @namespace support
+         */
         support             : {
             touch           : has_touch,
+            /**
+             * Detected browser features
+             *
+             * @namespace click_events
+             */
             click_events    : has_touch ?
                 //TODO: replace with Zepto's gestures
-            { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
-            { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' },
+                { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
+                { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' },
             transform       : !!getStyleProperty('transform'),
             transition      : !!getStyleProperty('transition'),
             '3d'            : !!getStyleProperty('perspective'),
@@ -806,11 +798,13 @@
             resources[name] = uijet.newResource(resource);
             return this;
         },
-        // ### uijet.View
-        // @sign: View(name, widget)  
-        // @return: uijet
-        //
-        // Define and register a view to be used by uijet.
+        /**
+         * Registers a view in the uijet sandbox.
+         * 
+         * @param {String} name   - identifier for this view
+         * @param {Object} widget - View widget instance to register as a view
+         * @returns {*} this
+         */
         View                : function (name, widget) {
             views[name] = widget;
             return this;
@@ -1302,6 +1296,11 @@
             });
             this.$element[0].style.visibility = 'visible';
             this.publish('startup');
+
+            if ( ! views.length && ! this.options.dont_wake ) {
+                this.wakeContained('__app__');
+            }
+
             return this;
         },
         // ## uijet.wakeContained
