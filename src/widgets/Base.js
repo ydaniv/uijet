@@ -17,6 +17,7 @@
         SUBSTITUTE_RE = /\{([^\s\}]+)\}/g,
         POSITION_RE = /(fluid|top|bottom|right|left):?(\d+)?([^\d\|]+)?\|?(\d+)?([\D]+)?/,
         DIMENSIONS = {top:'height',bottom:'height',right:'width',left:'width'},
+        DEFAULT_TYPE_CLASS = '_uijet_widget_',
         widget_id_index = 0;
 
     Widget.prototype = {
@@ -579,10 +580,12 @@
         // Set this instance's options.  
         // This is usually called once in the init sequence.
         setOptions      : function (options) {
-            this.options = Utils.extend(true, {}, this.options, options);
+            this.options = Utils.extend(true, {}, this.options || {}, options);
             // make sure DOM events maps are initialized
             ! this.options.dom_events && (this.options.dom_events = {});
             ! this._bound_dom_events && (this._bound_dom_events = {});
+            // make sure we have a `type_class` option set
+            ! this.options.type_class && (this.options.type_class = DEFAULT_TYPE_CLASS);
             return this;
         },
         // ### widget.setInitOptions
