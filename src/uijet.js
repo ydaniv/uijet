@@ -421,12 +421,10 @@
             // if first argument is a boolean it means it's a directive to whether this signal is triggered once
             if ( typeof topic == 'boolean' && topic ) {
                 once = true;
-                handler = this.signals[arguments[1]];
+                topic = arguments[1];
                 own_args_len += 1;
-            } else {
-                handler = this.signals[topic];
             }
-            if ( handler ) {
+            if ( handler = this.signals[topic] ) {
                 args = arraySlice.call(arguments, own_args_len);
                 // if `once` is `true` then mask this signal's handler with `null`
                 once && (this.signals[topic] = null);
@@ -438,7 +436,7 @@
          * If `handler` is a `Function` it is bound to this instance as its context.
          * If `handler` is a `String` it is used to find a method of same name to use as handler.
          * If no method was found then a signal with same type's handler is used.
-         * If `handler` is a `String` and starts with a '+' then the `arguments` supplied to this handler will be passed to that method/signal handler.
+         * If `handler` is a `String` and ends with a '+' then the `arguments` supplied to this handler will be passed to that method/signal handler.
          *
          * @param topic {String} the type of the handler to register
          * @param handler {Function|String} the handler to register or a name of a method of this instance or a signal's handler to use as handler
@@ -878,7 +876,7 @@
                         this.init_queue = [{}];
                     }
 
-                    this.when( this.init_queue )
+                    this.whenAll( this.init_queue )
                         .then(function () {
                             // build and init declared widgets
                             that.start(declared_widgets, true);
@@ -1224,7 +1222,7 @@
                     i+=1;
                 }
                 // return a promise of all `_widgets` started
-                return this.when(dfrd_starts);
+                return this.whenAll(dfrd_starts);
             }
             throw new Error('`widgets` must be either an Object or an Array. Instead got: ' + objToString.call(_widgets));
         },
