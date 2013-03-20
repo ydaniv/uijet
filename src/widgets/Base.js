@@ -84,7 +84,7 @@
         wake            : function (context) {
             var that = this,
                 old_context = this.context,
-                dfrds, success, _sequence;
+                dfrds, success;
             // if already awake and there's no new data coming in then no reason to continue
             if ( this.awake && ! context ) return this._finally();
             // set the the context data if any
@@ -863,6 +863,9 @@
         _setContext     : function (context) {
             var k;
             if ( context ) {
+                if ( context === true || context.refresh ) {
+                    this.awake = false;
+                }
                 if ( this.options.clone_context ) {
                     this.context = {};
                     for ( k in context )
