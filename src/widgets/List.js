@@ -51,7 +51,7 @@
                 if( transfer !== false ) {
                     // make sure this element still exists inside the DOM
                     if ( $this && $this.length && $this.parent().length ) {
-                        that.publish('selected', transfer === void 0 ? $this : transfer)
+                        that.publish('selected', transfer === void 0 ? that.getTransfer($this) : transfer)
                         // cache & paint selection
                             .setSelected($this);
                     }
@@ -103,6 +103,9 @@
                 this.$selected.toggleClass('selected', toggle);
             }
             return this;
+        },
+        getTransfer     : function ($selected) {
+            return $selected;
         },
         _clearRendered  : function () {
             delete this.$selected;
