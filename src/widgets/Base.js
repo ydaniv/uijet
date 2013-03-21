@@ -323,7 +323,7 @@
                     position.split(' ').forEach(function (pair) {
                         var match = POSITION_RE.exec(pair),
                             side = match && match[1],
-                            number, size_unit, margin_unit;
+                            number, size_unit, margin_unit, has_margin;
 
                         if ( side ) {
                             if ( side === 'fluid' ) {
@@ -351,13 +351,15 @@
                                     number + margin_unit :
                                     number :
                                 0;
+                            has_margin = !!number;
                             style[side] = number;
 
                             // process width/height if found
                             number = +match[2];
                             if ( number ) {
-                                // if using the same unit or no units (no need to calc)
-                                if ( margin_unit === size_unit ) {
+                                // if no margin or using the same unit (no need to calc)
+                                //TODO: add option to use CSS calc
+                                if ( ! has_margin || margin_unit === size_unit ) {
                                     // aggregate that dimension's length and add the unit
                                     processed[side].size = (processed[side].size + number);
                                     processed[side].unit = size_unit;
