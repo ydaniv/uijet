@@ -214,7 +214,8 @@
         // If the XHR failed then the `update_error` event is fired and, unless aborted, the promise is rejected.
         // Takes an optional argument `request_data` to be used as data for the request.
         update          : function (request_data) {
-            var dfrd_update, _success, url;
+            var that = this,
+                dfrd_update, _success, url;
             // if there's no URL set or the pre_update signal returned `false` then bail
             if ( ! this.options.data_url || this.notify('pre_update') === false ) return {};
             // since this may take more then a few miliseconds then publish the `pre_load` event to allow the UI
@@ -224,23 +225,22 @@
             dfrd_update = uijet.Promise();
             _success = function (response) {
                 // set `this.data`
-                this.setData(response);
-                if ( ! this.has_data ) {
+                that.setData(response);
+                if ( ! that.has_data ) {
                     // if `setData` failed, reject the promise
                     dfrd_update.reject(response);
                 } else {
                     // if success notify a signal that we have `data` and resolve the promise
-                    this.notify('post_fetch_data', response);
-                    dfrd_update.resolve();
+                    that.notify('post_fetch_data', response);
+                    dfrd_update.resolve(response);
                 }
             };
-            url = this.getDataUrl();
+            url = this.getDataUrl(this.context);
             // send XHR to update
             uijet.xhr(url.path, Utils.extend({
                 type    : url.method,
                 data    : request_data,
-                dataType: 'json',
-                context : this
+                dataType: 'json'
             }, this.options.update_config))
             .then(
                 _success,
@@ -250,10 +250,10 @@
                     // * __success flow__: success callback is sent as the last argument to the signal's handler
                     // * __failrue flow__: in case anything but `false` is returned from `update_error` handler
                     // * __or abort it all__: return `false` from `update_error` handler
-                    var _abort_fail = this.notify.apply(this, ['update_error'].concat(arraySlice.call(arguments), _success.bind(this)));
+                    var _abort_fail = that.notify.apply(that, ['update_error'].concat(arraySlice.call(arguments), _success.bind(that)));
                     if ( _abort_fail !== false ) {
                         // publish an error has occurred with `update`
-                        this.publish('update_error', response, true);
+                        that.publish('update_error', response, true);
                         dfrd_update.reject(response);
                     }
                 }
@@ -718,12 +718,11 @@
         setData         : function (data) {
             // notify the `process_data` signal
             var success = this.notify('process_data', data);
-            // if `success` is returned and falsy then bail out
-            if ( typeof success != 'undefined' && ! success ) {
+            // if `success` is returned and it's `false` then bail out
+            if ( success === false ) {
                 return this;
             }
-            // set data
-            this.data = this.data ? Utils.returnOf(this.options.extend_data, this, data) || data : data;
+            this.data = success === void 0 ? data : success;
             this.has_data = true;
             return this;
         },
