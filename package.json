@@ -1,4 +1,23 @@
 {
     "amd"   : {},
-    "volo"  : {}
+    "volo"  : {},
+    "name": "uijet",
+    "version": "0.0.8",
+    "main": [
+        "src/adapters",
+        "src/composites",
+        "src/mixins",
+        "src/modules",
+        "src/themes",
+        "src/widgets",
+        "src/uijet.css",
+        "src/uijet.js"
+    ],
+    "ignore": [
+        "boilerplates",
+        ".gitignore",
+        "LICENSE",
+        "README.md",
+        "volofile"
+    ]
 }
