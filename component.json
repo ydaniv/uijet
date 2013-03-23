@@ -16,6 +16,7 @@
         ".gitignore",
         "LICENSE",
         "README.md",
-        "volofile"
+        "volofile",
+        "package.json"
     ]
 }

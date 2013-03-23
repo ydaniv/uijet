@@ -21,6 +21,7 @@ module.exports = {
         v.rm('.gitignore');
         v.rm('LICENSE');
         v.rm('README.md');
+        v.rm('component.json');
         v.rm('volofile');
 
         d.resolve();
