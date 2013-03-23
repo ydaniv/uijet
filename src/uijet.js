@@ -1,6 +1,6 @@
 /**!
  * UIjet UI Framework
- * @version 0.0.8
+ * @version 0.0.9
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
@@ -641,7 +641,7 @@
      * @namespace uijet
      */
     uijet =  {
-        version             : '0.0.8',
+        version             : '0.0.9',
         route_prefix        : '',
         route_suffix        : '',
         init_queue          : [],
@@ -658,7 +658,7 @@
              * @namespace click_events
              */
             click_events    : has_touch ?
-                //TODO: replace with Zepto's gestures
+                // can be replaced with gestures (like 'tap') if handled by other library
                 { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
                 { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' },
             transform       : !!getStyleProperty('transform'),
