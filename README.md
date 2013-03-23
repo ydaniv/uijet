@@ -27,8 +27,7 @@ Assuming you'll place all the 3rd party code under 'lib', it should look like:
     var require = {
         baseUrl : '/static_path/js/',
         paths   : {
-            uijet_dir   : 'lib/uijet',
-            plugins     : 'lib'
+            uijet_dir   : 'lib/uijet'
             // rest of needed paths ...
         },
         callback: function () {
@@ -46,8 +45,7 @@ Assuming you'll place all the 3rd party code under 'lib', it should look like:
 Where the *must have* configurations are:
 
 * **baseUrl** - pointing to your base static folder.
-* **paths** - you need to config the paths to *uijet_dir* - where your UIjet library is located - and 
-third party plugins, which are adapted into UIjet, need to be configured under the *plugins* key.
+* **paths** - you need to config the paths to *uijet_dir* - where your UIjet library is located.
 * **callback** - to make sure everything works correctly it's best to use this option and put you initialization
 call in there.
 

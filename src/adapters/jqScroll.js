@@ -1,6 +1,6 @@
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'plugins/jqscroll'], function (uijet) {
+        define(['uijet_dir/uijet', 'jqscroll'], function (uijet) {
             return factory(uijet);
         });
     } else {

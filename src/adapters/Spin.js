@@ -1,6 +1,6 @@
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'plugins/spin'], function (uijet) {
+        define(['uijet_dir/uijet', 'spin'], function (uijet) {
             return factory(uijet);
         });
     } else {
