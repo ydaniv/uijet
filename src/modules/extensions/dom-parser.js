@@ -33,7 +33,7 @@
         // Searches the DOM, starting from the container element, for all widget definitions inside the markup
         // and starts these widgets.  
         // This method looks for the `data-uijet-type` attribute on tags.
-        parse               : function () {
+        parse               : function (dfrd) {
             var that = this, $ = this.$;
             this.$element.find('[' + TYPE_ATTR + ']')
                 .each(function () {
@@ -44,7 +44,7 @@
                         uijet.start(_widget) :
                         uijet.declare(_widget);
                 });
-            ! this.initialized && this.dfrd_parsing && this.dfrd_parsing.resolve();
+            ! this.initialized && dfrd && dfrd.resolve();
             return this;
         },
         // ## uijet._parseScripts
@@ -144,10 +144,9 @@
     });
 
     // add an init task to parse the DOM for widgets
-    uijet.init_queue.push(function () {
-        this.dfrd_parsing = uijet.Promise();
-        this.parse();
-        return this.dfrd_parsing.promise();
+    uijet.init_queue.push(function (dfrd) {
+        this.parse(dfrd);
+        return dfrd.promise();
     });
 
 }));

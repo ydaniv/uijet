@@ -833,7 +833,7 @@
             var _init = function (_options) {
                 var _methods = {},
                     that = this,
-                    k, dfrd, q;
+                    k, task, q;
                 this.options = _options || {};
                 // set top container
                 this.$element = this.$(_options && _options.element || 'body');
@@ -866,9 +866,9 @@
 
                     if ( q = this.init_queue.length ) {
                         while ( q-- ) {
-                            dfrd = this.init_queue[q];
-                            if ( isFunc(dfrd) ) {
-                                this.init_queue[q] = dfrd.call(this);
+                            task = this.init_queue[q];
+                            if ( isFunc(task) ) {
+                                this.init_queue[q] = task.call(this, uijet.Promise());
                             }
                         }
                     }
