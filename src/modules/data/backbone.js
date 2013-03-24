@@ -28,8 +28,9 @@
             this.getData = function () {
                 return this.resource.toJSON();
             };
-            this.update = function (request_data) {
+            this.update = function (fetch_options) {
                 var that = this,
+                    options = fetch_options || {},
                     dfrd_update, _success;
                 // if the pre_update signal returned `false` then bail
                 if ( this.notify('pre_update') === false ) return {};
@@ -45,22 +46,22 @@
                     dfrd_update.resolve();
                 };
 
-                this.resource.fetch({
-                    success : _success,
-                    error   : function (response) {
-                        // notify there was an error and allow user to continue with either:
-                        //
-                        // * __success flow__: success callback is sent as the last argument to the signal's handler
-                        // * __failrue flow__: in case anything but `false` is returned from `update_error` handler
-                        // * __or abort it all__: return `false` from `update_error` handler
-                        var _abort_fail = that.notify.apply(that, ['update_error'].concat(Array.prototype.slice.call(arguments), _success.bind(that)));
-                        if ( _abort_fail !== false ) {
-                            // publish an error has occurred with `update`
-                            that.publish('update_error', response, true);
-                            dfrd_update.reject(response);
-                        }
+                options.success = _success;
+                options.error = function (response) {
+                    // notify there was an error and allow user to continue with either:
+                    //
+                    // * __success flow__: success callback is sent as the last argument to the signal's handler
+                    // * __failrue flow__: in case anything but `false` is returned from `update_error` handler
+                    // * __or abort it all__: return `false` from `update_error` handler
+                    var _abort_fail = that.notify.apply(that, ['update_error'].concat(Array.prototype.slice.call(arguments), _success.bind(that)));
+                    if ( _abort_fail !== false ) {
+                        // publish an error has occurred with `update`
+                        that.publish('update_error', response, true);
+                        dfrd_update.reject(response);
                     }
-                });
+                };
+                this.resource.fetch(options);
+
                 return dfrd_update.promise();
             };
 
