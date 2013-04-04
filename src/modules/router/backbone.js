@@ -57,8 +57,6 @@
             navigate    : Router.navigate.bind(Router)
         });
 
-        Backbone.history.start();
-
         return Router;
     };
 }));
