@@ -1586,19 +1586,27 @@
         // Unnamed parameters are indexed by their index in `args_array`.
         buildContext        : function (route, args_array) {
             var context = {},
+                named_arg_re = /.*:([-\w]+)/,
                 parts = route.split('/'),
-                i = 0, n = 0, part;
+                i = 0, n = 0,
+                part, match, splat_parts;
             args_array = toArray(args_array);
             while ( part = parts[i++], typeof part == 'string' ) {
                 // if it's a named argument
-                if ( part[0] === ':' ) {
+                if ( match = part.match(named_arg_re) ) {
                     // then add it to the context by name
-                    context[part.slice(1)] = args_array.shift();
+                    context[match[1]] = args_array.shift();
                     n += 1;
                 } else if ( ~ part.indexOf('(') ) {
                     // if it's unnamed then add it by its index in `args_array`
                     context[n] = args_array.shift();
                     n += 1;
+                } else if ( part[0] == '*' ) {
+                    splat_parts = args_array.shift().split('/');
+                    while ( part = splat_parts.shift() ) {
+                        context[n] = part;
+                        n += 1;
+                    }
                 }
             }
             return context;
