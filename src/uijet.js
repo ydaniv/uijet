@@ -854,13 +854,10 @@
                     if ( _options.route_suffix ) {
                         this.route_suffix = _options.route_suffix;
                     }
-                    try {
-                        this.setRoute();
-                        this.options.routed = true;
-                    }
-                    catch (e) {
-                        this.options.routed = false;
-                    }
+
+                    // check if the app is using a router
+                    this.options.routed = isFunc(this.setRoute);
+
                     // set default animation type
                     this.options.animation_type = _options.animation_type || 'slide';
 
@@ -1449,9 +1446,10 @@
         // need to be taken into account, such as the REST method, etc.
         // An optional third argument `callback` can be used to replace the default `uijet.run` method.
         // For example, if you need to set a route of a Form's submit with the submit method.
-        setRoute            : function (widget, route, callback) {
-            throw new Error('uijet.setRoute not implemented');
-        },
+
+        //setRoute            : function (widget, route, callback) {},
+
+
         // # -NOT IMPLEMENTED-
         // ## uijet.unsetRoute
         // @sign: unsetRoute(widget, [route])  
@@ -1459,9 +1457,10 @@
         //
         // Removes a set route from the routes registry.  
         // Arguments can be supplied for all cases as explained for `uijet.setRoute` above.
-        unsetRoute          : function (widget, route) {
-            throw new Error('uijet.unsetRoute not implemented');
-        },
+
+        //unsetRoute          : function (widget, route) {},
+
+
         // # -NOT IMPLEMENTED-
         // ## uijet.runRoute
         // @sign: runRoute(route, [is_silent])  
@@ -1473,9 +1472,10 @@
         // 1. When `true`: call the route handler but don't propagate the route to the browsers' address bar (possible
         //    to neither push this state to the HTML5 history object.
         // 2. When `false`: Propagate this route to the address bar and the activation of the route handler will follow.
-        runRoute            : function (route, is_silent) {
-            throw new Error('uijet.runRoute not implemented');
-        },
+
+        //runRoute            : function (route, is_silent) {},
+
+
         // ## uijet.getRouteById
         // @sign: getRouteById(widget_id)  
         // @return: route OR null
