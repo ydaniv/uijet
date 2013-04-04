@@ -33,7 +33,7 @@
                     callback = widget.run;
                 }
 
-                Router.route(route, name, function () {
+                Router.route(route || widget.getRoute(), name, function () {
                     var context = uijet.buildContext(route, arguments);
                     callback.call(widget, context);
                 });
@@ -51,16 +51,14 @@
                 return this;
             },
             runRoute    : function (route) {
-                var r;
-                for ( r in Router ) {
-                    if ( r === route ) {
-                        Router.trigger('route:' + Router[r]);
-                        break;
-                    }
-                }
+                Backbone.history.loadUrl(route);
                 return this;
             },
             navigate    : Router.navigate.bind(Router)
         });
+
+        Backbone.history.start();
+
+        return Router;
     };
 }));
