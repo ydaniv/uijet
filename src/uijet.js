@@ -1605,6 +1605,26 @@
         getStyle        : getStyle,
         getStyleProperty: getStyleProperty,
         getOffsetOf     : getOffsetOf,
+        putMixin        : function putMixin (array, name, position) {
+            var index;
+            if ( ! array ) {
+                return [name];
+            }
+            else if ( ! isArr(array) ) {
+                return putMixin([array], name, position);
+            }
+            else {
+                position = position || 0;
+
+                index = array.indexOf(name);
+                if ( ~ index ) {
+                    if ( index === position ) return array;
+                    array.splice(index, 1);
+                }
+                array.splice(position, 0, name);
+            }
+            return array;
+        },
         // wrap these objects since they point to native objects which is forbidden  
         // You Maniacs! You blew it up! Ah, damn you!
         requestAnimFrame: function (f) { return requestAnimFrame(f); },

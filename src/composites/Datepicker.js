@@ -248,20 +248,8 @@
                 $current_date.text(text);
             };
             // make sure the container is Floated
-            if ( container_config.mixins ) {
-                container_config.mixins = uijet.Utils.toArray(container_config.mixins);
-                floated_index = container_config.mixins.indexOf('Floated');
-                // check if we have Floated mixed-in
-                if ( ~ floated_index ) {
-                    // remove Floated from mixins list
-                    container_config.mixins.splice(floated_index, 1);
-                }
-                // put Floated at the top of the chain to make sure its `appear` and `disappear` are called first
-                container_config.mixins.push('Floated');
-            } else {
-                // just add it if otherwise
-                container_config.mixins = 'Floated';
-            }
+            container_config.mixins = uijet.Utils.putMixin(container_config.mixins, 'Floated', -1);
+
             // if user hasn't overridden `element` option
             if ( $container === container_config.element ) {
                 // if specified by the user

@@ -41,12 +41,8 @@
             if ( ! handle_ops.element ) {
                 handle_ops.element = uijet.$('<span/>').appendTo(this.$element);
             }
-            if ( ! handle_ops.mixins ) {
-                handle_ops.mixins = ['Dragged'];
-            }
-            else if ( handle_ops.mixins && !~ handle_ops.mixins.indexOf('Dragged') ) {
-                handle_ops.mixins.unshift('Dragged');
-            }
+
+            handle_ops.mixins = uijet.Utils.putMixin(handle_ops.mixins, 'Dragged');
 
             handle_app_events[this.id + '.update_ui'] = function (position) {
                 var deltas = {};

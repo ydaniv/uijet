@@ -125,19 +125,8 @@
             add_arrow && uijet.start({ type: 'Button', config: drop_arrow_config });
 
             // make sure the drop menu is Floated
-            if ( drop_menu_config.mixins ) {
-                drop_menu_config.mixins = uijet.Utils.toArray(drop_menu_config.mixins);
-                floated_index = drop_menu_config.mixins.indexOf('Floated');
-                // if the menu is already Floated
-                if ( ~ floated_index ) {
-                    // remove Floated from mixins list
-                    drop_menu_config.mixins.splice(floated_index, 1);
-                }
-                // push Floated to the
-                drop_menu_config.mixins.push('Floated');
-            } else {
-                drop_menu_config.mixins = 'Floated';
-            }
+            drop_menu_config.mixins = uijet.Utils.putMixin(drop_menu_config.mixins, 'Floated', -1);
+
             // create the menu widget
             uijet.start({ type: 'List', config: drop_menu_config });
 
