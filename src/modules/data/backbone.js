@@ -88,8 +88,8 @@
     uijet.use({
         Model       : Backbone.Model.extend.bind(Backbone.Model),
         Collection  : Backbone.Collection.extend.bind(Backbone.Collection),
-        newResource : function (resource) {
-            return new resource;
+        newResource : function (resource, initial) {
+            return new resource(initial);
         }
     });
 

@@ -538,10 +538,10 @@
      * optionally inheriting the prototype/constructor `_extends`.
      * Returns an instance of the created class or, optionally, the class itself.
      * 
-     * @param proto {Function|Object}
-     * @param [_extends] {Function|Object} a constructor of a class to inherit from or simply an object to add to the prototype chain
-     * @param [as_constructor] {Boolean} whether to return the new created class' constructor or instance
-     * @return created {Function|Object} the new created class constructor or its instance
+     * @param proto {Function|Object}      - a constructor or an object to use as the top level prototype
+     * @param [_extends] {Function|Object} - a constructor of a class to inherit from or simply an object to add to the prototype chain
+     * @param [as_constructor] {Boolean}   - whether to return the new created class' constructor or instance
+     * @return created {Function|Object}   - the new created class constructor or its instance
      */
     function Create (proto, _extends, as_constructor) {
         var is_proto_f = isFunc(proto),
@@ -580,6 +580,7 @@
             prefix, camelized, i = 0;
         // return un-prefixed if found
         if ( prop in style) return prop;
+        // check cache
         if ( prop in BROWSER_PREFIX.matches ) {
             // return the cached property name
             return BROWSER_PREFIX.matches[prop];
@@ -587,17 +588,22 @@
         else {
             // executed once per property
             camelized = prop[0].toUpperCase() + prop.slice(1);
+            // try cached prefix
             if ( prefix = BROWSER_PREFIX.prefix ) {
                 if ( (prefix +  camelized) in style ) {
+                    // cache result
                     BROWSER_PREFIX.matches[prop] = prefix +  camelized;
                     return prefix +  camelized;
                 }
             }
             else {
                 // executed once until a match is found
+                // try all prefixes
                 while ( prefix = cases[i++] ) {
                     if ( (prefix +  camelized) in style ) {
+                        // cache the prefix that worked
                         BROWSER_PREFIX.prefix = prefix;
+                        // cache the result
                         BROWSER_PREFIX.matches[prop] = prefix +  camelized;
                         return prefix +  camelized;
                     }
@@ -611,9 +617,9 @@
      *
      * __Note__: `Node.compareDocumentPosition()` is not supported on IE8
      *
-     * @param a {HTMLElement} container element
-     * @param b {HTMLElement} contained element
-     * @returns contained {boolean} whether container contains contained
+     * @param a {HTMLElement}      - container element
+     * @param b {HTMLElement}      - contained element
+     * @return contained {boolean} - whether container contains contained
      */
     function contains (a, b) {
         return b && !!( a.compareDocumentPosition( b ) & 16 );
@@ -623,9 +629,9 @@
      *
      * __note__: if `child` is not child of `parent` then the returned result will show only `0`s.
      *
-     * @param child {HTMLElement} child element to get its offset
-     * @param parent {HTMLElement} parent element to use as relative offset parent
-     * @returns offset {Object} an object with `x` and `y` keys and `Number`s as values representing offset in pixels.
+     * @param child {HTMLElement}  - child element to get its offset
+     * @param parent {HTMLElement} - parent element to use as relative offset parent
+     * @return offset {Object}     - an object with `x` and `y` keys and `Number`s as values representing offset in pixels.
      */
     function getOffsetOf (child, parent) {
         var result = { x: 0, y: 0 };
@@ -682,10 +688,10 @@
          * or `uijet` by default.
          * If `context` is supplied then uses it to bind all the properties of `props` to it.
          *
-         * @param props {Object} the properties to mix-in to the host
-         * @param [host] {Object} host object to add these properties to, can be skipped by passing `null`
-         * @param [context] {Object} a context object to bind the mixed-in properties to
-         * @returns this {Object}
+         * @param props {Object}     - the properties to mix-in to the host
+         * @param [host] {Object}    - host object to add these properties to, can be skipped by passing `null`
+         * @param [context] {Object} - a context object to bind the mixed-in properties to
+         * @return this {Object}
          */
         use                 : function (props, host, context) {
             // get the host object or use `uijet`
@@ -706,10 +712,10 @@
          * Defines a new widget class.
          * This class can later be instantiated in the UI or re-used as a dependency.
          *
-         * @param type {String} this widget's type
-         * @param props {Object} properties defined by this widget
-         * @param [deps] {String|Array|Object} dependencies for this widget
-         * @returns this {Object}
+         * @param type {String}                - this widget's type
+         * @param props {Object}               - properties defined by this widget
+         * @param [deps] {String|Array|Object} - dependencies for this widget
+         * @return this {Object}
          */
         Widget              : function (type, props, deps) {
             var _deps = normalizeDeps(deps);
@@ -724,9 +730,9 @@
         /**
          * Gets a mixin by name or defines a new mixin for widgets.
          *
-         * @param name {String} name of the mixin to get/define
-         * @param [props] {Object} properties defined by this mixin
-         * @returns this|mixin {Object}
+         * @param name {String}    - name of the mixin to get/define
+         * @param [props] {Object} - properties defined by this mixin
+         * @return this|mixin {Object}
          */
         Mixin               : function (name, props) {
             if ( arguments.length === 1 ) {
@@ -743,9 +749,9 @@
          * * String: Gets an adapter by this name
          * * Object: Defines a new adapter that will be added at the top of every widget and overrides everything else
          *
-         * @param name {String|Object} a name of an existing or a new adapter or properties for a `TopAdapter` definition
-         * @param [props] {Object} properties of the new adapter
-         * @returns this|adapter {Object}
+         * @param name {String|Object} - a name of an existing or a new adapter or properties for a `TopAdapter` definition
+         * @param [props] {Object}     - properties of the new adapter
+         * @return this|adapter {Object}
          */
         Adapter             : function (name, props) {
             if ( arguments.length === 1 ) {
@@ -766,9 +772,9 @@
          *
          * __note__: the config of this declaration is copied to every generated instance so make sure you don't leak references.
          *
-         * @param name {String} identifier for this widget factory
-         * @param declaration {Object} a viable object for `uijet.declare()`
-         * @returns this {Object}
+         * @param name {String}        - identifier for this widget factory
+         * @param declaration {Object} - a viable object for `uijet.declare()`
+         * @return this {Object}
          */
         Factory             : function (name, declaration) {
             widget_factories[name] = function (config) {
@@ -785,10 +791,10 @@
         /**
          * Gets a resource instance by name or registers a new resource instance.
          *
-         * @param name {String} identifier for that resource class
-         * @param [resource] {Object} this resource's constructor
-         * @param [initial] {Object|Array} initial data for the generated instance
-         * @returns this|resource_instance {Object}
+         * @param name {String}            - identifier for that resource class
+         * @param [resource] {Object}      - this resource's constructor
+         * @param [initial] {Object|Array} - initial data for the generated instance
+         * @return this|resource_instance {Object}
          */
         Resource            : function (name, resource, initial) {
             if ( arguments.length === 1 ) {
@@ -796,7 +802,7 @@
                     return resources[name];
                 }
             }
-            resources[name] = uijet.newResource(resource);
+            resources[name] = uijet.newResource(resource, initial);
             return this;
         },
         /**
@@ -804,7 +810,7 @@
          * 
          * @param {String} name   - identifier for this view
          * @param {Object} widget - View widget instance to register as a view
-         * @returns {*} this
+         * @return {*} this
          */
         View                : function (name, widget) {
             views[name] = widget;
