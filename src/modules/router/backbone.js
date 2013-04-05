@@ -17,6 +17,7 @@
         uijet.use({
             setRoute    : function (widget, route, callback) {
                 var name;
+                route = route || widget.getRoute();
 
                 if ( typeof callback == 'string' ) {
                     name = callback;
@@ -33,7 +34,7 @@
                     callback = widget.run;
                 }
 
-                Router.route(route || widget.getRoute(), name, function () {
+                Router.route(route, name, function () {
                     var context = uijet.buildContext(route, arguments);
                     callback.call(widget, context);
                 });
