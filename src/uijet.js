@@ -1485,38 +1485,6 @@
         //runRoute            : function (route, is_silent) {},
 
 
-        // ## uijet.getRouteById
-        // @sign: getRouteById(widget_id)  
-        // @return: route OR null
-        //
-        // Takes an `id` of a widget and returns a route of the found widget OR `null`.
-        getRouteById        : function (widget_id) {
-            var _widget;
-            for ( var w in widgets ) {
-                if ( w == widget_id ) {
-                    _widget = widgets[w].self;
-                    return _widget.routed ? _widget.getRoute() : null;
-                }
-            }
-            return null;
-        },
-        // ## uijet.getCurrentViewRoute
-        // @sign: getCurrentViewRoute()  
-        // @return: current_view_route
-        //
-        // Finds current view and returns its route
-        getCurrentViewRoute : function () {
-            var _current = this.current_view, v;
-            if ( ! _current ) {
-                for ( v in views ) {
-                    if ( views[v].options.state == 'current' ) {
-                        _current = views[v];
-                        break;
-                    }
-                }
-            }
-            return _current && _current.getRoute();
-        },
         // ## uijet.isiPad
         // @sign: isiPad()  
         // @return: uijet
