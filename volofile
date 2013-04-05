@@ -7,7 +7,18 @@ module.exports = {
          * Remove boilerplates
          * Remove all other top level files
          */
-        
+
+        if ( v.exists('adapters') ) {
+            v.rm('adapters');
+            v.rm('composites');
+            v.rm('mixins');
+            v.rm('modules');
+            v.rm('themes');
+            v.rm('widgets');
+            v.rm('uijet.js');
+            v.rm('uijet.css');
+        }
+
         v.mv('src/adapters', 'adapters');
         v.mv('src/composites', 'composites');
         v.mv('src/mixins', 'mixins');
@@ -16,6 +27,7 @@ module.exports = {
         v.mv('src/widgets', 'widgets');
         v.mv('src/uijet.js', 'uijet.js');
         v.mv('src/uijet.css', 'uijet.css');
+
         v.rm('src');
         v.rm('boilerplates');
         v.rm('.gitignore');
