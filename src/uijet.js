@@ -190,7 +190,7 @@
      *
      * @param {*} arg        - argument to check if callable and return its call or itself if not
      * @param {Object} [ctx] - context object to use for the call
-     * @returns {*} product  - the argument or its `.call()`'s product.
+     * @return {*} product  - the argument or its `.call()`'s product.
      */
     function returnOf (arg, ctx) {
         return isFunc(arg) ? arg.apply(ctx || _window, arraySlice.call(arguments, 2)) : arg;
@@ -214,9 +214,9 @@
      * all subsequent arguments are source objects to copy from.
      * Objects are copied to target from left to right.
      *
-     * @params {Object|Boolean} target - the target object or `true` for deep copying
-     * @params {Object} [source...]    - the target object if deep copying or a source object(s)
-     * @returns {Object} target        - the target object
+     * @param {Object|Boolean} target - the target object or `true` for deep copying
+     * @param {Object} [source...]    - the target object if deep copying or a source object(s)
+     * @return {Object} target        - the target object
      */
     function extend () {
         var args = arraySlice.call(arguments),
@@ -258,9 +258,9 @@
      * All subsequent arguments are source objects to copy from.
      * Objects are copied to target from left to right.
      *
-     * @params {Object} target      - the target object
-     * @params {Object} [source...] - the source object(s)
-     * @returns {Object} target     - the target object
+     * @param {Object} target      - the target object
+     * @param {Object} [source...] - the source object(s)
+     * @return {Object} target     - the target object
      */
     function extendProto () {
         var args = arraySlice.call(arguments),
@@ -296,7 +296,7 @@
      * @param {Object} target    - target object to extend
      * @param {Object} source    - source object to copy from
      * @param {Object} [context] - optional context object to bind `Function` properties to
-     * @returns {Object} target  - the target object
+     * @return {Object} target   - the target object
      */
     function extendProxy (target, source, context) {
         var s;
@@ -325,7 +325,7 @@
      *
      * @param {Function} source   - source constructor to take methods from
      * @param {Function} target   - target constructor for copying the methods to
-     * @returns {Function} target - the target constructor
+     * @return {Function} target  - the target constructor
      */
     function copyStaticMethods (source, target) {
         for ( var m in source )
@@ -350,8 +350,8 @@
      * Extends this class' prototype with another object's properties.
      *
      * @static
-     * @param props {Object} properties to deep copy to the `prototype`
-     * @returns prototype {Object} the prototype of this class
+     * @param {Object} props      - properties to deep copy to the `prototype`
+     * @return {Object} prototype - the prototype of this class
      */
     Base.extend = function (props) {
         return extend(true, this.prototype, props);
@@ -360,8 +360,8 @@
      * Creates a new class that is composed of the given class or Object and inherits this class.
      *
      * @static
-     * @param child {Object|Function} the child class or Object that will be copied and used to inherit this class
-     * @returns derivative {Function} constructor of the new created class
+     * @param {Object|Function} child - the child class or Object that will be copied and used to inherit this class
+     * @return {Function} derivative  - constructor of the new created class
      */
     Base.derive = function derive (child) {
         return copyStaticMethods(this, Create(child, this, true));
@@ -370,8 +370,8 @@
      * Creates a new class that is composed of this class and will inherit the given class or Object.
      *
      * @static
-     * @param parent {Object} the parent class or Object that will be copied and used as the parent of this class
-     * @returns inherited {Function} constructor of the new created class
+     * @param {Object} parent       - the parent class or Object that will be copied and used as the parent of this class
+     * @return {Function} inherited - constructor of the new created class
      */
     Base.inherit = function inherit (parent) {
         return copyStaticMethods(this, Create(this, parent, true));
@@ -385,9 +385,9 @@
         /**
          * Registers a handler for the given type.
          *
-         * @param topic {String} the signal's type to register
-         * @param handler {Function} the signal's handler to register
-         * @returns this {Object}
+         * @param {String} topic     - the signal's type to register
+         * @param {Function} handler - the signal's handler to register
+         * @return {Object} this
          */
         listen          : function (topic, handler) {
             this.signals_cache[topic] = handler;
@@ -396,8 +396,8 @@
         /**
          * Removes a handler of the given type.
          *
-         * @param topic {String} the signal's type to remove
-         * @returns this {Object}
+         * @param {String} topic - the signal's type to remove
+         * @return {Object} this
          */
         unlisten        : function (topic) {
             if ( this.signals_cache[topic] ) {
@@ -413,8 +413,10 @@
          * signal is triggered *once* during current lifecycle stage.
          * Base does not define a `_finally` method that is used to clean up these "once" states.
          *
-         * @param topic {String|Boolean}
-         * @returns result {*} returned result of the triggered handler or `undefined`
+         * @param {Boolean} [once] - optional`true` flag to make sure this signal is notified once per lifecycle stage
+         * @param {String} topic   - the name of the signal to notify
+         * @param {*} [args...]    - arguments to hand over to the signal's handler
+         * @return {*} result      - returned result of the triggered handler or `undefined`
          */
         notify          : function (topic) {
             var handler, own_args_len = 1, args, once = false;
@@ -438,9 +440,9 @@
          * If no method was found then a signal with same type's handler is used.
          * If `handler` is a `String` and ends with a '+' then the `arguments` supplied to this handler will be passed to that method/signal handler.
          *
-         * @param topic {String} the type of the handler to register
-         * @param handler {Function|String} the handler to register or a name of a method of this instance or a signal's handler to use as handler
-         * @returns this {Object}
+         * @param {String} topic    - the type of the handler to register
+         * @param {Function|String} - handler the handler to register or a name of a method of this instance or a signal's handler to use as handler
+         * @return {Object} this
          */
         //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
         subscribe       : function (topic, handler) {
@@ -477,9 +479,9 @@
          * Removes a handler from the registered events.
          * If `handler` is not supplied then the handler that is currently registered for the given `topic` is used.
          *
-         * @param topic {String} the event type to remove from registry
-         * @param [handler] {Function} the handler to remove from the registry
-         * @returns this {Object}
+         * @param {String} topic       - the event type to remove from registry
+         * @param {Function} [handler] - the handler to remove from the registry
+         * @return {Object} this
          */
         unsubscribe     : function (topic, handler) {
             if ( ! handler && this.app_events ) {
@@ -493,9 +495,9 @@
          * If `data` is supplied it is handed over to the handler as an argument.
          * `topic` is always prefixed with `this.id + '.'`.
          *
-         * @param topic {String} the type of the event to trigger
-         * @param [data] {*} argument to pass to the event's handler as data
-         * @returns {*}
+         * @param {String} topic - the type of the event to trigger
+         * @param {*} [data]     - argument to pass to the event's handler as data
+         * @return {Object} this
          */
         publish         : function (topic, data) {
             uijet.publish(this.id + '.' + topic, data);
@@ -512,8 +514,8 @@
      * * `Object` it's assumed to be a standard dependencies object and its `mixins` and `widgets` keys are normalized to `Array`s.
      * * Falsy arguments yield `undefined`
      *
-     * @param deps {*} the dependencies to normalize into an `Object`
-     * @return deps {Object|undefined} a standard dependencies object
+     * @param {*} deps                 - the dependencies to normalize into an `Object`
+     * @return {Object|undefined} deps - a standard dependencies object
      */
     function normalizeDeps (deps) {
         if ( ! deps ) return;
@@ -537,8 +539,8 @@
      * Returns an instance of the created class or, optionally, the class itself.
      * 
      * @param proto {Function|Object}
-     * @param _extends {Function|Object} a constructor of a class to inherit from or simply an object to add to the prototype chain
-     * @param as_constructor {Boolean} whether to return the new created class' constructor or instance
+     * @param [_extends] {Function|Object} a constructor of a class to inherit from or simply an object to add to the prototype chain
+     * @param [as_constructor] {Boolean} whether to return the new created class' constructor or instance
      * @return created {Function|Object} the new created class constructor or its instance
      */
     function Create (proto, _extends, as_constructor) {
@@ -546,6 +548,7 @@
             is_extends_f = isFunc(_extends),
             _proto = is_proto_f ? proto.prototype : proto;
         function F () {
+            // call original constructors
             is_extends_f && _extends.call(this);
             is_proto_f && proto.call(this);
         }
@@ -568,8 +571,8 @@
      * If there's no match, prefixed or not, returns `null`.
      * Can also be used to check for the support of that CSS feature in current user-agent.
      *
-     * @param prop {String} an un-prefixed name of a style property
-     * @returns prefixed {String|null} the matching name of this property for the current user-agent
+     * @param {String} prop           - an un-prefixed name of a style property
+     * @return {String|null} prefixed - the matching name of this property for the current user-agent
      */
     function getStyleProperty (prop) {
         var style = _window.document.body.style,
