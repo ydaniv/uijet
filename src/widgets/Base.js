@@ -43,13 +43,15 @@
                 ._setCloak(true)
                 // parse the rest of the options, like events handling, etc.
                 .setInitOptions()
-                // if there's sandbox registry any required
+                // register to sandbox
                 .register()
                 // wrapping, styling, positioning, etc.
                 .prepareElement()
                 // cache reference to initial markup that was coded into the element by user
-                ._saveOriginal();
-            this.notify(true, 'post_init');
+                ._saveOriginal()
+
+                .notify(true, 'post_init');
+
             return this;
         },
         // ### widget.register
@@ -60,7 +62,10 @@
         // Hooks into uijet's `register`.
         // *Note*: It is recommended to call `this._super` first thing when overriding this method.
         register        : function () {
-            uijet.register(this);
+            if ( ! this.registered ) {
+                uijet.register(this);
+                this.registered = true;
+            }
             return this;
         },
         // ### widget.unregister
@@ -71,6 +76,7 @@
         // Hooks into uijet's `unregister`.
         unregister      : function () {
             uijet.unregister(this);
+            this.registered = false;
             return this;
         },
         // ### widget.wake
@@ -270,12 +276,18 @@
         prepareElement  : function () {
             var classes = 'uijet_widget ' +
                     Utils.toArray(this.options.type_class).join(' '),
-                style = Utils.returnOf(this.options.style, this),
-                position = Utils.returnOf(this.options.position, this);
+                el = this.$element[0],
+                style, position;
             this.options.extra_class && (classes += ' ' + this.options.extra_class);
             this.$element.addClass(classes);
-            position && this.position(position);
-            style && this.style(style);
+            // check if inside DOM
+            if ( el.ownerDocument.body.contains(el) ) {
+                style = Utils.returnOf(this.options.style, this);
+                position = Utils.returnOf(this.options.position, this);
+
+                position && this.position(position);
+                style && this.style(style);
+            }
             return this;
         },
         // ### widget.style
