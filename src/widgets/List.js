@@ -50,7 +50,7 @@
                 // if `pre_select signal` is handled and returns specifically `false` then prevent it
                 if( transfer !== false ) {
                     // make sure this element still exists inside the DOM
-                    if ( $this && $this.length && $this.parent().length ) {
+                    if ( $this && $this.length && $this[0].ownerDocument.body.contains($this[0]) ) {
                         that.publish('selected', transfer === void 0 ? that.getTransfer($this) : transfer)
                         // cache & paint selection
                             .setSelected($this);
