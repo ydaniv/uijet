@@ -615,14 +615,14 @@
     /**
      * Checks if the first element contains the second element.
      *
-     * __Note__: `Node.compareDocumentPosition()` is not supported on IE8
-     *
      * @param a {HTMLElement}      - container element
      * @param b {HTMLElement}      - contained element
      * @return contained {boolean} - whether container contains contained
      */
     function contains (a, b) {
-        return b && !!( a.compareDocumentPosition( b ) & 16 );
+        return b && (a.contains ?
+                a != b && a.contains(b) :
+                !!( a.compareDocumentPosition( b ) & 16 ));
     }
     /**
      * Gets the offset of `child` relative to `parent`.
