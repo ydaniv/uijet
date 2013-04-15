@@ -1086,11 +1086,19 @@
             }
             return this;
         },
-        // ### uijet.register
-        // @sign: register(widget)  
-        // @returns: uijet
-        //
-        // Registers a widget into uijet's widgets tree.
+        /**
+         * Registers a widget into the uijet sandbox.
+         * uijet uses the `widget.id` to register the widget.
+         * If this instance has a configured `container` in its `options` it's used as
+         * the identifier of its container widget instance.
+         * If not it climbs up the DOM tree looking for a `uijet_widget` class. The first
+         * element's id that has this class is used as the container.
+         * If none was found and it reached the `body` element then this instance will be
+         * registered as a top level widget.
+         * 
+         * @param {Object} widget - a widget's instance to register
+         * @returns {Object} this
+         */
         register            : function (widget) {
             // get the parent element
             var _parent = null,
@@ -1178,17 +1186,21 @@
                 // keep walking
                 _parent = _parent.parentNode;
             }
+            // no container set or found
             if ( ! _current.container ) {
+                // register this widget as a top level widget
                 widgets.__app__.contained.push(_id);
                 _current.container = '__app__';
             }
             return this;
         },
-        // ## uijet.unregister
-        // @sign: unregister(widget)  
-        // @returns: uijet
-        //
-        // Unregisters a widget from uijet's widgets tree.
+        /**
+         * Removes a widget from the uijet sandbox registry.
+         * This is usually triggered by a widget when its `desrtoy()` method is called.
+         * 
+         * @param {Object} widget - a widget's instance to uregister
+         * @returns {Object} this
+         */
         unregister          : function (widget) {
             var _id = widget.id, registration, _parent_contained;
             if ( _id in widgets ) {
@@ -1203,19 +1215,23 @@
             }
             return this;
         },
-        // ## uijet.declare
-        // @sign: declare(widgets)  
-        // @returns: uijet
-        //
-        // Declare one or more widgets that will be started once the app is initialized.  
-        // `widgets` can be either an `Object` containing a widget's declaration (_type_ and _config_)
-        // or an `Array` of such objects.
-        declare             : function (_widgets) {
-            if ( isObj(_widgets) ) {
-                declared_widgets.push(_widgets);
+        /**
+         * Caches widget declarations before uijet is initialized, 
+         * for lazy starting them at the end of its initialization.
+         * 
+         * A declaration object usually contains `type` and `config` properties.
+         * It may also contain a `factory` property, instead of the `type` one, if
+         * this is an instance that's using a pre-declared widget factory.
+         * 
+         * @param {Object|Array} declarations - a single declaration or a list of declaration objects
+         * @returns {Object} this
+         */
+        declare             : function (declarations) {
+            if ( isObj(declarations) ) {
+                declared_widgets.push(declarations);
             }
-            else if ( isArr(_widgets) ) {
-                declared_widgets = declared_widgets.concat(_widgets);
+            else if ( isArr(declarations) ) {
+                declared_widgets = declared_widgets.concat(declarations);
             }
             return this;
         },
