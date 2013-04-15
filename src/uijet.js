@@ -9,7 +9,8 @@
         define(function () {
             return factory(root);
         });
-    } else {
+    }
+    else {
         root.uijet = factory(root);
     }
 }(this, function (_window) {
@@ -45,9 +46,9 @@
         /**
          * Searches for a prefixed name of `name` inside `obj`.
          *
-         * @param {String} name           - name to search for
-         * @param {Object} obj            - the source object search in
-         * @return {String|null} prefixed - the prefixed property or `null` if not found
+         * @param {String} name            - name to search for
+         * @param {Object} obj             - the source object search in
+         * @returns {String|null} prefixed - the prefixed property or `null` if not found
          */
         getPrefixed = function (name, obj) {
             var cases = BROWSER_PREFIX.prop,
@@ -86,8 +87,8 @@
          * Checks if given argument is an `Array`.
          * Uses @see Array.isArray by default if it exists.
          *
-         * @param {*} obj             - target object to check
-         * @return {Boolean} is_array - whether `obj` is an `Array`
+         * @param {*} obj              - target object to check
+         * @returns {Boolean} is_array - whether `obj` is an `Array`
          */
         isArr = (function () {
             return Array.isArray || function (obj) {
@@ -110,8 +111,8 @@
     /**
      * Checks if given argument is an `Object`.
      *
-     * @param {*} obj              - target object to check
-     * @return {Boolean} is_object - whether `obj` is an `Object`
+     * @param {*} obj               - target object to check
+     * @returns {Boolean} is_object - whether `obj` is an `Object`
      */
     function isObj (obj) {
         return objToString.call(obj) == '[object Object]';
@@ -119,8 +120,8 @@
     /**
      * Checks if argument `obj` is an `Function`.
      *
-     * @param {*} obj                - target object to check
-     * @return {Boolean} is_function - whether `obj` is an `Function`
+     * @param {*} obj                 - target object to check
+     * @returns {Boolean} is_function - whether `obj` is an `Function`
      */
     function isFunc (obj) {
         return typeof obj == 'function';
@@ -128,8 +129,8 @@
     /**
      * Checks if given argument is an `Arguments` object.
      *
-     * @param {*} obj                 - target object to check
-     * @return {Boolean} is_arguments - whether `obj` is an `Arguments` object
+     * @param {*} obj                  - target object to check
+     * @returns {Boolean} is_arguments - whether `obj` is an `Arguments` object
      */
     function isArgs (obj) {
         return objToString.call(obj) == '[object Arguments]';
@@ -139,18 +140,20 @@
      * If an array-like object is given then converts it into a plain `Array`.
      * If the argument supplied is `undefined` or no arguments are supplied then returns `undefined`.
      *
-     * @param {*} obj                 - target object to check
-     * @return {Array|undefined} copy - an `Array` copy of `obj` or `undefined`
+     * @param {*} obj                  - target object to check
+     * @returns {Array|undefined} copy - an `Array` copy of `obj` or `undefined`
      */
     function toArray (obj) {
         var arr;
         if ( isArgs(obj) || /object .*List/.test(objToString.call(obj)) ) {
             // convert to `Array`
             arr = arraySlice.call(obj);
-        } else if ( isArr(obj) ) {
+        }
+        else if ( isArr(obj) ) {
             // copy that
             arr = obj.slice(0);
-        } else if ( typeof obj != 'undefined' ) {
+        }
+        else if ( typeof obj != 'undefined' ) {
             // wrap it
             arr = [obj];
         }
@@ -164,11 +167,11 @@
      * If the element is a decendent of a window object that isn't this global namespace
      * you can supply that window object as fourth argument.
      *
-     * @param {HTMLElement} el                          - the element to use
-     * @param {String|Array} [prop]                     - the property to fetch or list of properties
-     * @param {String} [pseudo]                         - a name of a pseudo-element of that element to get its style
-     * @param {HTMLWindowElement} [win]                 - The window element that element `el` belongs to
-     * @return {String|Array|CSSStyleDeclaration} style - the read-only style object of that element or the value[s] of that property[ies]
+     * @param {HTMLElement} el                           - the element to use
+     * @param {String|Array} [prop]                      - the property to fetch or list of properties
+     * @param {String} [pseudo]                          - a name of a pseudo-element of that element to get its style
+     * @param {HTMLWindowElement} [win]                  - The window element that element `el` belongs to
+     * @returns {String|Array|CSSStyleDeclaration} style - the read-only style object of that element or the value[s] of that property[ies]
      */
     function getStyle (el, prop, pseudo, win) {
         var style = (win || _window).getComputedStyle(el, pseudo || null), res, p;
@@ -190,7 +193,7 @@
      *
      * @param {*} arg        - argument to check if callable and return its call or itself if not
      * @param {Object} [ctx] - context object to use for the call
-     * @return {*} product  - the argument or its `.call()`'s product.
+     * @returns {*} product  - the argument or its `.call()`'s product.
      */
     function returnOf (arg, ctx) {
         return isFunc(arg) ? arg.apply(ctx || _window, arraySlice.call(arguments, 2)) : arg;
@@ -216,7 +219,7 @@
      *
      * @param {Object|Boolean} target - the target object or `true` for deep copying
      * @param {Object} [source...]    - the target object if deep copying or a source object(s)
-     * @return {Object} target        - the target object
+     * @returns {Object} target       - the target object
      */
     function extend () {
         var args = arraySlice.call(arguments),
@@ -233,11 +236,13 @@
                 for ( s in source ) {
                     if ( isObj(source[s]) && isObj(target[s]) ) {
                         target[s] = extend(true, {}, target[s], source[s]);
-                    } else {
+                    }
+                    else {
                         target[s] = source[s];
                     }
                 }
-            } else {
+            }
+            else {
                 for ( s in source ) {
                     target[s] = source[s];
                 }
@@ -260,7 +265,7 @@
      *
      * @param {Object} target      - the target object
      * @param {Object} [source...] - the source object(s)
-     * @return {Object} target     - the target object
+     * @returns {Object} target    - the target object
      */
     function extendProto () {
         var args = arraySlice.call(arguments),
@@ -279,9 +284,11 @@
                             return ret;
                         };
                     }(target[s], source[s]));
-                } else if ( isObj(source[s]) && isObj(target[s]) ) {
+                }
+                else if ( isObj(source[s]) && isObj(target[s]) ) {
                     target[s] = extend(true, {}, target[s], source[s]);
-                } else {
+                }
+                else {
                     target[s] = source[s];
                 }
             }
@@ -296,7 +303,7 @@
      * @param {Object} target    - target object to extend
      * @param {Object} source    - source object to copy from
      * @param {Object} [context] - optional context object to bind `Function` properties to
-     * @return {Object} target   - the target object
+     * @returns {Object} target  - the target object
      */
     function extendProxy (target, source, context) {
         var s;
@@ -306,7 +313,8 @@
             if ( isFunc(source[s]) ) {
                 // bind and copy it to target
                 target[s] = context ? source[s].bind(context) : source[s];
-            } else {
+            }
+            else {
                 // otherwise just copy
                 target[s] = source[s];
                 // if it's an `Object`
@@ -325,7 +333,7 @@
      *
      * @param {Function} source   - source constructor to take methods from
      * @param {Function} target   - target constructor for copying the methods to
-     * @return {Function} target  - the target constructor
+     * @returns {Function} target - the target constructor
      */
     function copyStaticMethods (source, target) {
         for ( var m in source )
@@ -350,8 +358,8 @@
      * Extends this class' prototype with another object's properties.
      *
      * @static
-     * @param {Object} props      - properties to deep copy to the `prototype`
-     * @return {Object} prototype - the prototype of this class
+     * @param {Object} props       - properties to deep copy to the `prototype`
+     * @returns {Object} prototype - the prototype of this class
      */
     Base.extend = function (props) {
         return extend(true, this.prototype, props);
@@ -361,7 +369,7 @@
      *
      * @static
      * @param {Object|Function} child - the child class or Object that will be copied and used to inherit this class
-     * @return {Function} derivative  - constructor of the new created class
+     * @returns {Function} derivative - constructor of the new created class
      */
     Base.derive = function derive (child) {
         return copyStaticMethods(this, Create(child, this, true));
@@ -370,8 +378,8 @@
      * Creates a new class that is composed of this class and will inherit the given class or Object.
      *
      * @static
-     * @param {Object} parent       - the parent class or Object that will be copied and used as the parent of this class
-     * @return {Function} inherited - constructor of the new created class
+     * @param {Object} parent        - the parent class or Object that will be copied and used as the parent of this class
+     * @returns {Function} inherited - constructor of the new created class
      */
     Base.inherit = function inherit (parent) {
         return copyStaticMethods(this, Create(this, parent, true));
@@ -387,7 +395,7 @@
          *
          * @param {String} topic     - the signal's type to register
          * @param {Function} handler - the signal's handler to register
-         * @return {Object} this
+         * @returns {Object} this
          */
         listen          : function (topic, handler) {
             this.signals_cache[topic] = handler;
@@ -397,7 +405,7 @@
          * Removes a handler of the given type.
          *
          * @param {String} topic - the signal's type to remove
-         * @return {Object} this
+         * @returns {Object} this
          */
         unlisten        : function (topic) {
             if ( this.signals_cache[topic] ) {
@@ -416,7 +424,7 @@
          * @param {Boolean} [once] - optional`true` flag to make sure this signal is notified once per lifecycle stage
          * @param {String} topic   - the name of the signal to notify
          * @param {*} [args...]    - arguments to hand over to the signal's handler
-         * @return {*} result      - returned result of the triggered handler or `undefined`
+         * @returns {*} result     - returned result of the triggered handler or `undefined`
          */
         notify          : function (topic) {
             var handler, own_args_len = 1, args, once = false;
@@ -442,7 +450,7 @@
          *
          * @param {String} topic    - the type of the handler to register
          * @param {Function|String} - handler the handler to register or a name of a method of this instance or a signal's handler to use as handler
-         * @return {Object} this
+         * @returns {Object} this
          */
         //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
         subscribe       : function (topic, handler) {
@@ -481,7 +489,7 @@
          *
          * @param {String} topic       - the event type to remove from registry
          * @param {Function} [handler] - the handler to remove from the registry
-         * @return {Object} this
+         * @returns {Object} this
          */
         unsubscribe     : function (topic, handler) {
             if ( ! handler && this.app_events ) {
@@ -497,7 +505,7 @@
          *
          * @param {String} topic - the type of the event to trigger
          * @param {*} [data]     - argument to pass to the event's handler as data
-         * @return {Object} this
+         * @returns {Object} this
          */
         publish         : function (topic, data) {
             uijet.publish(this.id + '.' + topic, data);
@@ -514,8 +522,8 @@
      * * `Object` it's assumed to be a standard dependencies object and its `mixins` and `widgets` keys are normalized to `Array`s.
      * * Falsy arguments yield `undefined`
      *
-     * @param {*} deps                 - the dependencies to normalize into an `Object`
-     * @return {Object|undefined} deps - a standard dependencies object
+     * @param {*} deps                  - the dependencies to normalize into an `Object`
+     * @returns {Object|undefined} deps - a standard dependencies object
      */
     function normalizeDeps (deps) {
         if ( ! deps ) return;
@@ -526,7 +534,8 @@
             // convert the dependecies inside it to `Array`s
             _deps.mixins = toArray(deps.mixins);
             _deps.widgets = toArray(deps.widgets);
-        } else {
+        }
+        else {
             // otherwise, it's just a list of mixins name, just copy it
             _deps.mixins = toArray(deps);
         }
@@ -541,7 +550,7 @@
      * @param proto {Function|Object}      - a constructor or an object to use as the top level prototype
      * @param [_extends] {Function|Object} - a constructor of a class to inherit from or simply an object to add to the prototype chain
      * @param [as_constructor] {Boolean}   - whether to return the new created class' constructor or instance
-     * @return created {Function|Object}   - the new created class constructor or its instance
+     * @returns created {Function|Object}  - the new created class constructor or its instance
      */
     function Create (proto, _extends, as_constructor) {
         var is_proto_f = isFunc(proto),
@@ -571,8 +580,8 @@
      * If there's no match, prefixed or not, returns `null`.
      * Can also be used to check for the support of that CSS feature in current user-agent.
      *
-     * @param {String} prop           - an un-prefixed name of a style property
-     * @return {String|null} prefixed - the matching name of this property for the current user-agent
+     * @param {String} prop            - an un-prefixed name of a style property
+     * @returns {String|null} prefixed - the matching name of this property for the current user-agent
      */
     function getStyleProperty (prop) {
         var style = _window.document.body.style,
@@ -615,9 +624,9 @@
     /**
      * Checks if the first element contains the second element.
      *
-     * @param a {HTMLElement}      - container element
-     * @param b {HTMLElement}      - contained element
-     * @return contained {boolean} - whether container contains contained
+     * @param {HTMLElement} a       - container element
+     * @param {HTMLElement} b       - contained element
+     * @returns {boolean} contained - whether container contains contained
      */
     function contains (a, b) {
         return b && (a.contains ?
@@ -629,9 +638,9 @@
      *
      * __note__: if `child` is not child of `parent` then the returned result will show only `0`s.
      *
-     * @param child {HTMLElement}  - child element to get its offset
-     * @param parent {HTMLElement} - parent element to use as relative offset parent
-     * @return offset {Object}     - an object with `x` and `y` keys and `Number`s as values representing offset in pixels.
+     * @param {HTMLElement} child  - child element to get its offset
+     * @param {HTMLElement} parent - parent element to use as relative offset parent
+     * @returns {Object} offset    - an object with `x` and `y` keys and `Number`s as values representing offset in pixels.
      */
     function getOffsetOf (child, parent) {
         var result = { x: 0, y: 0 };
@@ -688,10 +697,10 @@
          * or `uijet` by default.
          * If `context` is supplied then uses it to bind all the properties of `props` to it.
          *
-         * @param props {Object}     - the properties to mix-in to the host
-         * @param [host] {Object}    - host object to add these properties to, can be skipped by passing `null`
-         * @param [context] {Object} - a context object to bind the mixed-in properties to
-         * @return this {Object}
+         * @param {Object} props     - the properties to mix-in to the host
+         * @param {Object} [host]    - host object to add these properties to, can be skipped by passing `null`
+         * @param {Object} [context] - a context object to bind the mixed-in properties to
+         * @returns {Object} this
          */
         use                 : function (props, host, context) {
             // get the host object or use `uijet`
@@ -712,10 +721,10 @@
          * Defines a new widget class.
          * This class can later be instantiated in the UI or re-used as a dependency.
          *
-         * @param type {String}                - this widget's type
-         * @param props {Object}               - properties defined by this widget
-         * @param [deps] {String|Array|Object} - dependencies for this widget
-         * @return this {Object}
+         * @param {String} type                - this widget's type
+         * @param {Object} props               - properties defined by this widget
+         * @param {String|Array|Object} [deps] - dependencies for this widget
+         * @returns {Object} this
          */
         Widget              : function (type, props, deps) {
             var _deps = normalizeDeps(deps);
@@ -730,9 +739,9 @@
         /**
          * Gets a mixin by name or defines a new mixin for widgets.
          *
-         * @param name {String}    - name of the mixin to get/define
-         * @param [props] {Object} - properties defined by this mixin
-         * @return this|mixin {Object}
+         * @param {String} name    - name of the mixin to get/define
+         * @param {Object} [props] - properties defined by this mixin
+         * @returns {Object} this|mixin
          */
         Mixin               : function (name, props) {
             if ( arguments.length === 1 ) {
@@ -749,9 +758,9 @@
          * * String: Gets an adapter by this name
          * * Object: Defines a new adapter that will be added at the top of every widget and overrides everything else
          *
-         * @param name {String|Object} - a name of an existing or a new adapter or properties for a `TopAdapter` definition
-         * @param [props] {Object}     - properties of the new adapter
-         * @return this|adapter {Object}
+         * @param {String|Object} name - a name of an existing or a new adapter or properties for a `TopAdapter` definition
+         * @param {Object} [props]     - properties of the new adapter
+         * @returns {Object} this|adapter
          */
         Adapter             : function (name, props) {
             if ( arguments.length === 1 ) {
@@ -772,9 +781,9 @@
          *
          * __note__: the config of this declaration is copied to every generated instance so make sure you don't leak references.
          *
-         * @param name {String}        - identifier for this widget factory
-         * @param declaration {Object} - a viable object for `uijet.declare()`
-         * @return this {Object}
+         * @param {String} name        - identifier for this widget factory
+         * @param {Object} declaration - a viable object for `uijet.declare()`
+         * @returns {Object} this
          */
         Factory             : function (name, declaration) {
             widget_factories[name] = function (config) {
@@ -791,10 +800,10 @@
         /**
          * Gets a resource instance by name or registers a new resource instance.
          *
-         * @param name {String}            - identifier for that resource class
-         * @param [resource] {Object}      - this resource's constructor
-         * @param [initial] {Object|Array} - initial data for the generated instance
-         * @return this|resource_instance {Object}
+         * @param {String} name            - identifier for that resource class
+         * @param {Object} [resource]      - this resource's constructor
+         * @param {Object|Array} [initial] - initial data for the generated instance
+         * @returns {Object} this|resource_instance
          */
         Resource            : function (name, resource, initial) {
             if ( arguments.length === 1 ) {
@@ -810,33 +819,32 @@
          * 
          * @param {String} name   - identifier for this view
          * @param {Object} widget - View widget instance to register as a view
-         * @return {*} this
+         * @returns {Object} this
          */
         View                : function (name, widget) {
             views[name] = widget;
             return this;
         },
-        // ### uijet.init
-        // @sign: init([options])  
-        // @return: uijet
-        //
-        // Initialize uijet.  
-        // Defines all required and unimplemented methods, connects it to a template engine
-        // and starts all instances of predefined widgets in the app.  
-        // options:
-        //
-        // * __element__: selector for the containing `HTMLElement` of the application. defualt is 'body'.
-        // * __methods__: `object` of methods that will be copied into uijet. Required.
-        // * __methods_context__: context object to be used for binding the execution of the above mentioned methods to.
-        // * __engine__: function that generates the HTML,
-        //           basically a wrapper for the given template engine's render method. Required.
-        // * __wigets__: widget definitions to be used by uijet.
-        // * __animation_type__: default type of animation to be used across the app. default is 'slide'.
-        // * __parse__: a flag instructing uijet to parse the HTML to look for widget definitions. Default is `false`.
-        // * __dont_start__: a flag instructing uijet not to run `startup` as a callback to init. Default is `false`.
-        // * __pre_startup__: a callback to run synchronously in the beginning of `startup`.
-        // * __submit_handled__: whether your code or some other 3rd party (e.g. Sammy.js) is handling routing of submit
-        //                      events. Default is `false`.
+        /**
+         * Initializes and starts the uijet sandbox and all the declared widgets.
+         * This also triggers the import and injection of all required modules 
+         * that haven't been loaded yet.
+         * 
+         * @param {Object} [options] - configuration object for uijet
+         * @returns {Object} this
+         * 
+         * Valid options:
+         * 
+         * * __element__: {String|HTMLElement} the container element of the application. Defualts to `'body'`.
+         * * __dont_cover__: {Boolean} whether to instruct the app's container to stretch across the entire viewport. Defaults to `false`.
+         * * __dont_start__: {Boolean} whether to call `uijet.startup()` and kick-start the UI. Defaults to `false`.
+         * * __dont_wake__: {Boolean} whether to call `wake()` on all top level widgets. Defaults to `false`.
+         * * __pre_startup__: {Function} optional hook for running logic before uijet starts up.
+         * * __animation_type__: {String} default type of animation to be used across the app. Defaults to `'slide'` (what else, Rufus?).
+         * * __widgets__: {Array} optional list of widget declarations.
+         * * __route_prefix__: {String} optional prefix for routes to be used when creating those automatically from widget's IDs.
+         * * __route_suffix__: {String} As above, only suffix.
+         */
         init                : function (options) {
             // wrap the actuall initialization function
             var _init = function (_options) {
@@ -845,14 +853,14 @@
                     k, task, q;
                 this.options = _options || {};
                 // set top container
-                this.$element = this.$(_options && _options.element || 'body');
+                this.$element = this.$(this.options.element || 'body');
                 this.$element.addClass('uijet_app');
 
                 //TODO: this should be either removed or extended for all modern devices
                 // sniff for iPad UA and perform optimizations accordingly
                 this.isiPad();
                 // unless requested by the user
-                if ( ! (options && options.dont_cover) ) {
+                if ( ! this.options.dont_cover ) {
                     // make the app contaier cover the entire viewport
                     this.$element.addClass('cover');
                 }
@@ -870,21 +878,26 @@
                     // set default animation type
                     this.options.animation_type = _options.animation_type || 'slide';
 
+                    // check the init queue for deferred tasks
                     if ( q = this.init_queue.length ) {
                         while ( q-- ) {
                             task = this.init_queue[q];
+                            // each task should be a `function` that takes a deferred object and returns a promise
                             if ( isFunc(task) ) {
                                 this.init_queue[q] = task.call(this, uijet.Promise());
                             }
                         }
                     }
+                    // no tasks in queue
                     else {
                         this.init_queue = [{}];
                     }
 
+                    // after all tasks resolve
                     this.whenAll( this.init_queue )
                         .then(function () {
                             // build and init declared widgets
+                            // notice that here all modules are already loaded so this will run through
                             that.start(declared_widgets, true);
 
                             //when all declared widgets are initialized, set `uijet.initialized` to `true`
@@ -892,9 +905,11 @@
                             // kick-start the GUI - unless ordered not to
                             _options.dont_start || that.startup();
                         });
-                } else {
+                }
+                // no options given
+                else {
                     this.initialized = true;
-                    // no options - kick-start
+                    // kick-start
                     this.startup();
                 }
                 return this;
@@ -908,13 +923,15 @@
             // and initialization will start when done
             return this.importModules(declared_widgets, _init.bind(this, options));
         },
-        // ### uijet._define
-        // @sign: _define(name, props, [deps])  
-        // @return: uijet
-        //
-        // Caches a definition of a widget inside uijet,
-        // using `name` as the key and `props` as the definition.  
-        // Optional `deps` argument can be supplied for defining this widget on top of mixins and/or other widgets.
+        /**
+         * Caches a definition of a widget in uijet.
+         * 
+         * @param {String} _name   - identifier for the widget
+         * @param {Object} _props  - the widget's prototype
+         * @param {Object} [_deps] - dependencies for this widget (widgets and mixins)
+         * @returns {Object} this
+         * @private
+         */
         _define             : function (_name, _props, _deps) {
             widget_definitions[_name] = {
                 proto   : Create(_props, true),
@@ -922,11 +939,15 @@
             };
             return this;
         },
-        // ### uijet._generate
-        // @sign: _generate(_props, [_mixins], [_widgets])  
-        // @return: widget_class
-        //
-        // Generate a widget class using `Create` with `uijet.BaseWidget` as the base prototype.
+        /**
+         * Generates a widget class on top of @see BaseWidget.
+         * 
+         * @param {Object} _props           - this widget's prototype
+         * @param {String|Array} [_mixins]  - mixin dependencies
+         * @param {String|Array} [_widgets] - widget dependencies
+         * @returns {Function} class        - the generated widget class
+         * @private
+         */
         _generate           : function (_props, _mixins, _widgets) {
             // create the base class
             var _class = this.BaseWidget,
@@ -977,22 +998,27 @@
             }
             return _class;
         },
-        // ## uijet._start
-        // @sign: _start(widget)  
-        // @return: deferred_start OR uijet
-        //
-        // Performs the work for the `uijet.start` API call.
+        /**
+         * Performs all the work for @see uijet.start.
+         * 
+         * @param {Object} _widget                - a widget declaration
+         * @param {Boolean} [_skip_import]        - whether to skip module import. Defaults to falsy.
+         * @returns {Promise|Object} promise|this - a promise object if not skipping import, otherwise `this`
+         * @private
+         */
         _start              : function (_widget, _skip_import) {
             var that = this,
                 _factory = _widget.factory,
                 _config = _widget.config,
                 _type, _dfrd_start, _self, mixedin_type, _w, l, _d, _c, _mixins, _adapters, _widgets;
+            // if this is a  cached factory declaration
             if ( _factory && widget_factories[_factory] ) {
+                // use it to generate an instance's declaration
                 _widget = widget_factories[_factory](_config);
             }
             _type = _widget.type;
             _config = _widget.config;
-            // if not `true` then import dependencies first and then do the starting
+            // if falsy then import dependencies first and then do the starting
             if ( ! _skip_import ) {
                 _dfrd_start = this.Promise();
                 // the import's callback
@@ -1004,7 +1030,9 @@
                 // do import
                 this.importModules([_widget], _self);
                 return _dfrd_start.promise();
-            } else {
+            }
+            // skip import
+            else {
                 // do start  
                 // if we have mixins configured to mix
                 if ( _mixins = toArray(_config.mixins) ) {
@@ -1033,7 +1061,8 @@
                         // and cache it
                         widget_mixedin_classes[mixedin_type] = _c;
                     }
-                } else {
+                }
+                else {
                     // just get the stored widget class definition
                     _c = widget_classes[_type];
                 }
@@ -1059,7 +1088,7 @@
         },
         // ### uijet.register
         // @sign: register(widget)  
-        // @return: uijet
+        // @returns: uijet
         //
         // Registers a widget into uijet's widgets tree.
         register            : function (widget) {
@@ -1157,7 +1186,7 @@
         },
         // ## uijet.unregister
         // @sign: unregister(widget)  
-        // @return: uijet
+        // @returns: uijet
         //
         // Unregisters a widget from uijet's widgets tree.
         unregister          : function (widget) {
@@ -1176,7 +1205,7 @@
         },
         // ## uijet.declare
         // @sign: declare(widgets)  
-        // @return: uijet
+        // @returns: uijet
         //
         // Declare one or more widgets that will be started once the app is initialized.  
         // `widgets` can be either an `Object` containing a widget's declaration (_type_ and _config_)
@@ -1184,14 +1213,15 @@
         declare             : function (_widgets) {
             if ( isObj(_widgets) ) {
                 declared_widgets.push(_widgets);
-            } else if ( isArr(_widgets) ) {
+            }
+            else if ( isArr(_widgets) ) {
                 declared_widgets = declared_widgets.concat(_widgets);
             }
             return this;
         },
         // ## uijet.start
         // @sign: start(widget)  
-        // @return: promise OR uijet
+        // @returns: promise OR uijet
         //
         // Constructs and initializes an instance of a widget using a cached definition.  
         // If defined AMD style it will load all dependencies first.  
@@ -1205,7 +1235,7 @@
         //      * __adapters__: a list of names of mixins to add to this instance.
         //
         // @sign: start(widgets)  
-        // @return: promise
+        // @returns: promise
         //
         // Accepts an `Array` of widgets definitions and starts them one by one.  
         // Returns a promise that's resolved after all the `widgets` started successfully or
@@ -1234,7 +1264,7 @@
         },
         // ## uijet.importModules
         // @sign: importModules(widgets, callback)  
-        // @return: require() OR callback() OR uijet
+        // @returns: require() OR callback() OR uijet
         //
         // Takes an `Array` of widget definitions - `widgets` (type & config), derives the dependencies from
         // each definition into a list of modules to load.  
@@ -1286,7 +1316,7 @@
         },
         // ## uijet.startup
         // @sign: startup()  
-        // @return: uijet
+        // @returns: uijet
         //
         // Starts up uijet and publishes this event across the app.  
         // If the `pre_startup` callback is defined it will run in the beginning.  
@@ -1309,7 +1339,7 @@
         },
         // ## uijet.wakeContained
         // @sign: wakeContained(id, [context])  
-        // @return: deferred_widgets
+        // @returns: deferred_widgets
         //
         // Takes an `id` of a widget and wakes all its contained widgets.  
         // Takes an options context object as a second argument.  
@@ -1330,7 +1360,7 @@
         },
         // ## uijet.sleepContained
         // @sign: sleepContained(id)  
-        // @return: uijet
+        // @returns: uijet
         //
         // Takes an `id` of a widget and sleeps all its contained widgets.
         sleepContained      : function (id) {
@@ -1343,7 +1373,7 @@
         },
         // ## uijet.destroyContained
         // @sign: destroyContained(id)  
-        // @return: uijet
+        // @returns: uijet
         //
         // Takes an `id` of a widget and destroys all its contained widgets.
         destroyContained    : function (id) {
@@ -1410,7 +1440,7 @@
         // # -NOT IMPLEMENTED-
         // ## uijet.publish
         // @sign: publish(topic, [data])  
-        // @return: uijet
+        // @returns: uijet
         //
         // Publish a custom event/message across the app.  
         // Generally takes a `string` `topic` and `data` is an optional extra argument passed to event listeners.  
@@ -1421,7 +1451,7 @@
         // # -NOT IMPLEMENTED-
         // ## uijet.subscribe
         // @sign: subscribe(topic, handler, [context])
-        // @return: uijet
+        // @returns: uijet
         //
         // Subscribe an event handler to a custom event/message in app-wide context.  
         // Generally takes a `string` `topic` and a `handler` `function` to be called once `topic` is published.  
@@ -1435,7 +1465,7 @@
         // # -NOT IMPLEMENTED-
         // ## uijet.unsubscribe
         // @sign: unsubscribe(topic, [handler], [context])  
-        // @return: uijet
+        // @returns: uijet
         //
         // Remove a subscription of an event handler to a custom event/message.  
         // If just the `topic` is supplied then all handlers subscribed to it will be removed.  
@@ -1447,7 +1477,7 @@
         // # -NOT IMPLEMENTED-
         // ## uijet.setRoute
         // @sign: setRoute(widget, [route], [callback])  
-        // @return: uijet
+        // @returns: uijet
         //
         // Sets a route in the app that will call the widget's run method.  
         // If `route` is NOT supplied then the route is taken using `widget.getRoute()`.  
@@ -1462,7 +1492,7 @@
         // # -NOT IMPLEMENTED-
         // ## uijet.unsetRoute
         // @sign: unsetRoute(widget, [route])  
-        // @return: uijet
+        // @returns: uijet
         //
         // Removes a set route from the routes registry.  
         // Arguments can be supplied for all cases as explained for `uijet.setRoute` above.
@@ -1473,7 +1503,7 @@
         // # -NOT IMPLEMENTED-
         // ## uijet.runRoute
         // @sign: runRoute(route, [is_silent])  
-        // @return: uijet
+        // @returns: uijet
         //
         // Runs a set route.  
         // The second `is_silent` argument can be used to differentiate between 2 types of routing:
@@ -1487,7 +1517,7 @@
 
         // ## uijet.isiPad
         // @sign: isiPad()  
-        // @return: uijet
+        // @returns: uijet
         //
         // Sniffs the userAgent for an iPad.  
         // If true then handles all iPad related actions,
@@ -1505,7 +1535,7 @@
         },
         // ## uijet.switchView
         // @sign: switchView(view)  
-        // @return: uijet
+        // @returns: uijet
         //
         // Takes a view widget and switches the current view with it.  
         // Most important, this method calls the `sleep` method of the current view.
@@ -1520,7 +1550,7 @@
         },
         // ## uijet.switchLayer
         // @sign: switchLayer(widget)  
-        // @return: uijet
+        // @returns: uijet
         //
         // Takes a widget and makes sure all its siblings, who share the same direct parent DOM Node, awake
         // and are set to `current` state, do not have the `current` class set on their top element and their
@@ -1543,7 +1573,8 @@
                             if ( sibling.options.keep_layer_awake ) {
                                 sibling.options.state = 'awake';
                                 $top.removeClass('current');
-                            } else {
+                            }
+                            else {
                                 sibling.sleep();
                             }
                         }
@@ -1556,7 +1587,7 @@
         },
         // ## uijet.buildContext
         // @sign: buildContext(route, args_array)  
-        // @return: context
+        // @returns: context
         //
         // Builds a context `Object` from the returned arguments of a route.  
         // Named parameters in `route` are indexed in the context obejct by their name.  
@@ -1574,11 +1605,13 @@
                     // then add it to the context by name
                     context[match[1]] = args_array.shift();
                     n += 1;
-                } else if ( ~ part.indexOf('(') ) {
+                }
+                else if ( ~ part.indexOf('(') ) {
                     // if it's unnamed then add it by its index in `args_array`
                     context[n] = args_array.shift();
                     n += 1;
-                } else if ( part[0] == '*' ) {
+                }
+                else if ( part[0] == '*' ) {
                     splat_parts = args_array.shift().split('/');
                     while ( part = splat_parts.shift() ) {
                         context[n] = part;

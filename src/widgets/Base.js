@@ -11,7 +11,12 @@
     var Object = _window.Object,
         // cache the utilities namespace
         Utils = uijet.Utils,
-        // constructor for BaseWidget
+        /**
+         * Constructor for BaseWidget
+         * 
+         * @constructor
+         * @class BaseWidget
+         */
         Widget = function () {},
         arraySlice = _window.Array.prototype.slice,
         SUBSTITUTE_RE = /\{([^\s\}]+)\}/g,
