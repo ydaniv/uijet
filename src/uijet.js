@@ -1,4 +1,4 @@
-/**!
+/*!
  * UIjet UI Framework
  * @version 0.0.10
  * @license BSD License (c) copyright Yehonatan Daniv
@@ -1001,34 +1001,34 @@
         /**
          * Performs all the work for @see uijet.start.
          * 
-         * @param {Object} _widget                - a widget declaration
-         * @param {Boolean} [_skip_import]        - whether to skip module import. Defaults to falsy.
+         * @param {Object} widget                - a widget declaration
+         * @param {Boolean} [skip_import]        - whether to skip module import. Defaults to falsy.
          * @returns {Promise|Object} promise|this - a promise object if not skipping import, otherwise `this`
          * @private
          */
-        _start              : function (_widget, _skip_import) {
+        _start              : function (widget, skip_import) {
             var that = this,
-                _factory = _widget.factory,
-                _config = _widget.config,
+                _factory = widget.factory,
+                _config = widget.config,
                 _type, _dfrd_start, _self, mixedin_type, _w, l, _d, _c, _mixins, _adapters, _widgets;
             // if this is a  cached factory declaration
             if ( _factory && widget_factories[_factory] ) {
                 // use it to generate an instance's declaration
-                _widget = widget_factories[_factory](_config);
+                widget = widget_factories[_factory](_config);
             }
-            _type = _widget.type;
-            _config = _widget.config;
+            _type = widget.type;
+            _config = widget.config;
             // if falsy then import dependencies first and then do the starting
-            if ( ! _skip_import ) {
+            if ( ! skip_import ) {
                 _dfrd_start = this.Promise();
                 // the import's callback
                 _self = function () {
-                    that._start(_widget, true);
+                    that._start(widget, true);
                     _dfrd_start.resolve();
                     return this;
                 };
                 // do import
-                this.importModules([_widget], _self);
+                this.importModules([widget], _self);
                 return _dfrd_start.promise();
             }
             // skip import
@@ -1219,9 +1219,21 @@
          * Caches widget declarations before uijet is initialized, 
          * for lazy starting them at the end of its initialization.
          * 
+         * It's best to declare widgets in the order of their appearance
+         * in the widgets tree (usually maps one-to-one to the DOM tree), so that
+         * a widget is always declared before its contained widgets are declared, and so on.
+         * 
+         * In some cases it's a must to declare widgets in a specific order ( @see position ).
+         * 
          * A declaration object usually contains `type` and `config` properties.
          * It may also contain a `factory` property, instead of the `type` one, if
          * this is an instance that's using a pre-declared widget factory.
+         * 
+         * * `type`: a `String` that identifies a widget class created using `uijet.Widget(type, ...)`.
+         * * `factory`: a `String` that identifies a widget factory created using `uijet.Factory(factory, ...)`.
+         * * `config`: an `Object` that is used as the widget's `options`.
+         * 
+         * __note__: For valid instance options see related module.
          * 
          * @param {Object|Array} declarations - a single declaration or a list of declaration objects
          * @returns {Object} this
@@ -1235,48 +1247,43 @@
             }
             return this;
         },
-        // ## uijet.start
-        // @sign: start(widget)  
-        // @returns: promise OR uijet
-        //
-        // Constructs and initializes an instance of a widget using a cached definition.  
-        // If defined AMD style it will load all dependencies first.  
-        // This instance will be initialized and registered into uijet at the end.  
-        // `widget` is an `Objcet` representing a widget's declaration, which contains the following key:  
-        // 
-        // * `type`: a string representing the widget's type.  
-        // * `config`: additional options to add to that instance:
-        //TODO: continue the list below
-        //      * __mixins__: a `String` name of a mixin or an `Array` of names of mixins to add to this instance build.
-        //      * __adapters__: a list of names of mixins to add to this instance.
-        //
-        // @sign: start(widgets)  
-        // @returns: promise
-        //
-        // Accepts an `Array` of widgets definitions and starts them one by one.  
-        // Returns a promise that's resolved after all the `widgets` started successfully or
-        // rejects this promise if there's an error.
-        start               : function (_widgets, _skip_import) {
+        /**
+         * Ad-hoc constructs and initializes widget instance(s) from a given widget declaration(s).
+         * For explanations on widget declarations @see uijet.declare.
+         * Returns a @see Promise that is resolved once all declared instances finished initializing,
+         * or gets rejected if something fails.
+         * 
+         * `skip_import` is used to forcibly skip modules importing, so this method
+         * will complete synchronously, otherwise it will check for missing modules to import.
+         * Usually you should _not_ have to specify it at all, unless you know what you're doing
+         * and want to optimize this call a bit.
+         *
+         * @param {Object|Array} declarations     - a single declaration or a list of declaration objects
+         * @param {Boolean} [skip_import]         - whether to skip module import. Defaults to falsy.
+         * @returns {Promise|Object} promise|this - a promise object if not skipping import, otherwise `this`
+         * @throws {Error}                        - if `declarations` is neither an `Array` nor an `Object`
+         */
+        start               : function (declarations, skip_import) {
             var i, dfrd_starts, _c;
-            // if `_widgets` is an `Object`
-            if ( isObj(_widgets) ) {
+            // if `declarations` is an `Object`
+            if ( isObj(declarations) ) {
                 // do the starting
-                return this._start(_widgets, _skip_import);
+                return this._start(declarations, skip_import);
             }
             // if it's an `Array`
-            else if ( isArr(_widgets) ) {
+            else if ( isArr(declarations) ) {
                 i = 0;
                 dfrd_starts = [];
                 // loop over the widget declarations in it
-                while ( _c = _widgets[i] ) {
+                while ( _c = declarations[i] ) {
                     // and start every one of them
-                    dfrd_starts[i] = this._start(_c, _skip_import);
+                    dfrd_starts[i] = this._start(_c, skip_import);
                     i+=1;
                 }
-                // return a promise of all `_widgets` started
+                // return a promise of all `declarations` started
                 return this.whenAll(dfrd_starts);
             }
-            throw new Error('`widgets` must be either an Object or an Array. Instead got: ' + objToString.call(_widgets));
+            throw new Error('`widgets` must be either an Object or an Array. Instead got: ' + objToString.call(declarations));
         },
         // ## uijet.importModules
         // @sign: importModules(widgets, callback)  
