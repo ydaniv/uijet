@@ -4,7 +4,7 @@ define([
     'uijet_dir/modules/pubsub/eventbox',
     'uijet_dir/modules/promises/q',
     'uijet_dir/modules/xhr/zepto'
-], function (uijet, $, Ebox, Q, global) {
+], function (uijet, $, Ebox, Q) {
     
     var MyApp =  {
             init            : function (options) {

@@ -7,6 +7,6 @@ requirejs.config({
         q           : 'lib/q'
     }
 });
-requirejs(['myapp'], function (myApp) {
+requirejs(['app'], function (myApp) {
     myApp.init();
 });
