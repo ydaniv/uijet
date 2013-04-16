@@ -16,7 +16,7 @@
                 promise = uijet.Utils.returnOf(this.options.promise, this, context);
                 return uijet.when(promise).then(function (value) {
                     _super.call(this, value);
-                });
+                }.bind(this));
             }
             else {
                 return _super.apply(this, arguments);
