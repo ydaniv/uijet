@@ -43,6 +43,12 @@
         widget_factories = {},
         // constants
         TOP_ADAPTER_NAME = 'TopAdapter',
+        // modules paths
+        import_paths = {
+            widgets : 'uijet_dir/widgets/',
+            adapters: 'uijet_dir/adapters/',
+            mixins  : 'uijet_dir/mixins/'
+        },
         /**
          * Searches for a prefixed name of `name` inside `obj`.
          *
@@ -532,12 +538,13 @@
         // if `deps` is an `Object`
         if ( deps_as_obj ) {
             // convert the dependecies inside it to `Array`s
-            _deps.mixins = toArray(deps.mixins);
-            _deps.widgets = toArray(deps.widgets);
+            _deps.mixins = toArray(deps.mixins) || [];
+            _deps.widgets = toArray(deps.widgets) || [];
         }
         else {
             // otherwise, it's just a list of mixins name, just copy it
             _deps.mixins = toArray(deps);
+            _deps.widgets = [];
         }
         return _deps;
     }
@@ -727,13 +734,27 @@
          * @returns {Object} this
          */
         Widget              : function (type, props, deps) {
-            var _deps = normalizeDeps(deps);
+            var _deps = normalizeDeps(deps), dfrd;
             // Cache the widget's definition for JIT creation
             this._define(type, props, _deps);
             // create and cache the class
-            widget_classes[type] = _deps ?
-                this._generate(props, _deps.mixins, _deps.widgets) :
-                this._generate(props);
+            // if we have dependencies
+            if ( _deps ) {
+                dfrd = uijet.Promise();
+                // make sure they're all loaded
+                this.importModules(_deps,
+                    function () {
+                        widget_classes[type] = this._generate(props, _deps.mixins, _deps.widgets);
+                        dfrd.resolve();
+                    }.bind(this)
+                );
+                this.init_queue.push(function () {
+                    return dfrd.promise();
+                });
+            }
+            else {
+                widget_classes[type] = this._generate(props);
+            }
             return this;
         },
         /**
@@ -921,7 +942,7 @@
             }
             // import all the modules we need (Mixins, Widgets, Adapters, 3rd party...)  
             // and initialization will start when done
-            return this.importModules(declared_widgets, _init.bind(this, options));
+            return this.importModules(this.extractDependencies(declared_widgets), _init.bind(this, options));
         },
         /**
          * Caches a definition of a widget in uijet.
@@ -941,11 +962,14 @@
         },
         /**
          * Generates a widget class on top of @see BaseWidget.
+         * Assumes all given dependencies (mixins and widgets) are already loaded
+         * and registered with uijet.
          * 
          * @param {Object} _props           - this widget's prototype
          * @param {String|Array} [_mixins]  - mixin dependencies
          * @param {String|Array} [_widgets] - widget dependencies
          * @returns {Function} class        - the generated widget class
+         * @throws {Error}                  - missing widget/mixin dependency
          * @private
          */
         _generate           : function (_props, _mixins, _widgets) {
@@ -953,7 +977,7 @@
             var _class = this.BaseWidget,
                 _mixins_copy = toArray(_mixins),
                 _mixins_to_use = [],
-                _mixin, _widget, _widgets_copy;
+                _mixin, _widget, _widgets_copy, def, m;
             // if we have widgets to build on then mix'em
             if ( _widgets && _widgets.length ) {
                 // copy widgets dependencies
@@ -961,14 +985,17 @@
                 // loop over them
                 while ( _widget = _widgets_copy.shift() ) {
                     // if they're defined
-                    if ( widget_definitions[_widget] ) {
+                    if ( def = widget_definitions[_widget] ) {
                         // add them to the chain
                         // just like stacking turtles
-                        _class = Create(widget_definitions[_widget].proto, _class, true);
+                        _class = Create(def.proto, _class, true);
                         // check if they have dependencies
-                        if ( widget_definitions[_widget].deps && widget_definitions[_widget].deps.mixins ) {
-                            _mixins_to_use = toArray(widget_definitions[_widget].deps.mixins);
+                        if ( def.deps && def.deps.mixins ) {
+                            _mixins_to_use = toArray(def.deps.mixins);
                         }
+                    }
+                    else {
+                        throw new Error('Missing widget dependency: ' + _widget);
                     }
                 }
             }
@@ -977,8 +1004,8 @@
             // if we have mixins to mix then mix'em
             if ( _mixins_copy ) {
                 // if a widget in dependencies had mixins in its dependencies
-                if ( _mixins_to_use.length ) {
-                    for ( var m = _mixins_to_use.length; _mixin = _mixins_to_use[--m]; ) {
+                if ( m = _mixins_to_use.length ) {
+                    for ( ; _mixin = _mixins_to_use[--m]; ) {
                         // add every mixin form the parents' mixins that's not in the list to its beginning
                         if ( !~ _mixins_copy.indexOf(_mixin) ) {
                             _mixins_copy.unshift(_mixin);
@@ -988,12 +1015,15 @@
                 // copy mixins dependencies
                 _mixins_to_use = _mixins_copy;
             }
-            while ( _mixin = _mixins_to_use.shift() ) {
+            while ( m = _mixins_to_use.shift() ) {
                 // if they're defined
-                if ( mixins[_mixin] ) {
+                if ( _mixin = mixins[m] ) {
                     // add them to the chain
                     // stack those madafakas
-                    _class = Create(mixins[_mixin], _class, true);
+                    _class = Create(_mixin, _class, true);
+                }
+                else {
+                    throw new Error('Missing mixin dependency: ' + m);
                 }
             }
             return _class;
@@ -1028,7 +1058,7 @@
                     return this;
                 };
                 // do import
-                this.importModules([widget], _self);
+                this.importModules(this.extractDependencies([widget]), _self);
                 return _dfrd_start.promise();
             }
             // skip import
@@ -1285,6 +1315,42 @@
             }
             throw new Error('`widgets` must be either an Object or an Array. Instead got: ' + objToString.call(declarations));
         },
+        //TODO: add docs
+        extractDependencies : function (declarations) {
+            var deps = {
+                    widgets : [],
+                    mixins  : [],
+                    adapters: []
+                },
+                _w, _m, _m_type, _m_list;
+            for ( var i = 0 ; _w = declarations[i] ; i++ ) {
+                if ( _m_type = _w.type ) {
+                    // if this widget type wasn't loaded and isn't in the dependencies list then add it
+                    (widget_classes[_m_type] || ~ deps.widgets.indexOf(_m_type)) || deps.widgets.push(_m_type);
+                }
+                // check for adapters option
+                if ( _m_list = toArray(_w.config.adapters) ) {
+                    for ( var n = 0 ; _m = _m_list[n++] ; ) {
+                        // grab each one and add it if it wasn't loaded before and not already in the list
+                        (adapters[_m] || ~ deps.adapters.indexOf(_m)) || deps.adapters.push(_m);
+                    }
+                }
+                // check for mixins option and give it the same treatment like we did with adapters
+                if ( _m_list = toArray(_w.config.mixins) ) {
+                    for ( n = 0 ; _m = _m_list[n++] ; ) {
+                        (mixins[_m] || ~ deps.mixins.indexOf(_m)) || deps.mixins.push(_m);
+                    }
+                }
+            }
+            return deps;
+        },
+        /**
+         * Imports all missing modules
+         * 
+         * @param {Object} modules
+         * @param {Function} callback
+         * @returns {*}
+         */
         // ## uijet.importModules
         // @sign: importModules(widgets, callback)  
         // @returns: require() OR callback() OR uijet
@@ -1294,43 +1360,19 @@
         // At the end checks for any module that's not already loaded and loads them.  
         // If it needs to load anything it fires `callback` after load is finished,
         // If there's nothing to load or AMD isn't in use it returns the call to `callback` OR `uijet`.
-        importModules       : function (_widgets, callback) {
-            var deps = [],
-                // modules paths
-                widgets_prefix = 'uijet_dir/widgets/',
-                adapters_prefix = 'uijet_dir/adapters/',
-                mixins_prefix = 'uijet_dir/mixins/',
-                _w, _m, _m_type, _m_list;
-            // if using AMD
+        importModules       : function (modules, callback) {
+            var imports = [], m, l;
+            // if using an AMD loader
             if ( typeof _window.require == 'function' ) {
-                // iterate over list of widgets
-                for ( var i = 0 ; _w = _widgets[i] ; i++ ) {
-                    if ( _w.type ) {
-                        // build widget's path
-                        _m_type = widgets_prefix + _w.type;
-                        // if this widget type wasn't loaded and isn't in the dependencies list then add it
-                        (widget_classes[_w.type] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
-                    }
-                    // check for adapters option
-                    if ( _m_list = toArray(_w.config.adapters) ) {
-                        for ( var n = 0 ; _m = _m_list[n++] ; ) {
-                            // grab each one and add it if it wasn't loaded before and not already in the list
-                            _m_type = adapters_prefix + _m;
-                            (adapters[_m] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
-                        }
-                    }
-                    // check for mixins option and give it the same treatment like we did with adapters
-                    if ( _m_list = toArray(_w.config.mixins) ) {
-                        for ( n = 0 ; _m = _m_list[n++] ; ) {
-                            _m_type = mixins_prefix + _m;
-                            (mixins[_m] || ~ deps.indexOf(_m_type)) || deps.push(_m_type);
-                        }
-                    }
-                }
+                // create list of modules to import with paths prepended
+                for ( m in modules )
+                    if ( m in import_paths )
+                        for ( l = modules[m].length; l-- ; )
+                            imports.push(import_paths[m] + modules[m][l]);
                 // if there's anything to import
-                if ( deps.length ) {
+                if ( imports.length ) {
                     // import it
-                    return _window.require(deps, callback);
+                    return _window.require(imports, callback);
                 }
             }
             // if nothing to import or not using AMD
