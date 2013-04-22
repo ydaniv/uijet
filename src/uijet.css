@@ -349,15 +349,6 @@ video:focus {
     padding: 1em;
     cursor: pointer;
 }
-.uijet_form label {
-    display: block;
-    margin-bottom: 12px;
-    text-align: left;
-    font-size: 1.4em;
-}
-.uijet_form label.error {
-    margin-bottom: 0;
-}
 .uijet_list {
     width: 100%;
     list-style: none;
