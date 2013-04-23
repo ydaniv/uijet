@@ -86,12 +86,13 @@
                 if ( this._template_promise ) return this._template_promise;
                 // create a promise for retrieving all templates
                 var dfrd = uijet.Promise(), promise = dfrd.promise(),
+                    that = this,
                     // a stack for all template GET requests
                     requests = [],
                     // an error callback handler
                     failure = function (response) {
                         // tell the user we failed
-                        this.notify.apply(this, [true, 'fetchTemplate_error'].concat(uijet.Utils.toArray(arguments)));
+                        that.notify.apply(that, [true, 'fetchTemplate_error'].concat(uijet.Utils.toArray(arguments)));
                         // fail the whole fetching process
                         dfrd.reject();
                     },
@@ -100,7 +101,7 @@
                     },
                     partials = this.options.partials,
                     partials_dir = this.options.partials_dir || '',
-                    that = this, p;
+                    p;
                 // make sure we clear the promise from cache once it's done or failed
                 promise.then(clear_promise, clear_promise);
                 // cache the fetching promise
