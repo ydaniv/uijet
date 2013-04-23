@@ -227,7 +227,7 @@
                             // set `current_date`
                             this.current_date.setDate(+$selected.text());
                             // publish the 'picked' event
-                            this.publish(id + '.picked', this.current_date, true);
+                            uijet.publish(id + '.picked', this.current_date);
                         }
                     },
                     app_events  : {},
