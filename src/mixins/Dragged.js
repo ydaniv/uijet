@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet'], function (uijet) {
@@ -21,15 +20,19 @@
             this._super.apply(this, arguments);
 
             var cached_styles = ['width', 'height'],
-                use_translate = uijet.support.transform && ! this.options.dont_translate;
+                use_translate = uijet.support.transform && ! this.options.dont_translate,
+                clear_position = ! this.options.keep_position;
 
             this._use_translate = use_translate;
             // handle the cached style properties
             if ( use_translate ) {
                 cached_styles.push('top', 'left');
-                if ( this.options.drag_clone ) {
+                if ( clear_position ) {
                     cached_styles.push(style_prop);
                 }
+            }
+            else if ( clear_position ) {
+                cached_styles.push('top', 'left');
             }
             this._cached_drag_styles = cached_styles;
             return this;
@@ -416,11 +419,15 @@
         // Caches the top, left, height and width style properties of the given `el` element.
         _cacheStyle         : function (el) {
             var style = el.style,
-                i = 0, prop;
+                i = 0, prop, value;
             this.draggee_style_cache = {};
 
             for ( ; prop = this._cached_drag_styles[i++]; ) {
-                this.draggee_style_cache[prop] = style.getPropertyValue(prop);
+                value = style.getPropertyValue(prop);
+                if ( value == null ) {
+                    value = style[prop];
+                }
+                this.draggee_style_cache[prop] = value;
             }
             return this;
         },
