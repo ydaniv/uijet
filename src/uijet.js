@@ -942,7 +942,7 @@
             }
             // import all the modules we need (Mixins, Widgets, Adapters, 3rd party...)  
             // and initialization will start when done
-            return this.importModules(this.extractDependencies(declared_widgets), _init.bind(this, options));
+            return this.importModules(this._extractDependencies(declared_widgets), _init.bind(this, options));
         },
         /**
          * Caches a definition of a widget in uijet.
@@ -1058,7 +1058,7 @@
                     return this;
                 };
                 // do import
-                this.importModules(this.extractDependencies([widget]), _self);
+                this.importModules(this._extractDependencies([widget]), _self);
                 return _dfrd_start.promise();
             }
             // skip import
@@ -1124,7 +1124,8 @@
          * If not it climbs up the DOM tree looking for a `uijet_widget` class. The first
          * element's id that has this class is used as the container.
          * If none was found and it reached the `body` element then this instance will be
-         * registered as a top level widget.
+         * registered as a top level widget. This, for example, means that, unless configured
+         * not to, once uijet starts this widget will be awaken automatically.
          * 
          * @param {Object} widget - a widget's instance to register
          * @returns {Object} this
@@ -1226,9 +1227,9 @@
         },
         /**
          * Removes a widget from the uijet sandbox registry.
-         * This is usually triggered by a widget when its `desrtoy()` method is called.
+         * This is usually triggered by a widget when its `destroy()` method is called.
          * 
-         * @param {Object} widget - a widget's instance to uregister
+         * @param {Object} widget - a widget's instance to unregister
          * @returns {Object} this
          */
         unregister          : function (widget) {
@@ -1315,8 +1316,15 @@
             }
             throw new Error('`widgets` must be either an Object or an Array. Instead got: ' + objToString.call(declarations));
         },
-        //TODO: add docs
-        extractDependencies : function (declarations) {
+        /**
+         * Extracts widgets' dependencies modules to be imported from a list of 
+         * standard widget instance declarations ( @see uijet.declare ).
+         * 
+         * @param {Array} declarations  - 
+         * @returns {{widgets: Array, mixins: Array, adapters: Array}}
+         * @private
+         */
+        _extractDependencies: function (declarations) {
             var deps = {
                     widgets : [],
                     mixins  : [],
