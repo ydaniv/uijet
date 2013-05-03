@@ -734,23 +734,27 @@
          * @returns {Object} this
          */
         Widget              : function (type, props, deps) {
-            var _deps = normalizeDeps(deps), dfrd;
+            var _deps = normalizeDeps(deps);
             // Cache the widget's definition for JIT creation
             this._define(type, props, _deps);
             // create and cache the class
             // if we have dependencies
             if ( _deps ) {
-                dfrd = uijet.Promise();
-                // make sure they're all loaded
-                this.importModules(_deps,
-                    function () {
-                        widget_classes[type] = this._generate(props, _deps.mixins, _deps.widgets);
-                        dfrd.resolve();
-                    }.bind(this)
-                );
-                this.init_queue.push(function () {
-                    return dfrd.promise();
+                // defer the widget class definition till we have promises module loaded
+                // plus its dependencies are loaded
+                this.init_queue.push(function (deferred) {
+                    // make sure they're all loaded
+                    this.importModules(_deps,
+                        function () {
+                            widget_classes[type] = this._generate(props, _deps.mixins, _deps.widgets);
+                            deferred.resolve();
+                        }.bind(this)
+                    );
+                    return deferred.promise();
                 });
+                // setting a placeholder for this widget definition so that uijet
+                // will not get confused and try to load it from elsewhere, e.g. in `_extractDependencies()`
+                widget_classes[type] = true;
             }
             else {
                 widget_classes[type] = this._generate(props);
