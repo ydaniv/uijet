@@ -1,13 +1,9 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
             'uijet_dir/uijet',
-            'uijet_dir/widgets/Base',
-            'uijet_dir/widgets/Button',
             'uijet_dir/widgets/Pane',
-            'uijet_dir/widgets/List',
-            'uijet_dir/mixins/Floated'
+            'uijet_dir/widgets/List'
         ], function (uijet) {
             return factory(uijet);
         });
@@ -20,33 +16,85 @@
         return Object.prototype.toString.call(obj) == '[object Date]';
     }
 
-    uijet.Widget('DatepickerContainer', {
+    uijet.Widget('Datepicker', {
         options     : {
-            type_class  : ['uijet_pane', 'uijet_datepicker_container']
+            type_class  : ['uijet_pane', 'uijet_datepicker'],
+            sync        : true
         },
-        appear      : function () {
-            var offset, style;
-            if ( ! this.options.dont_fix_overflow ) {
-                offset = uijet.Utils.getOffsetOf(this.context.event.target, uijet.$element[0]);
-                style = this.$wrapper[0].style;
-                style.top = offset.y + 'px';
-                style.left = offset.x + 'px';
-            }
-            return this._super.apply(this, arguments);
-        },
-        disappear   : function () {
-            var style;
-            this._super.apply(this, arguments);
-            if ( ! this.options.dont_fix_overflow ) {
-                style = this.$wrapper[0].style;
-                style.removeProperty('top');
-                style.removeProperty('left');
-            }
+        prepareElement  : function () {
+            var $ = uijet.$,
+                id = this.id,
+                $el = this.$element,
+                datepiker_ops = this.options.datepicker || {},
+
+                // create all the elements we need to construct our datepicker
+                // here's our heading which states current month and year
+                $current_date = $('<h1/>', {
+                    'class' : 'uijet_datepicker_current_date'
+                }).appendTo($el),
+
+                // this is the prev month button
+                $prev = $('<span/>', {
+                    id      : id + '_prev',
+                    'class' : 'uijet_datepicker_arrow uijet_datepicker_prev'
+                }).prependTo($el),
+
+                // and this is the next month button
+                $next = $('<span/>', {
+                    id      : id + '_next',
+                    'class' : 'uijet_datepicker_arrow uijet_datepicker_next'
+                }).appendTo($el),
+
+                // and here is our list of dates
+                $dateslist = $('<ul/>', {
+                    id      : id + '_dateslist'
+                }).appendTo($el),
+
+                // configure our dates list widget
+                dateslist_config = {
+                    element     : $dateslist,
+                    container   : id,
+                    signals     : {
+                        pre_select  : function ($selected, e) {
+                            // if this date is disabled bail out
+                            if ( $selected.hasClass('disabled') ) {
+                                e.stopPropagation();
+                                return false;
+                            }
+                            // set `current_date`
+                            this.current_date.setDate(+$selected.text());
+                            // publish the 'picked' event
+                            uijet.publish(id + '.picked', this.current_date);
+                        }
+                    },
+                    app_events  : {},
+                    min_date    : datepiker_ops.min_date,
+                    max_date    : datepiker_ops.max_date
+                };
+
+            this._super();
+
+            this.subscribe(id + '_dateslist._update_current_date', function (text) {
+                $current_date.text(text);
+            });
+
+            // add user defined options to defaults for dates list
+            dateslist_config = uijet.Utils.extend(true, dateslist_config, datepiker_ops.dateslist || {});
+            // create the dates List
+            uijet.start({ type: 'DatepickerList', config: dateslist_config });
+            // create the next/prev buttons
+            uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
+                element     : $next,
+                id          : id + '_next',
+                container   : id
+            }, datepiker_ops.next || {}) });
+            uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
+                element     : $prev,
+                id          : id + '_prev',
+                container   : id
+            }, datepiker_ops.prev || {}) });
+
             return this;
-        },
-        sleep       : function () {
-            this.opened = false;
-            return this._super.apply(this, arguments);
         }
     });
 
@@ -93,8 +141,8 @@
             }
             return this;
         },
-        wake        : function () {
-            var html, i = 1,
+        datesOfMonth: function () {
+            var i = 1,
                 dates = [],
                 last_day = 31,
                 now = new Date(),
@@ -102,24 +150,35 @@
                 current_m = now.getMonth() + (this.month || 0),
                 current = new Date(current_y, current_m, (this.current_date || now).getDate()),
                 first = new Date(current_y, current_m, 1),
-                last = new Date(current_y, current_m, last_day),
-                day_offset = first.getDay(),
-                $dates, min_date, max_date;
+                last = new Date(current_y, current_m, last_day);
+
             this.current_date = current;
+            this.now = now;
+            this.day_offset = first.getDay();
+
             // find the last date of the month
-            while ( last.getMonth() > current_m ) {
+            while ( last.getMonth() > current_m )
                 last = new Date(current_y, current_m, --last_day);
-            }
+
             // create the list of dates
-            while ( i <= last_day ) {
+            while ( i <= last_day )
                 dates.push(i++);
-            }
+
+            return dates;
+        },
+        render      : function () {
+            var dates = this.datesOfMonth(),
+                html, $dates, min_date, max_date;
+            
             // create the HTML
             html = '<li>' + dates.join('</li><li>') + '</li>';
+
             // insert HTML
             this.$element.html(html);
+
             $dates = this.$element.children();
-            $dates.eq((this.current_date || now).getDate() - 1).addClass('selected');
+            // make current date selected
+            $dates.eq((this.current_date || this.now).getDate() - 1).addClass('selected');
 
             // handle special cases
             if ( max_date = this.options.max_date ) {
@@ -138,11 +197,11 @@
             // position the dates under the right days of the week using the offset
             this.$element[0]
                 .firstElementChild.style.marginLeft =
-                    day_offset * this.$element[0].firstElementChild.offsetWidth + 'px';
+                    this.day_offset * this.$element[0].firstElementChild.offsetWidth + 'px';
             // set current date title
             this.publish(
                 '_update_current_date',
-                current.toLocaleDateString()
+                this.current_date.toLocaleDateString()
                     // remove day of week
                     .replace(/^[\w]+,\s/, '')
                     // remove day of month
@@ -164,133 +223,5 @@
         }
     }, {
         widgets : ['List']
-    });
-
-    uijet.Widget('Datepicker', {
-        options : {
-            type_class: ['uijet_button','uijet_datepicker']
-        },
-        prepareElement  : function () {
-            var $ = uijet.$,
-                id = this.id,
-                $el = this.$element,
-                datepiker_ops = this.options.datepicker || {},
-                // create all the elements we need to construct our datepicker
-                // here is the Floated container
-                $container = $('<div/>', {
-                    id      : id + '_container'
-                }),
-                // here's our heading which states current month and year
-                $current_date = $('<h1/>', {
-                    'class' : 'uijet_datepicker_current_date'
-                }).appendTo($container),
-                // this is the prev month button
-                $prev = $('<span/>', {
-                    id      : id + '_prev',
-                    'class' : 'uijet_datepicker_arrow uijet_datepicker_prev'
-                }).prependTo($container),
-                // and this is the next month button
-                $next = $('<span/>', {
-                    id      : id + '_next',
-                    'class' : 'uijet_datepicker_arrow uijet_datepicker_next'
-                }).appendTo($container),
-                // and here is our list of dates
-                $dateslist = $('<ul/>', {
-                    id      : id + '_dateslist'
-                }).appendTo($container),
-                // lets configure our container widget
-                container_config = {
-                    element     : $container,
-                    container   : id,
-                    dont_wake   : true,
-                    sync        : true,
-                    app_events  : {
-                        // in order to stay as less obtrusive as possible sleep when this global event is triggered
-                        'app.clicked'   : function (_data) {
-                            if ( this.opened && (! _data || ! _data.id || ! ~ _data.id.indexOf(id)) ) {
-                                this.sleep();
-                            }
-                        }
-                    }
-                },
-                // configure our dates list widget
-                dateslist_config = {
-                    element     : $dateslist,
-                    container   : id + '_container',
-                    signals     : {
-                        pre_select  : function ($selected, e) {
-                            // if this date is disabled bail out
-                            if ( $selected.hasClass('disabled') ) {
-                                e.stopPropagation();
-                                return false;
-                            }
-                            // set `current_date`
-                            this.current_date.setDate(+$selected.text());
-                            // publish the 'picked' event
-                            uijet.publish(id + '.picked', this.current_date);
-                        }
-                    },
-                    app_events  : {},
-                    min_date    : datepiker_ops.min_date,
-                    max_date    : datepiker_ops.max_date
-                },
-                floated_index;
-            // prepare the element of the datepicker button
-            this._super();
-            // add user defined options to defaults for container
-            container_config = uijet.Utils.extend(true, container_config, datepiker_ops.container || {});
-            // add the waking event handler
-            container_config.app_events[id + '.clicked'] = function (data) {
-                this.opened = !this.opened;
-                this.opened ? this.wake(data) : this.sleep();
-            };
-            container_config.app_events[id + '_dateslist._update_current_date'] = function (text) {
-                $current_date.text(text);
-            };
-            // make sure the container is Floated
-            container_config.mixins = uijet.Utils.putMixin(container_config.mixins, 'Floated', -1);
-
-            // if user hasn't overridden `element` option
-            if ( $container === container_config.element ) {
-                // if specified by the user
-                if ( container_config.dont_fix_overflow ) {
-                    // build the datepicker inside the containing Button widget
-                    // this generates a cleaner and self contained DOM structure
-                    $container.appendTo($el);
-                    // if `float_top` option is not set
-                    if ( ! ('float_top' in container_config) ) {
-                        // set it to place the container below the parent button
-                        container_config.float_top = function () {
-                            return this.$wrapper[0].offsetParent.offsetHeight;
-                        }
-                    }
-                }
-                // otherwise
-                else {
-                    // build the datepicker in the app's top level element to fix the `overflow:hidden` on parent issue
-                    $container.appendTo(uijet.$element);
-                }
-            }
-            // create the container Pane
-            uijet.start({ type: 'DatepickerContainer', config: container_config });
-            // add user defined options to defaults for dates list
-            dateslist_config = uijet.Utils.extend(true, dateslist_config, datepiker_ops.dateslist || {});
-            // create the dates List
-            uijet.start({ type: 'DatepickerList', config: dateslist_config });
-            // create the next/prev buttons
-            uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
-                element     : $next,
-                id          : id + '_next',
-                container   : id + '_container'
-            }, datepiker_ops.next || {}) });
-            uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
-                element     : $prev,
-                id          : id + '_prev',
-                container   : id + '_container'
-            }, datepiker_ops.prev || {}) });
-            return this;
-        }
-    }, {
-        widgets : ['Button']
     });
 }));
