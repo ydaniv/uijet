@@ -1,12 +1,12 @@
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'spin'], function (uijet) {
-            return factory(uijet);
+        define(['uijet_dir/uijet', 'spin'], function (uijet, Spinner) {
+            return factory(uijet, Spinner);
         });
     } else {
-        factory(uijet);
+        factory(uijet, Spinner);
     }
-}(function (uijet) {
+}(function (uijet, Spinner) {
     uijet.Adapter('Spin', {
         setSpinner  : function (switch_on) {
             var spinner_defaults = {
