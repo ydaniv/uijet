@@ -8,7 +8,7 @@
     }
 }(function (uijet, Spinner) {
     uijet.Adapter('Spin', {
-        setSpinner  : function (switch_on) {
+        spin        : function () {
             var spinner_defaults = {
                     lines       : 12,
                     length      : 12,
@@ -22,16 +22,21 @@
                     className   : 'uijet_spin_spinner'
                 },
                 $el = this.$wrapper || this.$element;
-            if ( switch_on ) {
-                if ( this.spinner ) {
-                    this.spinner.spin($el[0]);
-                } else {
-                    this.spinner = new Spinner(uijet.Utils.extend(spinner_defaults, this.options.spinner_options || {})).spin($el[0]);
-                }
+
+            if ( this.spinner ) {
+                this.spinner.spin($el[0]);
             } else {
-                this.spinner && this.spinner.stop();
+                this.spinner = new Spinner(uijet.Utils.extend(spinner_defaults, this.options.spinner_options || {})).spin($el[0]);
             }
+
             return this;
+        },
+        spinOff     : function () {
+            this.spinner && this.spinner.stop();
+            return this;
+        },
+        spinToggle  : function (switch_on) {
+            return switch_on ? this.spin() : this.stop();
         }
     });
 }));
