@@ -15,6 +15,9 @@
         },
         setInitOptions  : function () {
             this._super();
+
+            this.options.disabled && this.disable();
+
             this.bind(this.options.click_event || uijet.support.click_events.full, this.click);
             return this;
         },
@@ -33,31 +36,45 @@
         },
         click           : function (e) {
             var routing = this.options.routing,
-                // user to disable `clicked` event
+                enabled = ! this.disabled,
+                _publish;
+            if ( enabled ) {
+                // allow user to disable `clicked` event
                 _publish = this.notify('pre_click', e);
-            if ( _publish !== false ) {
-                // if `data_url` option is set
-                if ( this.options.data_url ) {
-                    var url = this.getDataUrl().path;
-                    // use the generated URL as a route to run
-                    uijet.options.routed ?
-                        this.runRoute(
-                            url,
-                            typeof routing == 'undefined' ? true : ! uijet.returnOf(routing, this, uijet.$(this))
-                        ) :
-                        // or simply publish it if not using a router
-                        this.publish(url);
+                if ( _publish !== false ) {
+                    // if `data_url` option is set
+                    if ( this.options.data_url ) {
+                        var url = this.getDataUrl().path;
+                        // use the generated URL as a route to run
+                        uijet.options.routed ?
+                            this.runRoute(
+                                url,
+                                typeof routing == 'undefined' ? true : ! uijet.returnOf(routing, this, uijet.$(this))
+                            ) :
+                            // or simply publish it if not using a router
+                            this.publish(url);
+                    }
+                    this.publish('clicked', {
+                        context : this.context,
+                        event   : e
+                    }).publish('app.clicked', {
+                        id      : this.id,
+                        event   : e
+                    }, true);
                 }
-                this.publish('clicked', {
-                    context : this.context,
-                    event   : e
-                }).publish('app.clicked', {
-                    id      : this.id,
-                    event   : e
-                }, true);
             }
             e.preventDefault();
             e.stopPropagation();
+            return this;
+        },
+        enable          : function () {
+            this.disabled = false;
+            this.$element.removeClass('disabled');
+            return this;
+        },
+        disable         : function () {
+            this.disabled = true;
+            this.$element.addClass('disabled');
             return this;
         }
     });
