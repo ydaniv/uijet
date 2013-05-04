@@ -26,7 +26,7 @@
             var $ = uijet.$,
                 id = this.id,
                 $el = this.$element,
-                datepiker_ops = this.options.datepicker || {},
+                datepiker_ops = this.options,
 
                 // create all the elements we need to construct our datepicker
                 // here's our heading which states current month and year
