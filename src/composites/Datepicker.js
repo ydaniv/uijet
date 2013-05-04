@@ -3,7 +3,8 @@
         define([
             'uijet_dir/uijet',
             'uijet_dir/widgets/Pane',
-            'uijet_dir/widgets/List'
+            'uijet_dir/widgets/List',
+            'uijet_dir/widgets/Button'
         ], function (uijet) {
             return factory(uijet);
         });
