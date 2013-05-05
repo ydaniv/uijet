@@ -1,36 +1,39 @@
-(function (factory) {
+(function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'iscroll'], function (uijet) {
-            return factory(uijet);
+        define(['uijet_dir/uijet', 'iscroll'], function (uijet, iScroll) {
+            return factory(uijet, iScroll || root.iScroll);
         });
     } else {
-        factory(uijet);
+        factory(uijet, root.iScroll);
     }
-}(function (uijet) {
+}(this, function (uijet, iScroll) {
     uijet.Adapter('iScroll', {
-        setScrolling: function (switch_on) {
+        scroll: function () {
             var iS_ops = {
                 bounce  : false
             };
-            if ( switch_on ) {
-                if ( this.iScroll ) {
-                    this.iScroll.refresh();
-                } else {
-                    this._wrap();
-                    if ( this.options.horizontal && ! this.options.grid_layout ) {
-                        iS_ops.vScroll = false;
-                        iS_ops.vScrollbar = false;
-                    }
-                    this.iScroll = new iScroll(this.$wrapper[0], uijet.Utils.extend(iS_ops, this.options.iscroll_options || {}));
-                }
+            if ( this.iScroll ) {
+                this.iScroll.refresh();
             } else {
-                this.iScroll && this.iScroll.destroy();
-                delete this.iScroll;
+                this._wrap();
+                if ( this.options.horizontal && ! this.options.grid_layout ) {
+                    iS_ops.vScroll = false;
+                    iS_ops.vScrollbar = false;
+                }
+                this.iScroll = new iScroll(this.$wrapper[0], uijet.Utils.extend(iS_ops, this.options.iscroll_options || {}));
             }
+            this.scroll_on = true;
             return this;
         },
-        scrollTo    : function (element, time) {
+        unscroll: function () {
+            this.iScroll && this.iScroll.destroy();
+            delete this.iScroll;
+            this.scroll_on = false;
+            return this;
+        },
+        scrollTo: function (element, time) {
             this.iScroll && this.iScroll.scrollToElement(element.jquery ? element[0] : element, time);
+            return this;
         }
     });
 }));

@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet'], function (uijet) {
@@ -21,14 +20,28 @@
             }
             return this;
         },
-        // ### widget.setScrolling
-        // @sign: setScrolling([switch_on])  
+        // ### widget.scroll
+        // @sign: scroll()  
         // @return: this
         //
-        // Initializes the scrolling 3rd party lib or refreshes it, if called with `switch_on`=`true`.  
-        // If it's falsy then it attempts to destroy the scrolling lib's instance.  
+        // Initializes the scrolling 3rd party lib or refreshes it.  
         // Implemented by the adapter.
-        setScrolling        : function (switch_on) {
+        scroll              : function () {
+            return this;
+        },
+        //TODO: add docs
+        unscroll            : function () {
+            return this;
+        },
+        //TODO: add docs
+        scrollToggle        : function (switch_on) {
+            typeof switch_on == 'boolean' ?
+                switch_on ?
+                    this.scroll() :
+                    this.unscroll() :
+                this.scroll_on ?
+                    this.unscroll() :
+                    this.scroll();
             return this;
         },
         // ### widget.scrollTo

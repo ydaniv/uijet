@@ -8,28 +8,32 @@
     }
 }(function (uijet) {
     uijet.Adapter('jqWheelScroll', {
-        setScrolling: function (switch_on) {
+        scroll  : function () {
             var that = this, el, is_horizontal,
                 jqS_ops = {};
-            if ( switch_on ) {
-                if ( is_horizontal = (this.options.horizontal  && ! this.options.grid_layout) ) {
-                    jqS_ops.horizontal = true;
-                    jqS_ops.vertical = false;
-                }
-                this._wrap().$wrapper.scroller(jqS_ops);
-                el = this.$element[0];
-                this.$element.unmousewheel().mousewheel(function (e, delta, dx, dy) {
-                    // prevent the default scrolling and keep it inside the widget
-                    e.preventDefault();
-                    that.scrollTo(is_horizontal ? (-el.offsetLeft - 37*dx) : (-el.offsetTop - 37*dy));
-                });
 
-            } else {
-                this.$wrapper && this.$wrapper.scroller('destroy');
+            if ( is_horizontal = (this.options.horizontal  && ! this.options.grid_layout) ) {
+                jqS_ops.horizontal = true;
+                jqS_ops.vertical = false;
             }
+            this._wrap().$wrapper.scroller(jqS_ops);
+            el = this.$element[0];
+            this.$element.unmousewheel().mousewheel(function (e, delta, dx, dy) {
+                // prevent the default scrolling and keep it inside the widget
+                e.preventDefault();
+                that.scrollTo(is_horizontal ? (-el.offsetLeft - 37*dx) : (-el.offsetTop - 37*dy));
+            });
+
+            this.scroll_on = true;
+
             return this;
         },
-        scrollTo    : function (position) {
+        unscroll: function () {
+            this.$wrapper && this.$wrapper.scroller && this.$wrapper.scroller('destroy');
+            this.scroll_on = false;
+            return this;
+        },
+        scrollTo: function (position) {
             this.$wrapper.scroller('scrollTo', position);
             return this;
         }

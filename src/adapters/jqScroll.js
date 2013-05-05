@@ -8,20 +8,22 @@
     }
 }(function (uijet) {
     uijet.Adapter('jqScroll', {
-        setScrolling: function (switch_on) {
+        scroll  : function () {
             var jqS_ops = {};
-            if ( switch_on ) {
-                if ( this.options.horizontal ) {
-                    jqS_ops.horizontal = true;
-                    jqS_ops.vertical = false;
-                }
-                this._wrap().$wrapper.scroller(jqS_ops);
-            } else {
-                this.$wrapper && this.$wrapper.scroller('destroy');
+            if ( this.options.horizontal ) {
+                jqS_ops.horizontal = true;
+                jqS_ops.vertical = false;
             }
+            this._wrap().$wrapper.scroller(jqS_ops);
+            this.scroll_on = true;
             return this;
         },
-        scrollTo    : function (position) {
+        unscroll: function () {
+            this.$wrapper && this.$wrapper.scroller && this.$wrapper.scroller('destroy');
+            this.scroll_on = false;
+            return this;
+        },
+        scrollTo: function (position) {
             this.$wrapper.scroller('scrollTo', position);
             return this;
         }
