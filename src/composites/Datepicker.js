@@ -104,11 +104,18 @@
             type_class  : ['uijet_list', 'uijet_datepicker_list']
         },
         init        : function () {
-            var id, min_date, max_date;
+            var now = new Date(),
+                id, min_date;
+
+            this.month = now.getMonth();
+            this.year = now.getFullYear();
+
             // do init
             this._super.apply(this, arguments);
+
             // a bit of a hacky way to get the datepicker's original id
             id = this.id.replace('_dateslist', '');
+
             // subscribe to the next/prev clicks
             this.subscribe(id + '_next.clicked', function () {
                 var max_year, current_year, max_date, go_next = true;
@@ -117,7 +124,7 @@
                     current_year = this.current_date.getFullYear();
                     go_next = max_year > current_year || (max_year === current_year && max_date.getMonth() > this.current_date.getMonth());
                 }
-                go_next && this.next_month();
+                go_next && this.nextMonth().wake(true);
             }).subscribe(id + '_prev.clicked', function () {
                 var min_year, current_year, min_date, go_prev = true;
                 if ( min_date = this.options.min_date ) {
@@ -125,8 +132,9 @@
                     current_year = this.current_date.getFullYear();
                     go_prev = min_year < current_year || (min_year === current_year && min_date.getMonth() < this.current_date.getMonth());
                 }
-                go_prev && this.prev_month();
+                go_prev && this.prevMonth().wake(true);
             });
+
             // make sure min/max dates are instances of `Date` object
             if ( min_date = this.options.min_date ) {
                 if ( ! isDate(min_date) ) {
@@ -147,8 +155,8 @@
                 dates = [],
                 last_day = 31,
                 now = new Date(),
-                current_y = now.getFullYear(),
-                current_m = now.getMonth() + (this.month || 0),
+                current_y = this.year,
+                current_m = this.month,
                 current = new Date(current_y, current_m, (this.current_date || now).getDate()),
                 first = new Date(current_y, current_m, 1),
                 last = new Date(current_y, current_m, last_day);
@@ -210,16 +218,26 @@
             );
             return this._super.apply(this, arguments);
         },
-        next_month  : function () {
-            if ( this.month === void 0 ) this.month = 0;
+        nextMonth   : function () {
             this.month += 1;
-            this.wake(true);
+            if ( this.month === 12 ) {
+                this.nextYear().month = 0;
+            }
             return this;
         },
-        prev_month  : function () {
-            if ( this.month === void 0 ) this.month = 0;
+        prevMonth   : function () {
             this.month -= 1;
-            this.wake(true);
+            if ( this.month === -1 ) {
+                this.prevYear().month = 11;
+            }
+            return this;
+        },
+        nextYear    : function () {
+            this.year += 1;
+            return this;
+        },
+        prevYear    : function () {
+            this.year -= 1;
             return this;
         }
     }, {
