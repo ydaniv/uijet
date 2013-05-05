@@ -28,15 +28,24 @@
             } else {
                 this.spinner = new Spinner(uijet.Utils.extend(spinner_defaults, this.options.spinner_options || {})).spin($el[0]);
             }
+            this.spin_on = true;
 
             return this;
         },
         spinOff     : function () {
             this.spinner && this.spinner.stop();
+            this.spin_on = false;
             return this;
         },
         spinToggle  : function (switch_on) {
-            return switch_on ? this.spin() : this.stop();
+            typeof switch_on == 'boolean' ?
+                switch_on ?
+                    this.spin() :
+                    this.spinOff() :
+                this.spin_on ?
+                    this.spinOff() :
+                    this.spin();
+            return this;
         }
     });
 }));
