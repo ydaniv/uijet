@@ -56,7 +56,7 @@
         },
         appear              : function () {
             // init/refresh the scroll
-            this.setScrolling(true)
+            this.scroll()
                 // refresh wrapper size
                 ._setWrapperSize()
                 ._super();
@@ -64,7 +64,7 @@
         },
         disappear           : function (no_transitions) {
             // destroy the scroll - iScroll, for instance, claims to take a lot of resources
-            this.setScrolling(false)
+            this.unscroll()
                 // refresh wrapper size
                 ._setWrapperSize(true)
                 ._super(no_transitions);
@@ -72,7 +72,7 @@
         },
         _clearRendered      : function () {
             // destroy the scroll
-            this.has_content && this.setScrolling(false);
+            this.has_content && this.unscroll();
             this._super();
             return this;
         },
