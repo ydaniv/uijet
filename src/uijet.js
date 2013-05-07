@@ -1712,6 +1712,7 @@
         toArray         : toArray,
         returnOf        : returnOf,
         rethrow         : rethrow,
+        contains        : contains,
         getStyle        : getStyle,
         getStyleProperty: getStyleProperty,
         getOffsetOf     : getOffsetOf,
