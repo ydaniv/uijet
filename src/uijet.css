@@ -618,6 +618,9 @@ video:focus {
     float: left;
     margin-left: 1em;
 }
+.uijet_datepickerinput_wrapper {
+    overflow: visible;
+}
 .uijet_dropmenubutton_wrapper {
     overflow: visible;
 }
