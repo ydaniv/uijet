@@ -57,10 +57,8 @@
                     this.publish('clicked', {
                         context : this.context,
                         event   : e
-                    }).publish('app.clicked', {
-                        id      : this.id,
-                        event   : e
-                    }, true);
+                    });
+                    uijet.publish('app.clicked', e);
                 }
             }
             e.preventDefault();

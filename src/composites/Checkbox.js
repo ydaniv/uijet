@@ -59,10 +59,8 @@
                         context : this.context,
                         checked : this.checked,
                         event   : e
-                    }).publish('app.clicked', {
-                        id      : this.id,
-                        event   : e
-                    }, true);
+                    });
+                uijet.publish('app.clicked', e);
             }
             if ( e.target === this.$element[0] && e.eventPhase === 2 ) {
                 e.preventDefault();
