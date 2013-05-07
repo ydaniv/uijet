@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet'], function (uijet) {
@@ -9,16 +8,6 @@
     }
 }(function (uijet) {
     uijet.Mixin('Floated', {
-        options         : {
-            app_events  : {
-                // by default try listening to any interaction that requires hiding floated widgets
-                clicked : function (e) {
-                    if ( this.awake ) {
-                        this.sleep();
-                    }
-                }
-            }
-        },
         floated         : true,
         prepareElement  : function () {
             this._super()
