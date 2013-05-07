@@ -18,9 +18,7 @@
             type_class  : 'uijet_datepickerinput',
             dom_events  : {
                 focus   : function (e) {
-                    var name = e.target.name,
-                        topic = name + '_picker.wake';
-                    uijet.publish(topic);
+                    this.publish('wake_picker');
                 }
             }
         },
@@ -35,6 +33,7 @@
             var id = this.id,
                 left,
                 picker_id = id + '_picker',
+                datepicker_events = {},
                 datepicker_config = {
                     element     : uijet.$('<div>', {
                         id  : picker_id
@@ -46,16 +45,21 @@
                     dateslist   : {
                         signals : {
                             post_select : function () {
-                                uijet.publish(this.options.container + '.sleep');
+                                this.publish('sleep_picker');
                             }
                         }
                     },
-                    signals : {
+                    signals     : {
                         post_init   : function () {
                             this.$wrapper[0].style.left = left + 'px';
                         }
-                    }
+                    },
+                    app_events  : datepicker_events
                 };
+
+            datepicker_events[id + '.wake_picker'] = 'wake';
+            datepicker_events[id + '.sleep_picker'] = 'sleep';
+
             this._super()
                 ._wrap()
                 .$wrapper.append(datepicker_config.element);
