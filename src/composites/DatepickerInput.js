@@ -2,9 +2,9 @@
     if ( typeof define === 'function' && define.amd ) {
         define([
             'uijet_dir/uijet',
-            'composites/Datepicker',
+            'uijet_dir/composites/Datepicker',
             'uijet_dir/mixins/Floated',
-            'importer/mixins/Toggled'
+            'uijet_dir/mixins/Toggled'
         ], function (uijet) {
             return factory(uijet);
         });
