@@ -51,8 +51,9 @@
                     },
                     app_events      : {
                         // in order to stay as less obtrusive as possible sleep when this global event is triggered
-                        'app.clicked'   : function (_data) {
-                            if ( this.opened && (!_data || ! _data.id || ! ~ _data.id.indexOf(id)) ) {
+                        'app.clicked'   : function (event) {
+                            var target_id = event.target.id;
+                            if ( this.opened && ! ~ target_id.indexOf(id) ) {
                                 this.sleep();
                             }
                         }
