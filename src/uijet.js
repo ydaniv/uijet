@@ -404,7 +404,33 @@
          * @returns {Object} this
          */
         listen          : function (topic, handler) {
-            this.signals_cache[topic] = handler;
+            var that = this,
+                apply_args = false,
+                is_global = false,
+                _h;
+            if ( typeof handler == 'string' ) {
+                if ( handler[handler.length - 1] == '+' ) {
+                    apply_args = true;
+                    handler = handler.slice(0, -1);
+                }
+                if ( handler[0] == '-' ) {
+                    is_global = true;
+                    handler = handler.slice(1);
+                }
+                if ( isFunc(this[handler]) ) {
+                    _h = function () {
+                        that[handler].apply(that, apply_args ? arguments : []);
+                    };
+                }
+                else {
+                    _h = function () {
+                        var args = toArray(arguments);
+                        args.unshift(handler);
+                        (is_global ? uijet : that).publish.apply(that, apply_args ? args : [handler]);
+                    };
+                }
+            }
+            this.signals_cache[topic] =  _h || handler;
             return this;
         },
         /**
