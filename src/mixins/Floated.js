@@ -9,6 +9,10 @@
 }(function (uijet) {
     uijet.Mixin('Floated', {
         floated         : true,
+        options         : {
+            // make sure `position()` is called by default
+            position: true
+        },
         prepareElement  : function () {
             this._super()
                 .setFloat();
@@ -36,12 +40,21 @@
                     bottom_style, rule;
                 // check if `float_top` option was set
                 if ( top ) {
-                    // find the last stylesheet in the document
-                    bottom_style = document.styleSheets[document.styleSheets.length - 1];
                     // create a rule of positioning this floatee using the value of `float_top` option
-                    rule = '#' + this.$wrapper.attr('id') + '.float.show { top: ' + top + 'px; }';
-                    // insert this rule at that stylesheet's end
-                    bottom_style.insertRule(rule, bottom_style.cssRules.length);
+                    rule = '#' + this._wrap().$wrapper.attr('id') + '.float.show { top: ' + top + 'px; }';
+                    // in Chrome when stylesheets are remote `document.styleSheets` may return `null`
+                    if ( document.styleSheets ) {
+                        // find the last stylesheet in the document
+                        bottom_style = document.styleSheets[document.styleSheets.length - 1];
+                        // insert this rule at that stylesheet's end
+                        bottom_style.insertRule(rule, bottom_style.cssRules.length);
+                    }
+                    else {
+                        // if `document.styleSheets` is `null`
+                        bottom_style = document.createElement('style');
+                        bottom_style.innerHTML = rule;
+                        document.head.appendChild(bottom_style);
+                    }
                 }
             }
             // make sure we set the top position only once
