@@ -24,7 +24,7 @@
 
             var id = this.id,
                 drop_menu_id = id + '_menu',
-                options = this.options.dropmenubutton,
+                options = this.options,
                 drop_arrow_id, drop_arrow_config,
                 // configure the dropdown menu
                 drop_menu_config = uijet.Utils.extend(true, {
