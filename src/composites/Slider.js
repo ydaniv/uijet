@@ -21,7 +21,7 @@
         register: function () {
             this._super.apply(this, arguments);
 
-            var options = this.options.slider || {},
+            var options = this.options,
                 handle_ops = options.handle || {},
                 initial = +options.initial,
                 vertical = this.options.vertical,
@@ -74,6 +74,7 @@
                     drag_parent     : slider.$element[0],
                     drag_axis       : vertical ? 'Y' : 'X',
                     dont_translate  : true,
+                    keep_position   : true,
                     drag_contain    : true,
                     dragover_handler: function (e, delta) {
                         var position = delta[vertical ? 'top' : 'left'];
@@ -115,11 +116,11 @@
         //TODO: add docs
         _trimValue      : function (value) {
             value = +value;
-            if ( value > this.options.slider.max ) {
-                return this.options.slider.max;
+            if ( value > this.options.max ) {
+                return this.options.max;
             }
-            else if ( value < this.options.slider.min ) {
-                return this.options.slider.min
+            else if ( value < this.options.min ) {
+                return this.options.min
             }
             return value;
         },
