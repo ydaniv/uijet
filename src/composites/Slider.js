@@ -54,6 +54,7 @@
                 this.options.dom_events[uijet.support.click_events.full] = function (e) {
                     if ( e.target === this.$element[0] ) {
                         var event_pos = uijet.support.touch ? e.originalEvent.touches[0] : e,
+                            //TODO: replace getting offset with a simpler cache-based method that reduces reflow caused by checking offset
                             position = event_pos[vertical ? 'pageY' : 'pageX'] - uijet.Utils.getOffsetOf(e.target, document.documentElement)[vertical ? 'y' : 'x'],
                             value = this._positionToValue(position - this._handle_size / 2);
                         this.slide(value);

@@ -1,5 +1,3 @@
-//TODO: add missing styles
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
@@ -19,6 +17,7 @@
             prop    : uijet.Utils.getStyleProperty('transform'),
             value   : function (index) {
                 var support_3d = uijet.support['3d'],
+                    //TODO: cache slide_size since offsetWidth triggers reflow
                     slide_size = this.$slides.get(index).offsetWidth,
                     value = support_3d ? 'translate3d(-' : 'translate(-';
                 return value + index * slide_size + 'px,0' + (support_3d ? ',0)' : ')');
