@@ -1531,8 +1531,17 @@
                     }
                 }
             }
-            for ( p in processed ) {
-                position[p] = processed[p].size + processed[p].unit;
+            if ( set_style ) {
+                for ( p in processed ) {
+                    position[p] = processed[p].size + processed[p].unit;
+                }
+            }
+            else {
+                // if there's something to set then make sure it's set
+                for ( p in position ) {
+                    set_style = true;
+                    break;
+                }
             }
             if ( set_style ) {
                 if ( 'left' in position || 'right' in position ) position.width = 'auto';
