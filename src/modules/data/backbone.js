@@ -26,6 +26,9 @@
             this.resource = uijet.Resource(resource);
 
             this.getData = function () {
+                if ( this.context && uijet.Utils.isObj(this.context) ) {
+                    return this.resource.where(this.context);
+                }
                 return this.resource.toJSON();
             };
             this.update = function (fetch_options) {
@@ -40,7 +43,7 @@
                 // our update promise object
                 dfrd_update = uijet.Promise();
                 _success = function (model, response) {
-                    this.has_data = true;
+                    that.has_data = true;
                     // if success notify a signal that we have `data` and resolve the promise
                     that.notify('post_fetch_data', response);
                     dfrd_update.resolve();
