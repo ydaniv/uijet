@@ -360,7 +360,7 @@ video:focus {
     cursor: pointer;
 }
 .uijet_list.horizontal {
-    height: 99%;
+    height: 100%;
 }
 .uijet_list.horizontal li {
     display: inline-block;
