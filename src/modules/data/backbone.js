@@ -26,8 +26,14 @@
             this.resource = uijet.Resource(resource);
 
             this.getData = function () {
-                if ( this.context && uijet.Utils.isObj(this.context) ) {
-                    return this.resource.where(this.context);
+                if ( this.context ) {
+                    if ( uijet.Utils.isObj(this.context) ) {
+                        return this.resource.where(this.context);
+                    }
+                    else if ( typeof this.context == 'string' &&
+                        uijet.Utils.isFunc(this.resource[this.context]) ) {
+                        return this.resource[this.context]();
+                    }
                 }
                 return this.resource.toJSON();
             };
