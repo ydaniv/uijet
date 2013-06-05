@@ -35,7 +35,12 @@
                     dont_select     : true,
                     extra_class     : 'uijet_menu',
                     float_top       : function () {
-                        return this._wrap().$wrapper[0].offsetParent.offsetHeight;
+                        var wrapper = this._wrap().$wrapper[0],
+                            parent = wrapper.offsetParent || wrapper.parentNode;
+                        while ( parent && parent.nodeType !== 1 ) {
+                            parent = parent.parentNode;
+                        }
+                        return parent ? parent.offsetHeight : 0;
                     },
                     signals         : {
                         pre_select  : function ($selected, e) {
