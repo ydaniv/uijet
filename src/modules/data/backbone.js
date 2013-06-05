@@ -43,16 +43,15 @@
                 return this.resource.toJSON();
             };
             this.filter = function () {
-                var args = Array.prototype.slice.call(arguments),
+                var args = Array.prototype.slice.call(arguments, 1),
                     is_lazy = false,
-                    filter;
-                if ( typeof args[0] == 'boolean' ) {
-                    is_lazy = args.shift();
+                    filter = arguments[0];
+                if ( uijet.Utils.isFunc(filter) ) {
+                    is_lazy = true;
                 }
-                filter = args.shift();
                 this.filtered = is_lazy ?
                     filter.apply.bind(filter, this.resource, args) :
-                    filter.apply(this.resource, args);
+                    filter;
                 return this;
             };
             this.update = function (fetch_options) {
