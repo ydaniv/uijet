@@ -26,7 +26,12 @@
             this.resource = uijet.Resource(resource);
 
             this.getData = function () {
-                if ( this.context ) {
+                if ( this.filtered ) {
+                    var filtered = this.filtered;
+                    delete this.filtered;
+                    return uijet.Utils.returnOf(filtered, this);
+                }
+                else if ( this.context ) {
                     if ( uijet.Utils.isObj(this.context) ) {
                         return this.resource.where(this.context);
                     }
@@ -37,12 +42,25 @@
                 }
                 return this.resource.toJSON();
             };
+            this.filter = function () {
+                var args = Array.prototype.slice.call(arguments),
+                    is_lazy = false,
+                    filter;
+                if ( typeof args[0] == 'boolean' ) {
+                    is_lazy = args.shift();
+                }
+                filter = args.shift();
+                this.filtered = is_lazy ?
+                    filter.apply.bind(filter, this.resource, args) :
+                    filter.apply(this.resource, args);
+                return this;
+            };
             this.update = function (fetch_options) {
                 var that = this,
                     options = fetch_options || {},
                     dfrd_update, _success;
                 // if the pre_update signal returned `false` then bail
-                if ( this.notify('pre_update') === false ) return {};
+                if ( this.has_data || this.notify('pre_update') === false ) return {};
                 // since this may take more then a few miliseconds then publish the `pre_load` event to allow the UI
                 // to respond to tasks that require a long wait from the user
                 uijet.publish('pre_load');
