@@ -76,7 +76,7 @@
                         // always close if clicked on the menu, otherwise toggle
                         this.opened = !(target === top || uijet.$.contains(top, target)) && ! this.opened;
                     }
-                    this.opened ? this.wake() : this.sleep();
+                    this.opened ? this.wake(data.context) : this.sleep();
                 },
 
                 add_arrow = !!(options.add_arrow || options.arrow),
