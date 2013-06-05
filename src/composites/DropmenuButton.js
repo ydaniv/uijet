@@ -44,11 +44,10 @@
                     },
                     signals         : {
                         pre_select  : function ($selected, e) {
-                            var do_select = ! options.menu.dont_select;
                             e.stopPropagation();
-                            (this.dont_publish || ! do_select) || this.publish('selected', this.getTransfer($selected));
-                            this.sleep();
-                            return do_select && void 0;
+                            if ( this.options.dont_select ) {
+                                this.sleep();
+                            }
                         },
                         pre_sleep   : function () {
                             this.opened = false;
