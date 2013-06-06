@@ -339,7 +339,7 @@ video:focus {
     left: 0;
 }
 .uijet_app.cover {
-    position: fixed;
+    position: absolute;
 }
 .uijet_app.ipad {
     padding-top: 20px;
@@ -442,23 +442,8 @@ video:focus {
     width: auto;
     height: auto;
 }
-.uijet_wrapper.fixed, .uijet_widget.fixed, .layered {
-    position: absolute;
-}
-.uijet_wrapper.bottom, .uijet_widget.bottom {
-    bottom: 0;
-}
-.uijet_wrapper.left, .uijet_widget.left {
-    left: 0;
-}
-.uijet_wrapper.right, .uijet_widget.right {
-    right: 0;
-}
 .uijet_wrapper.center {
     display: table;
-}
-.uijet_wrapper.top, .uijet_widget.top {
-    top: 0;
 }
 .uijet_wrapper.scrolled > .uijet_widget {
     height: auto;
@@ -479,6 +464,9 @@ video:focus {
 }
 .z_top {
     z-index: 10;
+}
+.layered {
+    position: absolute;
 }
 .transitioned {
     -webkit-transform: translateZ(0);
