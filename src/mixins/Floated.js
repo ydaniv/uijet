@@ -37,11 +37,12 @@
             if ( ! this._top_set ) {
                 // get the `float_top` option value if it is set
                 var top = uijet.Utils.returnOf(this.options.float_top, this),
+                    closing_str = isNaN(+top) ? '; }' : 'px; }',
                     bottom_style, rule;
                 // check if `float_top` option was set
                 if ( top ) {
                     // create a rule of positioning this floatee using the value of `float_top` option
-                    rule = '#' + this._wrap().$wrapper.attr('id') + '.float.show { top: ' + top + 'px; }';
+                    rule = '#' + this._wrap().$wrapper.attr('id') + '.float.show { top: ' + top + closing_str;
                     // in Chrome when stylesheets are remote `document.styleSheets` may return `null`
                     if ( document.styleSheets ) {
                         // find the last stylesheet in the document
