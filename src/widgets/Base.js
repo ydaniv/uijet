@@ -820,6 +820,7 @@
         // If `$center_wrapper` is already set, skips to return.
         _center         : function () {
             if ( ! this.$center_wrapper ) {
+                this.$wrapper.addClass('center');
                 // wrap and cache the wrapper
                 this.$center_wrapper = this.$element.wrap(uijet.$('<div/>', {
                     'class' : 'uijet_center_wrapper ' +
