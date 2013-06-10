@@ -199,6 +199,7 @@
             // unregister from uijet
             this.unregister()
                 .unbindAll()
+                .unlisten()
                 .remove();
 
             return this;
