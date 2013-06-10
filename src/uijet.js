@@ -435,12 +435,18 @@
         },
         /**
          * Removes a handler of the given type.
+         * If no `topic` is given then removes all handlers.
          *
-         * @param {String} topic - the signal's type to remove
+         * @param {String} [topic] - the signal's type to remove
          * @returns {Object} this
          */
         unlisten        : function (topic) {
-            if ( this.signals_cache[topic] ) {
+            if ( ! topic ) {
+                for ( topic in this.signals_cache ) {
+                    this.unlisten(topic);
+                }
+            }
+            else if ( this.signals_cache[topic] ) {
                 delete this.signals[topic];
                 delete this.signals_cache[topic];
             }
