@@ -27,9 +27,10 @@
 
             this.getData = function () {
                 if ( this.filtered ) {
-                    var filtered = this.filtered;
-                    delete this.filtered;
-                    return uijet.Utils.returnOf(filtered, this);
+                    if ( uijet.Utils.isFunc(this.filtered) ) {
+                        this.filtered = this.filtered();
+                    }
+                    return this.filtered;
                 }
                 else if ( this.context ) {
                     if ( uijet.Utils.isObj(this.context) ) {
@@ -52,6 +53,13 @@
                 this.filtered = is_lazy ?
                     filter.apply.bind(filter, this.resource, args) :
                     filter;
+                return this;
+            };
+            this.sort = function (sorting) {
+                if ( sorting in this.options.sorting ) {
+                    this.resource.comparator = this.options.sorting[sorting];
+                    this.resource.sort();
+                }
                 return this;
             };
             this.update = function (fetch_options) {
@@ -98,10 +106,30 @@
                     default_events;
 
             if ( bindings ) {
+                var that = this,
+                    is_global = false,
+                    _h;
                 for ( type in bindings ) {
                     handler = bindings[type];
                     if ( typeof handler == 'string' ) {
-                        handler = this[handler];
+                        if ( uijet.Utils.isFunc(this[handler]) ) {
+                            handler = this[handler];
+                        }
+                        else {
+                            _h = handler;
+                            if ( _h[0] == '-' ) {
+                                is_global = true;
+                                _h = _h.slice(1);
+                            }
+                            (function (_type, name, global) { 
+                                var _handler = function () {
+                                    var args = uijet.Utils.toArray(arguments);
+                                    (global ? uijet : that).publish.call(that, name, {args : args});
+                                };
+                                that.listenTo(that.resource, _type, _handler);
+                            }(type, _h, is_global));
+                            continue;
+                        }
                     }
                     this.listenTo(this.resource, type, handler);
                 }
