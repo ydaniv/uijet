@@ -532,6 +532,7 @@
         unsubscribe     : function (topic, handler) {
             if ( ! handler && this.app_events ) {
                 handler = this.app_events[topic];
+                delete this.app_events[topic];
             }
             uijet.unsubscribe(topic, handler, this);
             return this;
