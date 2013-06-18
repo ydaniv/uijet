@@ -57,10 +57,17 @@
                 _success = _activate;
             } else {
                 _success = function () {
-                    // update the widget and get the template
-                    uijet.whenAll( [that.update(), that.fetchTemplate()] )
-                        .then(that.render.bind(that), _fail)
-                        .then(_activate, _fail);
+                    var promise;
+                    if ( this.has_data ) {
+                        // update the widget and get the template
+                        promise = uijet.whenAll( [that.update(), that.fetchTemplate()] );
+                    }
+                    else {
+                        // have data, just get template
+                        promise = uijet.when(that.fetchTemplate())
+                    }
+                    promise.then(that.render.bind(that), _fail)
+                           .then(_activate, _fail);
                 };
             }
             // if `sync` option is `true` then call success after all children are awake
