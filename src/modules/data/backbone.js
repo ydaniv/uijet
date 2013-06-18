@@ -64,10 +64,10 @@
             };
             this.update = function (fetch_options) {
                 var that = this,
-                    options = fetch_options || {},
+                    options = uijet.Utils.extend(this.options.fetch_options || {}, fetch_options || {}),
                     dfrd_update, _success;
                 // if the pre_update signal returned `false` then bail
-                if ( this.has_data || this.notify('pre_update') === false ) return {};
+                if ( this.options.dont_fetch || this.notify('pre_update') === false ) return {};
                 // since this may take more then a few miliseconds then publish the `pre_load` event to allow the UI
                 // to respond to tasks that require a long wait from the user
                 uijet.publish('pre_load');
