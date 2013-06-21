@@ -23,7 +23,9 @@
         baseRegister.call(this);
 
         if ( resource = this.options.resource ) {
-            this.resource = uijet.Resource(resource);
+            this.resource = typeof resource == 'string' ?
+                uijet.Resource(resource) :
+                resource;
 
             this.getData = function () {
                 if ( this.filtered ) {
@@ -41,7 +43,7 @@
                         return this.resource[this.context]();
                     }
                 }
-                return this.resource.toJSON();
+                return this.resource.models || this.resource.attributes;
             };
             this.filter = function () {
                 var args = Array.prototype.slice.call(arguments, 1),
