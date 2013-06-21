@@ -58,7 +58,7 @@
             } else {
                 _success = function () {
                     var promise;
-                    if ( this.has_data ) {
+                    if ( ! this.has_data ) {
                         // update the widget and get the template
                         promise = uijet.whenAll( [that.update(), that.fetchTemplate()] );
                     }
