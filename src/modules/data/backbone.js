@@ -13,7 +13,8 @@
 }(this, function (uijet, Backbone) {
 
     var base_widget_proto = uijet.BaseWidget.prototype,
-        baseRegister = base_widget_proto.register;
+        baseRegister = base_widget_proto.register,
+        baseDestroy = base_widget_proto.destroy;
 
     uijet.Base.extend(Backbone.Events);
 
@@ -139,6 +140,10 @@
         }
 
         return this;
+    };
+    base_widget_proto.destroy = function () {
+        baseDestroy.call(this);
+        delete this.resource;
     };
 
     uijet.use({
