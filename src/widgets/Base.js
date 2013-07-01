@@ -803,7 +803,7 @@
                     classes = 'uijet_wrapper ' + Utils.toArray(this.options.type_class).join('_wrapper ') + '_wrapper';
                     this.options.wrapper_class && (classes += ' ' + this.options.wrapper_class);
                     // wrap and cache the wrapper
-                    this.$wrapper = this.$element.wrap(uijet.$('<div/>', {
+                    this.$wrapper = this.$element.wrap(uijet.$('<' + (this.options.wrapper_tag || 'div') + '>', {
                         'class' : classes,
                         id      : this.id + '_wrapper'
                     })).parent();
