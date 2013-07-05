@@ -74,6 +74,16 @@
             this.disabled = true;
             this.$element.addClass('disabled');
             return this;
+        },
+        activate        : function () {
+            this.activated = true;
+            this.$element.addClass('activated');
+            return this;
+        },
+        deactivate      : function () {
+            this.activated = false;
+            this.$element.removeClass('activated');
+            return this;
         }
     });
 }));
