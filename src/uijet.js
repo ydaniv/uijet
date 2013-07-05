@@ -404,33 +404,7 @@
          * @returns {Object} this
          */
         listen          : function (topic, handler) {
-            var that = this,
-                apply_args = false,
-                is_global = false,
-                _h;
-            if ( typeof handler == 'string' ) {
-                if ( handler[handler.length - 1] == '+' ) {
-                    apply_args = true;
-                    handler = handler.slice(0, -1);
-                }
-                if ( handler[0] == '-' ) {
-                    is_global = true;
-                    handler = handler.slice(1);
-                }
-                if ( isFunc(this[handler]) ) {
-                    _h = function () {
-                        that[handler].apply(that, apply_args ? arguments : []);
-                    };
-                }
-                else {
-                    _h = function () {
-                        var args = toArray(arguments);
-                        args.unshift(handler);
-                        (is_global ? uijet : that).publish.apply(that, apply_args ? args : [handler]);
-                    };
-                }
-            }
-            this.signals_cache[topic] =  _h || handler;
+            this.signals_cache[topic] =  this._parseHandler(handler);
             return this;
         },
         /**
@@ -492,33 +466,10 @@
          */
         //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
         subscribe       : function (topic, handler) {
-            var that = this,
-                apply_args = false,
-                _h;
-            if ( typeof handler == 'string' ) {
-                if ( handler[handler.length - 1] == '+' ) {
-                    apply_args = true;
-                    handler = handler.slice(0, -1);
-                }
-                if ( isFunc(this[handler]) ) {
-                    _h = function () {
-                        that[handler].apply(that, apply_args ? arguments : []);
-                    };
-                }
-                else if ( isFunc(this.signals_cache[handler]) ) {
-                    _h = function () {
-                        var args = toArray(arguments);
-                        args.unshift(handler);
-                        that.notify.apply(that, apply_args ? args : [handler]);
-                    };
-                }
-            }
-            else {
-                _h = handler.bind(this);
-            }
+            handler = isFunc(handler) ? handler.bind(this) : this._parseHandler(handler);
             // add this handler to `app_events` to allow quick unsubscribing later
-            this.app_events[topic] = _h;
-            uijet.subscribe(topic, _h, this);
+            this.app_events[topic] = handler;
+            uijet.subscribe(topic, handler, this);
             return this;
         },
         /**
@@ -549,6 +500,43 @@
         publish         : function (topic, data) {
             uijet.publish(this.id + '.' + topic, data);
             return this;
+        },
+        _parseHandler   : function (handler) {
+            var that = this,
+                apply_args = false,
+                is_global = false,
+                _h;
+            if ( typeof handler == 'string' ) {
+                if ( handler[handler.length - 1] == '+' ) {
+                    apply_args = true;
+                    handler = handler.slice(0, -1);
+                }
+                if ( handler[0] == '-' ) {
+                    is_global = true;
+                    handler = handler.slice(1);
+                }
+                if ( isFunc(this[handler]) ) {
+                    _h = function () {
+                        that[handler].apply(that, apply_args ? arguments : []);
+                    };
+                }
+                else if ( isFunc(this.signals_cache[handler]) ) {
+                    _h = function () {
+                        var args = toArray(arguments);
+                        args.unshift(handler);
+                        that.notify.apply(that, apply_args ? args : [handler]);
+                    };
+                }
+                else {
+                    _h = function () {
+                        var args = toArray(arguments);
+                        args.unshift(handler);
+                        (is_global ? uijet : that).publish.apply(that, apply_args ? args : [handler]);
+                    };
+                }
+                return _h;
+            }
+            return handler;
         }
     };
     /**

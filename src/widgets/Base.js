@@ -459,9 +459,12 @@
         // Sets `bound` to `true` at the end.  
         //TODO: this overrides existing `type` with a new one - if this is not the required outcome implement using a list of handlers
         bind            : function (type, handler) {
-            var bound_handler = handler.bind(this);
-            // cache the original handler
-            this.options.dom_events[type] = handler;
+            var _h = Utils.isFunc(handler) ? handler : this._parseHandler(handler),
+                bound_handler = _h.bind(this);
+            if ( !(type in this.options.dom_events) ) {
+                // cache the original handler
+                this.options.dom_events[type] = _h;
+            }
             // and the bound one
             this._bound_dom_events[type] = bound_handler;
             // do it!
@@ -478,8 +481,7 @@
         // If `handler` is supplied it will attempt to unbind this specific handler only from that `type` of event.  
         // This will not remove that handler from being bound again with `bindAll` on next `wake`.  
         unbind          : function (type, handler) {
-            var _dom_events = this.options.dom_events || {};
-            if ( type in _dom_events ) {
+            if ( type in this._bound_dom_events ) {
                 this.$element.off(type, handler || this._bound_dom_events[type]);
             }
             return this;
@@ -492,26 +494,16 @@
         // At the end sets the `bound` flag to `true`.  
         // This is called every time the widget is awaken.  
         bindAll         : function () {
-            var _dom_events = this.options.dom_events,
-                e, that = this,
-                _bound = this._bound_dom_events;
-            // if we have any DOM events set
-            if ( _dom_events ) {
-                // in case something was bound
-                if ( this.bound ) {
-                    // unbind all so to not have the same event bound more than onceZ
-                    this.unbindAll();
-                }
-                // one loop to make sure all handlers are bound
-                for ( e in _dom_events ) (function (name, handler) {
-                    if ( ! (name in _bound) ) {
-                        _bound[name] = handler.bind(that);
-                    }
-                }(e, _dom_events[e]));
-                // and in the darkness bind them
-                this.$element.on(_bound);
+            // in case something was bound
+            if ( this.bound ) {
+                // unbind all so to not have the same event bound more than onceZ
+                this.unbindAll();
             }
+            // and in the darkness bind them
+            this.$element.on(this._bound_dom_events);
+
             this.bound = true;
+
             return this;
         },
         // ### widget.unbindAll
@@ -522,9 +514,8 @@
         // At the end sets the `bound` flag to `false`.  
         // This is usually called every time the widget is put to sleep.  
         unbindAll       : function () {
-            var _dom_events = this.options.dom_events;
             // if we have any DOM events that are bound
-            if ( this.bound && _dom_events ) {
+            if ( this.bound ) {
                 // unbind all
                 this.$element.off(this._bound_dom_events);
             }
@@ -617,11 +608,11 @@
         setInitOptions  : function () {
             var ops = this.options,
                 _app_events = ops.app_events || {},
-                _signals;
+                _signals, n, handler;
             this.app_events = {};
             // listen to all signals set in options
             if ( _signals = ops.signals ) {
-                for ( var n in _signals ) {
+                for ( n in _signals ) {
                     this.listen(n, _signals[n]);
                 }
             }
@@ -633,6 +624,10 @@
                 for ( n in _app_events ) {
                     this.subscribe(n, _app_events[n]);
                 }
+            }
+            for ( n in ops.dom_events ) {
+                handler = ops.dom_events[n];
+                this._bound_dom_events[n] = Utils.isFunc(handler) ? handler.bind(this) : this._parseHandler(handler);
             }
             // capture and delegate all `uijet-route` and/or anchor clicks to routing/publishing mechanism
             this.captureRoutes();
