@@ -916,9 +916,6 @@
             if ( this.bound ) {
                 this.unbindAll();
             }
-            // needed to work around a Webkit bug
-            this.$element[0].setAttribute('style', '');
-            this.$element[0].removeAttribute('style');
             if ( ! extend_rendered ) {
                 // remove all children that were added with .render()
                 this.$element.children().not(this.$original_children).remove();
