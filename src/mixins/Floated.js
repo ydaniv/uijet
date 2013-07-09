@@ -33,33 +33,16 @@
             return this;
         },
         position        : function () {
-            // if top position wasn't set
-            if ( ! this._top_set ) {
-                // get the `float_top` option value if it is set
-                var top = uijet.utils.returnOf(this.options.float_top, this),
-                    closing_str = isNaN(+top) ? '; }' : 'px; }',
-                    bottom_style, rule;
-                // check if `float_top` option was set
-                if ( top ) {
-                    // create a rule of positioning this floatee using the value of `float_top` option
-                    rule = '#' + this._wrap().$wrapper.attr('id') + '.float.show { top: ' + top + closing_str;
-                    // in Chrome when stylesheets are remote `document.styleSheets` may return `null`
-                    if ( document.styleSheets ) {
-                        // find the last stylesheet in the document
-                        bottom_style = document.styleSheets[document.styleSheets.length - 1];
-                        // insert this rule at that stylesheet's end
-                        bottom_style.insertRule(rule, bottom_style.cssRules.length);
-                    }
-                    else {
-                        // if `document.styleSheets` is `null`
-                        bottom_style = document.createElement('style');
-                        bottom_style.innerHTML = rule;
-                        document.head.appendChild(bottom_style);
-                    }
-                }
+            var float_position;
+            // if float_position position wasn't set
+            if ( ! this._float_position_set ) {
+                // get the `float_position` option value if it is set
+                float_position = uijet.utils.returnOf(this.options.float_position, this);
+                // check if `float_position` option was set
+                this.floatPosition(float_position);
             }
             // make sure we set the top position only once
-            this._top_set = true;
+            this._float_position_set  = true;
             return this._super();
         },
         appear          : function () {
@@ -70,7 +53,7 @@
             this._super();
             return this;
         },
-        disappear      : function () {
+        disappear       : function () {
             var that = this,
                 hide_handler = function () {
                     // kick the element back to high heavens
@@ -81,6 +64,53 @@
                 this.dfrd_transit.always(hide_handler);
             } else {
                 hide_handler();
+            }
+            return this;
+        },
+        floatPosition   : function (position) {
+            if ( position ) {
+                if ( uijet.utils.isObj(position) ) {
+                    position =  this._parsePosition(position);
+                }
+                if ( typeof position == 'string' ) {
+                    this._createFloatRule(position);
+                }
+            }
+            return this;
+        },
+        _parsePosition  : function (position) {
+            var css_text = '',
+                key;
+            for ( key in position ) {
+                css_text += key + ':' + position[key] + (isNaN(+position[key]) ? ';' : 'px;');
+            }
+            return css_text;
+        },
+        _createFloatRule: function (css_text) {
+            var bottom_style, rule_text, index;
+
+            if ( this.float_rule ) {
+                this.float_rule.style.cssText = css_text;
+            }
+            else {
+                // create a rule of positioning this floatee using `css_text`
+                rule_text = '#' + this._wrap().$wrapper.attr('id') + '.float.show { ' + css_text + ' }';
+                // in Chrome when stylesheets are remote `document.styleSheets` may return `null`
+                if ( document.styleSheets ) {
+                    // find the last stylesheet in the document
+                    bottom_style = document.styleSheets[document.styleSheets.length - 1];
+                    index = bottom_style.cssRules.length;
+                    // insert this rule at that stylesheet's end
+                    bottom_style.insertRule(rule_text, index);
+                    this.float_rule = bottom_style.cssRules[index];
+                }
+                else {
+                    // if `document.styleSheets` is `null`
+                    bottom_style = document.createElement('style');
+                    bottom_style.innerHTML = rule_text;
+                    document.head.appendChild(bottom_style);
+                    this.float_rule = bottom_style.cssRules[0]; 
+                }
             }
             return this;
         }

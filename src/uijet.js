@@ -1755,7 +1755,7 @@
                 return putMixin([array], name, position);
             }
             else {
-                position = position || 0;
+                position = typeof position == 'number' ? position : array.length;
 
                 index = array.indexOf(name);
                 if ( ~ index ) {

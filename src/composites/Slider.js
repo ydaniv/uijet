@@ -42,7 +42,7 @@
                 handle_ops.element = uijet.$('<span/>').appendTo(this.$element);
             }
 
-            handle_ops.mixins = uijet.utils.putMixin(handle_ops.mixins, 'Dragged');
+            handle_ops.mixins = uijet.utils.putMixin(handle_ops.mixins, 'Dragged', 0);
 
             handle_app_events[this.id + '.update_ui'] = function (position) {
                 var deltas = {};

@@ -34,13 +34,13 @@
                     sync            : true,
                     dont_select     : true,
                     extra_class     : 'uijet_menu',
-                    float_top       : function () {
+                    float_position  : function () {
                         var wrapper = this._wrap().$wrapper[0],
                             parent = wrapper.offsetParent || wrapper.parentNode;
                         while ( parent && parent.nodeType !== 1 ) {
                             parent = parent.parentNode;
                         }
-                        return parent ? parent.offsetHeight : 0;
+                        return 'top: ' + (parent ? parent.offsetHeight : 0) + 'px;';
                     },
                     signals         : {
                         pre_select  : function ($selected, e) {
@@ -130,7 +130,7 @@
             add_arrow && uijet.start({ type: 'Button', config: drop_arrow_config });
 
             // make sure the drop menu is Floated
-            drop_menu_config.mixins = uijet.utils.putMixin(drop_menu_config.mixins, 'Floated', -1);
+            drop_menu_config.mixins = uijet.utils.putMixin(drop_menu_config.mixins, 'Floated');
 
             // create the menu widget
             uijet.start({ type: 'List', config: drop_menu_config });
