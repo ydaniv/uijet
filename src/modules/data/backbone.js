@@ -30,17 +30,17 @@
 
             this.getData = function () {
                 if ( this.filtered ) {
-                    if ( uijet.Utils.isFunc(this.filtered) ) {
+                    if ( uijet.utils.isFunc(this.filtered) ) {
                         this.filtered = this.filtered();
                     }
                     return this.filtered;
                 }
                 else if ( this.context ) {
-                    if ( uijet.Utils.isObj(this.context) ) {
+                    if ( uijet.utils.isObj(this.context) ) {
                         return this.resource.where(this.context);
                     }
                     else if ( typeof this.context == 'string' &&
-                        uijet.Utils.isFunc(this.resource[this.context]) ) {
+                        uijet.utils.isFunc(this.resource[this.context]) ) {
                         return this.resource[this.context]();
                     }
                 }
@@ -50,7 +50,7 @@
                 var args = Array.prototype.slice.call(arguments, 1),
                     is_lazy = false,
                     filter = arguments[0];
-                if ( uijet.Utils.isFunc(filter) ) {
+                if ( uijet.utils.isFunc(filter) ) {
                     is_lazy = true;
                 }
                 this.filtered = is_lazy ?
@@ -67,7 +67,7 @@
             };
             this.update = function (fetch_options) {
                 var that = this,
-                    options = uijet.Utils.extend(this.options.fetch_options || {}, fetch_options || {}),
+                    options = uijet.utils.extend(this.options.fetch_options || {}, fetch_options || {}),
                     dfrd_update, _success;
                 // if the pre_update signal returned `false` then bail
                 if ( this.options.dont_fetch || this.notify('pre_update') === false ) return {};
@@ -115,7 +115,7 @@
                 for ( type in bindings ) {
                     handler = bindings[type];
                     if ( typeof handler == 'string' ) {
-                        if ( uijet.Utils.isFunc(this[handler]) ) {
+                        if ( uijet.utils.isFunc(this[handler]) ) {
                             handler = this[handler];
                         }
                         else {
@@ -126,7 +126,7 @@
                             }
                             (function (_type, name, global) { 
                                 var _handler = function () {
-                                    var args = uijet.Utils.toArray(arguments);
+                                    var args = uijet.utils.toArray(arguments);
                                     (global ? uijet : that).publish.call(that, name, {args : args});
                                 };
                                 that.listenTo(that.resource, _type, _handler);

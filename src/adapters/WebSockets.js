@@ -19,7 +19,7 @@
                 this.socket_promise = uijet.Promise();
             }
             if ( ! this.socket ) {
-                this.socket = new WebSocket(this.getPushUrl(), push_config && uijet.Utils.returnOf(push_config.protocols, this));
+                this.socket = new WebSocket(this.getPushUrl(), push_config && uijet.utils.returnOf(push_config.protocols, this));
                 this.socket.onopen = this._openHandler.bind(this);
                 this.socket.onclose = this._closeHandler.bind(this);
                 this.socket.onmessage = this._messageHandler.bind(this);
@@ -39,7 +39,7 @@
                 }
                 this.socket.send(msg);
             } else {
-                this.open().then(this.send.bind(this, msg), uijet.Utils.rethrow);
+                this.open().then(this.send.bind(this, msg), uijet.utils.rethrow);
             }
             return this;
         },

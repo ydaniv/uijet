@@ -12,7 +12,7 @@
         ATTR_PREFIX = 'data-uijet-',
         attr_prefix_re = RegExp('^' + ATTR_PREFIX + '([-_\\w]+)');
 
-    // ### Utils.mapAttributes
+    // ### utils.mapAttributes
     // utility for iterating over an attributes list, picking those that begin with `data-uijet-`
     // and returns a map of the name - without the prefix - to the value OR `true` if empty
     function mapAttributes (attrs_list) {
@@ -135,7 +135,7 @@
                 try {
                     _config = JSON.parse(_ops_string);
                 } catch (e) {}
-                uijet.Utils.extend(attrs, _config);
+                uijet.utils.extend(attrs, _config);
             }
             this._parseScripts($el, attrs);
             attrs['element'] = $el;

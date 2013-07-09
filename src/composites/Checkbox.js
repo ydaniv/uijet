@@ -31,7 +31,7 @@
         },
         prepareElement  : function () {
             var ops = this.options.checkbox || {},
-                input_config = uijet.Utils.extend({
+                input_config = uijet.utils.extend({
                     type    : 'checkbox',
                     tabindex: -1,
                     name    : ops.name,

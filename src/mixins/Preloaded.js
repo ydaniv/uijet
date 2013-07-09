@@ -23,7 +23,7 @@
                 that = this,
                 IMG_EXTENSIONS = 'jpg|jpeg|png|gif';
             // loop over the assets
-            (assets || uijet.Utils.returnOf(this.options.assets, this) || []).forEach(function (path) {
+            (assets || uijet.utils.returnOf(this.options.assets, this) || []).forEach(function (path) {
                 var dfrd;
                 // check if this is an image file by looking at its extension
                 if ( ~ IMG_EXTENSIONS.search(RegExp(path.substring(path.lastIndexOf('.')), 'i')) ) {

@@ -26,7 +26,7 @@
             if ( this.spinner ) {
                 this.spinner.spin($el[0]);
             } else {
-                this.spinner = new Spinner(uijet.Utils.extend(spinner_defaults, this.options.spinner_options || {})).spin($el[0]);
+                this.spinner = new Spinner(uijet.utils.extend(spinner_defaults, this.options.spinner_options || {})).spin($el[0]);
             }
             this.spin_on = true;
 

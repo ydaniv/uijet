@@ -80,16 +80,16 @@
             });
 
             // add user defined options to defaults for dates list
-            dateslist_config = uijet.Utils.extend(true, dateslist_config, datepiker_ops.dateslist || {});
+            dateslist_config = uijet.utils.extend(true, dateslist_config, datepiker_ops.dateslist || {});
             // create the dates List
             uijet.start({ type: 'DatepickerList', config: dateslist_config });
             // create the next/prev buttons
-            uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
+            uijet.start({ type: 'Button', config: uijet.utils.extend(true, {
                 element     : $next,
                 id          : id + '_next',
                 container   : id
             }, datepiker_ops.next || {}) });
-            uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
+            uijet.start({ type: 'Button', config: uijet.utils.extend(true, {
                 element     : $prev,
                 id          : id + '_prev',
                 container   : id

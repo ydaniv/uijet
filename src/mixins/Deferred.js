@@ -13,7 +13,7 @@
             var _super = this._super,
                 promise;
             if ( this.options.promise ) {
-                promise = uijet.Utils.returnOf(this.options.promise, this, context);
+                promise = uijet.utils.returnOf(this.options.promise, this, context);
                 return uijet.when(promise).then(function (value) {
                     _super.call(this, value);
                 }.bind(this));

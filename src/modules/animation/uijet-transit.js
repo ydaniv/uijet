@@ -13,14 +13,14 @@
     function isFunc (obj) {
         return typeof obj == 'function';
     }
-    var requestAnimFrame = uijet.Utils.requestAnimFrame,
-        getStyle = uijet.Utils.getStyle,
+    var requestAnimFrame = uijet.utils.requestAnimFrame,
+        getStyle = uijet.utils.getStyle,
         // get the Transitioned mixin
         transitioned = uijet.Mixin('Transitioned');
 
     // add methods to the Transitioned mixin that will init the animation state with the `<type>_out` class
     // on the top element
-    uijet.Utils.extend(transitioned, {
+    uijet.utils.extend(transitioned, {
         prepareElement  : function () {
             this.notify(true, 'pre_prepareelement');
             // initialy set the __animation_type_out__ `class`

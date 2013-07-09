@@ -14,7 +14,7 @@
 }(function (uijet) {
     var ANIMATION_PROPS = {
         slide   : {
-            prop    : uijet.Utils.getStyleProperty('transform'),
+            prop    : uijet.utils.getStyleProperty('transform'),
             value   : function (index) {
                 var support_3d = uijet.support['3d'],
                     //TODO: cache slide_size since offsetWidth triggers reflow
@@ -32,9 +32,9 @@
         slide_index     : 0,
         prepareElement  : function () {
             // duplicate this row from Base.prepareElement since preparing the slides requires the type classes set
-            this.$element.addClass('uijet_widget ' + uijet.Utils.toArray(this.options.type_class).join(' '));
+            this.$element.addClass('uijet_widget ' + uijet.utils.toArray(this.options.type_class).join(' '));
             //TODO: replace this mechanism - won't work with more complex stuff or with simple fade in/out
-            this.animation_type = uijet.Utils.isObj(this.options.animation_type) ?
+            this.animation_type = uijet.utils.isObj(this.options.animation_type) ?
                 this.options.animation_type :
                 ANIMATION_PROPS[this.options.animation_type || uijet.options.animation_type];
             // set the CSS property to be used when animating the transition
@@ -51,13 +51,13 @@
             this._super();
             // Arrow Buttons
             if ( this.options.add_arrows ) {
-                dfrds.push(uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
+                dfrds.push(uijet.start({ type: 'Button', config: uijet.utils.extend(true, {
                     element     : $('<span/>', {
                         'class' : 'uijet_teaser_arrow uijet_teaser_next',
                         id      : this.id + '_next'
                     }).appendTo(this.$wrapper),
                     container   : this.id
-                }, this.options.next_options || {}) }), uijet.start({ type: 'Button', config: uijet.Utils.extend(true, {
+                }, this.options.next_options || {}) }), uijet.start({ type: 'Button', config: uijet.utils.extend(true, {
                     element     : $('<span/>', {
                         'class' : 'uijet_teaser_arrow uijet_teaser_prev',
                         id      : this.id + '_prev'
@@ -78,26 +78,26 @@
             }
             // Preview
             if ( this.options.add_preview ) {
-                if ( uijet.Utils.isObj(this.options.preview_options) ) {
+                if ( uijet.utils.isObj(this.options.preview_options) ) {
                     preview_user_ops = this.options.preview_options;
                 }
                 preview_options.app_events = {};
                 preview_options.app_events[this.id + '.next'] =
-                    preview_user_ops && uijet.Utils.isFunc(preview_user_ops.next) ?
+                    preview_user_ops && uijet.utils.isFunc(preview_user_ops.next) ?
                         preview_user_ops.next :
                         function () {
 
                         };
                 preview_options.app_events[this.id + '.prev'] =
-                    preview_user_ops && uijet.Utils.isFunc(preview_user_ops.prev) ?
+                    preview_user_ops && uijet.utils.isFunc(preview_user_ops.prev) ?
                         preview_user_ops.prev :
                         function () {
 
                         };
                 preview_options = preview_user_ops ?
-                    uijet.Utils.extend(true, preview_options, preview_user_ops) :
+                    uijet.utils.extend(true, preview_options, preview_user_ops) :
                     preview_options;
-                dfrds.push(uijet.start({ type: 'List', config: uijet.Utils.extend(true, {
+                dfrds.push(uijet.start({ type: 'List', config: uijet.utils.extend(true, {
                         element     :  $('<ul/>', {
                             id  : this.id + '_preview'
                         }).appendTo(this.$wrapper)
@@ -136,19 +136,19 @@
         render          : function () {
             if ( this.options.cycle && this.templated ) {
                 return this._super()
-                        .then(this._prepareSlides.bind(this), uijet.Utils.rethrow);
+                        .then(this._prepareSlides.bind(this), uijet.utils.rethrow);
             }
             return this._super();
         },
         scrollTo        : function () {
             var that = this,
                 anim_props = {};
-            anim_props[this.animation_prop] = uijet.Utils.returnOf(this.animation_type.value, this, this.slide_index);
+            anim_props[this.animation_prop] = uijet.utils.returnOf(this.animation_type.value, this, this.slide_index);
             this._fixPosition();
             this.$slides.removeClass('current')
                         .eq(this.slide_index).addClass('current');
             // cancel last animation if it's still in queue
-            this.animation_id && uijet.Utils.cancelAnimFrame(this.animation_id);
+            this.animation_id && uijet.utils.cancelAnimFrame(this.animation_id);
             this.animation_id = uijet.animate(
                 this.$element,
                 anim_props,
@@ -159,7 +159,7 @@
             return this;
         },
         jumpTo          : function (index) {
-            this.$element.removeClass('transitioned')[0].style[this.animation_prop] = uijet.Utils.returnOf(this.animation_type.value, this, index);
+            this.$element.removeClass('transitioned')[0].style[this.animation_prop] = uijet.utils.returnOf(this.animation_type.value, this, index);
             return this;
         },
         _setIndex       : function (next_prev) {

@@ -28,7 +28,7 @@
                     // if this key already exists
                     if ( name in data ) {
                         // if it's corresponding value is not an `Array`
-                        if ( ! uijet.Utils.isArr(data[name]) ) {
+                        if ( ! uijet.utils.isArr(data[name]) ) {
                             // wrap it in an `Array`
                             data[name] = [data[name]];
                         }
@@ -40,10 +40,10 @@
                         data[name] = field.value;
                     }
                 });
-                if ( uijet.Utils.isObj(extra_data) ) {
+                if ( uijet.utils.isObj(extra_data) ) {
                     args = [extra_data];
                     args[as_defaults ? 'push' : 'unshift'](data);
-                    uijet.Utils.extend.apply(uijet.Utils, args);
+                    uijet.utils.extend.apply(uijet.utils, args);
                 }
                 return data;
             },
@@ -54,7 +54,7 @@
                         name = target.name || target.id,
                         // the published value either the `value` property or `false` if it's a checkbox and not checked
                         value = boolean_type_re.test(target.type) && ! target.checked ? false : uijet.$(target).val(),
-                        excluded = uijet.Utils.returnOf(this.options.changed_exclude, this);
+                        excluded = uijet.utils.returnOf(this.options.changed_exclude, this);
                     // if there aren't any excluded fields or this field is not in the excluded list then publish the changed event
                     (!excluded || !~ excluded.indexOf(name)) &&
                         uijet.publish(this.id + '_' + name + '.changed', {

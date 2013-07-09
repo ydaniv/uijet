@@ -67,7 +67,7 @@
             var _super = this._super, that = this;
             this.transit_promise.then(function () {
                 _super.call(that);
-            }, uijet.Utils.rethrow);
+            }, uijet.utils.rethrow);
             return this;
         }
     });

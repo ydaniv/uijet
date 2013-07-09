@@ -42,7 +42,7 @@
                 handle_ops.element = uijet.$('<span/>').appendTo(this.$element);
             }
 
-            handle_ops.mixins = uijet.Utils.putMixin(handle_ops.mixins, 'Dragged');
+            handle_ops.mixins = uijet.utils.putMixin(handle_ops.mixins, 'Dragged');
 
             handle_app_events[this.id + '.update_ui'] = function (position) {
                 var deltas = {};
@@ -55,7 +55,7 @@
                     if ( e.target === this.$element[0] ) {
                         var event_pos = uijet.support.touch ? e.originalEvent.touches[0] : e,
                             //TODO: replace getting offset with a simpler cache-based method that reduces reflow caused by checking offset
-                            position = event_pos[vertical ? 'pageY' : 'pageX'] - uijet.Utils.getOffsetOf(e.target, document.documentElement)[vertical ? 'y' : 'x'],
+                            position = event_pos[vertical ? 'pageY' : 'pageX'] - uijet.utils.getOffsetOf(e.target, document.documentElement)[vertical ? 'y' : 'x'],
                             value = this._positionToValue(position - this._handle_size / 2);
                         this.slide(value);
                     }
@@ -65,7 +65,7 @@
             // start button
             uijet.start({
                 type    : 'Button',
-                config  : uijet.Utils.extend(true, {
+                config  : uijet.utils.extend(true, {
                     type_class      : ['uijet_button', 'uijet_slider_handle'],
                     style           : {
                         position: 'absolute'
@@ -128,7 +128,7 @@
         //TODO: add docs
         _valueToPosition: function (value) {
             var percent = (value - this.slider_min) / (this.slider_max - this.slider_min),
-                size = +uijet.Utils.getStyle(
+                size = +uijet.utils.getStyle(
                     this.$element[0],
                     this.options.vertical ? 'height' : 'width'
                 ).slice(0, -2) - (this._handle_size || 0);
@@ -136,7 +136,7 @@
         },
         //TODO: add docs
         _positionToValue: function (position) {
-            var size = +uijet.Utils.getStyle(
+            var size = +uijet.utils.getStyle(
                     this.$element[0],
                     this.options.vertical ? 'height' : 'width'
                 ).slice(0, -2) - (this._handle_size || 0),

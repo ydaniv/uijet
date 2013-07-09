@@ -99,7 +99,7 @@
                     // an error callback handler
                     failure = function (response) {
                         // tell the user we failed
-                        that.notify.apply(that, [true, 'fetchTemplate_error'].concat(uijet.Utils.toArray(arguments)));
+                        that.notify.apply(that, [true, 'fetchTemplate_error'].concat(uijet.utils.toArray(arguments)));
                         // fail the whole fetching process
                         dfrd.reject();
                     },
@@ -163,7 +163,7 @@
             if ( ! this.has_template ) {
                 // if `render` was called directly then add a convenience call to fetchTemplate
                 return this.fetchTemplate()
-                    .then(that.render.bind(that), uijet.Utils.rethrow);
+                    .then(that.render.bind(that), uijet.utils.rethrow);
             }
             else {
                 _html = this.generate();

@@ -27,11 +27,11 @@
                 _options.url = url;
             }
             // if  `url` is an `Object` then use it as the config instead of `options`
-            else if ( uijet.Utils.isObj(url) ) {
+            else if ( uijet.utils.isObj(url) ) {
                 options = url;
             }
             // if we have a configuration `Object` then use it
-            if ( uijet.Utils.isObj(options) ) {
+            if ( uijet.utils.isObj(options) ) {
                 // move success/error/complete callbacks to the deferred object's callbacks
                 promise.then(options.success, options.error);
                 if ( options.complete ) {
@@ -42,7 +42,7 @@
                 delete options.error;
                 delete options.complete;
 
-                uijet.Utils.extend(_options, options);
+                uijet.utils.extend(_options, options);
             }
 
             $.ajax(_options);

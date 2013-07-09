@@ -27,7 +27,7 @@
                 options = this.options,
                 drop_arrow_id, drop_arrow_config,
                 // configure the dropdown menu
-                drop_menu_config = uijet.Utils.extend(true, {
+                drop_menu_config = uijet.utils.extend(true, {
                     id              : drop_menu_id,
                     container       : id,
                     dont_wake       : true,
@@ -86,7 +86,7 @@
                 drop_arrow_id = id + '_drop_arrow';
 
                 // configure the arrow button
-                drop_arrow_config = uijet.Utils.extend(true, {
+                drop_arrow_config = uijet.utils.extend(true, {
                     id          : drop_arrow_id,
                     container   : id,
                     extra_class : 'uijet_droparrow'
@@ -130,7 +130,7 @@
             add_arrow && uijet.start({ type: 'Button', config: drop_arrow_config });
 
             // make sure the drop menu is Floated
-            drop_menu_config.mixins = uijet.Utils.putMixin(drop_menu_config.mixins, 'Floated', -1);
+            drop_menu_config.mixins = uijet.utils.putMixin(drop_menu_config.mixins, 'Floated', -1);
 
             // create the menu widget
             uijet.start({ type: 'List', config: drop_menu_config });

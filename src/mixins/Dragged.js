@@ -8,10 +8,10 @@
     }
 }(function (uijet) {
     var has_touch = uijet.support.touch,
-        requestAnimFrame = uijet.Utils.requestAnimFrame,
-        cancelAnimFrame = uijet.Utils.cancelAnimFrame,
+        requestAnimFrame = uijet.utils.requestAnimFrame,
+        cancelAnimFrame = uijet.utils.cancelAnimFrame,
         // get the prefixed `transform` property
-        style_prop = uijet.Utils.getStyleProperty('transform'),
+        style_prop = uijet.utils.getStyleProperty('transform'),
         translation_re = /translate(?:X|Y|Z|3d)?\(([^\)]+)\)/;
 
     uijet.Mixin('Dragged', {
@@ -101,7 +101,7 @@
                 // get the start event object  
                 //TODO: this is adapted for iOS touch event object handling, need to test/implement the rest
                 down_pos = has_touch ? down_e.originalEvent.touches[0] : down_e,
-                offset = uijet.Utils.getOffsetOf(el, this.options.drag_parent || uijet.$element[0]),
+                offset = uijet.utils.getOffsetOf(el, this.options.drag_parent || uijet.$element[0]),
                 // set position
                 start_position = {
                     y   : down_pos.pageY,
@@ -303,7 +303,7 @@
                 draggee = $draggee ? $draggee[0] : orig,
                 offset;
             // get the offset of the original element from the `uijet.$element`
-            offset = uijet.Utils.getOffsetOf(orig, parent);
+            offset = uijet.utils.getOffsetOf(orig, parent);
             // set the position and dimensions of the `$draggee`
             draggee.style.cssText += 'left:' + offset.x +
                 'px;top:' + offset.y +
@@ -340,9 +340,9 @@
                 else if ( typeof option === 'string' ) {
                     $el = (this.$wrapper || this.$element).find(option);
                 }
-                // if it's a `Function` call `uijet.Utils.returnOf` on it
-                else if ( uijet.Utils.isFunc(option) ) {
-                    $el = uijet.Utils.returnOf(option, this);
+                // if it's a `Function` call `uijet.utils.returnOf` on it
+                else if ( uijet.utils.isFunc(option) ) {
+                    $el = uijet.utils.returnOf(option, this);
                 }
             }
             // otherwise, get the top container of the widget
@@ -362,7 +362,7 @@
                 top_parent = document.documentElement,
                 overflow;
             while ( parent && parent != top_parent ) {
-                overflow = uijet.Utils.getStyle(parent, 'overflow');
+                overflow = uijet.utils.getStyle(parent, 'overflow');
                 if ( scrolled_re.test(overflow) ) {
                     break;
                 }
@@ -455,7 +455,7 @@
         _contain            : function (draggee, parent) {
             var using_translate = this._use_translate, parent_style;
             if ( this.options.drag_contain ) {
-                parent_style = uijet.Utils.getStyle(parent);
+                parent_style = uijet.utils.getStyle(parent);
                 //TODO: add support for containing drag when using transform:translate
                 if ( ! using_translate ) {
                     this._drag_left_min = 0;

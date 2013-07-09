@@ -36,7 +36,7 @@
             // if top position wasn't set
             if ( ! this._top_set ) {
                 // get the `float_top` option value if it is set
-                var top = uijet.Utils.returnOf(this.options.float_top, this),
+                var top = uijet.utils.returnOf(this.options.float_top, this),
                     closing_str = isNaN(+top) ? '; }' : 'px; }',
                     bottom_style, rule;
                 // check if `float_top` option was set

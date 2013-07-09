@@ -24,7 +24,7 @@
                 buttons;
             this._super();
             // if we have buttons to create
-            if ( buttons_configs = uijet.Utils.toArray(this.options.buttons) ) {
+            if ( buttons_configs = uijet.utils.toArray(this.options.buttons) ) {
                 buttons = [];
                 while ( conf = buttons_configs.shift() ) {
                     conf.container || (conf.container = this.id);

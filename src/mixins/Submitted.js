@@ -92,8 +92,8 @@
         //TODO: add docs
         validate        : function (_data) {
             var validators = this.options.validators,
-                returnOf = uijet.Utils.returnOf,
-                isObj = uijet.Utils.isObj,
+                returnOf = uijet.utils.returnOf,
+                isObj = uijet.utils.isObj,
                 deferred = uijet.Promise(),
                 valid = true,
                 failed = {},

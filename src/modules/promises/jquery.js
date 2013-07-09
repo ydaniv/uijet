@@ -15,7 +15,7 @@
         },
         when        : $.when,
         isPromise   : function (obj) {
-            return obj && uijet.Utils.isFunc(obj.then);
+            return obj && uijet.utils.isFunc(obj.then);
         }
     }, uijet, $);
 }));

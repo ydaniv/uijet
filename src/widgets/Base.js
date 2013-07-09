@@ -10,7 +10,7 @@
 }(this, function (uijet, _window) {
     var Object = _window.Object,
         // cache the utilities namespace
-        Utils = uijet.Utils,
+        utils = uijet.utils,
         /**
          * Constructor for BaseWidget
          * 
@@ -249,7 +249,7 @@
             };
             url = this.getDataUrl(this.context);
             // send XHR to update
-            uijet.xhr(url.path, Utils.extend({
+            uijet.xhr(url.path, utils.extend({
                 type    : url.method,
                 data    : request_data,
                 dataType: 'json'
@@ -281,15 +281,15 @@
         // This is usually called once in the init sequence.
         prepareElement  : function () {
             var classes = 'uijet_widget ' +
-                    Utils.toArray(this.options.type_class).join(' '),
+                    utils.toArray(this.options.type_class).join(' '),
                 el = this.$element[0],
                 style, position;
             this.options.extra_class && (classes += ' ' + this.options.extra_class);
             this.$element.addClass(classes);
             // check if inside DOM
             if ( el.ownerDocument.body.contains(el) ) {
-                style = Utils.returnOf(this.options.style, this);
-                position = Utils.returnOf(this.options.position, this);
+                style = utils.returnOf(this.options.style, this);
+                position = utils.returnOf(this.options.position, this);
 
                 position && this.position(position);
                 style && this.style(style);
@@ -305,8 +305,8 @@
         // It uses a `jQuery.css` like operation on the wrapper element with the option's value.  
         // This is usually called once in the init sequence.
         style           : function (style, value) {
-            if ( ! arguments.length || (value === void 0 && typeof style == 'string') || Utils.isArr(style) ) {
-                return Utils.getStyle(this.$wrapper[0], style);
+            if ( ! arguments.length || (value === void 0 && typeof style == 'string') || utils.isArr(style) ) {
+                return utils.getStyle(this.$wrapper[0], style);
             }
             this._wrap()
                 .$wrapper.css(style, value);
@@ -395,7 +395,7 @@
                     has_fluid_side && uijet.position(this, exclude);
                 }
             }
-            if ( Utils.isObj(position) ) {
+            if ( utils.isObj(position) ) {
                 this.style(position);
             }
             return this;
@@ -459,7 +459,7 @@
         // Sets `bound` to `true` at the end.  
         //TODO: this overrides existing `type` with a new one - if this is not the required outcome implement using a list of handlers
         bind            : function (type, handler) {
-            var _h = Utils.isFunc(handler) ? handler : this._parseHandler(handler),
+            var _h = utils.isFunc(handler) ? handler : this._parseHandler(handler),
                 bound_handler = _h.bind(this);
             if ( !(type in this.options.dom_events) ) {
                 // cache the original handler
@@ -573,7 +573,7 @@
                     );
                 if ( uijet.options.routed ) {
 //                    that.runRoute(_route, typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
-                    that.runRoute(_route, ! Utils.returnOf(routing, that, $this));
+                    that.runRoute(_route, ! utils.returnOf(routing, that, $this));
                 } else {
                     uijet.publish(_route);
                 }
@@ -591,7 +591,7 @@
         // Set this instance's options.  
         // This is usually called once in the init sequence.
         setOptions      : function (options) {
-            this.options = Utils.extend(true, {}, this.options || {}, options);
+            this.options = utils.extend(true, {}, this.options || {}, options);
             // make sure DOM events maps are initialized
             ! this.options.dom_events && (this.options.dom_events = {});
             ! this._bound_dom_events && (this._bound_dom_events = {});
@@ -627,7 +627,7 @@
             }
             for ( n in ops.dom_events ) {
                 handler = ops.dom_events[n];
-                this._bound_dom_events[n] = Utils.isFunc(handler) ? handler.bind(this) : this._parseHandler(handler);
+                this._bound_dom_events[n] = utils.isFunc(handler) ? handler.bind(this) : this._parseHandler(handler);
             }
             // capture and delegate all `uijet-route` and/or anchor clicks to routing/publishing mechanism
             this.captureRoutes();
@@ -684,7 +684,7 @@
         // `method` is `GET` by default.
         getRestUrl      : function (_url, _context) {
             var context = _context || this.context,
-                url = Utils.returnOf(_url, this, context),
+                url = utils.returnOf(_url, this, context),
                 path;
             // if we have a URL to send to
             if ( url ) {
@@ -692,7 +692,7 @@
                     // parse the URL
                     path = this.substitute(url, context);
                 }
-                else if ( Utils.isObj(url) ) {
+                else if ( utils.isObj(url) ) {
                     // or parse the URL under __path__
                     path = this.substitute(url.path, context);
                 } else {
@@ -714,7 +714,7 @@
         substitute      : function(template, obj) {
             var n = 0;
             return template.replace(SUBSTITUTE_RE, function(match, key){
-                return Utils.isObj(obj) ? obj[key] : obj[n++];
+                return utils.isObj(obj) ? obj[key] : obj[n++];
             });
         },
         //TODO: add docs
@@ -774,7 +774,7 @@
         // Generates an id for the instance using the type_class option (sans the 'uijet_' prefix) + a suffix of '_'
         // and an auto-incremented index.
         _generateId     : function () {
-            var id =  Utils.toArray(this.options.type_class)
+            var id =  utils.toArray(this.options.type_class)
                             .splice(-1, 1).toString()
                             .replace('uijet_', '') + '_' + (++widget_id_index);
             this.$element.attr('id', id);
@@ -795,7 +795,7 @@
                 if ( this.options.dont_wrap ) {
                     this.$wrapper = this.$element;
                 } else {
-                    classes = 'uijet_wrapper ' + Utils.toArray(this.options.type_class).join('_wrapper ') + '_wrapper';
+                    classes = 'uijet_wrapper ' + utils.toArray(this.options.type_class).join('_wrapper ') + '_wrapper';
                     this.options.wrapper_class && (classes += ' ' + this.options.wrapper_class);
                     // wrap and cache the wrapper
                     this.$wrapper = this.$element.wrap(uijet.$('<' + (this.options.wrapper_tag || 'div') + '>', {
@@ -820,7 +820,7 @@
                 // wrap and cache the wrapper
                 this.$center_wrapper = this.$element.wrap(uijet.$('<div/>', {
                     'class' : 'uijet_center_wrapper ' +
-                        Utils.toArray(this.options.type_class).join('_center_wrapper ') +
+                        utils.toArray(this.options.type_class).join('_center_wrapper ') +
                         '_center_wrapper'
                 })).parent();
             }
@@ -941,6 +941,6 @@
         }
     };
 
-//    return Utils.Create(Widget, uijet.Base, true);
+//    return utils.Create(Widget, uijet.Base, true);
     return uijet.Base.derive(Widget);
 }));

@@ -1731,7 +1731,7 @@
     };
 
     // set a namespace on uijet for utility functions.
-    uijet.Utils = {
+    uijet.utils = {
         extend          : extend,
         extendProto     : extendProto,
         extendProxy     : extendProxy,

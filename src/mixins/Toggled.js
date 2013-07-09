@@ -13,7 +13,7 @@
                 'app.clicked'   : function (event) {
                     var el = this.$element[0],
                         target = event.target;
-                    if ( this.opened && el != target && ! uijet.Utils.contains(el, target) ) {
+                    if ( this.opened && el != target && ! uijet.utils.contains(el, target) ) {
                         this.sleep();
                     }
                 }

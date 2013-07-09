@@ -12,7 +12,7 @@
         uijet.use({
             setRoute        : function (widget, route, callback) {
                 var method = 'get';
-                if ( uijet.Utils.isObj(route) ) {
+                if ( uijet.utils.isObj(route) ) {
                     method = route.method;
                     route = route.path;
                 }
@@ -30,7 +30,7 @@
             },
             unsetRoute      : function (widget, route) {
                 var method = 'get', _route, _routes;
-                if ( uijet.Utils.isObj(route) ) {
+                if ( uijet.utils.isObj(route) ) {
                     method = route.method;
                     route = route.path;
                 }
