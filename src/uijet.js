@@ -760,7 +760,7 @@
             this._define(type, props, _deps);
             // create and cache the class
             // if we have dependencies
-            if ( _deps ) {
+            if ( _deps && ! this.initialized ) {
                 // defer the widget class definition till we have promises module loaded
                 // plus its dependencies are loaded
                 this.init_queue.push(function (deferred) {
