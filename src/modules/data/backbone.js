@@ -37,7 +37,9 @@
                 }
                 else if ( this.context ) {
                     if ( uijet.utils.isObj(this.context) ) {
-                        return this.resource.where(this.context);
+                        return this.resource.where ?
+                            this.resource.where(this.context) :
+                            uijet.utils.extend({}, this.context, this.resource.attributes);
                     }
                     else if ( typeof this.context == 'string' &&
                         uijet.utils.isFunc(this.resource[this.context]) ) {
