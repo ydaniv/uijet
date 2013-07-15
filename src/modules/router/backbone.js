@@ -12,7 +12,7 @@
 }(this, function (uijet, Backbone) {
 
     return function (router) {
-        var Router = router ? router : new Backbone.Router;
+        var Router = router instanceof Backbone.Router ? router : new Backbone.Router(router);
 
         uijet.use({
             setRoute    : function (widget, route, callback) {
@@ -41,7 +41,7 @@
 
                 return this;
             },
-            unsetRoute      : function (widget, route) {
+            unsetRoute  : function (widget, route) {
                 var r;
                 for ( r in Router ) {
                     if ( r === route ) {
