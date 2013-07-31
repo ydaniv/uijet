@@ -108,14 +108,15 @@
                     // clear style.height
                     this.$wrapper[0].style.height = '';
                     delete this.height_dirty;
-                } else {
-                    // get the `$wrapper`'s height
-                    _h = this.$wrapper[0].offsetHeight;
-                    // if it's 0 for some reason
-                    if ( ! _h ) {
+                }
+                // if the `$wrapper` has no visible height
+                else if ( ! this.$wrapper[0].offsetHeight ) {
+                    // fallback to `$element`'s height
+                    _h = this.$element[0].offsetHeight;
+                    if ( _h ) {
+                        // if there's an actual value set it as the height of the wrapper
                         this.height_dirty = true;
-                        // take the `$element`'s height and set it explicitly on the `$wrapper`
-                        this.$wrapper[0].style.height = this.$element[0].offsetHeight + 'px';
+                        this.$wrapper[0].style.height = _h + 'px';
                     }
                 }
             }
