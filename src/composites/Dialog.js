@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
@@ -6,7 +5,6 @@
             'uijet_dir/widgets/Base',
             'uijet_dir/widgets/Button',
             'uijet_dir/mixins/Floated'
-//            'uijet_dir/widgets/Pane'
         ], function (uijet) {
             return factory(uijet);
         });
