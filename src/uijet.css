@@ -617,6 +617,12 @@ video:focus {
     -moz-box-shadow: 0 0 8px 2px rgba(66, 66, 66, .5);
     box-shadow: 0 0 8px 2px rgba(66, 66, 66, .5);
 }
+
+.uijet_select_wrapper {
+    height: auto;
+    overflow: visible;
+}
+
 .hide { display: none !important; }
 
 /* ==|== non-semantic helper classes ======================================== */
