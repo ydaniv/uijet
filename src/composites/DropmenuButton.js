@@ -112,17 +112,10 @@
                 drop_menu_config.element = (drop_arrow || this.$wrapper[0]).appendChild(drop_menu);
             }
             else {
-                drop_menu = drop_menu_config.element;
+                drop_menu = uijet.utils.toElement(drop_menu_config.element);
 
-                if ( typeof drop_menu == 'string' ) {
-                    drop_menu = this.$element.find(drop_menu)[0];
-                }
-                else if ( drop_menu && drop_menu[0] && drop_menu[0].nodeType ) {
-                    drop_menu = drop_menu[0];
-                }
-
-                if ( drop_menu && drop_menu.nodeType === 1 ) {
-                    (drop_arrow || this.$wrapper[0]).appendChild(drop_menu);
+                if ( drop_menu && drop_menu[0] ) {
+                    (drop_arrow || this.$wrapper[0]).appendChild(drop_menu[0]);
                 }
             }
 

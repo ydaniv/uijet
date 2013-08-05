@@ -328,22 +328,14 @@
             var option, $el;
             // if the option is set
             if ( option = this.options.drag_element ) {
-                // if it's an HTMLElement just wrap it
-                if ( option.nodeType === 1 ) {
-                    $el = uijet.$(option);
-                }
-                // if it's a DOM query result object we're set
-                else if ( option[0] && option[0].nodeType === 1 ) {
-                    $el = option;
-                }
-                // if it's a `String` treat it as a selector inside the widget
-                else if ( typeof option === 'string' ) {
-                    $el = (this.$wrapper || this.$element).find(option);
-                }
                 // if it's a `Function` call `uijet.utils.returnOf` on it
-                else if ( uijet.utils.isFunc(option) ) {
+                if ( uijet.utils.isFunc(option) ) {
                     $el = uijet.utils.returnOf(option, this);
                 }
+                else {
+                    $el = uijet.utils.toElement(option);
+                }
+                
             }
             // otherwise, get the top container of the widget
             else {
