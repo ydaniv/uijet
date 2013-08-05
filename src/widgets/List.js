@@ -14,6 +14,16 @@
         options             : {
             type_class  : 'uijet_list'
         },
+        init            : function () {
+            var res = this._super.apply(this, arguments),
+                initial = this.options.initial;
+            // if `initial` option is set the perform selection inside the widget
+            if ( initial ) {
+                this.setSelected(uijet.utils.toElement(initial));
+                this.publish('selected', this.$selected);
+            }
+            return res;
+        },
         prepareElement  : function () {
             var that = this,
                 // `item_selector` option allows the widget to be markup agnostic.  
@@ -59,15 +69,6 @@
                 }
             });
             this._super();
-            return this;
-        },
-        bindAll         : function () {
-            var initial = this.options.initial;
-            this._super();
-            // if `initial` option is set the perform selection inside the widget
-            if ( initial ) {
-                this.select(initial);
-            }
             return this;
         },
         // ### widget.setSelected([item])
