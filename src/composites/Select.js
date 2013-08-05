@@ -12,32 +12,22 @@
     }
 }(function (uijet) {
 
-    uijet.Widget('SelectMenu', {
-        setSelected : function () {
-            this._super.apply(this, arguments);
-            this.sleep();
-        }
-    }, {
-        widgets : 'List'
-    });
-
     uijet.Widget('Select', {
         options : {
-            type_class  : ['uijet_button', 'uijet_select'],
-            dont_wrap   : false
+            type_class  : ['uijet_button', 'uijet_select']
         },
-        init        : function () {
+        init    : function () {
             this._super.apply(this, arguments)
                 ._wrap();
 
             var menu_id = this.id + '_menu',
                 has_element = this.options.menu && this.options.menu.element,
                 menu_mixins = this.options.menu.mixins,
-                $wrapper = this.$wrapper,
+                $el = this.$wrapper,
                 menu_app_events = {
                     //TODO: need to remove this and make it configurable in Toggled mixin
                     'app.clicked'   : function (event) {
-                        var el = $wrapper[0],
+                        var el = $el[0],
                             target = event.target;
                         if ( this.opened && el != target && ! uijet.utils.contains(el, target) ) {
                             this.sleep();
@@ -47,14 +37,16 @@
                 putMixin = uijet.utils.putMixin,
                 menu_declaration;
 
+            this.options.content || (this.options.content = uijet.$('<span>').prependTo(this.$element));
+
             menu_app_events[this.id + '.clicked'] = 'toggle';
 
             menu_declaration = {
-                type    : 'SelectMenu',
+                type    : 'List',
                 config  : uijet.utils.extend(true, {
                     element     : has_element || uijet.$('<ul>', {
                         id  : menu_id
-                    }).appendTo($wrapper),
+                    }).appendTo($el),
                     container   : this.id,
                     dont_wake   : true,
                     mixins      : putMixin(putMixin(menu_mixins, 'Toggled'), 'Floated'),
@@ -65,12 +57,13 @@
 
             uijet.start(menu_declaration);
 
-            this.subscribe(menu_id + '.selected', function ($selected) {
-                (this.options.content || this.$element).text($selected.text());
-                this.publish('selected', $selected);
-            });
+            this.subscribe(menu_id + '.selected', this.select);
 
             return this;
+        },
+        select  : function ($selected) {
+            this.options.content.text($selected.text());
+            return this.publish('selected', $selected);
         }
     }, {
         widgets : ['Button']
