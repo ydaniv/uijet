@@ -206,6 +206,18 @@
     }
 
     /**
+     * TODO: add docs
+     * @param obj
+     * @returns {*}
+     */
+    function toElement (obj) {
+        if ( obj && (typeof obj == 'string' || obj.nodeType === 1) ) {
+            obj = uijet.$(obj);
+        }
+        return obj;
+    }
+
+    /**
      * Rethrows an `Error` object or throws a new one if the given argument is not an `Error`.
      *
      * @param {Error|String} [err] - an error to rethrow or a `String` message to use for throwing a new `Error`.
@@ -1741,6 +1753,7 @@
         isFunc          : isFunc,
         toArray         : toArray,
         returnOf        : returnOf,
+        toElement       : toElement,
         rethrow         : rethrow,
         contains        : contains,
         getStyle        : getStyle,
