@@ -210,9 +210,9 @@
      * @param obj
      * @returns {*}
      */
-    function toElement (obj) {
+    function toElement (obj, context) {
         if ( obj && (typeof obj == 'string' || obj.nodeType === 1) ) {
-            obj = uijet.$(obj);
+            obj = uijet.$(obj, context || document);
         }
         return obj;
     }
