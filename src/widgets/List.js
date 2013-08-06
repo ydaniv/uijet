@@ -19,7 +19,7 @@
                 initial = this.options.initial;
             // if `initial` option is set the perform selection inside the widget
             if ( initial ) {
-                this.setSelected(uijet.utils.toElement(initial, this.$wrapper || this.$element));
+                this.setSelected(uijet.utils.toElement(initial, this.$element));
                 this.publish('selected', this.$selected);
             }
             return res;
