@@ -63,6 +63,7 @@
         },
         select  : function ($selected) {
             this.options.content.text($selected.text());
+            this.notify('post_select', $selected);
             return this.publish('selected', $selected);
         }
     }, {
