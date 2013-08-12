@@ -78,7 +78,7 @@
                 uijet.publish('pre_load');
                 // our update promise object
                 dfrd_update = uijet.Promise();
-                _success = function (model, response) {
+                _success = function (response, response, options) {
                     that.has_data = true;
                     // if success notify a signal that we have `data` and resolve the promise
                     that.notify('post_fetch_data', response);
