@@ -23,6 +23,10 @@
 
     SearchIndex.prototype = {
         constructor : SearchIndex,
+        set         : function (docs) {
+            this.documents = docs;
+            return this;
+        },
         add         : function () {
             this.documents = this.documents.concat.apply(this.documents, arguments);
             return this;
