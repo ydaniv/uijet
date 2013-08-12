@@ -12,11 +12,27 @@
     }
 }(function (uijet) {
 
+    uijet.Widget('SelectMenu', {
+        setSelected : function (toggle) {
+            var deferred;
+            if ( toggle && toggle.deferred ) {
+                deferred = toggle.deferred;
+                toggle = toggle.toggle;
+            }
+            this._super(toggle);
+            return deferred ?
+                deferred.resolve(this.$selected) :
+                this;
+        }
+    }, {
+        widgets : ['List']
+    });
+
     uijet.Widget('Select', {
-        options : {
+        options     : {
             type_class  : ['uijet_button', 'uijet_select']
         },
-        init    : function () {
+        init        : function () {
             this._super.apply(this, arguments)
                 ._wrap();
 
@@ -40,9 +56,10 @@
             this.options.content || (this.options.content = uijet.$('<span>').prependTo(this.$element));
 
             menu_app_events[this.id + '.clicked'] = 'toggle';
+            menu_app_events[this.id + '._set_selected'] = 'setSelected+';
 
             menu_declaration = {
-                type    : 'List',
+                type    : 'SelectMenu',
                 config  : uijet.utils.extend(true, {
                     element     : has_element || uijet.$('<ul>', {
                         id  : menu_id
@@ -61,8 +78,23 @@
 
             return this;
         },
-        select  : function ($selected) {
-            this.options.content.text($selected.text());
+        _setSelected: function ($selected) {
+            if ( $selected && $selected.length ) {
+                this.options.content.text($selected.text());
+            }
+            return this;
+        },
+        setSelected : function (toggle) {
+            var deferred = uijet.Promise();
+            this.publish('_set_selected', {
+                toggle  : toggle,
+                deferred: deferred
+            });
+            deferred.promise().then(this._setSelected.bind(this));
+            return this;
+        },
+        select      : function ($selected) {
+            this.setSelected($selected);
             this.notify('post_select', $selected);
             return this.publish('selected', $selected);
         }
