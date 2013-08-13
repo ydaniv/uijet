@@ -857,10 +857,13 @@
         },
         /**
          * Gets a resource instance by name or registers a new resource instance.
+         * If `initial` is a `true` it registers `resource` as the resource instance under `name`.
+         * Otherwise, calls `uijet.newResource` that should be implemented by the module adapter
+         * to generate a new resource instance and registers it.
          *
          * @param {String} name            - identifier for that resource class
          * @param {Object} [resource]      - this resource's constructor
-         * @param {Object|Array} [initial] - initial data for the generated instance
+         * @param {Boolean|Object|Array} [initial] - initial data for the generated instance or `true` to reset the registry of `name` to be instance `resource`
          * @returns {Object} this|resource_instance
          */
         Resource            : function (name, resource, initial) {
@@ -869,7 +872,12 @@
                     return resources[name];
                 }
             }
-            resources[name] = uijet.newResource(resource, initial);
+            if ( initial === true ) {
+                resources[name] = resource;
+            }
+            else {
+                resources[name] =  uijet.newResource(resource, initial);
+            }
             return this;
         },
         /**
