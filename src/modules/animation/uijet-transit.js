@@ -162,8 +162,14 @@
             have_callback && trans_end_event && $el.one(trans_end_event, callback);
             request_id = requestAnimFrame(function () {
                 var style = $el[0].style, p;
-                for ( p in props )
-                    style.setProperty(p, props[p]);
+                if ( typeof props == 'string' )
+                    style.cssText = props;
+                else
+                    for ( p in props )
+                        if (p in style)
+                            style[p] = props[p];
+                        else
+                            style.setProperty(p, props[p]);
             });
             if ( ! trans_end_event ) {
                 request_id = have_callback && requestAnimFrame(callback);
