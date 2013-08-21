@@ -21,12 +21,27 @@
                     hwaccel     : false,
                     className   : 'uijet_spin_spinner'
                 },
-                $el = this.$wrapper || this.$element;
+                options = uijet.utils.extend(spinner_defaults, this.options.spinner_options || {}),
+                element, $el;
+
+            if ( options.element ) {
+                element = options.element;
+                if ( uijet.utils.isFunc(element) ) {
+                    $el = uijet.utils.returnOf(element, this);
+                }
+                else {
+                    $el = uijet.utils.toElement(element);
+                }
+                delete options.element;
+            }
+            else {
+                $el = this.$wrapper || this.$element
+            }
 
             if ( this.spinner ) {
                 this.spinner.spin($el[0]);
             } else {
-                this.spinner = new Spinner(uijet.utils.extend(spinner_defaults, this.options.spinner_options || {})).spin($el[0]);
+                this.spinner = new Spinner(options).spin($el[0]);
             }
             this.spin_on = true;
 
