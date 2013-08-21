@@ -10,7 +10,7 @@
     uijet.Adapter('jqWheelScroll', {
         scroll  : function () {
             var that = this, el, is_horizontal,
-                jqS_ops = {};
+                jqS_ops = this.options.jqscroll_options || {};
 
             if ( is_horizontal = (this.options.horizontal  && ! this.options.grid_layout) ) {
                 jqS_ops.horizontal = true;
