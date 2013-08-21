@@ -9,7 +9,7 @@
 }(function (uijet) {
     uijet.Adapter('jqScroll', {
         scroll  : function () {
-            var jqS_ops = {};
+            var jqS_ops = uijet.utils.extend({}, this.options.jqscroll_options || {});
             if ( this.options.horizontal ) {
                 jqS_ops.horizontal = true;
                 jqS_ops.vertical = false;
