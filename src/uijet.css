@@ -353,7 +353,7 @@ video:focus {
     width: 100%;
     list-style: none;
 }
-.uijet_list li {
+.uijet_list > li {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -362,7 +362,7 @@ video:focus {
 .uijet_list.horizontal {
     height: 100%;
 }
-.uijet_list.horizontal li {
+.uijet_list.horizontal > li {
     display: inline-block;
     float: left;
     height: 100%;
@@ -580,7 +580,7 @@ video:focus {
 .uijet_datepicker_list {
     text-align: left;
 }
-.uijet_datepicker_list li {
+.uijet_datepicker_list > li {
     display: inline-block;
     width: 1.7rem;
     height: 1.7rem;
