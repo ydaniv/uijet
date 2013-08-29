@@ -1470,7 +1470,7 @@
                 l = _contained.length;
             while ( l-- ) {
                 _widget = widgets[_contained[l]].self;
-                if ( _widget && ! _widget.options.dont_wake ) {
+                if ( _widget && ! returnOf(_widget.options.dont_wake, _widget) ) {
                     deferreds.unshift(_widget.wake(context));
                 }
             }
