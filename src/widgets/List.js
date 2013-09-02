@@ -19,23 +19,22 @@
                 initial = this.options.initial;
             // if `initial` option is set the perform selection inside the widget
             if ( initial ) {
-                this.setSelected(uijet.utils.toElement(initial, this.$element));
-                this.publish('selected', this.$selected);
+                this.click(uijet.utils.toElement(initial, this.$element));
             }
             return res;
         },
         prepareElement  : function () {
             var that = this,
-                // `item_selector` option allows the widget to be markup agnostic.  
-                // If it's set it will be used as the top item element - defaults to `li`
-                item_selector = this.options.item_selector || 'li',
-                // `item_element` option can be used to set an element inside `element_selector`
-                // which behaves like the item itself
-                item_element = this.options.item_element,
                 _horizontal = this.options.horizontal,
                 class_attrs = [],
                 click_event = this.options.click_event,
                 _align;
+            // `item_selector` option allows the widget to be markup agnostic.  
+            // If it's set it will be used as the top item element - defaults to `li`
+            this._item_selector = this.options.item_selector || 'li';
+            // `item_element` option can be used to set an element inside `item_selector`
+            // which behaves like the item itself
+            this._item_element = this.options.item_element;
             // if `horizontal` option is set
             if ( _horizontal ) {
                 // add the 'horizontal' 
@@ -50,26 +49,33 @@
                 this.$element.addClass(class_attrs.join(' '));
             }
             // delegate all clicks from `item_element` option as selector or `item_selector`  
-            this.$element.on(click_event || uijet.support.click_events.full, item_element || item_selector, function (e) {
-                // get the selected element  
-                // if `item_element` option is set get the closest `item_selector` stating from current element  
-                // if not then use current element
-                var $this = item_element ? uijet.$(this).closest(item_selector) : uijet.$(this),
-                    // allow user to set the selected event's data or bail from selection
-                    transfer = that.notify('pre_select', $this, e);
-                // if `pre_select signal` is handled and returns specifically `false` then prevent it
-                if( transfer !== false ) {
-                    // make sure this element still exists inside the DOM
-                    if ( $this && $this.length && $this[0].ownerDocument.body.contains($this[0]) ) {
-                        that.publish('selected', transfer === void 0 ? that.getTransfer($this) : transfer)
-                        // cache & paint selection
-                            .setSelected($this);
-                    }
-                    that.notify('post_select', $this, e);
+            this.$element.on(
+                click_event || uijet.support.click_events.full,
+                this._item_element || this._item_selector,
+                function (e) {
+                    return that.click(this, e);
                 }
-            });
+            );
             this._super();
             return this;
+        },
+        click           : function (el, event) {
+            // get the selected element  
+            // if `item_element` option is set get the closest `item_selector` stating from current element  
+            // if not then use current element
+            var $selected = this._item_element ? uijet.$(el).closest(this._item_selector) : uijet.$(el),
+                // allow user to set the selected event's data or bail from selection
+                transfer = this.notify('pre_select', $selected, event);
+            // if `pre_select signal` is handled and returns specifically `false` then prevent it
+            if( transfer !== false ) {
+                // make sure this element still exists inside the DOM
+                if ( $selected && $selected.length && $selected[0].ownerDocument.body.contains($selected[0]) ) {
+                    this.publish('selected', transfer === void 0 ? this.getTransfer($selected) : transfer)
+                    // cache & paint selection
+                        .setSelected($selected);
+                }
+                this.notify('post_select', $selected, event);
+            }
         },
         // ### widget.setSelected([item])
         //
