@@ -1,6 +1,6 @@
 /*!
  * UIjet UI Framework
- * @version 0.0.27
+ * @version 0.0.28
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
@@ -699,7 +699,7 @@
      * @namespace uijet
      */
     uijet =  {
-        version             : '0.0.27',
+        version             : '0.0.28',
         route_prefix        : '',
         route_suffix        : '',
         init_queue          : [],
