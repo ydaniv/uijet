@@ -73,8 +73,35 @@
                     position =  this._parsePosition(position);
                 }
                 if ( typeof position == 'string' ) {
-                    this._createFloatRule(position);
+                    // create a CSS rule of positioning this floatee
+                    this.setRule(position);
                 }
+            }
+            return this;
+        },
+        setRule         : function (css_text) {
+            var selector = '#' + this._wrap().$wrapper.attr('id') + '.float.show',
+                index = 0,
+                bottom_style;
+
+            if ( this.float_rule_sheet ) {
+                this._addRule(this.float_rule_sheet, selector, css_text);
+            }
+            else {
+                // in Chrome when stylesheets are remote `document.styleSheets` may return `null`
+                if ( document.styleSheets ) {
+                    // find the last stylesheet in the document
+                    bottom_style = document.styleSheets[document.styleSheets.length - 1];
+                    // insert this rule at that stylesheet's end
+                    this._addRule(bottom_style, selector, css_text)
+                }
+                else {
+                    // if `document.styleSheets` is `null`
+                    bottom_style = document.createElement('style');
+                    bottom_style.innerHTML = css_text;
+                    document.head.appendChild(bottom_style);
+                }
+                this.float_rule_sheet = bottom_style;
             }
             return this;
         },
@@ -86,31 +113,14 @@
             }
             return css_text;
         },
-        _createFloatRule: function (css_text) {
-            var bottom_style, rule_text, index;
-
-            if ( this.float_rule ) {
-                this.float_rule.style.cssText = css_text;
+        //TODO: implement cleaning of old styles
+        _addRule        : function (sheet, selector, css_text) {
+            var index = (sheet.cssRules ? sheet.cssRules : sheet.rules).length;
+            if ( sheet.insertRule ) {
+                sheet.insertRule(selector + ' {' + css_text + '}', index);
             }
             else {
-                // create a rule of positioning this floatee using `css_text`
-                rule_text = '#' + this._wrap().$wrapper.attr('id') + '.float.show { ' + css_text + ' }';
-                // in Chrome when stylesheets are remote `document.styleSheets` may return `null`
-                if ( document.styleSheets ) {
-                    // find the last stylesheet in the document
-                    bottom_style = document.styleSheets[document.styleSheets.length - 1];
-                    index = bottom_style.cssRules.length;
-                    // insert this rule at that stylesheet's end
-                    bottom_style.insertRule(rule_text, index);
-                    this.float_rule = bottom_style.cssRules[index];
-                }
-                else {
-                    // if `document.styleSheets` is `null`
-                    bottom_style = document.createElement('style');
-                    bottom_style.innerHTML = rule_text;
-                    document.head.appendChild(bottom_style);
-                    this.float_rule = bottom_style.cssRules[0]; 
-                }
+                sheet.addRule(selector, css_text);
             }
             return this;
         }
