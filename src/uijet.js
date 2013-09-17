@@ -583,14 +583,36 @@
     }
 
     /**
+     * Gets a normalized `object` of dependencies, as returned by @see normalizeDeps,
+     * and checks for modules in it that are not yet defined, in `mixins` and `widget_classes`.
+     * 
+     * If any dependency is missing returns `true`, otherwise `false`.
+     * 
+     * @param {Object} deps       - normalized dependencies declaration
+     * @returns {Boolean} missing - whether there's a dependency that's not defined yet
+     */
+    function missingDependency (deps) {
+        var m, len;
+        for ( len = deps.mixins.length; m = deps.mixins[--len]; ) {
+            if ( ! (m in mixins) )
+                return true;
+        }
+        for ( len = deps.widgets.length; m = deps.widgets[--len]; ) {
+            if ( ! (m in widget_classes) )
+                return true;
+        }
+        return false;
+    }
+
+    /**
      * Creates a new class from a given prototype object or a constructor function,
      * optionally inheriting the prototype/constructor `_extends`.
      * Returns an instance of the created class or, optionally, the class itself.
      * 
-     * @param proto {Function|Object}      - a constructor or an object to use as the top level prototype
-     * @param [_extends] {Function|Object} - a constructor of a class to inherit from or simply an object to add to the prototype chain
-     * @param [as_constructor] {Boolean}   - whether to return the new created class' constructor or instance
-     * @returns created {Function|Object}  - the new created class constructor or its instance
+     * @param {Function|Object} proto      - a constructor or an object to use as the top level prototype
+     * @param {Function|Object} [_extends] - a constructor of a class to inherit from or simply an object to add to the prototype chain
+     * @param {Boolean} [as_constructor]   - whether to return the new created class' constructor or instance
+     * @returns {Function|Object} created  - the new created class constructor or its instance
      */
     function Create (proto, _extends, as_constructor) {
         var is_proto_f = isFunc(proto),
@@ -773,21 +795,26 @@
             // create and cache the class
             // if we have dependencies
             if ( _deps && ! this.initialized ) {
-                // defer the widget class definition till we have promises module loaded
-                // plus its dependencies are loaded
-                this.init_queue.push(function (deferred) {
-                    // make sure they're all loaded
-                    this.importModules(_deps,
-                        function () {
-                            widget_classes[type] = this._generate(props, _deps.mixins, _deps.widgets);
-                            deferred.resolve();
-                        }.bind(this)
-                    );
-                    return deferred.promise();
-                });
-                // setting a placeholder for this widget definition so that uijet
-                // will not get confused and try to load it from elsewhere, e.g. in `_extractDependencies()`
-                widget_classes[type] = true;
+                if ( missingDependency(_deps) ) {
+                    // defer the widget class definition till we have promises module loaded
+                    // plus its dependencies are loaded
+                    this.init_queue.push(function (deferred) {
+                        // make sure they're all loaded
+                        this.importModules(_deps,
+                            function () {
+                                widget_classes[type] = this._generate(props, _deps.mixins, _deps.widgets);
+                                deferred.resolve();
+                            }.bind(this)
+                        );
+                        return deferred.promise();
+                    });
+                    // setting a placeholder for this widget definition so that uijet
+                    // will not get confused and try to load it from elsewhere, e.g. in `_extractDependencies()`
+                    widget_classes[type] = true;
+                }
+                else {
+                    widget_classes[type] = this._generate(props, _deps.mixins, _deps.widgets);
+                }
             }
             else {
                 widget_classes[type] = this._generate(props);
