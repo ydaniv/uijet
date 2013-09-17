@@ -12,7 +12,8 @@
     }
 }(this, function (uijet, Backbone) {
 
-    var base_widget_proto = uijet.BaseWidget.prototype,
+    var arraySlice = Array.prototype.slice,
+        base_widget_proto = uijet.BaseWidget.prototype,
         baseRegister = base_widget_proto.register,
         baseDestroy = base_widget_proto.destroy;
 
@@ -49,7 +50,7 @@
                 return this.resource.models || this.resource.attributes;
             };
             this.filter = function () {
-                var args = Array.prototype.slice.call(arguments, 1),
+                var args = arraySlice.call(arguments, 1),
                     is_lazy = false,
                     filter = arguments[0];
                 if ( uijet.utils.isFunc(filter) ) {
@@ -92,7 +93,7 @@
                     // * __success flow__: success callback is sent as the last argument to the signal's handler
                     // * __failrue flow__: in case anything but `false` is returned from `update_error` handler
                     // * __or abort it all__: return `false` from `update_error` handler
-                    var _abort_fail = that.notify.apply(that, ['update_error'].concat(Array.prototype.slice.call(arguments), _success.bind(that)));
+                    var _abort_fail = that.notify.apply(that, ['update_error'].concat(arraySlice.call(arguments), _success.bind(that)));
                     if ( _abort_fail !== false ) {
                         // publish an error has occurred with `update`
                         that.publish('update_error', response, true);
@@ -151,8 +152,8 @@
     uijet.use({
         Model       : Backbone.Model.extend.bind(Backbone.Model),
         Collection  : Backbone.Collection.extend.bind(Backbone.Collection),
-        newResource : function (resource, initial) {
-            return new resource(initial);
+        newResource : function (resource, initial, options) {
+            return new resource(initial, options);
         }
     });
 

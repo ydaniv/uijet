@@ -885,8 +885,12 @@
         /**
          * Gets a resource instance by name or registers a new resource instance.
          * If `initial` is a `true` it registers `resource` as the resource instance under `name`.
-         * Otherwise, calls `uijet.newResource` that should be implemented by the module adapter
+         * Otherwise, calls @see newResource that should be implemented by the module adapter
          * to generate a new resource instance and registers it.
+         *
+         * Optionally you can send any number of arguments to this method and they will be used as
+         * arguments for calling @see newResource, e.g: the second optional `options` argument for
+         * instantiating a Backbone.js resource.
          *
          * @param {String} name            - identifier for that resource class
          * @param {Object} [resource]      - this resource's constructor
@@ -903,7 +907,7 @@
                 resources[name] = resource;
             }
             else {
-                resources[name] =  uijet.newResource(resource, initial);
+                resources[name] =  uijet.newResource.apply(uijet, arraySlice.call(arguments, 1));
             }
             return this;
         },
