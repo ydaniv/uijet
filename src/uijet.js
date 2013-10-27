@@ -52,9 +52,9 @@
         /**
          * Searches for a prefixed name of `name` inside `obj`.
          *
-         * @param {String} name            - name to search for
-         * @param {Object} obj             - the source object search in
-         * @returns {String|null} prefixed - the prefixed property or `null` if not found
+         * @param {string} name - Name to search for.
+         * @param {object} obj - The source object search in.
+         * @returns {string|null} The prefixed property or `null` if not found.
          */
         getPrefixed = function (name, obj) {
             var cases = BROWSER_PREFIX.prop,
@@ -413,7 +413,7 @@
          *
          * @param {String} topic     - the signal's type to register
          * @param {Function} handler - the signal's handler to register
-         * @returns {Object} this
+         * @returns this
          */
         listen          : function (topic, handler) {
             this.signals_cache[topic] =  this._parseHandler(handler);
@@ -424,7 +424,7 @@
          * If no `topic` is given then removes all handlers.
          *
          * @param {String} [topic] - the signal's type to remove
-         * @returns {Object} this
+         * @returns this
          */
         unlisten        : function (topic) {
             if ( ! topic ) {
@@ -474,7 +474,7 @@
          *
          * @param {String} topic    - the type of the handler to register
          * @param {Function|String} - handler the handler to register or a name of a method of this instance or a signal's handler to use as handler
-         * @returns {Object} this
+         * @returns this
          */
         //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
         subscribe       : function (topic, handler) {
@@ -490,7 +490,7 @@
          *
          * @param {String} topic       - the event type to remove from registry
          * @param {Function} [handler] - the handler to remove from the registry
-         * @returns {Object} this
+         * @returns this
          */
         unsubscribe     : function (topic, handler) {
             if ( ! handler && this.app_events ) {
@@ -507,7 +507,7 @@
          *
          * @param {String} topic - the type of the event to trigger
          * @param {*} [data]     - argument to pass to the event's handler as data
-         * @returns {Object} this
+         * @returns this
          */
         publish         : function (topic, data) {
             uijet.publish(this.id + '.' + topic, data);
@@ -762,7 +762,7 @@
          * @param {Object} props     - the properties to mix-in to the host
          * @param {Object} [host]    - host object to add these properties to, can be skipped by passing `null`
          * @param {Object} [context] - a context object to bind the mixed-in properties to
-         * @returns {Object} this
+         * @returns this
          */
         use                 : function (props, host, context) {
             // get the host object or use `uijet`
@@ -786,7 +786,7 @@
          * @param {String} type                - this widget's type
          * @param {Object} props               - properties defined by this widget
          * @param {String|Array|Object} [deps] - dependencies for this widget
-         * @returns {Object} this
+         * @returns this
          */
         Widget              : function (type, props, deps) {
             var _deps = normalizeDeps(deps);
@@ -826,7 +826,7 @@
          *
          * @param {String} name    - name of the mixin to get/define
          * @param {Object} [props] - properties defined by this mixin
-         * @returns {Object} this|mixin
+         * @returns this|mixin
          */
         Mixin               : function (name, props) {
             if ( arguments.length === 1 ) {
@@ -845,7 +845,7 @@
          *
          * @param {String|Object} name - a name of an existing or a new adapter or properties for a `TopAdapter` definition
          * @param {Object} [props]     - properties of the new adapter
-         * @returns {Object} this|adapter
+         * @returns this|adapter
          */
         Adapter             : function (name, props) {
             if ( arguments.length === 1 ) {
@@ -868,7 +868,7 @@
          *
          * @param {String} name        - identifier for this widget factory
          * @param {Object} declaration - a viable object for `uijet.declare()`
-         * @returns {Object} this
+         * @returns this
          */
         Factory             : function (name, declaration) {
             widget_factories[name] = function (config) {
@@ -895,7 +895,7 @@
          * @param {String} name            - identifier for that resource class
          * @param {Object} [resource]      - this resource's constructor
          * @param {Boolean|Object|Array} [initial] - initial data for the generated instance or `true` to reset the registry of `name` to be instance `resource`
-         * @returns {Object} this|resource_instance
+         * @returns this|resource_instance
          */
         Resource            : function (name, resource, initial) {
             if ( arguments.length === 1 ) {
@@ -916,7 +916,7 @@
          * 
          * @param {String} name   - identifier for this view
          * @param {Object} widget - View widget instance to register as a view
-         * @returns {Object} this
+         * @returns this
          */
         View                : function (name, widget) {
             views[name] = widget;
@@ -928,7 +928,7 @@
          * that haven't been loaded yet.
          * 
          * @param {Object} [options] - configuration object for uijet
-         * @returns {Object} this
+         * @returns this
          * 
          * Valid options:
          * 
@@ -1026,7 +1026,7 @@
          * @param {String} _name   - identifier for the widget
          * @param {Object} _props  - the widget's prototype
          * @param {Object} [_deps] - dependencies for this widget (widgets and mixins)
-         * @returns {Object} this
+         * @returns this
          * @private
          */
         _define             : function (_name, _props, _deps) {
@@ -1204,7 +1204,7 @@
          * not to, once uijet starts this widget will be awaken automatically.
          * 
          * @param {Object} widget - a widget's instance to register
-         * @returns {Object} this
+         * @returns this
          */
         register            : function (widget) {
             // get the parent element
@@ -1306,7 +1306,7 @@
          * This is usually triggered by a widget when its `destroy()` method is called.
          * 
          * @param {Object} widget - a widget's instance to unregister
-         * @returns {Object} this
+         * @returns this
          */
         unregister          : function (widget) {
             var _id = widget.id, registration, _parent_contained;
@@ -1343,7 +1343,7 @@
          * __note__: For valid instance options see related module.
          * 
          * @param {Object|Array} declarations - a single declaration or a list of declaration objects
-         * @returns {Object} this
+         * @returns this
          */
         declare             : function (declarations) {
             if ( isObj(declarations) ) {
@@ -1743,20 +1743,29 @@
             (widget.$wrapper || widget.$element).addClass('current');
             return this;
         },
-        // ## uijet.buildContext
-        // @sign: buildContext(route, args_array)  
-        // @returns: context
-        //
-        // Builds a context `Object` from the returned arguments of a route.  
-        // Named parameters in `route` are indexed in the context obejct by their name.  
-        // Unnamed parameters are indexed by their index in `args_array`.
+        /**
+         * Builds a context object from the returned arguments of a route.
+         * Named parameters in `route` are indexed in the context object by name.
+         * Unnamed parameters are indexed by position in `args_array`.
+         * 
+         * Also supports splat params using the prefix `'*'`.
+         * 
+         * @param {string} route - The route string to analyze.
+         * @param {*} [args_array] - The list of arguments sent to a route's callback.
+         * @returns {{}} Context object generated for the route.
+         */
         buildContext        : function (route, args_array) {
             var context = {},
+                // matches anything that contains ':' followed by a name
                 named_arg_re = /.*:([-\w]+)/,
                 parts = route.split('/'),
                 i = 0, n = 0,
                 part, match, splat_parts;
-            args_array = toArray(args_array);
+
+            // make sure `args_array` is an `Array`
+            args_array = toArray(args_array) || [];
+
+            // make sure we don't stop looping because of leading '/'
             while ( part = parts[i++], typeof part == 'string' ) {
                 // if it's a named argument
                 if ( match = part.match(named_arg_re) ) {
@@ -1781,7 +1790,10 @@
         }
     };
 
-    // set a namespace on uijet for utility functions.
+    /*
+     * Set a namespace on uijet for utility functions.
+     * @namespace utils
+     */
     uijet.utils = {
         extend          : extend,
         extendProto     : extendProto,
@@ -1798,28 +1810,50 @@
         getStyle        : getStyle,
         getStyleProperty: getStyleProperty,
         getOffsetOf     : getOffsetOf,
+        /**
+         * Makes sure a mixin's `name` is in the requested `position` of the
+         * returned `array` of mixin names.
+         * 
+         * Sometimes `array` could be an optional `mixins` option of some widget, in
+         * which case the author of the widget's prototype expects to get `name`
+         * wrapped in an `Array`.
+         * There's also a chance `array` could be another mixin's name, in which case
+         * it will be wrapped in an array and the operation is repeated.
+         * 
+         * @param {string[]|string|undefined} array - The list of mixin names.
+         * @param {string} name - The name of the mixin to add.
+         * @param {number} [position]- The index in which to place `name` in `array` or simply at its end.
+         * @returns {string[]} List of mixin names.
+         */
         putMixin        : function putMixin (array, name, position) {
             var index;
             if ( ! array ) {
+                // no mixins, so just return `name`
                 return [name];
             }
             else if ( ! isArr(array) ) {
+                // `array` is probably a `string` so wrap in an `array` and do it again
                 return putMixin([array], name, position);
             }
             else {
+                // position defaults to end of `array`
                 position = typeof position == 'number' ? position : array.length;
 
                 index = array.indexOf(name);
                 if ( ~ index ) {
-                    if ( index === position ) return array;
+                    // if `name` is found in `array`
+                    if ( index === position )
+                        // if it's in the right position bail out
+                        return array;
+                    // it's not in the right position so remove it
                     array.splice(index, 1);
                 }
+                // put it where it should be
                 array.splice(position, 0, name);
             }
             return array;
         },
         // wrap these objects since they point to native objects which is forbidden  
-        // You Maniacs! You blew it up! Ah, damn you!
         requestAnimFrame: function (f) { return requestAnimFrame(f); },
         cancelAnimFrame : function (id) { return cancelAnimFrame(id); }
     };
