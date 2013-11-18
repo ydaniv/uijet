@@ -144,8 +144,22 @@
 
         return this;
     };
-    base_widget_proto.destroy = function () {
+
+    base_widget_proto.destroy = function (remove_only) {
+        if ( this.resource ) {
+            var collection;
+
+            if ( ! remove_only ) {
+                this.resource.destroy();
+            }
+
+            else if ( collection = this.resource.collection ) {
+                collection.remove(this.resource);
+            }
+        }
+
         baseDestroy.call(this);
+
         delete this.resource;
     };
 
