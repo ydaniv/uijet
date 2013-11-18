@@ -23,7 +23,21 @@
         POSITION_RE = /(fluid|top|bottom|right|left):?(\d+)?([^\d\|]+)?\|?(\d+)?([\D]+)?/,
         DIMENSIONS = {top:'height',bottom:'height',right:'width',left:'width'},
         DEFAULT_TYPE_CLASS = '_uijet_widget_',
-        widget_id_index = 0;
+        widget_id_index = 0,
+        parseTypeAndTarget = function (type) {
+            var parts = type && type.split(' ') || '',
+                result;
+            if ( parts.length > 1 ) {
+                result = [parts.shift(), parts.join(' ')];
+            }
+            else if ( parts.length === 1 ) {
+                result = parts;
+            }
+            else {
+                throw new Error('Received a bad argument for DOM event type: ' + type);
+            }
+            return result;
+        };
 
     Widget.prototype = {
         constructor     : Widget,
@@ -460,15 +474,19 @@
         //TODO: this overrides existing `type` with a new one - if this is not the required outcome implement using a list of handlers
         bind            : function (type, handler) {
             var _h = utils.isFunc(handler) ? handler : this._parseHandler(handler),
-                bound_handler = _h.bind(this);
+                // parse type to check if there's a selector to delegate to
+                bind_args = parseTypeAndTarget(type);
+            bind_args.push(_h.bind(this));
+
             if ( !(type in this.options.dom_events) ) {
                 // cache the original handler
                 this.options.dom_events[type] = _h;
             }
             // and the bound one
-            this._bound_dom_events[type] = bound_handler;
-            // do it!
-            this.$element.on(type, bound_handler);
+            this._bound_dom_events.push(bind_args);
+
+            // bind to the DOM
+            this.$element.on.apply(this.$element, bind_args);
             // raise the `bound` flag to make sure it's unbounded before any `bindAll` call
             this.bound = true;
             return this;
@@ -480,10 +498,17 @@
         // Unbinds a DOM event specified by `type` from the instance's element.  
         // If `handler` is supplied it will attempt to unbind this specific handler only from that `type` of event.  
         // This will not remove that handler from being bound again with `bindAll` on next `wake`.  
-        unbind          : function (type, handler) {
-            if ( type in this._bound_dom_events ) {
-                this.$element.off(type, handler || this._bound_dom_events[type]);
-            }
+        unbind          : function (type, selecetor, handler) {
+            var bind_args = parseTypeAndTarget(type);
+
+            if ( bind_args.length === 1 || utils.isFunc(selecetor) )
+                bind_args.push(selecetor);
+
+            if ( bind_args.length < 3 && utils.isFunc(handler) ) 
+                bind_args.push(handler);
+
+            this.$element.off.apply(this.$element, bind_args);
+
             return this;
         },
         // ### widget.bindAll
@@ -494,13 +519,15 @@
         // At the end sets the `bound` flag to `true`.  
         // This is called every time the widget is awaken.  
         bindAll         : function () {
+            var n;
             // in case something was bound
             if ( this.bound ) {
                 // unbind all so to not have the same event bound more than onceZ
                 this.unbindAll();
             }
             // and in the darkness bind them
-            this.$element.on(this._bound_dom_events);
+            for ( n in this._bound_dom_events )
+                this.$element.on.apply(this.$element, this._bound_dom_events[n]);
 
             this.bound = true;
 
@@ -514,10 +541,12 @@
         // At the end sets the `bound` flag to `false`.  
         // This is usually called every time the widget is put to sleep.  
         unbindAll       : function () {
+            var n;
             // if we have any DOM events that are bound
             if ( this.bound ) {
                 // unbind all
-                this.$element.off(this._bound_dom_events);
+                for ( n in this._bound_dom_events )
+                    this.$element.off.apply(this.$element, this._bound_dom_events[n]);
             }
             this.bound = false;
             return this;
@@ -594,7 +623,7 @@
             this.options = utils.extend(true, {}, this.options || {}, options);
             // make sure DOM events maps are initialized
             ! this.options.dom_events && (this.options.dom_events = {});
-            ! this._bound_dom_events && (this._bound_dom_events = {});
+            ! this._bound_dom_events && (this._bound_dom_events = []);
             // make sure we have a `type_class` option set
             ! this.options.type_class && (this.options.type_class = DEFAULT_TYPE_CLASS);
             return this;
@@ -608,7 +637,7 @@
         setInitOptions  : function () {
             var ops = this.options,
                 _app_events = ops.app_events || {},
-                _signals, n, handler;
+                _signals, n, handler, bind_args;
             this.app_events = {};
             // listen to all signals set in options
             if ( _signals = ops.signals ) {
@@ -626,8 +655,14 @@
                 }
             }
             for ( n in ops.dom_events ) {
+                bind_args = parseTypeAndTarget(n);
                 handler = ops.dom_events[n];
-                this._bound_dom_events[n] = utils.isFunc(handler) ? handler.bind(this) : this._parseHandler(handler);
+                bind_args.push(
+                    utils.isFunc(handler) ?
+                       handler.bind(this) :
+                       this._parseHandler(handler)
+                );
+                this._bound_dom_events.push(bind_args);
             }
             // capture and delegate all `uijet-route` and/or anchor clicks to routing/publishing mechanism
             this.captureRoutes();
