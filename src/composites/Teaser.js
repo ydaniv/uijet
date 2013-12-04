@@ -136,7 +136,7 @@
         render          : function () {
             if ( this.options.cycle && this.templated ) {
                 return this._super()
-                        .then(this._prepareSlides.bind(this), uijet.utils.rethrow);
+                        .then(this._prepareSlides.bind(this));
             }
             return this._super();
         },

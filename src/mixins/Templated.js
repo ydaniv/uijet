@@ -163,7 +163,7 @@
             if ( ! this.has_template ) {
                 // if `render` was called directly then add a convenience call to fetchTemplate
                 return this.fetchTemplate()
-                    .then(that.render.bind(that), uijet.utils.rethrow);
+                    .then(that.render.bind(that));
             }
             else {
                 _html = this.generate();
