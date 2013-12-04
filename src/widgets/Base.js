@@ -973,6 +973,5 @@
         }
     };
 
-//    return utils.Create(Widget, uijet.Base, true);
     return uijet.Base.derive(Widget);
 }));

@@ -54,7 +54,7 @@
          *
          * @param {string} name - Name to search for.
          * @param {object} obj - The source object search in.
-         * @returns {string|null} The prefixed property or `null` if not found.
+         * @returns {string|null} - The prefixed property or `null` if not found.
          */
         getPrefixed = function (name, obj) {
             var cases = BROWSER_PREFIX.prop,
@@ -91,10 +91,10 @@
         has_touch = !!(('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
         /**
          * Checks if given argument is an `Array`.
-         * Uses @see Array.isArray by default if it exists.
+         * Uses {@see Array.isArray} by default if it exists.
          *
-         * @param {*} obj              - target object to check
-         * @returns {Boolean} is_array - whether `obj` is an `Array`
+         * @param {*} obj - target object to check
+         * @returns {Boolean} - whether `obj` is an `Array`
          */
         isArr = (function () {
             return Array.isArray || function (obj) {
@@ -117,8 +117,8 @@
     /**
      * Checks if given argument is an `Object`.
      *
-     * @param {*} obj               - target object to check
-     * @returns {Boolean} is_object - whether `obj` is an `Object`
+     * @param {*} obj - target object to check
+     * @returns {Boolean} - whether `obj` is an `Object`
      */
     function isObj (obj) {
         return objToString.call(obj) == '[object Object]';
@@ -126,8 +126,8 @@
     /**
      * Checks if argument `obj` is an `Function`.
      *
-     * @param {*} obj                 - target object to check
-     * @returns {Boolean} is_function - whether `obj` is an `Function`
+     * @param {*} obj - target object to check
+     * @returns {Boolean} - whether `obj` is an `Function`
      */
     function isFunc (obj) {
         return typeof obj == 'function';
@@ -135,8 +135,8 @@
     /**
      * Checks if given argument is an `Arguments` object.
      *
-     * @param {*} obj                  - target object to check
-     * @returns {Boolean} is_arguments - whether `obj` is an `Arguments` object
+     * @param {*} obj - target object to check
+     * @returns {Boolean} - whether `obj` is an `Arguments` object
      */
     function isArgs (obj) {
         return objToString.call(obj) == '[object Arguments]';
@@ -146,8 +146,8 @@
      * If an array-like object is given then converts it into a plain `Array`.
      * If the argument supplied is `undefined` or no arguments are supplied then returns `undefined`.
      *
-     * @param {*} obj                  - target object to check
-     * @returns {Array|undefined} copy - an `Array` copy of `obj` or `undefined`
+     * @param {*} obj - target object to check
+     * @returns {Array|undefined} - an `Array` copy of `obj` or `undefined`
      */
     function toArray (obj) {
         var arr;
@@ -173,11 +173,11 @@
      * If the element is a decendent of a window object that isn't this global namespace
      * you can supply that window object as fourth argument.
      *
-     * @param {HTMLElement} el                           - the element to use
-     * @param {String|Array} [prop]                      - the property to fetch or list of properties
-     * @param {String} [pseudo]                          - a name of a pseudo-element of that element to get its style
-     * @param {HTMLWindowElement} [win]                  - The window element that element `el` belongs to
-     * @returns {String|Array|CSSStyleDeclaration} style - the read-only style object of that element or the value[s] of that property[ies]
+     * @param {HTMLElement} el - the element to use
+     * @param {String|Array} [prop] - the property to fetch or list of properties
+     * @param {String} [pseudo] - a name of a pseudo-element of that element to get its style
+     * @param {HTMLWindowElement} [win] - The window element that element `el` belongs to
+     * @returns {String|Array|CSSStyleDeclaration} - the read-only style object of that element or the value[s] of that property[ies]
      */
     function getStyle (el, prop, pseudo, win) {
         var style = (win || _window).getComputedStyle(el, pseudo || null), res, p;
@@ -197,35 +197,28 @@
      * Checks if given argument is `Function`, and either calls it with
      * optional second argument as its context or simply returns it if it's not callable.
      *
-     * @param {*} arg        - argument to check if callable and return its call or itself if not
+     * Any additional parameters after `ctx` are sent as arguments to call of `arg`.
+     * 
+     * @param {*} arg - argument to check if callable and return its call or itself if not
      * @param {Object} [ctx] - context object to use for the call
-     * @returns {*} product  - the argument or its `.call()`'s product.
+     * @returns {*} - the argument or its `.call()`'s product.
      */
     function returnOf (arg, ctx) {
         return isFunc(arg) ? arg.apply(ctx || _window, arraySlice.call(arguments, 2)) : arg;
     }
 
     /**
-     * TODO: add docs
-     * @param obj
-     * @returns {*}
+     * Normalizes `obj` into a wrapped DOM element object via the used DOM module,
+     * if it's either a string or an HTMLElement.
+     * 
+     * @param {string|HTMLElement} obj - either a query string or an HTMLElement to wrap.
+     * @returns {*} - the wrapped object or simply `obj`.
      */
     function toElement (obj, context) {
         if ( obj && (typeof obj == 'string' || obj.nodeType === 1) ) {
             obj = uijet.$(obj, context || document);
         }
         return obj;
-    }
-
-    /**
-     * Rethrows an `Error` object or throws a new one if the given argument is not an `Error`.
-     *
-     * @param {Error|String} [err] - an error to rethrow or a `String` message to use for throwing a new `Error`.
-     * @throws {*}
-     */
-    function rethrow (err) {
-        if ( err && err.stack && err.message ) throw err;
-        else throw new Error(err);
     }
 
     /**
@@ -236,8 +229,8 @@
      * Objects are copied to target from left to right.
      *
      * @param {Object|Boolean} target - the target object or `true` for deep copying
-     * @param {Object} [source...]    - the target object if deep copying or a source object(s)
-     * @returns {Object} target       - the target object
+     * @param {...Object} [source] - the target object if deep copying or a source object(s)
+     * @returns {Object} - the target object
      */
     function extend () {
         var args = arraySlice.call(arguments),
@@ -270,7 +263,7 @@
     }
 
     /**
-     * Deep copy (prototype) objects (Arrays are shallow copied), @see extend.
+     * Deep copy (prototype) objects (Arrays are shallow copied), {@see extend}.
      * If a property of same name exists in both source and target then if that property is:
      *
      * * Object: deep copy.
@@ -281,9 +274,9 @@
      * All subsequent arguments are source objects to copy from.
      * Objects are copied to target from left to right.
      *
-     * @param {Object} target      - the target object
-     * @param {Object} [source...] - the source object(s)
-     * @returns {Object} target    - the target object
+     * @param {Object} target - the target object
+     * @param {...Object} [source] - the source object(s)
+     * @returns {Object} - the target object
      */
     function extendProto () {
         var args = arraySlice.call(arguments),
@@ -315,13 +308,13 @@
     }
 
     /**
-     * Shallow copy properties while making sure functions are bound to `context`, @see extend.
-     * Usually used in `uijet.use()`.
+     * Shallow copy properties while making sure functions are bound to `context`, {@see extend}.
+     * Usually used in {@see uijet.use}.
      *
-     * @param {Object} target    - target object to extend
-     * @param {Object} source    - source object to copy from
+     * @param {Object} target - target object to extend
+     * @param {Object} source - source object to copy from
      * @param {Object} [context] - optional context object to bind `Function` properties to
-     * @returns {Object} target  - the target object
+     * @returns {Object} - the target object
      */
     function extendProxy (target, source, context) {
         var s;
@@ -349,9 +342,9 @@
      * Copies `Function` own properties of one object to another,
      * mainly for copying static methods between constructors.
      *
-     * @param {Function} source   - source constructor to take methods from
-     * @param {Function} target   - target constructor for copying the methods to
-     * @returns {Function} target - the target constructor
+     * @param {Function} source - source constructor to take methods from
+     * @param {Function} target - target constructor for copying the methods to
+     * @returns {Function} - the target constructor
      */
     function copyStaticMethods (source, target) {
         for ( var m in source )
@@ -376,8 +369,8 @@
      * Extends this class' prototype with another object's properties.
      *
      * @static
-     * @param {Object} props       - properties to deep copy to the `prototype`
-     * @returns {Object} prototype - the prototype of this class
+     * @param {Object} props - properties to deep copy to the `prototype`
+     * @returns {Object} - the prototype of this class
      */
     Base.extend = function (props) {
         return extend(true, this.prototype, props);
@@ -387,31 +380,31 @@
      *
      * @static
      * @param {Object|Function} child - the child class or Object that will be copied and used to inherit this class
-     * @returns {Function} derivative - constructor of the new created class
+     * @returns {Function} - constructor of the new created class
      */
     Base.derive = function derive (child) {
-        return copyStaticMethods(this, Create(child, this, true));
+        return copyStaticMethods(this, Create(child, this));
     };
     /**
      * Creates a new class that is composed of this class and will inherit the given class or Object.
      *
      * @static
-     * @param {Object} parent        - the parent class or Object that will be copied and used as the parent of this class
-     * @returns {Function} inherited - constructor of the new created class
+     * @param {Object} parent - the parent class or Object that will be copied and used as the parent of this class
+     * @returns {Function} - constructor of the new created class
      */
     Base.inherit = function inherit (parent) {
-        return copyStaticMethods(this, Create(this, parent, true));
+        return copyStaticMethods(this, Create(this, parent));
     };
 
     /**
-     * Public, inheritable methods of @see Base class.
+     * Public, inheritable methods of {@see Base} class.
      */
     Base.prototype = {
         constructor : Base,
         /**
          * Registers a handler for the given type.
          *
-         * @param {String} topic     - the signal's type to register
+         * @param {String} topic - the signal's type to register
          * @param {Function} handler - the signal's handler to register
          * @returns this
          */
@@ -443,12 +436,12 @@
          * If no handler was registered for that signal returns `undefined`.
          * If the first argument is a `Boolean` it is used to determine whether to make sure this
          * signal is triggered *once* during current lifecycle stage.
-         * Base does not define a `_finally` method that is used to clean up these "once" states.
+         * {@see Base} does not define a `_finally` method that is used to clean up these "once" states.
          *
          * @param {Boolean} [once] - optional`true` flag to make sure this signal is notified once per lifecycle stage
-         * @param {String} topic   - the name of the signal to notify
-         * @param {*} [args...]    - arguments to hand over to the signal's handler
-         * @returns {*} result     - returned result of the triggered handler or `undefined`
+         * @param {String} topic - the name of the signal to notify
+         * @param {...*} [args] - arguments to hand over to the signal's handler
+         * @returns {*} - returned result of the triggered handler or `undefined`
          */
         notify          : function (topic) {
             var handler, own_args_len = 1, args, once = false;
@@ -470,10 +463,11 @@
          * If `handler` is a `Function` it is bound to this instance as its context.
          * If `handler` is a `String` it is used to find a method of same name to use as handler.
          * If no method was found then a signal with same type's handler is used.
-         * If `handler` is a `String` and ends with a '+' then the `arguments` supplied to this handler will be passed to that method/signal handler.
+         * If `handler` is a `String` and ends with a '+' then the `arguments` supplied to this 
+         * handler will be passed to that method/signal handler.
          *
-         * @param {String} topic    - the type of the handler to register
-         * @param {Function|String} - handler the handler to register or a name of a method of this instance or a signal's handler to use as handler
+         * @param {String} topic - the type of the handler to register
+         * @param {Function|String} handler - the handler to register or a name of a method of this instance or a signal's handler to use as handler
          * @returns this
          */
         //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
@@ -488,7 +482,7 @@
          * Removes a handler from the registered events.
          * If `handler` is not supplied then the handler that is currently registered for the given `topic` is used.
          *
-         * @param {String} topic       - the event type to remove from registry
+         * @param {String} topic - the event type to remove from registry
          * @param {Function} [handler] - the handler to remove from the registry
          * @returns this
          */
@@ -506,32 +500,57 @@
          * `topic` is always prefixed with `this.id + '.'`.
          *
          * @param {String} topic - the type of the event to trigger
-         * @param {*} [data]     - argument to pass to the event's handler as data
+         * @param {*} [data] - argument to pass to the event's handler as data
          * @returns this
          */
         publish         : function (topic, data) {
             uijet.publish(this.id + '.' + topic, data);
             return this;
         },
+        /**
+         * Normalizes a `handler` into a function if it's a `String`.
+         * 
+         * 
+         * If `handler` is a:
+         * 
+         * 1. Method of this instance -> use this method.
+         * 2. A registered signal handler -> use this handler.
+         * 3. Otherwise -> create a new function that publishes this string as an event.
+         * 
+         * * If `handler` starts with `'+'` then it will be invoked with the parameters sent to it as its arguments.
+         * * If `handler` ends with a `'-'` then it will be published as global event with the `<id>.` prefix.
+         * 
+         * @param {String|Function} handler - a handler or a string representation of a handler
+         * @returns {Function} - the parsed handler
+         * @private
+         */
         _parseHandler   : function (handler) {
             var that = this,
                 apply_args = false,
                 is_global = false,
                 _h;
+
+            // if handler is a string
             if ( typeof handler == 'string' ) {
+                // if ends with a '+'
                 if ( handler[handler.length - 1] == '+' ) {
+                    // use `apply` and pass arguments on invocation
                     apply_args = true;
                     handler = handler.slice(0, -1);
                 }
+                // if starts with a '-'
                 if ( handler[0] == '-' ) {
+                    // make a global event
                     is_global = true;
                     handler = handler.slice(1);
                 }
+                // if there's a method by this name
                 if ( isFunc(this[handler]) ) {
                     _h = function () {
                         that[handler].apply(that, apply_args ? arguments : []);
                     };
                 }
+                // if there's a signal by this name
                 else if ( isFunc(this.signals_cache[handler]) ) {
                     _h = function () {
                         var args = toArray(arguments);
@@ -539,6 +558,7 @@
                         that.notify.apply(that, apply_args ? args : [handler]);
                     };
                 }
+                // otherwise make it an event to publish
                 else {
                     _h = function () {
                         var args = toArray(arguments);
@@ -561,8 +581,8 @@
      * * `Object` it's assumed to be a standard dependencies object and its `mixins` and `widgets` keys are normalized to `Array`s.
      * * Falsy arguments yield `undefined`
      *
-     * @param {*} deps                  - the dependencies to normalize into an `Object`
-     * @returns {Object|undefined} deps - a standard dependencies object
+     * @param {*} deps - the dependencies to normalize into an `Object`
+     * @returns {Object|undefined} - a standard dependencies object
      */
     function normalizeDeps (deps) {
         if ( ! deps ) return;
@@ -611,29 +631,29 @@
      * 
      * @param {Function|Object} proto      - a constructor or an object to use as the top level prototype
      * @param {Function|Object} [_extends] - a constructor of a class to inherit from or simply an object to add to the prototype chain
-     * @param {Boolean} [as_constructor]   - whether to return the new created class' constructor or instance
-     * @returns {Function|Object} created  - the new created class constructor or its instance
+     * @returns {Function} - the new created class constructor
      */
-    function Create (proto, _extends, as_constructor) {
+    function Create (proto, _extends) {
         var is_proto_f = isFunc(proto),
             is_extends_f = isFunc(_extends),
             _proto = is_proto_f ? proto.prototype : proto;
+
         function F () {
             // call original constructors
             is_extends_f && _extends.call(this);
             is_proto_f && proto.call(this);
         }
-        if ( typeof _extends == 'boolean' ) {
-            as_constructor = _extends; _extends = null;
-        }
+
         if ( _extends ) {
             _proto = extendProto(
                 Object.create(is_extends_f ? _extends.prototype : _extends),
                 _proto
             );
         }
+
         F.prototype = _proto;
-        return as_constructor ? F : new F();
+
+        return F;
     }
 
     /**
@@ -1030,7 +1050,7 @@
          */
         _define             : function (_name, _props, _deps) {
             widget_definitions[_name] = {
-                proto   : Create(_props, true),
+                proto   : Create(_props),
                 deps    : _deps
             };
             return this;
@@ -1063,7 +1083,7 @@
                     if ( def = widget_definitions[_widget] ) {
                         // add them to the chain
                         // just like stacking turtles
-                        _class = Create(def.proto, _class, true);
+                        _class = Create(def.proto, _class);
                         // check if they have dependencies
                         if ( def.deps && def.deps.mixins ) {
                             _mixins_to_use = toArray(def.deps.mixins);
@@ -1075,7 +1095,7 @@
                 }
             }
             // now we add this widget to the stack
-            _class = Create(_props, _class, true);
+            _class = Create(_props, _class);
             // if we have mixins to mix then mix'em
             if ( _mixins_copy ) {
                 // if a widget in dependencies had mixins in its dependencies
@@ -1095,7 +1115,7 @@
                 if ( _mixin = mixins[m] ) {
                     // add them to the chain
                     // stack those madafakas
-                    _class = Create(_mixin, _class, true);
+                    _class = Create(_mixin, _class);
                 }
                 else {
                     throw new Error('Missing mixin dependency: ' + m);
@@ -1804,7 +1824,6 @@
         toArray         : toArray,
         returnOf        : returnOf,
         toElement       : toElement,
-        rethrow         : rethrow,
         contains        : contains,
         getStyle        : getStyle,
         getStyleProperty: getStyleProperty,
