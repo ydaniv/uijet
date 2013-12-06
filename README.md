@@ -1,4 +1,4 @@
-# UIjet
+# uijet
 
 Killer UI for web-apps.
 
@@ -6,10 +6,17 @@ Killer UI for web-apps.
 
 ## Description
 
-UIjet lets you create awesome, cross-platform web applications with rich UI and keeps your code maintainable.
+uijet lets you create awesome, cross-platform applications and keeps your code maintainable.
 
-It creates another layer of abstraction which allows you to create any UI widget you can think of
-easily while you generate code of the highest level of quality.
+uijet creates another layer of abstraction allowing you to focus
+on flow of your application's logic while you generate code of the highest quality.
+
+uijet's main emphasis is:
+
+* Code quality and maintainability that scales.
+* Complete portability of same code base across different platforms.
+* Re-using the best tools out there.
+* High performance and solid memory management.
 
 ## Quick start
 
