@@ -50,6 +50,14 @@
             mixins  : 'uijet_dir/mixins/'
         },
         /**
+         * Utility for deferring a function by adding it to the process queue.
+         * 
+         * @param {Function} f - the function to defer.
+         */
+        async = root.setImmediate ?
+            function (f) { _window.setImmediate(f); } :
+            function (f) { _window.setTimeout(f, 0);},
+        /**
          * Searches for a prefixed name of `name` inside `obj`.
          *
          * @param {string} name - Name to search for.
@@ -629,7 +637,7 @@
      * optionally inheriting the prototype/constructor `_extends`.
      * Returns an instance of the created class or, optionally, the class itself.
      * 
-     * @param {Function|Object} proto      - a constructor or an object to use as the top level prototype
+     * @param {Function|Object} proto - a constructor or an object to use as the top level prototype
      * @param {Function|Object} [_extends] - a constructor of a class to inherit from or simply an object to add to the prototype chain
      * @returns {Function} - the new created class constructor
      */
@@ -1814,6 +1822,7 @@
      * @namespace utils
      */
     uijet.utils = {
+        async           : async,
         extend          : extend,
         extendProto     : extendProto,
         extendProxy     : extendProxy,
