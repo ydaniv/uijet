@@ -25,12 +25,19 @@
             this.notify(true, 'pre_prepareelement');
             // initialy set the __animation_type_out__ `class`
             this.$element.addClass((this.options.animation_type || uijet.options.animation_type) + '_out');
+            // if not disabled, promote this element to it's own layer which enables hardware acceleration
+            if ( ! this.options.dont_promote ) {
+                this.$element.addClass('promoted');
+            }
             this._super();
             return this;
         },
         _wrap           : function () {
             // cache the __animation_type_out__ `class`
             var class_name = (this.options.animation_type || uijet.options.animation_type) + '_out';
+            if ( ! this.options.dont_promote ) {
+                class_name += ' promoted';
+            }
             // do wrapping
             this._super();
             // add this class to the `$wrapper`

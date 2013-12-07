@@ -468,8 +468,10 @@ video:focus {
 .layered {
     position: absolute;
 }
-.transitioned {
+.promoted {
     -webkit-transform: translateZ(0);
+}
+.transitioned {
     -webkit-transition-duration: .5s;
        -moz-transition-duration: .5s;
          -o-transition-duration: .5s;
