@@ -13,9 +13,10 @@ on flow of your application's logic while you generate code of the highest quali
 
 uijet's main emphasis is:
 
-* Code quality and maintainability that scales.
-* Complete portability of same code base across different platforms.
-* Re-using the best tools out there.
+* Decouple everything.
+* Re-use everything. Especially external libraries.
+* Code quality and maintainability that scale.
+* Complete portability of same codebase across different platforms.
 * High performance and solid memory management.
 
 ## Quick start
