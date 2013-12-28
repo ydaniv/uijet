@@ -28,7 +28,7 @@ on flow of your application's logic while you generate code of the highest quali
 uijet allows you to create UIs for from rapid prototypes to full-blown-large-scale applications.
 uijet performs 3 main roles:
 
-* Ioc container for your application, and injects dependencies into your app and UI components.
+* IoC container for your application, and injects dependencies into your app and UI components.
 * Glues all your favorite libraries with a consistent API which makes them easily swappable.
 * Maintainable and scalable UI made of declarative, reusable, decoupled components. 
 
@@ -56,7 +56,7 @@ the components we all know and love.
 
 Defines a class of a reusable component.
 
-Examples: Pane, Button, List, etc.
+*Examples*: Pane, Button, List, etc.
 
 #### uijet.Factory
 
@@ -84,7 +84,7 @@ into a single component.
 This is usually done by providing `uijet.Wiget()` the third parameter which defines 
 dependencies for this component class.
 
-Examples: Datepicker, Slider, Teaser, Modal, etc.
+*Examples*: Datepicker, Slider, Teaser, Modal, etc.
 
 ### Mixins & Adapters
 
@@ -94,13 +94,13 @@ which perform a single main task, and then mixing them together.
 Mixins are specifically for encapsulating behaviors for components, and 
 then enhance components with these behaviors as desired.
 
-Examples: Toggled, Templated, Transitioned, etc.
+*Examples*: Toggled, Templated, Transitioned, etc.
 
 Adapters are usually for adding missing behavior by acting as a mediator 
 to external libraries which implement that code, and abstract those libraries 
 with a consistent API.
 
-Example: if you want a List component to be scrolled using a JS based plugin, 
+*Example*: if you want a List component to be scrolled using a JS based plugin, 
 targeted for mouse wheel when used on desktop, and then with a different library, 
 targeted for touch gestures when used on handheld devices.
 
@@ -144,7 +144,7 @@ which rely on other Modules.
 The API enforcing is also what makes a Module swappable at any given point without any impact 
 on the on the underlying framework. On some cases even no impact at all, whatsoever, on your application.
 
-Example: a dom Module adapter must be consistent with [jQuery](http://api.jquery.com/)'s API, so you
+*Example*: a dom Module adapter must be consistent with [jQuery](http://api.jquery.com/)'s API, so you
 can choose either that, or [Zepto](http://zeptojs.com/), 
 or with a little effort even [Bonzo](https://github.com/ded/bonzo) and [Bean](https://github.com/fat/bean).
 
