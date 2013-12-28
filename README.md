@@ -4,120 +4,153 @@ Killer UI for web-apps.
 
 [http://uijet.com](http://uijet.com)
 
-## Description
+## In short
 
 uijet lets you create awesome, cross-platform applications and keeps your code maintainable.
 
-uijet creates another layer of abstraction allowing you to focus
+uijet creates another layer of abstraction allowing you to focus 
 on flow of your application's logic while you generate code of the highest quality.
 
-uijet's main emphasis is:
+### Main emphasis
 
+* Event-driven.
 * Decouple everything.
 * Re-use everything. Especially external libraries.
 * Code quality and maintainability that scale.
 * Complete portability of same codebase across different platforms.
 * High performance and solid memory management.
+* Scalable architecture.
+* Reusable components
+* Declarative code, in JS (not just markup!)
+
+## Srsly now, what's it all about
+
+uijet allows you to create UIs for from rapid prototypes to full-blown-large-scale applications.
+uijet performs 3 main roles:
+
+* Ioc container for your application, and injects dependencies into your app and UI components.
+* Glues all your favorite libraries with a consistent API which makes them easily swappable.
+* Maintainable and scalable UI made of declarative, reusable, decoupled components. 
+
+## Concepts
+
+### Modules
+
+uijet embraces the principle of doing 1 thing (or at most 2) and doing it right.
+
+That's why it leaves all of the implementation of all the main parts of the application up 
+to external libraries, of your choice, and glues them together into a coherent interface 
+which allows them to be abstracted and easily swappable.
+
+#### uijet.use
+
+The entry point of adding a module into uijet.
+
+### Widgets
+
+These are the most basic building blocks for creating any type of UI component.
+uijet gives you the tools for both extending them and composing them together to form 
+the components we all know and love.
+
+#### uijet.Widget
+
+Defines a class of a reusable component.
+
+Examples: Pane, Button, List, etc.
+
+#### uijet.Factory
+
+Declares a blueprint for a factory of a component's instance.
+
+#### uijet.declare
+
+Declares an instance of a component in the app.
+
+#### uijet.start
+
+Initializes a component's instance(s).
+
+#### uijet.register
+
+Registers the component into uijet's sandbox.
+This method is invoked by the Base widget's `register()` method, 
+so you usually don't have to call it from your code.
+
+### Composites
+
+More comprehensive components which extends the basic, generic widgets and mixes them 
+into a single component.
+
+This is usually done by providing `uijet.Wiget()` the third parameter which defines 
+dependencies for this component class.
+
+Examples: Datepicker, Slider, Teaser, Modal, etc.
+
+### Mixins & Adapters
+
+Maintainability is all about deconstructing your code into small pieces 
+which perform a single main task, and then mixing them together.
+
+Mixins are specifically for encapsulating behaviors for components, and 
+then enhance components with these behaviors as desired.
+
+Examples: Toggled, Templated, Transitioned, etc.
+
+Adapters are usually for adding missing behavior by acting as a mediator 
+to external libraries which implement that code, and abstract those libraries 
+with a consistent API.
+
+Example: if you want a List component to be scrolled using a JS based plugin, 
+targeted for mouse wheel when used on desktop, and then with a different library, 
+targeted for touch gestures when used on handheld devices.
+
+#### uijet.Mixin
+
+Defines a Mixin that can be injected into components' classes.
+Mixins are always injected on top of Widget dependencies and before the instance object.
+
+#### uijet.Adapter
+
+Defines an Adapter that can be injected onto a component's instances.
+Adapters' properties are always copied to the instance object (the top of the prototype chain).
 
 ## Quick start
 
-Include uijet.css and themes/rhenium.css in your document's `head` tag.
+Grab the a boilerplate from `boilerplates` and open `index.html` in your browser.
 
-### With AMD - using require.js
+## Dependencies
 
-Include the require.js file at the bottom of your `<body>` tag.
+uijet has no direct dependencies, however:
 
-#### Suggested configuration
+ * It favors the use of an AMD module loader, like [RequireJS](http://requirejs.org/) or [curl.js](https://github.com/cujojs/curl).
+ * The list of available module adapters is currently short, but you can easily create your own.
 
-Above it, open a `<script>` tag and in it include your require object.
-Assuming you'll place all the 3rd party code under 'lib', it should look like:
+### Required dependencies
 
-    var require = {
-        baseUrl : '/static_path/js/',
-        paths   : {
-            uijet_dir   : 'lib/uijet'
-            // rest of needed paths ...
-        },
-        callback: function () {
-            requirejs([
-                'uijet',
-                'uijet_dir/modules/pubsub/eventbox',
-                'uijet_dir/modules/dom/jquery',
-                'uijet_dir/modules/promises/jquery'
-            ], function (uijet) {
-                uijet.init();
-            });
-        }
-    };
+For uijet to run you must include an adapter in your app from each of the following Modules:
 
-Where the *must have* configurations are:
-
-* **baseUrl** - pointing to your base static folder.
-* **paths** - you need to config the paths to *uijet_dir* - where your UIjet library is located.
-* **callback** - to make sure everything works correctly it's best to use this option and put you initialization
-call in there.
-
-### Plugging in modules
-
-To be able to use UIjet you must plug into it the following modules:
- 
  * pubsub
  * promises
  * dom
 
-You can simply add those module adapters from UIjet's modules library and activate them:
+All the rest are completely up to you.
 
-    // ...
-    callback: function () {
-        requirejs([
-            'uijet',
-            'uijet_dir/modules/pubsub/eventbox',
-            'uijet_dir/modules/dom/jquery',
-            'uijet_dir/modules/promises/jquery'
-        ], function (uijet, Eventbox, $) {
-            // init uijet
-            uijet.init();
-        });
-    }
-    // ...
+### Mandatory Modules' APIs
 
-The above modules are required for UIjet to work. The rest of the modules are optional.
+Although the dependency may be indirect, uijet does enforce a strict API that each Module adapter 
+must adhere to.
+This requirement is a must for the top 3 Modules mentioned above, and a few other Mixins and Composites, 
+which rely on other Modules.
+The API enforcing is also what makes a Module swappable at any given point without any impact 
+on the on the underlying framework. On some cases even no impact at all, whatsoever, on your application.
 
-### Without AMD
-
-Include the libraries you are using with the modules (e.g. jQuery if using the dom/jquery module).
-Include uijet.js followed by widgets/Base.js and the rest of the widgets you need afterwards.
-If you require any mixins (or if they're required by any of the widgets you're using) include them after the widgets.
-If you require any adapters include those too after the mixins along with each library they adapt to.
-
-
-### Installation notes
-
-UIjet makes only one layer in the application and depends on other integral components
-that should reside within the application:
-
-* Custom events/Messaging library
-* Promises API library
-* DOM wrapper library
-* [optional] XMLHttpRequest/XHR2/CORS wrapper library
-* [optional] Template engine
-* [optional] URL router
-
-__Note__: UIjet is not directly dependent on any other 3rd party code but also does not attempts to do anything that
-others already do, and do it well. On the other hand, UIjet defines simple methods and conventions for hooking up any
-3rd party library you need into it.
-
-## Dependencies
-
-* Custom events library of choice
-* Promises API library of choice
-* DOM API wrapping library of choice
-* [optional] XHR wrapping library of choice
-* [optional] Template engine of choice
-* [optoinal] URL router of choice
-* [optional] require.js
+Example: a dom Module adapter must be consistent with [jQuery](http://api.jquery.com/)'s API, so you
+can choose either that, or [Zepto](http://zeptojs.com/), 
+or with a little effort even [Bonzo](https://github.com/ded/bonzo) and [Bean](https://github.com/fat/bean).
 
 ## Usage
+
+    //TBD
 
 ### Application startup
 
