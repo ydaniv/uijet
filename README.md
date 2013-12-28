@@ -114,6 +114,18 @@ Mixins are always injected on top of Widget dependencies and before the instance
 Defines an Adapter that can be injected onto a component's instances.
 Adapters' properties are always copied to the instance object (the top of the prototype chain).
 
+### Events & Signals
+
+    //TBD
+
+## uijet.css
+
+    //TBD
+
+### Theming
+
+    //TBD
+
 ## Quick start
 
 Grab the a boilerplate from `boilerplates` and open `index.html` in your browser.
