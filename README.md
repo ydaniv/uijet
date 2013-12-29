@@ -182,4 +182,4 @@ Venvid Technologies
 
 JetBrains, for their awesome IDE.
 <br/>
-<img src="http://www.jetbrains.com/img/logos/pycharm_logo.gif" width="250"/>
+<a href="http://www.jetbrains.com/pycharm/"><img src="http://www.jetbrains.com/img/logos/pycharm_logo.gif" width="250" alt="PyCharm logo"/></a>
