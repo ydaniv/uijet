@@ -179,3 +179,6 @@ Yehonatan Daniv
 ## Special thanks
 
 Venvid Technologies
+
+JetBrains, for their awesome IDE.
+<img src="http://www.jetbrains.com/img/logos/pycharm_logo.gif" width="250"/>
