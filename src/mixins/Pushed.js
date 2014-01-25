@@ -38,7 +38,7 @@
             return this._super.apply(this, arguments);
         },
         getPushUrl: function () {
-            return uijet.utils.returnOf(this.options.push_config.url, this, this.context);
+            return uijet.utils.returnOf(this.options.push_config.url, this, this.getContext());
         },
         open    : function (restart) {
             return this;

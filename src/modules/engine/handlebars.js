@@ -9,7 +9,7 @@
 }(this, function (uijet, Handlebars) {
     uijet.use({
         generate: function () {
-            return this.template(this.getData(), {helpers: this.helpers, partials: this.partials})
+            return this.template(this.getContext(), {helpers: this.helpers, partials: this.partials})
         },
         compile : function (template) {
             return Handlebars.compile(template);

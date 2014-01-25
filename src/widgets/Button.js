@@ -42,20 +42,10 @@
                 // allow user to disable `clicked` event
                 _publish = this.notify('pre_click', e);
                 if ( _publish !== false ) {
-                    // if `data_url` option is set
-                    if ( this.options.data_url ) {
-                        var url = this.getDataUrl().path;
-                        // use the generated URL as a route to run
-                        uijet.options.routed ?
-                            this.runRoute(
-                                url,
-                                typeof routing == 'undefined' ? true : ! uijet.returnOf(routing, this, uijet.$(this))
-                            ) :
-                            // or simply publish it if not using a router
-                            this.publish(url);
-                    }
+                    //TODO: possible to add here a short cut for changing route if `route` option is on
+                    //TODO: OR send an XHR request if `action` contains a URL
                     this.publish('clicked', {
-                        context : this.context,
+                        context : this.getContext(),
                         event   : e
                     });
                     uijet.publish('app.clicked', e);

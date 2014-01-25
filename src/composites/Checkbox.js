@@ -56,7 +56,7 @@
             if ( _publish !== false ) {
                 this.check()
                     .publish('clicked', {
-                        context : this.context,
+                        context : this.getContext(),
                         checked : this.checked,
                         event   : e
                     });

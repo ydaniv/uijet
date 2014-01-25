@@ -134,8 +134,9 @@
         // Returns an `Object` with __method__ and __path__ keys which represent a RESTful route, which
         // is the URL that's used for submitting the form to, with the given HTTP method.  
         // This same URL will be used to route the serialized form if the `route_submit` option is `true`.  
-        // You can insert params into the URL, and it will work just like `getDataUrl`.  
-        // Takes an optional `submit_context` object which can be used instead of `this.context` if the latter is
+        // You can insert params into the URL, and it will be interpolated using `substitute()`, which defaults
+        // to `uijet.utils.format()`.  
+        // Takes an optional `submit_context` object which can be used instead of `this.getContext()` if the latter is
         // used for presentational context.  
         // By default, the method is 'GET'.  
         // If `submit_url` option isn't set it returns `undefined`.

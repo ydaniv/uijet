@@ -22,6 +22,8 @@
         Array = _window.Array,
         BROWSER_PREFIX = { style : ['webkit', 'Moz', 'O', 'ms'], prop : ['WebKit', 'webkit', 'moz', 'o', 'ms'], matches: {} },
         OPPOSITES = {top:'bottom',bottom:'top',right:'left',left:'right'},
+        // regexp for simple string format
+        SUBSTITUTE_RE = /\{([^\s\}]+)\}/g,
         // native utilities caching
         objToString = Object.prototype.toString,
         arraySlice = Array.prototype.slice,
@@ -172,6 +174,27 @@
             arr = [obj];
         }
         return arr;
+    }
+    /**
+     * Returns an interpolated string based on a given template, 
+     * a string format pattern and a data context.
+     * 
+     * `data` can be either an Object, in which case replacement
+     * is done based on keywords matching, or an Array, in which
+     * replacement is done based on order.
+     * 
+     * The template format is `{param}` with no whitespace allowed inside.
+     * 
+     * @param template {string} - template string to interpolate on.
+     * @param {Object|Array} [data] - data context object to use as lookup for interpolation.
+     * @returns {string}
+     */
+    function format (template, data) {
+        var use_keys = isObj(data),
+            n = 0;
+        return template.replace(SUBSTITUTE_RE, function(match, key){
+            return use_keys ? data[key] : data[n++];
+        });
     }
     /**
      * Gets the computed style object (`CSSStyleDeclaration`) of an `HTMLElement` `el`.
@@ -1831,6 +1854,7 @@
         isArr           : isArr,
         isFunc          : isFunc,
         toArray         : toArray,
+        format          : format,
         returnOf        : returnOf,
         toElement       : toElement,
         contains        : contains,

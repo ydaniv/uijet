@@ -18,12 +18,17 @@
         },
         wake            : function (context) {
             var that = this,
-                old_context = this.context, do_render,
-                dfrd_wake, promises, _fail, _success, _activate;
-            // setting `context`
-            this._setContext(context);
-            // notify the `pre_wake` signal with the `old_context`
-            do_render = this.notify(true, 'pre_wake', old_context);
+                do_render, dfrd_wake, promises, _fail, _success, _activate;
+            // if already awake and there's no new data coming in then no reason to continue
+            if ( this.awake && ! context ) return this._finally();
+            // if `context` is an object
+            if ( uijet.utils.isObj(context) ) {
+                // use it to update the instance's `context`
+                this.setContext(context);
+            }
+            // fire `pre_wake` signal
+            // we also send the `context` argument as a second param
+            do_render = this.notify(true, 'pre_wake', context);
             // create a new deferred wake promise object
             dfrd_wake = uijet.Promise();
             // wake up the kids
@@ -37,8 +42,6 @@
                     that.wake();
                 } else {
                     dfrd_wake.reject(e);
-                    // inform UI the process is done
-                    that.publish('post_load', null, true);
                     that.sleep();
                 }
             };
@@ -57,17 +60,9 @@
                 _success = _activate;
             } else {
                 _success = function () {
-                    var promise;
-                    if ( ! that.has_data ) {
-                        // update the widget and get the template
-                        promise = uijet.whenAll( [that.update(), that.fetchTemplate()] );
-                    }
-                    else {
-                        // have data, just get template
-                        promise = uijet.when(that.fetchTemplate())
-                    }
-                    promise.then(that.render.bind(that), _fail)
-                           .then(_activate, _fail);
+                    uijet.when(that.fetchTemplate())
+                        .then(that.render.bind(that), _fail)
+                        .then(_activate, _fail);
                 };
             }
             // if `sync` option is `true` then call success after all children are awake
@@ -79,17 +74,16 @@
             return dfrd_wake ? dfrd_wake.promise() : {};
         },
         // ### widget.fetchTemplate
-        // @sign: fetchTemplate([refresh])  
+        // @sign: fetchTemplate()  
         // @return: promise OR this
         //
         // Gets the template from the server to be used for this widget via XHR.  
         // If `partials` option is set, an `Object` mapping partial name to its file name, loop over it and fetch all the partials needed.  
         // If those partials are stored deeper under the global templates' path use the `partials_dir` option
         // to specify it.  
-        // If `refresh` is truthy then force the widget to fetch the template again.
-        fetchTemplate   : function (refresh) {
-            // if we don't have the template cached or was asked to refresh it
-            if ( ! this.has_template || refresh ) {
+        fetchTemplate   : function () {
+            // if we don't have the template cached
+            if ( ! this.has_template ) {
                 if ( this._template_promise ) return this._template_promise;
                 // create a promise for retrieving all templates
                 var dfrd = uijet.Promise(), promise = dfrd.promise(),
@@ -113,8 +107,6 @@
                 promise.then(clear_promise, clear_promise);
                 // cache the fetching promise
                 this._template_promise = promise;
-                // if asked to refresh then invalidate cache
-                refresh && (this.has_template = false);
                 // request the template
                 requests.push(uijet.xhr(this.getTemplateUrl())
                     .then(function (response) {
@@ -195,7 +187,6 @@
                     // if this widget is `scrolled` then prepare its `$element`'s size
                     that.scrolled && that._prepareScrolledSize();
                     that.notify(true, 'post_render');
-                    uijet.publish('post_load');
                 });
             }
         },

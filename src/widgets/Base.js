@@ -17,9 +17,40 @@
          * @constructor
          * @class BaseWidget
          */
-        Widget = function () {},
-        arraySlice = _window.Array.prototype.slice,
-        SUBSTITUTE_RE = /\{([^\s\}]+)\}/g,
+        Widget = function () {
+            /**
+             * The `context` object of the widget instance.
+             * 
+             * @type {{}}
+             */
+            var context = {};
+
+            /**
+             * Get the `context` object or a specific property in it.
+             * 
+             * @param {string} [key] - string for getting a specific property of the data `context` object.
+             * @returns {*}
+             * @private
+             */
+            this._getContext = function (key) {
+                return key ? context[key] : context;
+            };
+            /**
+             * Set a specific property in the `context` object to a given `value`, or
+             * extend it with a given object.
+             * 
+             * @param {Object|string} ctx - the object to extend the `context` with, or key for a property to set.
+             * @param {*} [value] - a value to set on `context` if the `ctx` argument is not an object.
+             * @returns {BaseWidget}
+             * @private
+             */
+            this._setContext = function (ctx, value) {
+                utils.isObj(ctx) ?
+                    utils.extend(context, ctx) :
+                    context[ctx] = value;
+                return this;
+            };
+        },
         POSITION_RE = /(fluid|top|bottom|right|left):?(\d+)?([^\d\|]+)?\|?(\d+)?([\D]+)?/,
         DIMENSIONS = {top:'height',bottom:'height',right:'width',left:'width'},
         DEFAULT_TYPE_CLASS = '_uijet_widget_',
@@ -98,6 +129,14 @@
             this.registered = false;
             return this;
         },
+        //TODO: add docs
+        getContext      : function (key) {
+            return this._getContext(key);
+        },
+        //TODO: add docs
+        setContext      : function (ctx, value) {
+            return this._setContext(ctx, value);
+        },
         // ### widget.wake
         // @sign: wake([context])  
         // @return: this
@@ -108,14 +147,17 @@
         // Takes an optional `context` object.
         wake            : function (context) {
             var that = this,
-                old_context = this.context,
                 dfrds, success;
             // if already awake and there's no new data coming in then no reason to continue
             if ( this.awake && ! context ) return this._finally();
-            // set the the context data if any
-            this._setContext(context);
-            // fire pre_wake signal
-            this.notify(true, 'pre_wake', old_context);
+            // if `context` is an object
+            if ( utils.isObj(context) ) {
+                // use it to update the instance's `context`
+                this.setContext(context);
+            }
+            // fire `pre_wake` signal
+            // send the `context` argument as a second param
+            this.notify(true, 'pre_wake', context);
             // the rest of the tasks needed to be performed
             success = function () {
                 // there was context to change but if we're set then bail out
@@ -227,64 +269,6 @@
         destroyContained: function () {
             uijet.destroyContained(this.id);
             return this;
-        },
-        // ### widget.update
-        // @sign: update([request_data])  
-        // @return: deferred_update.promise()
-        //
-        // Loads the widget's data from the server and returns a promise that's resolved OR rejected
-        // depending on success of that action.
-        // It gets the URL using `getDataUrl` and on success runs `setData`.
-        // If that succeeds then `has_data` is set to `true` and flow continues towards resolve.
-        // In case of any failure or if `data` wasn't correct and wasn't set the promise is rejected.
-        // If the XHR failed then the `update_error` event is fired and, unless aborted, the promise is rejected.
-        // Takes an optional argument `request_data` to be used as data for the request.
-        update          : function (request_data) {
-            var that = this,
-                dfrd_update, _success, url;
-            // if there's no URL set or the pre_update signal returned `false` then bail
-            if ( ! this.options.data_url || this.notify('pre_update') === false ) return {};
-            // since this may take more then a few miliseconds then publish the `pre_load` event to allow the UI
-            // to respond to tasks that require a long wait from the user
-            this.publish('pre_load', null, true);
-            // our update promise object
-            dfrd_update = uijet.Promise();
-            _success = function (response) {
-                // set `this.data`
-                that.setData(response);
-                if ( ! that.has_data ) {
-                    // if `setData` failed, reject the promise
-                    dfrd_update.reject(response);
-                } else {
-                    // if success notify a signal that we have `data` and resolve the promise
-                    that.notify('post_fetch_data', response);
-                    dfrd_update.resolve(response);
-                }
-            };
-            url = this.getDataUrl(this.context);
-            // send XHR to update
-            uijet.xhr(url.path, utils.extend({
-                type    : url.method,
-                data    : request_data,
-                dataType: 'json'
-            }, this.options.update_config))
-            .then(
-                _success,
-                function (response) {
-                    // notify there was an error and allow user to continue with either:
-                    //
-                    // * __success flow__: success callback is sent as the last argument to the signal's handler
-                    // * __failrue flow__: in case anything but `false` is returned from `update_error` handler
-                    // * __or abort it all__: return `false` from `update_error` handler
-                    var _abort_fail = that.notify.apply(that, ['update_error'].concat(arraySlice.call(arguments), _success.bind(that)));
-                    if ( _abort_fail !== false ) {
-                        // publish an error has occurred with `update`
-                        that.publish('update_error', response, true);
-                        dfrd_update.reject(response);
-                    }
-                }
-            );
-            return dfrd_update.promise();
         },
         // ### widget.prepareElement
         // @sign: prepareElement()  
@@ -699,15 +683,6 @@
             }
             return this;
         },
-        // ### widget.getDataUrl
-        // @sign: getDataUrl([data_context])  
-        // @return: data_url
-        //
-        // Gets the URL used by the widget to fetch data.  
-        // Takes an optional `Object` argument to be used as context for parsing the URL.
-        getDataUrl      : function (data_context) {
-            return this.getRestUrl(this.options.data_url, data_context);
-        },
         // ### widget.getRestUrl
         // @sign: getRestUrl(url, [context])  
         // @return: rest_url
@@ -745,51 +720,8 @@
         //
         // Does a simple string replace on the template using `obj` as the map of
         // params to values.  
-        // This method is used in `getDataUrl`.
-        substitute      : function(template, obj) {
-            var n = 0;
-            return template.replace(SUBSTITUTE_RE, function(match, key){
-                return utils.isObj(obj) ? obj[key] : obj[n++];
-            });
-        },
-        //TODO: add docs
-        getData         : function () {
-            return this.data || this.context;
-        },
-        // ### widget.setData
-        // @sign: setData(data)  
-        // @return: this
-        //
-        // Sets the instance's `data` with the given `data` argument.  
-        // Before the data is set it emits the `process_data` signal.  
-        // If that signal's callback returns a defined falsy value then `data` isn't set.  
-        // If `data` __was__ set it sets the `has_data` of this instance to `true`.  
-        // This is important for `update` to know that it succeeded.
-        setData         : function (data) {
-            // notify the `process_data` signal
-            var success = this.notify('process_data', data);
-            // if `success` is returned and it's `false` then bail out
-            if ( success === false ) {
-                return this;
-            }
-            this.data = success === void 0 ? data : success;
-            this.has_data = true;
-            return this;
-        },
-        // ### widget.unshadow
-        // @sign: unshadow(elements, [do_unshadow])  
-        // @return: this
-        //
-        // Used in platforms where CSS shadows creates big performance issues.  
-        // Removes CSS box-shadows from the specified `elements` which is either HTML elements or a selector,
-        // passed to `uijet.$`.  
-        // If `do_ushadow` is a boolean it's used for toggeling the state. 
-        // Currently only used on iPad.  
-        // Internally this toggles the `unshadow` class.
-        unshadow        : function (elements, do_unshadow) {
-            uijet.is_iPad && uijet.$(elements).toggleClass('unshadow', typeof do_unshadow == 'boolean' ? do_unshadow : true);
-            return this;
-        },
+        // This method is used in `getRestUrl()`.
+        substitute      : utils.format,
         // ### widget.remove
         // @sign: remove([reinsert])  
         // @return: widget_top_element OR this
