@@ -15,17 +15,17 @@ on flow of your application's logic while you generate code of the highest quali
 
 * Event-driven.
 * Decouple everything.
-* Re-use everything. Especially external libraries.
-* Code quality and maintainability that scale.
+* Reuse everything. Especially external libraries.
+* Code quality and maintainability.
 * Complete portability of same codebase across different platforms.
 * High performance and solid memory management.
 * Scalable architecture.
-* Reusable components
+* Reusable components.
 * Declarative code, in JS (not just markup!)
 
 ## Srsly now, what's it all about
 
-uijet allows you to create UIs for from rapid prototypes to full-blown-large-scale applications.
+uijet allows you to create UI from a rapid prototype to a full-blown-large-scale application.
 uijet performs 3 main roles:
 
 * IoC container for your application, and injects dependencies into your app and UI components.
