@@ -68,13 +68,8 @@ Declares an instance of a component in the app.
 
 #### uijet.start
 
-Initializes a component's instance(s).
-
-#### uijet.register
-
-Registers the component into uijet's sandbox.
-This method is invoked by the Base widget's `register()` method, 
-so you usually don't have to call it from your code.
+Initializes a component's instance(s), and registers it (them) into
+uijet's sandbox.
 
 ### Composites
 
