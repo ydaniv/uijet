@@ -56,7 +56,7 @@
          * 
          * @param {Function} f - the function to defer.
          */
-        async = root.setImmediate ?
+        async = _window.setImmediate ?
             function (f) { _window.setImmediate(f); } :
             function (f) { _window.setTimeout(f, 0);},
         /**
