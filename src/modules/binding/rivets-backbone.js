@@ -19,7 +19,7 @@
     rivets.adapters[':'] = {
         subscribe  : function ( obj, keypath, callback ) {
             if ( obj instanceof Backbone.Collection ) {
-                obj.on('add remove reset', callback);
+                obj.on('add remove reset sort', callback);
             }
             else {
                 obj.on('change:' + keypath, callback);
@@ -27,7 +27,7 @@
         },
         unsubscribe: function ( obj, keypath, callback ) {
             if ( obj instanceof Backbone.Collection ) {
-                obj.off('add remove reset', callback);
+                obj.off('add remove reset sort', callback);
             }
             else {
                 obj.off('change:' + keypath, callback);
