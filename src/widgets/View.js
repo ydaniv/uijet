@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
@@ -13,16 +12,26 @@
         factory(uijet);
     }
 }(function (uijet) {
+
+    var current_view,
+        switchView = function (view) {
+            if ( current_view && current_view !== view ) {
+                current_view.sleep();
+            }
+            current_view = view;
+        };
+
     uijet.Widget('View', {
         options : {
             type_class  : 'uijet_view'
         },
         register: function () {
             this._super();
-            // register this view using `uijet.View`
-            uijet.View(this.id, this);
             // check if this is the current screen
             this.checkState();
+            if ( this.options.state == 'current' ) {
+                switchView(this);
+            }
             return this;
         }
     }, ['Layered', 'Routed']);

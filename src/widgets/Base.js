@@ -323,7 +323,7 @@
         // This is usually called once in the init sequence, then the option is deleted
         // to prevent unnecessary repeating of this call.
         position        : function (position) {
-            var side, processed, style, has_fluid_side, exclude = [];
+            var processed, style, has_fluid_side, exclude = [];
             this._wrap();
 
             if ( typeof position == 'string') {

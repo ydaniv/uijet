@@ -33,7 +33,7 @@
         //
         // Hooks to `uijet.switchLayer` to make sure this widget is the top layer among its sibling widgets.
         setCurrent      : function () {
-            uijet.switchLayer(this);
+            uijet._switchLayer(this);
             return this;
         }
     });
