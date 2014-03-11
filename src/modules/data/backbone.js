@@ -21,10 +21,9 @@
     uijet.Base.extend(Backbone.Events);
 
     base_widget_proto.register = function () {
-        var default_events = { change : 'render' },
-            resource_name = this.options.resource_name,
+        var resource_name = this.options.resource_name,
             dont_merge_resource = this.options.dont_merge_resource,
-            resource, bindings, type, handler;
+            resource;
         baseRegister.call(this);
 
         if ( resource = this.options.resource ) {
@@ -46,15 +45,18 @@
             this.getContext = function () {
                 var context = baseGetContext.call(this),
                     result_set;
-                if ( this.resource.where ) {
-                    if ( uijet.utils.isObj(context.where) ) {
+                if ( this.resource instanceof Backbone.Collection ) {
+                    if ( context.where && uijet.utils.isObj(context.where) ) {
                         result_set = this.resource.where(context.where);
                     }
-                    else if ( uijet.utils.isFunc(context.filter) ) {
+                    else if ( context.filter && uijet.utils.isFunc(context.filter) ) {
                         result_set = this.resource.filter(context.filter, this);
                     }
                     else if ( typeof context.filter == 'string' ) {
-                        result_set = this.resource[context.filter]();
+                        result_set = this.resource[context.filter].apply(this.resource, context.filter_args);
+                    }
+                    else if ( 'filtered' in context ) {
+                        result_set = context.filtered;
                     }
                     else {
                         result_set = this.resource.models;
@@ -77,43 +79,63 @@
                 return this;
             };
 
-            bindings = 'data_events' in this.options ?
-                this.options.data_events :
-                uijet.options.data_events ?
-                    uijet.options.data_events :
-                    default_events;
-
-            if ( bindings ) {
-                var that = this,
-                    is_global = false,
-                    _h;
-                for ( type in bindings ) {
-                    handler = bindings[type];
-                    if ( typeof handler == 'string' ) {
-                        if ( uijet.utils.isFunc(this[handler]) ) {
-                            handler = this[handler];
-                        }
-                        else {
-                            _h = handler;
-                            if ( _h[0] == '-' ) {
-                                is_global = true;
-                                _h = _h.slice(1);
-                            }
-                            (function (_type, name, global) { 
-                                var _handler = function () {
-                                    var args = uijet.utils.toArray(arguments);
-                                    (global ? uijet : that).publish.call(that, name, {args : args});
-                                };
-                                that.listenTo(that.resource, _type, _handler);
-                            }(type, _h, is_global));
-                            continue;
-                        }
-                    }
-                    this.listenTo(this.resource, type, handler);
-                }
-            }
+            this.bindDataEvents();
         }
 
+        return this;
+    };
+
+    base_widget_proto.bindDataEvents = function () {
+        var bindings, type, handler;
+
+        bindings = 'data_events' in this.options ?
+            this.options.data_events :
+            uijet.options.data_events;
+
+        if ( bindings ) {
+            var that = this,
+                is_global = false,
+                _h;
+            for ( type in bindings ) {
+                handler = bindings[type];
+                if ( typeof handler == 'string' ) {
+                    if ( uijet.utils.isFunc(this[handler]) ) {
+                        handler = this[handler];
+                    }
+                    else {
+                        _h = handler;
+                        if ( _h[0] == '-' ) {
+                            is_global = true;
+                            _h = _h.slice(1);
+                        }
+                        (function (_type, name, global) { 
+                            var _handler = function () {
+                                var args = uijet.utils.toArray(arguments);
+                                (global ? uijet : that).publish.call(that, name, {args : args});
+                            };
+                            that.listenTo(that.resource, _type, _handler);
+                        }(type, _h, is_global));
+                        continue;
+                    }
+                }
+                this.listenTo(this.resource, type, handler);
+            }
+        }
+        return this;
+    };
+
+    base_widget_proto.unbindDataEvents = function (resource, type, handler) {
+        this.stopListening(resource || this.resource, type, handler);
+        return this;
+    };
+
+    base_widget_proto.setResource = function (resource, resource_name) {
+        this.resource && this.unbindDataEvents();
+        this.resource = resource;
+        if ( resource_name || typeof this.options.resource == 'string' ) {
+            uijet.Resource(resource_name || this.options.resource, resource, true);
+        }
+        this.bindDataEvents();
         return this;
     };
 
