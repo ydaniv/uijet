@@ -1,6 +1,6 @@
 /*!
  * UIjet UI Framework
- * @version 0.0.33
+ * @version 0.0.34
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
