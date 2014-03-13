@@ -722,7 +722,7 @@
         // by default uses `this.context`, and parses the URL using `this.substitute`.  
         // `method` is `GET` by default.
         getRestUrl      : function (_url, _context) {
-            var context = _context || this.context,
+            var context = _context || this.getContext(),
                 url = utils.returnOf(_url, this, context),
                 path;
             // if we have a URL to send to
@@ -743,32 +743,30 @@
                 };
             }
         },
-        // ### widget.substitute
-        // @sign: substitute(template, obj)  
-        // @return: String
-        //
-        // Does a simple string replace on the template using `obj` as the map of
-        // params to values.  
-        // This method is used in `getRestUrl()`.
+        /**
+         * {@see uijet.utils.format}
+         */
         substitute      : utils.format,
-        // ### widget.remove
-        // @sign: remove([reinsert])  
-        // @return: widget_top_element OR this
-        //
-        // Removes the instance's element, and wrapper if exists, from the DOM.  
-        // This is usually used inside destroy sequence.  
-        // Returns the removed element  
+        /**
+         * Removes the instance element (including wrapper) from the DOM.
+         * If you wish to later insert it back to the DOM pass `true`
+         * as the `reinsert` parameter. In such case the removed element
+         * will be returned.
+         * 
+         * @param {boolean} [reinsert] - set to `true` if removed element is to be reinserted back to the DOM.
+         * @returns {Widget|HtmlElement} - the removed element if `reinsert` is `true`, otherwise `this`.
+         */
         //TODO: write a method that gets the top level element
         remove          : function (reinsert) {
             var el = (this.$wrapper || this.$center_wrapper || this.$element)[reinsert ? 'detach' : 'remove']();
             return reinsert ? el : this;
         },
-        // ### widget._generateId
-        // @sign: _generateId()  
-        // @return: id
-        //
-        // Generates an id for the instance using the type_class option (sans the 'uijet_' prefix) + a suffix of '_'
-        // and an auto-incremented index.
+        /**
+         * Generates an id for the instance.
+         * 
+         * @returns {string} - the generated id.
+         * @private
+         */
         _generateId     : function () {
             var id =  utils.toArray(this.options.type_class)
                             .splice(-1, 1).toString()
