@@ -55,6 +55,13 @@
         DIMENSIONS = {top:'height',bottom:'height',right:'width',left:'width'},
         DEFAULT_TYPE_CLASS = '_uijet_widget_',
         widget_id_index = 0,
+        /**
+         * Parses strings into DOM event type and, optionally,
+         * a query selector for the target element to delegate the event from.
+         * 
+         * @param {string} type - a property name in a `dom_events` object.
+         * @returns {Array} - the Array of the processed event type and target element. 
+         */
         parseTypeAndTarget = function (type) {
             var parts = type && type.split(' ') || '',
                 result;
@@ -70,17 +77,23 @@
             return result;
         };
 
+    /**
+     * Public, inheritable methods of {@see Widget} class.
+     */
     Widget.prototype = {
         constructor     : Widget,
-        // ### widget.init
-        // @sign: init(options)  
-        // @return: this
-        //
-        // *Lifecycle method*
-        // Initializes a widget instance. Attempts to do all the lifting that can be done prior to
-        // any data received or templates fetched.  
-        // Takes an `options` `Object` as argument.  
-        // For now this options is mandatory, mainly because it must contain the `element` option.
+        /**
+         * Initializes a widget instance.
+         * 
+         * A *lifecycle method*, does all the possible lifting that can be done
+         * before awaking/rendering.
+         * 
+         * `init()` is invoked by uijet when it is `init()`ed itself
+         * or when you `start()` a widget ad-hoc.
+         * 
+         * @param {Object} options - config object for the widget.
+         * @returns {Widget}
+         */
         init            : function (options) {
             // ready...
             // FIGHT!
@@ -104,13 +117,14 @@
 
             return this;
         },
-        // ### widget.register
-        // @sign: register()  
-        // @return: this
-        //
-        // Registers the widget into the sandbox.  
-        // Hooks into uijet's `register`.
-        // *Note*: It is recommended to call `this._super` first thing when overriding this method.
+        /**
+         * Registers the widget into uijet's sandbox.
+         * 
+         * *Note*: It is recommended to call `this._super()` first thing
+         * when overriding this method, to make sure the widget is in the sandbox.
+         * 
+         * @returns {Widget}
+         */
         register        : function () {
             if ( ! this.registered ) {
                 uijet.register(this);
@@ -118,33 +132,52 @@
             }
             return this;
         },
-        // ### widget.unregister
-        // @sign: unregister()  
-        // @return: this
-        //
-        // Unregisters the widget from the sandbox.  
-        // Hooks into uijet's `unregister`.
+        /**
+         * Unregisters the widget from uijet's sandbox.
+         * 
+         * @returns {Widget}
+         */
         unregister      : function () {
             uijet.unregister(this);
             this.registered = false;
             return this;
         },
-        //TODO: add docs
+        /**
+         * Gets the `context` object of the instance or the value
+         * of a specific property.
+         * 
+         * @param {string} [key] - a name of a property in the `context` object.
+         * @returns {*} - the value of the `key` or the `context` object.
+         */
         getContext      : function (key) {
             return this._getContext(key);
         },
-        //TODO: add docs
+        /**
+         * Sets properties on the `context` object.
+         * Either using a map of properties or key and a value.
+         * 
+         * @param {Object|string} ctx - a map of properties to set on the `context` or a name of a property to set.
+         * @param [value] - if `ctx` is a string representing a key the this will be its value.
+         * @returns {Widget}
+         */
         setContext      : function (ctx, value) {
             return this._setContext(ctx, value);
         },
-        // ### widget.wake
-        // @sign: wake([context])  
-        // @return: this
-        //
-        // *Lifecycle method*
-        // Starts the widget up.  
-        // This is the core action that gets all the data and performs all renderings.  
-        // Takes an optional `context` object.
+        /**
+         * Starts up the widget.
+         * A *lifecycle method*, renders the widget, attaches all
+         * DOM events to it and brings it into view.
+         * 
+         * Takes an optional `context` parameter that will be passed to
+         * {@see setContext()} if it is an `Object`, to `pre_wake` and
+         * `post_wake` signals and to {@see wakeContained()}.
+         * 
+         * Every widget also wakes its contained widgets, so this triggers
+         * a recursive action that wakes the whole widgets branch downwards.
+         * 
+         * @param {*} [context] - possibly an `Object` containing properties to set on the `context`.
+         * @returns {Promise} - resolved when all contained widgets successfully wake or rejected in case of error.
+         */
         wake            : function (context) {
             var that = this,
                 dfrds, success;
@@ -168,13 +201,13 @@
                         .appear()
                         .awake = true;
                 }
-                that.notify(true, 'post_wake');
+                that.notify(true, 'post_wake', context);
                 that._finally();
             };
             // wake up all contained widgets
             dfrds = this.wakeContained(context);
 
-            // if this widget is to be wake up in sync with its children then let it call
+            // if this widget is to be waken up in sync with its children then let it call
             // success once they're done, or fail if any fails
             // otherwise call success
             return uijet.whenAll(dfrds).then(
@@ -185,20 +218,16 @@
                 }
             );
         },
-        // ### widget.wakeContained
-        // @sign: wakeContained([context])  
-        // @return: uijet.wakeContained(...)
-        //
-        // *Lifecycle method*
-        // Wakes up contained widgets.  
-        // Hooks up into `uijet.wakeContained`.  
-        // Takes an optional `context` argument (usually an `Object`).  
-        // Returns the result of the call to `uijet.wakeContained`, which returns an `Array` of the promises
-        // of all deferred objects created by each contained widget's `wake` call.  
-        // This array is then handed into the deferring of this widget's `wake` call to check whether a child
-        // failed to wake or to halt until all are awake in case of a `sync`=`true`.
+        /**
+         * Wakes up contained widgets.
+         * 
+         * Takes an optional `context` argument that is passed to the {@see wake()}
+         * calls of the contained widgets.
+         * 
+         * @param {*} [context] - optional context for contained widgets.
+         * @returns {Promise[]}
+         */
         wakeContained   : function (context) {
-            // returns an array of deferred objects' promises
             return uijet.wakeContained(this.id, context);
         },
         // ### widget.sleep
@@ -747,15 +776,17 @@
             this.$element.attr('id', id);
             return id;
         },
-        // ### widget._wrap
-        // @sign: _wrap()  
-        // @return: this
-        //
-        // Wraps the instance's `$element` with `<div>` element.
-        // This wrapper has the `class` of the original `type_class` prefixed with __uijet_wrapper__, and
-        // the same `id` suffixed with ___wrapper__.  
-        // At the end sets a reference to this element in `$wrapper`.  
-        // If `$wrapper` is already set, skips to return.
+        /**
+         * Utility for wrapping the widget's element in a container element.
+         * 
+         * Related options:
+         * * `dont_wrap`: skips wrapping and sets `$wrapper` to `$element`.
+         * * `wrapper_class`: extra class names to be set on the container element.
+         * * `wrapper_tag`: a name of a tag to use for the container element. Defaults to `div`.
+         * 
+         * @returns {Widget}
+         * @private
+         */
         _wrap           : function () {
             var classes;
             if ( ! this.$wrapper ) {
@@ -773,14 +804,12 @@
             }
             return this;
         },
-        // ### widget._center
-        // @sign: _center()  
-        // @return: this
-        //
-        // Centers the instance's `$element` by wrapping it with a `<div>` element that has a `class`
-        // of the original `type_class` suffixed with ___center_wrapper__.  
-        // At the end sets a reference to this element in `$center_wrapper`.  
-        // If `$center_wrapper` is already set, skips to return.
+        /**
+         * Centers the widget, vertically and horizontally.
+         * 
+         * @returns {Widget}
+         * @private
+         */
         _center         : function () {
             if ( ! this.$center_wrapper ) {
                 this.$wrapper.addClass('center');
@@ -793,12 +822,12 @@
             }
             return this;
         },
-        // ### widget._getSize
-        // @sign: _getSize()  
-        // @return: {width: <width>, height: <height>}
-        //
-        // Gets the size of _content_ of `$element`.  
-        // Returns an `Object` with `width` and `height` properties.
+        /**
+         * Gets the size of a widget's element, taking its child elements into account.
+         * 
+         * @returns {{width: number, height: number}}
+         * @private
+         */
         _getSize        : function () {
             var $children = this.$element.children(),
                 // cache `window` in this scope
@@ -828,55 +857,45 @@
             }
             return size;
         },
-        // ### widget._setCloak
-        // @sign: _setCloak(cloak)  
-        // @return: this
-        //
-        // Depending on the `cloak` flag either sets the `$element`'s `visibility` to `hidden` or `visible`.
+        /**
+         * Toggles the element's `visibility`, depending on the `cloak` param.
+         * 
+         * If `cloak` is truthy it's set to `hidden`, otherwise to `visible`.
+         * 
+         * This is used to minimize paints while the widget is asleep.
+         * 
+         * @param {boolean} [cloak] - whether to cloak the element.
+         * @returns {Widget}
+         * @private
+         */
         _setCloak       : function (cloak) {
             this.$element[0].style.visibility = cloak ? 'hidden' : 'visible';
             return this;
         },
-        // ### widget._setContext
-        // @sign: _setContext(context)  
-        // @return: this
-        //
-        // If it gets a `context` object it sets it to `this.context`,  
-        _setContext     : function (context) {
-            var k;
-            if ( context ) {
-                if ( context === true || context.refresh ) {
-                    this.awake = false;
-                }
-                if ( this.options.clone_context ) {
-                    this.context = {};
-                    for ( k in context )
-                        if ( context.hasOwnProperty(k) )
-                            this.context[k] = context[k];
-                } else {
-                    this.context = context;
-                }
-            }
-            return this;
-        },
-        // ### widget._saveOriginal
-        // @sign: _saveOriginal()  
-        // @return: this
-        //
-        // Sets `this.$original_children` with the `$element`'s children as a DOM query result object if they aren't set yet.  
-        // This is used to save reference to elements created by the user in the original markup, prior to rendering.
+        /**
+         * Saves reference to all child elements prior to any rendering.
+         * 
+         * This is done on {@see init()} and used to keep elements that
+         * should not be touched when rendering the contents of the widget.
+         * 
+         * @returns {Widget}
+         * @private
+         */
         _saveOriginal   : function () {
-            // save a reference to the child nodes of the element prior to rendering
             ! this.$original_children && (this.$original_children = this.$element.children());
             return this;
         },
-        // ### widget._clearRendered
-        // @sign: _clearRendered()  
-        // @return: this
-        //
-        // Removes the elements created by rendering the widget, meaning all that's *NOT* in `$original_children`.  
-        // Also cleares the `style` attribute of `$element`.  
-        // At the end resets `has_content` to `false`.
+        /**
+         * Removes all elements created by rendering the widget,
+         * e.g. results from calling {@see render()}, meaning all that's *not* in
+         * `$original_children`, set by {@see _saveOriginal()} on {@see init()}.
+         * 
+         * Related options:
+         * * `extend_rendered`: set to `true` if you wish to keep the content with every render.
+         * 
+         * @returns {Widget}
+         * @private
+         */
         _clearRendered  : function () {
             var extend_rendered = this.options.extend_rendered;
             extend_rendered === void 0 && (extend_rendered = !!this.options.extend_data);
@@ -890,13 +909,16 @@
             }
             return this;
         },
-        // ### widget._finally
-        // @sign: _finally()  
-        // @return: this
-        //
-        // A utility method that's called at the end of every *lifecycle method* call.  
-        // Does all the clean up related a lifecycle operation, such as clearing the callable signals hash and
-        // setting current `options.state`.
+        /**
+         * Cleans up all lifecycle related operations.
+         * 
+         * A utility method that's called at the end of every lifecycle method call.
+         * If you wish to forcibly allow signals, that are triggered once per
+         * lifecycle stage - e.g. `pre_render`, to be triggerable again call this method.
+         * 
+         * @returns {Widget}
+         * @private
+         */
         _finally        : function () {
             // replace the masking `Object` with a new one
             this.signals = Object.create(this.signals_cache);
