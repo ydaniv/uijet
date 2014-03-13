@@ -609,9 +609,9 @@
             this.$element.on(uijet.support.click_events.full, selector, function (e) {
                 var $this = uijet.$(this),
                     is_anchor = this.tagName.toLowerCase() == 'a',
-                    _route = that.substitute(
+                    _route = utils.format(
                         $this.attr(is_anchor && capture_href ? 'href' : 'data-uijet-route'),
-                        that.context
+                        that.getContext()
                     );
                 if ( uijet.options.routed ) {
 //                    that.runRoute(_route, typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
@@ -712,41 +712,6 @@
             }
             return this;
         },
-        // ### widget.getRestUrl
-        // @sign: getRestUrl(url, [context])  
-        // @return: rest_url
-        //
-        // Gets a RESTful object representation of a URL with a `path` and `method` values.  
-        // `url` can be either a `String` or an `Object` with a `path` and `method` values.  
-        // Takes an optional `Object` argument to be used as context for parsing the URL,
-        // by default uses `this.context`, and parses the URL using `this.substitute`.  
-        // `method` is `GET` by default.
-        getRestUrl      : function (_url, _context) {
-            var context = _context || this.getContext(),
-                url = utils.returnOf(_url, this, context),
-                path;
-            // if we have a URL to send to
-            if ( url ) {
-                if ( typeof url == 'string' ) {
-                    // parse the URL
-                    path = this.substitute(url, context);
-                }
-                else if ( utils.isObj(url) ) {
-                    // or parse the URL under __path__
-                    path = this.substitute(url.path, context);
-                } else {
-                    return;
-                }
-                return {
-                    method: url.method || 'GET',
-                    path: path || (url.path ? url.path : url)
-                };
-            }
-        },
-        /**
-         * {@see uijet.utils.format}
-         */
-        substitute      : utils.format,
         /**
          * Removes the instance element (including wrapper) from the DOM.
          * If you wish to later insert it back to the DOM pass `true`

@@ -141,7 +141,11 @@
         // By default, the method is 'GET'.  
         // If `submit_url` option isn't set it returns `undefined`.
         getSubmitUrl    : function (submit_context) {
-            return this.getRestUrl(this.options.submit_url, submit_context);
+            var context = submit_context || this.getContext();
+            return uijet.utils.parseRestUrl(
+                uijet.utils.returnOf(this.options.submit_url, this, context),
+                context
+            );
         },
         // ### widget.getSerialized
         // @sign: getSerialized([request_data])  

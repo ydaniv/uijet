@@ -236,6 +236,34 @@
     function returnOf (arg, ctx) {
         return isFunc(arg) ? arg.apply(ctx || _window, arraySlice.call(arguments, 2)) : arg;
     }
+    /**
+     * Parses and formats a URL into an object containing `method`
+     * and `path` for making a proper RESTful request.
+     * 
+     * @param {string|Object} url - The URL to use for the request or an `Object` in the form of `{ method: <method>, path: <path>}`.
+     * @param {Object} [context] - context object to use for formatting the URL.
+     * @returns {{method: (string), path: (string)}}
+     */
+    function parseRestUrl (url, context) {
+        var path;
+        // if we have a URL to send to
+        if ( url ) {
+            if ( typeof url == 'string' ) {
+                // parse the URL
+                path = format(url, context);
+            }
+            else if ( isObj(url) ) {
+                // or parse the URL under `path`
+                path = format(url.path, context);
+            } else {
+                return;
+            }
+            return {
+                method: url.method || 'GET',
+                path: path || (url.path ? url.path : url)
+            };
+        }
+    }
 
     /**
      * Normalizes `obj` into a wrapped DOM element object via the used DOM module,
@@ -1762,6 +1790,7 @@
         toArray         : toArray,
         format          : format,
         returnOf        : returnOf,
+        parseRestUrl    : parseRestUrl,
         toElement       : toElement,
         contains        : contains,
         getStyle        : getStyle,
