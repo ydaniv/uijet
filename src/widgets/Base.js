@@ -592,40 +592,6 @@
             typeof $el.trigger == 'function' && $el.trigger(event_type || uijet.support.click_events.full);
             return this;
         },
-        // ### widget.captureRoutes
-        // @sign: captureRoutes()  
-        // @return: this
-        //
-        // Transforms `this.$element` to a gateway for routes by delegating all anchor or `uijet-route` clicks inside it
-        // to `uijet.runRoute`.  
-        // The 'is_silent' param for `runRoute` is the opposite of the truthiness of `routing` option.  
-        // This is usually called once in the init sequence.
-        captureRoutes   : function () {
-            var routing = this.options.routing,
-                capture_href = this.options.capture_href,
-                selector = '[data-uijet-route]',
-                that = this;
-            capture_href && (selector += ',a');
-            this.$element.on(uijet.support.click_events.full, selector, function (e) {
-                var $this = uijet.$(this),
-                    is_anchor = this.tagName.toLowerCase() == 'a',
-                    _route = utils.format(
-                        $this.attr(is_anchor && capture_href ? 'href' : 'data-uijet-route'),
-                        that.getContext()
-                    );
-                if ( uijet.options.routed ) {
-//                    that.runRoute(_route, typeof routing == 'undefined' ? true : typeof routing == 'function' ? ! routing.call(that, $this) : ! routing);
-                    that.runRoute(_route, ! utils.returnOf(routing, that, $this));
-                } else {
-                    uijet.publish(_route);
-                }
-                // contain the route to this widget only
-                e.stopPropagation();
-                // prevent because this is an INNER router
-                is_anchor && capture_href && e.preventDefault();
-            });
-            return this;
-        },
         // ### widget.setOptions
         // @sign: setOptions([options])  
         // @return: this
@@ -677,8 +643,6 @@
                 );
                 this._bound_dom_events.push(bind_args);
             }
-            // capture and delegate all `uijet-route` and/or anchor clicks to routing/publishing mechanism
-            this.captureRoutes();
             return this;
         },
         // ### widget.setId
