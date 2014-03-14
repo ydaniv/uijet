@@ -564,18 +564,6 @@
             this.bound = false;
             return this;
         },
-        // ### widget.runRoute
-        // @sign: runRoute(route, [is_silent])  
-        // @return: this
-        //
-        // Runs a route.  
-        // If `is_silent` is supplied and is `true` this route will not propagate to the browser's address bar
-        // and will only trigger the callback for that route.  
-        // It's a hook into `uijet.runRoute`.
-        runRoute        : function (route, is_silent) {
-            uijet.runRoute(route, is_silent);
-            return this;
-        },
         /**
          * Triggers selection (e.g. `click` event) on the given `target`.
          * `target` can be an `HTMLElement` or a query selector to be found
@@ -639,6 +627,7 @@
                     this.subscribe(n, _app_events[n]);
                 }
             }
+            // parse DOM events config for later binding on `wake()`
             for ( n in ops.dom_events ) {
                 bind_args = parseTypeAndTarget(n);
                 handler = ops.dom_events[n];

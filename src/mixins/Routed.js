@@ -1,13 +1,27 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet'], function (uijet) {
+        define([
+            'uijet_dir/uijet',
+            'uijet_dir/widgets/Base'
+        ], function (uijet) {
             return factory(uijet);
         });
     } else {
         factory(uijet);
     }
 }(function (uijet) {
+
+    /*
+     * If there's at least one `Routed` widget then allow all
+     * other widgets to run routes.
+     */
+    uijet.use({
+        runRoute        : function (route, is_silent) {
+            uijet.runRoute(route, is_silent);
+            return this;
+        }
+    }, uijet.BaseWidget.prototype);
+
     uijet.Mixin('Routed', {
         routed          : true,
         wake            : function (context, by_route) {
