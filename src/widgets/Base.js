@@ -576,28 +576,29 @@
             uijet.runRoute(route, is_silent);
             return this;
         },
-        // ### widget.select
-        // @sign: select(initial)  
-        // @return: this
-        //
-        // Triggers a selection in the widget's UI, according to implementation.  
-        // In its base form only triggers the `click` event.  
-        // If `initial` is a `function` then the result of its call is the element to call `click` on..  
-        // Otherwise (usually a `String`) find this element inside `this.$element` using `initial` as selector
-        // and perform the click on the result.
-        select          : function (initial) {
+        /**
+         * Triggers selection (e.g. `click` event) on the given `target`.
+         * `target` can be an `HTMLElement` or a query selector to be found
+         * inside the instance's element.
+         * It can also be a function that returns a wrapped element.
+         * 
+         * @param {function|string|HTMLElement} target - the target element to find or a function returning one.
+         * @returns {Widget}
+         */
+        select          : function (target) {
             var event_type = this.options.click_event,
                 $el;
-            $el = typeof initial == 'function' ? initial.call(this) : this.$element.find(initial);
-            typeof $el.trigger == 'function' && $el.trigger(event_type || uijet.support.click_events.full);
+            $el = utils.isFunc(target) ? target.call(this) : this.$element.find(target);
+            utils.isFunc($el.trigger) && $el.trigger(event_type || uijet.support.click_events.full);
             return this;
         },
-        // ### widget.setOptions
-        // @sign: setOptions([options])  
-        // @return: this
-        //
-        // Set this instance's options.  
-        // This is usually called once in the init sequence.
+        /**
+         * Sets `this.options` based on class's defaults and instance's
+         * declaration.
+         * 
+         * @param {Object} options - options set in instance declaration's config. 
+         * @returns {Widget}
+         */
         setOptions      : function (options) {
             this.options = utils.extend(true, {}, this.options || {}, options);
             // make sure DOM events maps are initialized
@@ -607,12 +608,17 @@
             ! this.options.type_class && (this.options.type_class = DEFAULT_TYPE_CLASS);
             return this;
         },
-        // ### widget.setInitOptions
-        // @sign: setInitOptions()  
-        // @return: this
-        //
-        // Perform initialization related tasks on this instance based on the options set.
-        // This method is usually called once inside the `init` method flow, after `setOptions`.
+        /**
+         * Perform initialization tasks based on `this.options`.
+         * 
+         * Related options:
+         * * `signals`: {@see listen()}s to each of the specified events.
+         * * `dom_events`: prepares all specified DOM events for {@see bind()}ing.
+         * * `app_events`: {@see subscribe}s to each of the specified events.
+         * * `wake_on_startup`: subscribes the instance to the `startup` event with a {@see wake()} call.
+         * 
+         * @returns {Widget}
+         */
         setInitOptions  : function () {
             var ops = this.options,
                 _app_events = ops.app_events || {},
@@ -645,34 +651,38 @@
             }
             return this;
         },
-        // ### widget.setId
-        // @sign: setId()  
-        // @return: this
-        //
-        // Sets the instance's `id` using the one set in the config OR the instance's `$element`'s OR
-        // tries to create that `$element` and get its `id`.  
-        // If all fails generates an id from the widget's type and a running index.  
-        // This is usually called once in the init sequence.  
+        /**
+         * Sets `this.id`.
+         * 
+         * First attempts to check `options`, then falls back to the element's `id` attribute,
+         * then to calling {@see _generateId()}.
+         * 
+         * Related options:
+         * * `id`: the id to use.
+         * 
+         * @returns {Widget}
+         */  
         setId           : function () {
-            this.id = this.options.id ||
+            this.id = utils.returnOf(this.options.id, this) ||
                 (this.$element && this.$element[0].id) ||
                 this.setElement().$element[0].id ||
                 this._generateId();
             return this;
         },
-        // ### widget.setElement
-        // @sign: setElement([element])  
-        // @return: this
-        //
-        // set the instance's `$element` either by getting it as a param OR from `element` option.  
-        // This is usually called once in the init sequence.  
+        /**
+         * Sets `this.$element`.
+         * 
+         * Related options:
+         * * `element`: the element to use as either query selector, element object, wrapped element, or a function returning one of the above.
+         * 
+         * @param {} element
+         * @returns {Widget}
+         */  
         //TODO: allow the creation of the element outside the `document` when it doesn't exist in the DOM
         setElement      : function (element) {
-            if ( ! this.$element ) {
-                // use the `element` argument or the option.
-                element = element || this.options.element;
-                // if it's not a result object of the DOM library then wrap it
-                this.$element = (element[0] && element[0].nodeType) ? element : uijet.$(element);
+            if ( element || ! this.$element ) {
+                element = element || utils.returnOf(this.options.element, this);
+                this.$element = utils.toElement(element);
             }
             return this;
         },
