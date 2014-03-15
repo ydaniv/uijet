@@ -11,18 +11,6 @@
     }
 }(function (uijet) {
 
-    uijet.use({
-        /**
-         * Stub for template compilation, to be implemented by the engine module.
-         * 
-         * @param {*} template
-         * @returns {*}
-         */
-        compile: function (template) {
-            return template;
-        }
-    }, uijet.BaseWidget.prototype);
-
     uijet.Mixin('Templated', {
         templated       : true,
         init            : function () {
