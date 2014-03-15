@@ -323,14 +323,15 @@
             }
             return this;
         },
-        // ### widget.style
-        // @sign: style()  
-        // @return: this
-        //
-        // Sets the instance element's style in case the `style` option is set.  
-        // It makes sure the the element is wrapped first and sets those style properties on the `$wrapper`.  
-        // It uses a `jQuery.css` like operation on the wrapper element with the option's value.  
-        // This is usually called once in the init sequence.
+        /**
+         * Gets or sets the style of the instance's top container (`this.$wrapper`).
+         * As a getter this is delegated to {@see utils.getStyle()}.
+         * As a setter this is delegated to the DOM module's `css()` method. 
+         * 
+         * @param {string|Array|Object} [style] - 
+         * @param {string|number|function} [value] - 
+         * @returns {string|string[]|CSSStyleDeclaration|Widget} - 
+         */
         style           : function (style, value) {
             if ( ! arguments.length || (value === void 0 && typeof style == 'string') || utils.isArr(style) ) {
                 return utils.getStyle(this.$wrapper[0], style);
@@ -457,22 +458,23 @@
             this.notify(true, 'pre_render');
             return this;
         },
-        // ### widget.appear
-        // @sign: appear()  
-        // @return: this
-        //
-        // Makes the instance's element appear (initially `visibility` is set to `hidden`).
+        /**
+         * Makes the instance's element appear in the UI.
+         * By default this only calls {@see _setCloak()} which toggles `visibility`.
+         * 
+         * @returns {Widget}
+         */
         appear          : function () {
             this.notify(true, 'pre_appear');
             this._setCloak(false)
                 .notify(true, 'post_appear');
             return this;
         },
-        // ### widget.disappear
-        // @sign: disappear()  
-        // @return: this
-        //
-        // Makes the instance's element disappear, basically setting `visibility` to `hidden`.
+        /**
+         * Makes the instance's element disappear from the UI.
+         * 
+         * @returns {Widget}
+         */
         disappear       : function () {
             this._setCloak(true)
                 .notify(true, 'post_disappear');
@@ -524,13 +526,12 @@
 
             return this;
         },
-        // ### widget.bindAll
-        // @sign: bindAll()  
-        // @return: this
-        //
-        // Binds DOM events related to the instance's element, based on the `dom_events` option.  
-        // At the end sets the `bound` flag to `true`.  
-        // This is called every time the widget is awaken.  
+        /**
+         * Binds all DOM events that were initially in the instance's `config`
+         * or were later attached using {@see bind()}.
+         * 
+         * @returns {Widget}
+         */
         bindAll         : function () {
             var n;
             // in case something was bound
@@ -546,13 +547,12 @@
 
             return this;
         },
-        // ### widget.unbindAll
-        // @sign: unbindAll()  
-        // @return: this
-        //
-        // Unbinds all DOM events related to the instance's element, based on the `dom_events` option.  
-        // At the end sets the `bound` flag to `false`.  
-        // This is usually called every time the widget is put to sleep.  
+        /**
+         * Removes all attached DOM events that were initially in the
+         * instance's `config` or were later attached using {@see bind()}.
+         * 
+         * @returns {Widget}
+         */
         unbindAll       : function () {
             var n;
             // if we have any DOM events that are bound
@@ -664,7 +664,7 @@
          * Related options:
          * * `element`: the element to use as either query selector, element object, wrapped element, or a function returning one of the above.
          * 
-         * @param {} element
+         * @param {string|HTMLElement|HTMLElement[]} element - query selector, element, or wrapped element to use as the instance's element.
          * @returns {Widget}
          */  
         //TODO: allow the creation of the element outside the `document` when it doesn't exist in the DOM
@@ -751,6 +751,10 @@
         /**
          * Gets the size of a widget's element, taking its child elements into account.
          * 
+         * Related options:
+         * * `horizontal`: controls size calculation - height of a single child element and width of all children 
+         * when `true`, or vise versa if falsy.
+         * 
          * @returns {{width: number, height: number}}
          * @private
          */
@@ -823,12 +827,10 @@
          * @private
          */
         _clearRendered  : function () {
-            var extend_rendered = this.options.extend_rendered;
-            extend_rendered === void 0 && (extend_rendered = !!this.options.extend_data);
             if ( this.bound ) {
                 this.unbindAll();
             }
-            if ( ! extend_rendered ) {
+            if ( ! this.options.extend_rendered ) {
                 // remove all children that were added with .render()
                 this.$element.children().not(this.$original_children).remove();
                 this.has_content = false;
