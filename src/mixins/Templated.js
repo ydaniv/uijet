@@ -1,12 +1,28 @@
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet'], function (uijet) {
+        define([
+            'uijet_dir/uijet',
+            'uijet_dir/widgets/Base'
+        ], function (uijet) {
             return factory(uijet);
         });
     } else {
         factory(uijet);
     }
 }(function (uijet) {
+
+    uijet.use({
+        /**
+         * Stub for template compilation, to be implemented by the engine module.
+         * 
+         * @param {*} template
+         * @returns {*}
+         */
+        compile: function (template) {
+            return template;
+        }
+    }, uijet.BaseWidget.prototype);
+
     uijet.Mixin('Templated', {
         templated       : true,
         init            : function () {
