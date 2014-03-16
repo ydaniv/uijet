@@ -91,6 +91,9 @@
          * `init()` is invoked by uijet when it is `init()`ed itself
          * or when you `start()` a widget ad-hoc.
          * 
+         * Signals:
+         * * `post_init`: triggered at the end of this method.
+         * 
          * @param {Object} options - config object for the widget.
          * @returns {Widget}
          */
@@ -174,6 +177,11 @@
          * {@see setContext()} if it is an `Object`, to `pre_wake` and
          * `post_wake` signals and to {@see wakeContained()}.
          * 
+         * Signals:
+         * * `pre_wake`: triggered before waking of contained widgets, takes `wake()`'s `context` param as argument.
+         * * `post_wake`: triggered at the end of a successful wake, takes `wake()`'s `context` param as argument.
+         * * `wake_failed`: triggered at the end of a failed wake, takes all arguments of the rejected {@see wakeContained()}.
+         * 
          * @param {*} [context] - possibly an `Object` containing properties to set on the `context`.
          * @returns {Promise} - resolved when all contained widgets successfully wake or rejected in case of error.
          */
@@ -239,6 +247,10 @@
          * Related options:
          * * `destroy_on_sleep`: if `true` this widget will self destruct when put to sleep.
          * 
+         * Signals:
+         * * `pre_sleep`: triggered at the beginning of this instance is awake.
+         * * `post_sleep`: triggered at the end of this instance is awake.
+         * 
          * @param {boolean} [no_transitions] - whether to use a transition, if specified, for hiding. 
          * @returns {Widget}
          */
@@ -270,20 +282,23 @@
             uijet.sleepContained(this.id);
             return this;
         },
-        // ### widget.destroy
-        // @sign: destroy()  
-        // @return: this
-        //
-        // *Lifecycle method*
-        // Clean up all related data, DOM and memory related to this instance.  
-        // This method is not called by default.
+        /**
+         * Cleans up all related DOM, memory and events related to 
+         * this instance.
+         * A *lifecycle method*, destroys the instance and all its contained widgets.
+         * 
+         * Signals:
+         * * `pre_destroy`: triggered at the beginning.
+         * 
+         * @returns {Widget}
+         */
         destroy         : function () {
             this.notify(true, 'pre_destroy');
             // perform a recursive destruction down the widget tree
             this.destroyContained();
             // unsubscribe to app events
             this.app_events && this.unsubscribe(this.app_events);
-            // unregister from uijet
+            // unregister from the uijet sandbox
             this.unregister()
                 .unbindAll()
                 .unlisten()
@@ -291,23 +306,26 @@
 
             return this;
         },
-        // ### widget.destroyContained
-        // @sign: destroyContained()  
-        // @return: this
-        //
-        // Cleans up all contained widgets.  
-        // Hooks up into `uijet.destroyContained`.
+        /**
+         * Cleans up all contained widgets using {@see destroy()}.
+         * 
+         * @returns {Widget}
+         */
         destroyContained: function () {
             uijet.destroyContained(this.id);
             return this;
         },
-        // ### widget.prepareElement
-        // @sign: prepareElement()  
-        // @return: this
-        //
-        // Prepares the instance's element by setting attributes and styles.  
-        // In its basic format adds classes and calls `style` and `position`.  
-        // This is usually called once in the init sequence.
+        /**
+         * Initializes the instance's element.
+         * 
+         * Related options:
+         * * `type_class`: classes that define the type of the widget's component and are set on the elements `class` attribute.
+         * * `extra_class`: space separated class names to be added to the element's `class` attribute.
+         * * `position`: `string|Object` to be passed to {@see position()}.
+         * * `style`: `string|Array|Object` to be passed to {@see style()}.
+         * 
+         * @returns {Widget}
+         */
         prepareElement  : function () {
             var classes = 'uijet_widget ' +
                     utils.toArray(this.options.type_class).join(' '),
@@ -342,18 +360,24 @@
                 .$wrapper.css(style, value);
             return this;
         },
-        // ### widget.position
-        // @sign: position()  
-        // @return: this
-        //
-        // Positions the instance's element if the `position` option is set.  
-        // Makes sure the element is wrapped first.  
-        // If this option is set then the 'fixed' class is added to the `$wrapper`.
-        // Then, if it's a `String` it is added as a class too.  
-        // If ='center' then `_center` is called as well.  
-        // If it's an `Object` then it's used as argument for a `jQuery.css` like call on the `$wrapper`.  
-        // This is usually called once in the init sequence, then the option is deleted
-        // to prevent unnecessary repeating of this call.
+        /**
+         * Positions the instance's element with respect to its
+         * sibling widgets, according to value of `position`:
+         * 
+         * * `'center'`: centers the widget.
+         * * `'fluid'`: stretches the widget according to its container and siblings.
+         * * other `string`: parses `position` and positions the widget according to its container and siblings.
+         * * `Object`: passes `position` to {@see style()}.
+         * 
+         * This method will always attempt to {@see _wrap()} the instance's element.
+         * 
+         * While positioning widgets using this method is handy for scaffolding
+         * fluid UIs, performance wise it's best to ultimately do positioning
+         * using CSS, unless dynamic run-time dimensions calculation is required.
+         * 
+         * @param {string|Object} position - directives for positioning the instance's container element.
+         * @returns {Widget}
+         */
         position        : function (position) {
             var processed, style, has_fluid_side, exclude = [];
             this._wrap();
@@ -433,6 +457,9 @@
         /**
          * Placeholder for rendering logic.
          * 
+         * Signals:
+         * * `pre_render`: triggered at the beginning.
+         * 
          * @returns {Widget}
          */
         render          : function () {
@@ -442,6 +469,10 @@
         /**
          * Makes the instance's element appear in the UI.
          * By default this only calls {@see _setCloak()} which toggles `visibility`.
+         * 
+         * Signals:
+         * * `pre_appear`: triggered at the beginning.
+         * * `post_appear`: triggered at the end.
          * 
          * @returns {Widget}
          */
@@ -454,6 +485,9 @@
         /**
          * Makes the instance's element disappear from the UI.
          * 
+         * Signals:
+         * * `post_disappear`: triggered at the end.
+         * 
          * @returns {Widget}
          */
         disappear       : function () {
@@ -461,12 +495,26 @@
                 .notify(true, 'post_disappear');
             return this;
         },
-        // ### widget.bind
-        // @sign: bind()  
-        // @return: this
-        //
-        // Binds a `handler` on DOM event specified by `type` to the instance's element.  
-        // Sets `bound` to `true` at the end.  
+        /**
+         * Binds `handler` to an event specified by `type` on the
+         * instance's element.
+         * Inside the handler `this` refers the instance,
+         * and has the same parameters as an event handler of the
+         * used DOM module.
+         * 
+         * `type` may contain a query selector, space separated,
+         * for a descendant target element of `this.$element` for
+         * delegating the event from that target only.
+         * 
+         * `handler` can be a name of a method of the instance,
+         * a type of a signal that has a handler connected to it,
+         * or as a default a topic that will be published as an
+         * `app_event`.
+         * 
+         * @param {string} type - the type of the event to bind to.
+         * @param {function|string} handler - the event handler or a string that represents it.
+         * @returns {Widget}
+         */  
         //TODO: this overrides existing `type` with a new one - if this is not the required outcome implement using a list of handlers
         bind            : function (type, handler) {
             var _h = utils.isFunc(handler) ? handler : this._parseHandler(handler),
@@ -487,18 +535,25 @@
             this.bound = true;
             return this;
         },
-        // ### widget.unbind
-        // @sign: unbind(type, [handler])  
-        // @return: this
-        //
-        // Unbinds a DOM event specified by `type` from the instance's element.  
-        // If `handler` is supplied it will attempt to unbind this specific handler only from that `type` of event.  
-        // This will not remove that handler from being bound again with `bindAll` on next `wake`.  
-        unbind          : function (type, selecetor, handler) {
+        /**
+         * Unbinds a specific `handler` or all handlers from the
+         * event of type `type`, either delegated from a descendant
+         * or straight from `this.$element`.
+         * 
+         * `type` may also contain the `selector` argument in it,
+         * separated by whitespace from the type. In such case, 
+         * the second argument should be the `handler`.
+         * 
+         * @param {string} type - type of event to unbind.
+         * @param {string} [selector] - query selector for filtering a descendant in case of unbinding event delegation. 
+         * @param {function} handler - a reference to the handler function.
+         * @returns {Widget}
+         */
+        unbind          : function (type, selector, handler) {
             var bind_args = parseTypeAndTarget(type);
 
-            if ( bind_args.length === 1 || utils.isFunc(selecetor) )
-                bind_args.push(selecetor);
+            if ( bind_args.length === 1 || utils.isFunc(selector) )
+                bind_args.push(selector);
 
             if ( bind_args.length < 3 && utils.isFunc(handler) ) 
                 bind_args.push(handler);
