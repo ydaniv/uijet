@@ -167,13 +167,12 @@
          * Starts up the widget.
          * A *lifecycle method*, renders the widget, attaches all
          * DOM events to it and brings it into view.
+         * Every widget also wakes its contained widgets, so this triggers
+         * a recursive action that wakes the whole widgets branch downwards.
          * 
          * Takes an optional `context` parameter that will be passed to
          * {@see setContext()} if it is an `Object`, to `pre_wake` and
          * `post_wake` signals and to {@see wakeContained()}.
-         * 
-         * Every widget also wakes its contained widgets, so this triggers
-         * a recursive action that wakes the whole widgets branch downwards.
          * 
          * @param {*} [context] - possibly an `Object` containing properties to set on the `context`.
          * @returns {Promise} - resolved when all contained widgets successfully wake or rejected in case of error.
@@ -230,15 +229,19 @@
         wakeContained   : function (context) {
             return uijet.wakeContained(this.id, context);
         },
-        // ### widget.sleep
-        // @sign: sleep([no_transitions])  
-        // @return: this
-        //
-        // *Lifecycle method*
-        // Stops a started widget.  
-        // This is the opposite of `wake`. Does only what it takes for this widget to not appear
-        // and stay as much out of the way as needed (unbind, events, turn invisible, etc.).  
-        // Takes an optional flag argument which if `true` tells `disappear` not to perform animations.
+        /**
+         * Stops a started widget.
+         * A *lifecycle method*, hides the widget and removes all
+         * DOM events from it.
+         * Every contained widget will also be stopped and this
+         * will continue trickling down recursively.
+         * 
+         * Related options:
+         * * `destroy_on_sleep`: if `true` this widget will self destruct when put to sleep.
+         * 
+         * @param {boolean} [no_transitions] - whether to use a transition, if specified, for hiding. 
+         * @returns {Widget}
+         */
         sleep           : function (no_transitions) {
             // continue only if we're awake
             if ( this.awake ) {
@@ -258,12 +261,11 @@
             }
             return this._finally();
         },
-        // ### widget.sleepContained
-        // @sign: sleepContained()  
-        // @return: this
-        //
-        // Stop all contained widgets.  
-        // Hooks up into `uijet.sleepContained`.
+        /**
+         * Stops contained widgets.
+         * 
+         * @returns {Widget}
+         */
         sleepContained  : function () {
             uijet.sleepContained(this.id);
             return this;
@@ -428,21 +430,11 @@
             }
             return this;
         },
-        // # -NOT IMPLEMENTED-
-        // ### widget.generate
-        // @sign: generate()  
-        // @return: html
-        //
-        // A hook to the template engine, used by uijet, to render the template and return the HTML.
-        generate        : function () {
-            throw new Error('generate not implemented');
-        },
-        // ### widget.render
-        // @sign: render()  
-        // @return: this
-        //
-        // Renders the instance.  
-        // In its base form this it's just a placeholder.
+        /**
+         * Placeholder for rendering logic.
+         * 
+         * @returns {Widget}
+         */
         render          : function () {
             this.notify(true, 'pre_render');
             return this;
