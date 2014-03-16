@@ -53,6 +53,8 @@
         /**
          * Utility for deferring a function by adding it to the process queue.
          * 
+         * @method
+         * @memberOf uijet.utils
          * @param {function} f - the function to defer.
          */
         async = _window.setImmediate ?
@@ -61,6 +63,7 @@
         /**
          * Searches for a prefixed name of `name` inside `obj`.
          *
+         * @memberOf uijet.utils
          * @param {string} name - Name to search for.
          * @param {object} obj - The source object search in.
          * @returns {string|null} - The prefixed property or `null` if not found.
@@ -102,6 +105,8 @@
          * Checks if given argument is an `Array`.
          * Uses {@see Array.isArray} by default if it exists.
          *
+         * @method
+         * @memberOf uijet.utils
          * @param {*} obj - target object to check.
          * @returns {boolean} - whether `obj` is an `Array`.
          */
@@ -126,6 +131,7 @@
     /**
      * Checks if given argument is an `Object`.
      *
+     * @memberOf uijet.utils
      * @param {*} obj - target object to check.
      * @returns {boolean} - whether `obj` is an `Object`.
      */
@@ -135,6 +141,7 @@
     /**
      * Checks if argument `obj` is an `Function`.
      *
+     * @memberOf uijet.utils
      * @param {*} obj - target object to check.
      * @returns {boolean} - whether `obj` is an `Function`.
      */
@@ -155,6 +162,7 @@
      * If an array-like object is given then converts it into a plain `Array`.
      * If the argument supplied is `undefined` or no arguments are supplied then returns `undefined`.
      *
+     * @memberOf uijet.utils
      * @param {*} obj - target object to check.
      * @returns {Array|undefined} - an `Array` copy of `obj` or `undefined`.
      */
@@ -184,6 +192,7 @@
      * 
      * The template format is `{param}` with no whitespace allowed inside.
      * 
+     * @memberOf uijet.utils
      * @param template {string} - template string to interpolate on.
      * @param {Object|string[]} [data] - data context object to use as lookup for interpolation.
      * @returns {string}
@@ -203,6 +212,7 @@
      * If the element is a decendent of a window object that isn't this global namespace
      * you can supply that window object as fourth argument.
      *
+     * @memberOf uijet.utils
      * @param {HTMLElement} el - the element to use.
      * @param {string|string[]} [prop] - the property to fetch or list of properties.
      * @param {string} [pseudo] - a name of a pseudo-element of that element to get its style.
@@ -229,6 +239,7 @@
      *
      * Any additional parameters after `ctx` are sent as arguments to call of `arg`.
      * 
+     * @memberOf uijet.utils
      * @param {*} arg - argument to check if callable and return its call or itself if not.
      * @param {Object} [ctx] - context object to use for the call.
      * @returns {*} - the argument or its `.call()`'s product.
@@ -240,6 +251,7 @@
      * Parses and formats a URL into an object containing `method`
      * and `path` for making a proper RESTful request.
      * 
+     * @memberOf uijet.utils
      * @param {string|Object} url - The URL to use for the request or an `Object` in the form of `{ method: <method>, path: <path>}`.
      * @param {Object} [context] - context object to use for formatting the URL.
      * @returns {{method: (string), path: (string)}}
@@ -269,6 +281,7 @@
      * Normalizes `obj` into a wrapped DOM element object via the used DOM module,
      * if it's either a string or an HTMLElement.
      * 
+     * @memberOf uijet.utils
      * @param {string|HTMLElement} obj - either a query string or an HTMLElement to wrap.
      * @returns {*} - the wrapped object or simply `obj`.
      */
@@ -286,6 +299,7 @@
      * all subsequent arguments are source objects to copy from.
      * Objects are copied to target from left to right.
      *
+     * @memberOf uijet.utils
      * @param {Object|boolean} target - the target object or `true` for deep copying.
      * @param {...Object} [source] - the target object if deep copying or a source object(s).
      * @returns {Object} - the target object.
@@ -330,6 +344,7 @@
      * All subsequent arguments are source objects to copy from.
      * Objects are copied to target from left to right.
      *
+     * @memberOf uijet.utils
      * @param {Object} target - the target object.
      * @param {...Object} [source] - the source object(s).
      * @returns {Object} - the target object.
@@ -365,6 +380,7 @@
      * Shallow copy properties while making sure functions are bound to `context`, {@see extend}.
      * Usually used in {@see uijet.use}.
      *
+     * @memberOf uijet.utils
      * @param {Object} target - target object to extend.
      * @param {Object} source - source object to copy from.
      * @param {Object} [context] - optional context object to bind `Function` properties to.
@@ -413,6 +429,7 @@
      *
      * @constructor
      * @class Base
+     * @memberOf uijet
      */
     function Base () {
         this.signals_cache = {};
@@ -458,9 +475,11 @@
         /**
          * Registers a handler for the given type.
          *
+         * @memberOf uijet.Base
+         * @instance
          * @param {string} topic - the signal's type to register.
          * @param {function} handler - the signal's handler to register.
-         * @returns this
+         * @returns {uijet.Base}
          */
         listen          : function (topic, handler) {
             this.signals_cache[topic] =  this._parseHandler(handler);
@@ -470,8 +489,10 @@
          * Removes a handler of the given type.
          * If no `topic` is given then removes all handlers.
          *
+         * @memberOf uijet.Base
+         * @instance
          * @param {string} [topic] - the signal's type to remove.
-         * @returns this
+         * @returns {uijet.Base}
          */
         unlisten        : function (topic) {
             if ( ! topic ) {
@@ -492,6 +513,8 @@
          * signal is triggered *once* during current lifecycle stage.
          * {@see Base} does not define a `_finally` method that is used to clean up these "once" states.
          *
+         * @memberOf uijet.Base
+         * @instance
          * @param {boolean} [once] - optional `true` flag to make sure this signal is notified once per lifecycle stage.
          * @param {string} topic - the name of the signal to notify.
          * @param {...*} [args] - arguments to hand over to the signal's handler.
@@ -520,9 +543,11 @@
          * If `handler` is a `String` and ends with a '+' then the `arguments` supplied to this 
          * handler will be passed to that method/signal handler.
          *
+         * @memberOf uijet.Base
+         * @instance
          * @param {string} topic - the type of the handler to register.
          * @param {function|string} handler - the handler to register or a name of a method of this instance or a signal's handler to use as handler.
-         * @returns this
+         * @returns {uijet.Base}
          */
         //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
         subscribe       : function (topic, handler) {
@@ -536,9 +561,11 @@
          * Removes a handler from the registered events.
          * If `handler` is not supplied then the handler that is currently registered for the given `topic` is used.
          *
+         * @memberOf uijet.Base
+         * @instance
          * @param {string} topic - the event type to remove from registry.
          * @param {function} [handler] - the handler to remove from the registry.
-         * @returns this
+         * @returns {uijet.Base}
          */
         unsubscribe     : function (topic, handler) {
             if ( ! handler && this.app_events ) {
@@ -553,9 +580,11 @@
          * If `data` is supplied it is handed over to the handler as an argument.
          * `topic` is always prefixed with `this.id + '.'`.
          *
+         * @memberOf uijet.Base
+         * @instance
          * @param {string} topic - the type of the event to trigger.
          * @param {*} [data] - argument to pass to the event's handler as data.
-         * @returns this
+         * @returns {uijet.Base}
          */
         publish         : function (topic, data) {
             uijet.publish(this.id + '.' + topic, data);
@@ -573,6 +602,8 @@
          * * If `handler` ends with `'+'` then it will be invoked with the arguments sent to it as its parameters.
          * * If `handler` starts with a `'-'` then it will be published as global event with the `<id>.` prefix.
          * 
+         * @memberOf uijet.Base
+         * @instance
          * @param {string|function} handler - a handler or a string representation of a handler.
          * @returns {function} - the parsed handler.
          * @private
@@ -682,6 +713,7 @@
      * optionally inheriting the prototype/constructor `_extends`.
      * Returns the created class constructor.
      * 
+     * @memberOf uijet.utils
      * @param {function|Object} proto - a constructor or an object to use as the top level prototype.
      * @param {function|Object} [_extends] - a constructor of a class to inherit from or simply an object to add to the prototype chain.
      * @returns {function} - the new created class constructor.
@@ -715,6 +747,7 @@
      * If there's no match, prefixed or not, returns `null`.
      * Can also be used to check for the support of that CSS feature in current user-agent.
      *
+     * @memberOf uijet.utils
      * @param {string} prop - an un-prefixed name of a style property.
      * @returns {string|null} prefixed - the matching name of this property for the current user-agent.
      */
@@ -759,6 +792,7 @@
     /**
      * Checks if the first element contains the second element.
      *
+     * @memberOf uijet.utils
      * @param {HTMLElement} a - container element.
      * @param {HTMLElement} b - contained element.
      * @returns {boolean} contained - whether container contains contained.
@@ -773,6 +807,7 @@
      *
      * __note__: if `child` is not child of `parent` then the returned result will show only `0`s.
      *
+     * @memberOf uijet.utils
      * @param {HTMLElement} child - child element to get its offset.
      * @param {HTMLElement} parent - parent element to use as relative offset parent.
      * @returns {{x: number, y: number}} offset - an object with `x` and `y` keys and `Number`s as values representing offset in pixels.
@@ -803,21 +838,58 @@
          * Detected browser features
          * 
          * @namespace support
+         * @memberOf uijet
          */
         support             : {
+            /**
+             * Whether this platform supports touch.
+             * 
+             * @memberof uijet.support
+             */
             touch           : has_touch,
             /**
              * Detected browser features
-             *
+             * 
+             * @memberof uijet.support
              * @namespace click_events
              */
             click_events    : has_touch ?
                 // can be replaced with gestures (like 'tap') if handled by other library
+                /**
+                 * Event types in touch supported platforms.
+                 * 
+                 * @memberOf click_events
+                 */
                 { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
+                /**
+                 * Event types in platforms where touch is not supported.
+                 * 
+                 * @memberOf click_events
+                 */
                 { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' },
+            /**
+             * Whether this platform supports transforms.
+             * 
+             * @memberof uijet.support
+             */
             transform       : !!getStyleProperty('transform'),
+            /**
+             * Whether this platform supports transitions.
+             * 
+             * @memberof uijet.support
+             */
             transition      : !!getStyleProperty('transition'),
+            /**
+             * Whether this platform supports 3D transforms.
+             * 
+             * @memberof uijet.support
+             */
             '3d'            : !!getStyleProperty('perspective'),
+            /**
+             * Holds the name of the `trasitionend` event in this platform.
+             * 
+             * @memberof uijet.support
+             */
             transitionend   : (function (name) {
                 return name ? ({
                     transition      : 'transitionend',
@@ -833,10 +905,11 @@
          * or `uijet` by default.
          * If `context` is supplied then uses it to bind all the properties of `props` to it.
          *
-         * @param {Object} props     - the properties to mix-in to the host
-         * @param {Object} [host]    - host object to add these properties to, can be skipped by passing `null`
+         * @memberof uijet
+         * @param {Object} props - the properties to mix-in to the host
+         * @param {Object} [host] - host object to add these properties to, can be skipped by passing `null`
          * @param {Object} [context] - a context object to bind the mixed-in properties to
-         * @returns this
+         * @returns {uijet}
          */
         use                 : function (props, host, context) {
             // get the host object or use `uijet`
@@ -857,10 +930,11 @@
          * Defines a new widget class.
          * This class can later be instantiated in the UI or re-used as a dependency.
          *
+         * @memberOf uijet
          * @param {string} type - this widget's type.
          * @param {Object} props - properties defined by this widget.
          * @param {string|Array|Object} [deps] - dependencies for this widget.
-         * @returns this
+         * @returns {uijet}
          */
         Widget              : function (type, props, deps) {
             var _deps = normalizeDeps(deps);
@@ -898,9 +972,10 @@
         /**
          * Gets a mixin by name or defines a new mixin for widgets.
          *
-         * @param {string} name    - name of the mixin to get/define
+         * @memberOf uijet
+         * @param {string} name - name of the mixin to get/define
          * @param {Object} [props] - properties defined by this mixin
-         * @returns this|mixin
+         * @returns {uijet|Object}
          */
         Mixin               : function (name, props) {
             if ( arguments.length === 1 ) {
@@ -917,9 +992,10 @@
          * * `string`: Gets an adapter by this name
          * * `Object`: Defines a new adapter that will be added at the top of every widget and overrides everything else
          *
+         * @memberOf uijet
          * @param {string|Object} name - a name of an existing or a new adapter or properties for a `TopAdapter` definition.
          * @param {Object} [props] - properties of the new adapter.
-         * @returns this|adapter
+         * @returns {uijet|Object}
          */
         Adapter             : function (name, props) {
             if ( arguments.length === 1 ) {
@@ -940,9 +1016,10 @@
          *
          * __note__: the config of this declaration is copied to every generated instance so make sure you don't leak references.
          *
+         * @memberOf uijet
          * @param {string} name - identifier for this widget factory.
          * @param {Object} declaration - a viable object for {@see uijet.declare()}.
-         * @returns this
+         * @returns {uijet}
          */
         Factory             : function (name, declaration) {
             widget_factories[name] = function (config) {
@@ -966,10 +1043,11 @@
          * arguments for calling @see newResource, e.g: the second optional `options` argument for
          * instantiating a Backbone.js resource.
          *
+         * @memberOf uijet
          * @param {string} name - identifier for that resource class.
          * @param {Object} [resource] - this resource's constructor.
          * @param {boolean|Object|Array} [initial] - initial data for the generated instance or `true` to reset the registry of `name` to be instance `resource`.
-         * @returns this|resource_instance
+         * @returns {uijet|Object}
          */
         Resource            : function (name, resource, initial) {
             if ( arguments.length === 1 ) {
@@ -990,8 +1068,9 @@
          * This also triggers the import and injection of all required modules 
          * that haven't been loaded yet.
          * 
+         * @memberOf uijet
          * @param {Object} [options] - configuration object for `uijet`.
-         * @returns this
+         * @returns {uijet}
          * 
          * Valid options:
          * 
@@ -1083,10 +1162,11 @@
         /**
          * Caches a definition of a widget in uijet.
          * 
-         * @param {string} _name   - identifier for the widget.
-         * @param {Object} _props  - the widget's prototype.
+         * @memberOf uijet
+         * @param {string} _name - identifier for the widget.
+         * @param {Object} _props - the widget's prototype.
          * @param {Object} [_deps] - dependencies for this widget (widgets and mixins).
-         * @returns this
+         * @returns {uijet}
          * @private
          */
         _define             : function (_name, _props, _deps) {
@@ -1100,7 +1180,8 @@
          * Generates a widget class on top of {@see BaseWidget}.
          * Assumes all given dependencies (mixins and widgets) are already loaded
          * and registered with `uijet`.
-         * 
+         *
+         * @memberOf uijet 
          * @param {Object} _props - this widget's prototype.
          * @param {string|string[]} [_mixins] - mixin dependencies.
          * @param {string|string[]} [_widgets] - widget dependencies.
@@ -1167,6 +1248,7 @@
         /**
          * Performs all the work for {@see uijet.start()}.
          * 
+         * @memberOf uijet
          * @param {Object} widget - a widget declaration.
          * @param {boolean} [skip_import] - whether to skip module import. Defaults to falsy.
          * @returns {Promise|Object} promise|this - a promise object if not skipping import, otherwise `this`.
@@ -1263,8 +1345,9 @@
          * registered as a top level widget. This, for example, means that, unless configured
          * not to, once uijet starts this widget will be awaken automatically.
          * 
+         * @memberOf uijet
          * @param {Object} widget - a widget's instance to register.
-         * @returns this
+         * @returns {uijet}
          */
         register            : function (widget) {
             // get the parent element
@@ -1367,8 +1450,9 @@
          * Removes a widget from the uijet sandbox registry.
          * This is usually triggered by a widget when its {@see BaseWidget.destroy()} method is called.
          * 
+         * @memberOf uijet
          * @param {Object} widget - a widget's instance to unregister.
-         * @returns this
+         * @returns {uijet}
          */
         unregister          : function (widget) {
             var _id = widget.id, registration, _parent_contained;
@@ -1404,8 +1488,9 @@
          * 
          * __note__: For valid instance options see related module.
          * 
+         * @memberOf uijet
          * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
-         * @returns this
+         * @returns {uijet}
          */
         declare             : function (declarations) {
             if ( isObj(declarations) ) {
@@ -1427,6 +1512,7 @@
          * Usually you should _not_ have to specify it at all, unless you know what you're doing
          * and want to optimize this call a bit.
          *
+         * @memberOf uijet
          * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
          * @param {boolean} [skip_import] - whether to skip module import. Defaults to falsy.
          * @returns {Promise|Object} promise|this - a promise object if not skipping import, otherwise `this`.
@@ -1458,6 +1544,7 @@
          * Extracts widgets' dependency modules to be imported from a list of 
          * standard widget instance declarations ( see {@see uijet.declare()} ).
          * 
+         * @memberOf uijet
          * @param {Object[]} declarations - list of widget declarations to extract dependencies from.
          * @returns {{widgets: string[], mixins: string[], adapters: string[]}}
          * @private
@@ -1495,6 +1582,7 @@
          * If there's nothing to load or AMD isn't in use it returns the call to `callback` OR `uijet`.
          * Returns either the result of calling `callback` or simply `uijet`.
          * 
+         * @memberOf uijet
          * @param {Object} modules - a map of module paths to list of module/file names to load.
          * @param {function} [callback] - a callback to run once the modules are loaded.
          * @returns {*}
@@ -1530,6 +1618,7 @@
          * __note__: if using your app is contained inside `View` widgets, then you probably
          * want to set `options.dont_wake = true` so they will be awaken by the router.
          * 
+         * @memberOf uijet
          * @returns {uijet}
          */
         startup             : function () {
@@ -1555,6 +1644,7 @@
          * If `context` is supplied it is passed to each child widget's `wake()`.
          * Returns an array of promises, each returned from a child's `wake()`.
          * 
+         * @memberOf uijet
          * @param {string} id - id of the widget we want its children to wake.
          * @param {Object} [context] - context provided to the `wake()` call of this widget.
          * @returns {Promise[]} - promises returned from children's `wake()` call.
@@ -1589,6 +1679,7 @@
         /**
          * Destroys all the contained child widgets of widget with matching `id`.
          * 
+         * @memberOf uijet
          * @param {string} id - id of the widget we want its children to call `destroy()`.
          * @returns {uijet}
          */
@@ -1615,6 +1706,7 @@
          * Takes into account the position and size set in sibling widgets' options,
          * to create a fluid UI.
          * 
+         * @memberOf uijet
          * @param {Object} widget - the widget instance to position.
          * @param {string[]} [exclude] - list of style property names to exclude from setting.
          */
@@ -1694,6 +1786,7 @@
         /**
          * This method will be deprecated and moved into Layered mixin.
          * 
+         * @memberOf uijet
          * @param {Object} widget - the widget to switch to.
          * @returns {uijet}
          * @private
@@ -1733,6 +1826,7 @@
          * 
          * Also supports splat params using the prefix `'*'`.
          * 
+         * @memberOf uijet
          * @param {string} route - The route string to analyze.
          * @param {*} [args_array] - The list of arguments sent to a route's callback.
          * @returns {Object} Context object generated for the route.
@@ -1777,6 +1871,7 @@
      * Set a namespace on uijet for utility functions.
      * 
      * @namespace utils
+     * @memberOf uijet
      */
     uijet.utils = {
         async           : async,
@@ -1806,6 +1901,7 @@
          * There's also a chance `array` could be another mixin's name, in which case
          * it will be wrapped in an array and the operation is repeated.
          * 
+         * @memberOf uijet.utils
          * @param {string[]|string|undefined} array - The list of mixin names.
          * @param {string} name - The name of the mixin to add.
          * @param {number} [position]- The index in which to place `name` in `array` or simply at its end.
