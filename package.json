@@ -1,4 +1,24 @@
 {
-    "amd"   : {},
-    "volo"  : {}
+  "name": "uijet",
+  "description": "Killer UI for web-apps.",
+  "version": "0.0.34",
+  "main": "src/uijet.js",
+  "scripts": {
+    "test": "spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://ydaniv@github.com/ydaniv/uijet.git"
+  },
+  "keywords": [
+    "ui"
+  ],
+  "author": "Yehonatan Daniv",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/ydaniv/uijet/issues"
+  },
+  "homepage": "https://github.com/ydaniv/uijet",
+  "amd": {},
+  "volo": {}
 }
