@@ -1,0 +1,23 @@
+{
+    "source": {
+        "include": ["src/uijet.js"]
+    },
+    "tags": {
+        "allowUnknownTags": true
+    },
+    "opts": {
+        "template": "node_modules/jaguarjs-jsdoc",
+        "destination": "./doc/",
+        "verbose": true
+    },
+    "templates": {
+        "cleverLinks"   : true,
+        "monospaceLinks": true,
+        "openGraph": {},
+        "meta": {}
+    },
+    "plugins": ["plugins/markdown"],
+    "markdown": {
+        "parser": "gfm"
+    }
+}

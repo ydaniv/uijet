@@ -20,5 +20,12 @@
   },
   "homepage": "https://github.com/ydaniv/uijet",
   "amd": {},
-  "volo": {}
+  "volo": {},
+  "devDependencies": {
+    "jsdoc": "~3.3.0-alpha4",
+    "grunt": "~0.4.4",
+    "grunt-jsdoc": "~0.5.4",
+    "ink-docstrap": "~0.3.0-0",
+    "jaguarjs-jsdoc": "git://github.com/davidshimjs/jaguarjs-jsdoc"
+  }
 }
