@@ -8,26 +8,39 @@
         root.uijet.BaseWidget = factory(root.uijet, root);
     }
 }(this, function (uijet, _window) {
+    /**
+     * The base widget class.
+     * 
+     * @exports Widget
+     * @memberOf uijet
+     */
     var Object = _window.Object,
         // cache the utilities namespace
         utils = uijet.utils,
         /**
-         * Constructor for BaseWidget
+         * Constructor for the base widget class.
          * 
          * @constructor
-         * @class BaseWidget
+         * @class Widget
+         * @alias BaseWidget
+         * @extends uijet.Base
          */
         Widget = function () {
             /**
              * The `context` object of the widget instance.
              * 
-             * @type {{}}
+             * @memberOf BaseWidget
+             * @name context
+             * @type {Object}
+             * @inner
              */
             var context = {};
 
             /**
              * Get the `context` object or a specific property in it.
              * 
+             * @memberOf BaseWidget
+             * @instance
              * @param {string} [key] - string for getting a specific property of the data `context` object.
              * @returns {*}
              * @private
@@ -39,9 +52,11 @@
              * Set a specific property in the `context` object to a given `value`, or
              * extend it with a given object.
              * 
+             * @memberOf BaseWidget
+             * @instance
              * @param {Object|string} ctx - the object to extend the `context` with, or key for a property to set.
              * @param {*} [value] - a value to set on `context` if the `ctx` argument is not an object.
-             * @returns {BaseWidget}
+             * @returns {Widget}
              * @private
              */
             this._setContext = function (ctx, value) {
@@ -78,7 +93,7 @@
         };
 
     /**
-     * Public, inheritable methods of {@see Widget} class.
+     * Public, inheritable methods of {@link Widget} class.
      */
     Widget.prototype = {
         constructor     : Widget,
@@ -94,6 +109,8 @@
          * Signals:
          * * `post_init`: triggered at the end of this method.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {Object} options - config object for the widget.
          * @returns {Widget}
          */
@@ -126,6 +143,8 @@
          * *Note*: It is recommended to call `this._super()` first thing
          * when overriding this method, to make sure the widget is in the sandbox.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         register        : function () {
@@ -138,6 +157,8 @@
         /**
          * Unregisters the widget from uijet's sandbox.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         unregister      : function () {
@@ -149,6 +170,8 @@
          * Gets the `context` object of the instance or the value
          * of a specific property.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {string} [key] - a name of a property in the `context` object.
          * @returns {*} - the value of the `key` or the `context` object.
          */
@@ -159,6 +182,8 @@
          * Sets properties on the `context` object.
          * Either using a map of properties or key and a value.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {Object|string} ctx - a map of properties to set on the `context` or a name of a property to set.
          * @param [value] - if `ctx` is a string representing a key the this will be its value.
          * @returns {Widget}
@@ -174,14 +199,16 @@
          * a recursive action that wakes the whole widgets branch downwards.
          * 
          * Takes an optional `context` parameter that will be passed to
-         * {@see setContext()} if it is an `Object`, to `pre_wake` and
-         * `post_wake` signals and to {@see wakeContained()}.
+         * {@link BaseWidget#setContext} if it is an `Object`, to `pre_wake` and
+         * `post_wake` signals and to {@link BaseWidget#wakeContained}.
          * 
          * Signals:
          * * `pre_wake`: triggered before waking of contained widgets, takes `wake()`'s `context` param as argument.
          * * `post_wake`: triggered at the end of a successful wake, takes `wake()`'s `context` param as argument.
-         * * `wake_failed`: triggered at the end of a failed wake, takes all arguments of the rejected {@see wakeContained()}.
+         * * `wake_failed`: triggered at the end of a failed wake, takes all arguments of the rejected {@link BaseWidget#wakeContained}.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {*} [context] - possibly an `Object` containing properties to set on the `context`.
          * @returns {Promise} - resolved when all contained widgets successfully wake or rejected in case of error.
          */
@@ -228,9 +255,11 @@
         /**
          * Wakes up contained widgets.
          * 
-         * Takes an optional `context` argument that is passed to the {@see wake()}
+         * Takes an optional `context` argument that is passed to the {@link BaseWidget#wake}
          * calls of the contained widgets.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {*} [context] - optional context for contained widgets.
          * @returns {Promise[]}
          */
@@ -251,6 +280,8 @@
          * * `pre_sleep`: triggered at the beginning of this instance is awake.
          * * `post_sleep`: triggered at the end of this instance is awake.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {boolean} [no_transitions] - whether to use a transition, if specified, for hiding. 
          * @returns {Widget}
          */
@@ -276,6 +307,8 @@
         /**
          * Stops contained widgets.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         sleepContained  : function () {
@@ -290,6 +323,8 @@
          * Signals:
          * * `pre_destroy`: triggered at the beginning.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         destroy         : function () {
@@ -307,8 +342,10 @@
             return this;
         },
         /**
-         * Cleans up all contained widgets using {@see destroy()}.
+         * Cleans up all contained widgets using {@link BaseWidget#destroy}.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         destroyContained: function () {
@@ -321,9 +358,11 @@
          * Related options:
          * * `type_class`: classes that define the type of the widget's component and are set on the elements `class` attribute.
          * * `extra_class`: space separated class names to be added to the element's `class` attribute.
-         * * `position`: `string|Object` to be passed to {@see position()}.
-         * * `style`: `string|Array|Object` to be passed to {@see style()}.
+         * * `position`: `string|Object` to be passed to {@link BaseWidget#position}.
+         * * `style`: `string|Array|Object` to be passed to {@link BaseWidget#style}.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         prepareElement  : function () {
@@ -345,12 +384,17 @@
         },
         /**
          * Gets or sets the style of the instance's top container (`this.$wrapper`).
-         * As a getter this is delegated to {@see utils.getStyle()}.
+         * As a getter this is delegated to {@link uijet.utils#getStyle}.
          * As a setter this is delegated to the DOM module's `css()` method. 
          * 
-         * @param {string|Array|Object} [style] - 
-         * @param {string|number|function} [value] - 
-         * @returns {string|string[]|CSSStyleDeclaration|Widget} - 
+         * If no arguments are supplied it returns the entire computed style object of
+         * the top container of the instance's element.
+         * 
+         * @memberOf BaseWidget
+         * @instance
+         * @param {string|Array|Object} [style] - an attribute name, or names to get, or a map of attributes and values to set.
+         * @param {string|number|function} [value] - a value to set for the given style attribute in `style`.
+         * @returns {string|string[]|CSSStyleDeclaration|Widget} - returns the result of {@link uijet.utils#getStyle} or `this`.
          */
         style           : function (style, value) {
             if ( ! arguments.length || (value === void 0 && typeof style == 'string') || utils.isArr(style) ) {
@@ -367,14 +411,16 @@
          * * `'center'`: centers the widget.
          * * `'fluid'`: stretches the widget according to its container and siblings.
          * * other `string`: parses `position` and positions the widget according to its container and siblings.
-         * * `Object`: passes `position` to {@see style()}.
+         * * `Object`: passes `position` to {@link BaseWidget#style}.
          * 
-         * This method will always attempt to {@see _wrap()} the instance's element.
+         * This method will always attempt to {@link BaseWidget#_wrap} the instance's element.
          * 
          * While positioning widgets using this method is handy for scaffolding
          * fluid UIs, performance wise it's best to ultimately do positioning
          * using CSS, unless dynamic run-time dimensions calculation is required.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {string|Object} position - directives for positioning the instance's container element.
          * @returns {Widget}
          */
@@ -460,6 +506,8 @@
          * Signals:
          * * `pre_render`: triggered at the beginning.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         render          : function () {
@@ -468,12 +516,14 @@
         },
         /**
          * Makes the instance's element appear in the UI.
-         * By default this only calls {@see _setCloak()} which toggles `visibility`.
+         * By default this only calls {@link BaseWidget#_setCloak} which toggles `visibility`.
          * 
          * Signals:
          * * `pre_appear`: triggered at the beginning.
          * * `post_appear`: triggered at the end.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         appear          : function () {
@@ -488,6 +538,8 @@
          * Signals:
          * * `post_disappear`: triggered at the end.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         disappear       : function () {
@@ -511,6 +563,8 @@
          * or as a default a topic that will be published as an
          * `app_event`.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {string} type - the type of the event to bind to.
          * @param {function|string} handler - the event handler or a string that represents it.
          * @returns {Widget}
@@ -544,6 +598,8 @@
          * separated by whitespace from the type. In such case, 
          * the second argument should be the `handler`.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {string} type - type of event to unbind.
          * @param {string} [selector] - query selector for filtering a descendant in case of unbinding event delegation. 
          * @param {function} handler - a reference to the handler function.
@@ -564,8 +620,10 @@
         },
         /**
          * Binds all DOM events that were initially in the instance's `config`
-         * or were later attached using {@see bind()}.
+         * or were later attached using {@link BaseWidget#bind}.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         bindAll         : function () {
@@ -585,8 +643,10 @@
         },
         /**
          * Removes all attached DOM events that were initially in the
-         * instance's `config` or were later attached using {@see bind()}.
+         * instance's `config` or were later attached using {@link BaseWidget#bind}.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         unbindAll       : function () {
@@ -606,6 +666,11 @@
          * inside the instance's element.
          * It can also be a function that returns a wrapped element.
          * 
+         * Related options:
+         * * `click_event`: space separated event types to use for triggering selection. Defaults to {@link uijet.support.click_events.full}.
+         * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {function|string|HTMLElement} target - the target element to find or a function returning one.
          * @returns {Widget}
          */
@@ -620,6 +685,8 @@
          * Sets `this.options` based on class's defaults and instance's
          * declaration.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {Object} options - options set in instance declaration's config. 
          * @returns {Widget}
          */
@@ -636,11 +703,13 @@
          * Perform initialization tasks based on `this.options`.
          * 
          * Related options:
-         * * `signals`: {@see listen()}s to each of the specified events.
-         * * `dom_events`: prepares all specified DOM events for {@see bind()}ing.
-         * * `app_events`: {@see subscribe}s to each of the specified events.
-         * * `wake_on_startup`: subscribes the instance to the `startup` event with a {@see wake()} call.
+         * * `signals`: {@link BaseWidget#listen}s to each of the specified events.
+         * * `dom_events`: prepares all specified DOM events for {@link BaseWidget#bind}ing.
+         * * `app_events`: {@link BaseWidget#subscribe}s to each of the specified events.
+         * * `wake_on_startup`: subscribes the instance to the `startup` event with a {@link BaseWidget#wake} call.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */
         setInitOptions  : function () {
@@ -680,11 +749,13 @@
          * Sets `this.id`.
          * 
          * First attempts to check `options`, then falls back to the element's `id` attribute,
-         * then to calling {@see _generateId()}.
+         * then to calling {@link BaseWidget#_generateId}.
          * 
          * Related options:
          * * `id`: the id to use.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          */  
         setId           : function () {
@@ -700,6 +771,8 @@
          * Related options:
          * * `element`: the element to use as either query selector, element object, wrapped element, or a function returning one of the above.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {string|HTMLElement|HTMLElement[]} element - query selector, element, or wrapped element to use as the instance's element.
          * @returns {Widget}
          */  
@@ -717,6 +790,8 @@
          * as the `reinsert` parameter. In such case the removed element
          * will be returned.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {boolean} [reinsert] - set to `true` if removed element is to be reinserted back to the DOM.
          * @returns {Widget|HtmlElement} - the removed element if `reinsert` is `true`, otherwise `this`.
          */
@@ -728,6 +803,8 @@
         /**
          * Generates an id for the instance.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {string} - the generated id.
          * @private
          */
@@ -746,6 +823,8 @@
          * * `wrapper_class`: extra class names to be set on the container element.
          * * `wrapper_tag`: a name of a tag to use for the container element. Defaults to `div`.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          * @private
          */
@@ -769,6 +848,8 @@
         /**
          * Centers the widget, vertically and horizontally.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          * @private
          */
@@ -791,6 +872,8 @@
          * * `horizontal`: controls size calculation - height of a single child element and width of all children 
          * when `true`, or vise versa if falsy.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {{width: number, height: number}}
          * @private
          */
@@ -830,6 +913,8 @@
          * 
          * This is used to minimize paints while the widget is asleep.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @param {boolean} [cloak] - whether to cloak the element.
          * @returns {Widget}
          * @private
@@ -841,9 +926,11 @@
         /**
          * Saves reference to all child elements prior to any rendering.
          * 
-         * This is done on {@see init()} and used to keep elements that
+         * This is done on {@link BaseWidget#init} and used to keep elements that
          * should not be touched when rendering the contents of the widget.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          * @private
          */
@@ -853,12 +940,14 @@
         },
         /**
          * Removes all elements created by rendering the widget,
-         * e.g. results from calling {@see render()}, meaning all that's *not* in
-         * `$original_children`, set by {@see _saveOriginal()} on {@see init()}.
+         * e.g. results from calling {@link BaseWidget#render}, meaning all that's *not* in
+         * `$original_children`, set by {@link BaseWidget#_saveOriginal} on {@link BaseWidget#init}.
          * 
          * Related options:
          * * `extend_rendered`: set to `true` if you wish to keep the content with every render.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          * @private
          */
@@ -880,6 +969,8 @@
          * If you wish to forcibly allow signals, that are triggered once per
          * lifecycle stage - e.g. `pre_render`, to be triggerable again call this method.
          * 
+         * @memberOf BaseWidget
+         * @instance
          * @returns {Widget}
          * @private
          */
@@ -891,5 +982,8 @@
         }
     };
 
+    /**
+     * Export the base {@link Widget} constructor.
+     */
     return uijet.Base.derive(Widget);
 }));

@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
@@ -11,6 +10,15 @@
         factory(uijet);
     }
 }(function (uijet) {
+    /**
+     * Pane widget class.
+     * 
+     * This is the most basic form of component.
+     * It's basically a semantic wrapper on top of {@link BaseWidget}.
+     * 
+     * @class Pane
+     * @mixes uijet.BaseWidget
+     */
     uijet.Widget('Pane', {
         options : {
             type_class  : 'uijet_pane'
