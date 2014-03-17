@@ -15,7 +15,7 @@
     }
 }(this, function (_window) {
     /*
-     * UIjet's globals and some local caching of stuff from global namespace
+     * uijet's globals and some local caching of stuff from global namespace
      */
     var Function = _window.Function,
         Object = _window.Object,
@@ -439,6 +439,7 @@
     /**
      * Extends this class' prototype with another object's properties.
      *
+     * @memberOf Base
      * @static
      * @param {Object} props - properties to deep copy to the `prototype`.
      * @returns {Object} - the prototype of this class.
@@ -449,6 +450,7 @@
     /**
      * Creates a new class that is composed of the given class or Object and inherits this class.
      *
+     * @memberOf Base
      * @static
      * @param {Object|function} child - the child class or Object that will be copied and used to inherit this class.
      * @returns {function} - constructor of the new created class.
@@ -459,6 +461,7 @@
     /**
      * Creates a new class that is composed of this class and will inherit the given class or Object.
      *
+     * @memberOf Base
      * @static
      * @param {Object} parent - the parent class or Object that will be copied and used as the parent of this class.
      * @returns {function} - constructor of the new created class.
@@ -859,12 +862,22 @@
                  * Event types in touch supported platforms.
                  * 
                  * @memberOf click_events
+                 * @name touch-types
+                 * @property full touchstart
+                 * @property start touchstart
+                 * @property move touchmove
+                 * @property end touchend
                  */
                 { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
                 /**
                  * Event types in platforms where touch is not supported.
                  * 
                  * @memberOf click_events
+                 * @name non-touch-types
+                 * @property full click
+                 * @property start mousedown
+                 * @property move mousemove
+                 * @property end mouseup
                  */
                 { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' },
             /**
@@ -1074,15 +1087,15 @@
          * 
          * Valid options:
          * 
-         * * __element__: {string|HTMLElement} the container element of the application. Defualts to `'body'`.
-         * * __dont_cover__: {boolean} whether to instruct the app's container to stretch across the entire viewport. Defaults to `false`.
-         * * __dont_start__: {boolean} whether to call `uijet.startup()` and kick-start the UI. Defaults to `false`.
-         * * __dont_wake__: {boolean} whether to call `wake()` on all top level widgets. Defaults to `false`.
-         * * __pre_startup__: {function} optional hook for running logic before uijet starts up.
-         * * __animation_type__: {string} default type of animation to be used across the app. Defaults to `'slide'` (what else, Rufus?).
-         * * __widgets__: {object[]} optional list of widget declarations.
-         * * __route_prefix__: {string} optional prefix for routes to be used when creating those automatically from widget's IDs.
-         * * __route_suffix__: {string} As above, only suffix.
+         * * `element`: {string|HTMLElement} the container element of the application. Defualts to `'body'`.
+         * * `dont_cover`: {boolean} whether to instruct the app's container to stretch across the entire viewport. Defaults to `false`.
+         * * `dont_start`: {boolean} whether to call `uijet.startup()` and kick-start the UI. Defaults to `false`.
+         * * `dont_wake`: {boolean} whether to call `wake()` on all top level widgets. Defaults to `false`.
+         * * `pre_startup`: {function} optional hook for running logic before uijet starts up.
+         * * `animation_type`: {string} default type of animation to be used across the app. Defaults to `'slide'` (what else, Rufus?).
+         * * `widgets`: {object[]} optional list of widget declarations.
+         * * `route_prefix`: {string} optional prefix for routes to be used when creating those automatically from widget's IDs.
+         * * `route_suffix`: {string} As above, only suffix.
          */
         init                : function (options) {
             // wrap the actuall initialization function
