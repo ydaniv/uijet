@@ -1,13 +1,17 @@
 module.exports = function (grunt) {
 
     grunt.initConfig({
-        pkg  : grunt.file.readJSON('package.json'),
-        jsdoc: {
-            docs: {
-                src    : ['src/*.js'],
+        pkg   : grunt.file.readJSON('package.json'),
+        jsdoc : {
+            dist: {
+                src    : [
+                    'src/uijet.js',
+                    'src/widgets/'
+                ],
+                jsdoc: 'node_modules/.bin/jsdoc',
                 options: {
-                    destination: 'doc',
-                    configure: './conf.json'
+                    configure  : './conf.json',
+                    destination: 'docs'
                 }
             }
         }
@@ -16,5 +20,5 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-jsdoc');
 
 
-    grunt.registerTask('docs', ['jsdoc:docs']);
+    grunt.registerTask('docs', ['jsdoc:dist']);
 };

@@ -1,17 +1,14 @@
 {
-    "source": {
-        "include": ["src/uijet.js"]
-    },
     "tags": {
         "allowUnknownTags": true
     },
     "opts": {
+        "recurse": true,
         "template": "node_modules/jaguarjs-jsdoc",
-        "destination": "./doc/",
         "verbose": true
     },
     "templates": {
-        "cleverLinks"   : true,
+        "cleverLinks": true,
         "monospaceLinks": true,
         "openGraph": {},
         "meta": {}
