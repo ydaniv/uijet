@@ -1455,6 +1455,7 @@
                 // register this widget as a top level widget
                 widgets.__app__.contained.push(_id);
                 _container = '__app__';
+                _current.container = _container;
             }
             widget.options.container = _container;
             return this;
