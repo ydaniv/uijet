@@ -15,7 +15,7 @@
      * List widget class.
      * 
      * @class List
-     * @mixes uijet.BaseWidget
+     * @extends uijet.BaseWidget
      */
     uijet.Widget('List', {
         options             : {

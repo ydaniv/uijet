@@ -12,7 +12,7 @@
      * Button widget class.
      * 
      * @class Button
-     * @mixes uijet.BaseWidget
+     * @extends uijet.BaseWidget
      */
     uijet.Widget('Button', {
         options         : {
