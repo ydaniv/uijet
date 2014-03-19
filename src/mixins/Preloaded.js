@@ -19,8 +19,23 @@
      */
     uijet.Mixin('Preloaded', {
         preloaded   : true,
+        /**
+         * Automatically start preloading assets, unless instructed
+         * not to via `dont_preload` option.
+         * 
+         * *Note*: {@link Preloaded#preload} is invoked before `_super()` is called.
+         * 
+         * Related options:
+         * * `dont_preload`: unless set to `true`, the instance will automatically call {@link Preloaded#preload} on `init()`.
+         * 
+         * @memberOf Preloaded
+         * @instance
+         * @returns {Preloaded}
+         */
         init        : function () {
-            
+            if ( ! this.options.dont_preload ) {
+                this.preload();
+            }
             return this._super.apply(this, arguments);
         },
         /**
