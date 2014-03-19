@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
@@ -14,9 +13,36 @@
 }(function (uijet) {
     var boolean_type_re = /checkbox|radio/i;
 
+    /**
+     * Form widget class.
+     * 
+     * @class Form
+     * @extends uijet.BaseWidget
+     * @mixes Submitted
+     */
     uijet.Widget('Form', {
+        /**
+         * @memberOf Form
+         * @instance
+         * @type Object
+         */
         options         : {
             type_class  : 'uijet_form',
+            /**
+             * Default form serializer.
+             * Returns an `Object` that maps `name`s of children
+             * elements to their `value`s.
+             * `disabled` inputs and `checkbox` and `radio` inputs that are not checked are ignored.
+             * If a `name` appears more then once, e.g. `radio` elements, then
+             * the corresponding value on the returned serialized object will be an
+             * `Array` of the values, ordered according to the elements' order in 
+             * the document.
+             * 
+             * @memberOf Form.options
+             * @param {Object} [extra_data] - extra data to add to the serialized result.
+             * @param {boolean} [as_defaults] - if `true` then `extra_data` object will be used as defaults and not override form data.
+             * @returns {Object}
+             */
             serializer  : function (extra_data, as_defaults) {
                 var $fields = this.$element.find('[name]'),
                     data = {}, args;
@@ -47,14 +73,34 @@
                 }
                 return data;
             },
+            /**
+             * 
+             * @namespace dom_events
+             * @type Object
+             * @memberOf Form.options
+             */
             dom_events  : {
+                /**
+                 * Delegates `change` event from value changes of child field elements
+                 * to an app event publishing.
+                 * 
+                 * Related options:
+                 * * `change_exclude`: list of `name`s, or a function that returns it, of fields to exclude from `change` event delegation. 
+                 * 
+                 * App Events:
+                 * * `<this.id>_<name>.changed`: published when the field with name `name` fires `change` event.
+                 * Takes `Object` with `event` obejct and `value`.
+                 * 
+                 * @memberOf Form.options.dom_events
+                 * @param {Object} e - `change` event object.
+                 */
                 change  : function (e) {
                     var target = e.target,
                         // name is the `name` attribute and falls back to `id`
                         name = target.name || target.id,
                         // the published value either the `value` property or `false` if it's a checkbox and not checked
                         value = boolean_type_re.test(target.type) && ! target.checked ? false : uijet.$(target).val(),
-                        excluded = uijet.utils.returnOf(this.options.changed_exclude, this);
+                        excluded = uijet.utils.returnOf(this.options.change_exclude, this);
                     // if there aren't any excluded fields or this field is not in the excluded list then publish the changed event
                     (!excluded || !~ excluded.indexOf(name)) &&
                         uijet.publish(this.id + '_' + name + '.changed', {
@@ -64,8 +110,16 @@
                 }
             }
         },
+        /**
+         * Binds {@link Form#submit} to the `submit` event of the instance's
+         * element, unless the `submit_handled` option of `uijet` is set to
+         * `true`.
+         * 
+         * @memberOf Form
+         * @instance
+         * @returns {Form}
+         */
         register        : function () {
-            var that = this;
             this._super();
             // check if there's no one else handling the form submit event, e.g. Sammy.js
             if ( ! uijet.options.submit_handled ) {
@@ -74,11 +128,22 @@
                     e.preventDefault();
                     e.stopPropagation();
                     // instead call `submit`
-                    that.submit();
-                });
+                    this.submit();
+                }.bind(this));
             }
             return this;
         },
+        /**
+         * Triggers `focus` event on the first input, ones the instance
+         * appears, unless `dont_focus` option is set to `true`.
+         * 
+         * Related options:
+         * * `dont_focus`: tells the instance not to focus its first input on appearing.
+         * 
+         * @memberOf Form
+         * @instance
+         * @returns {Form}
+         */
         appear          : function () {
             var $inputs;
             this._super();
@@ -91,31 +156,19 @@
             }
             return this;
         },
-        // ### widget.getSubmitRoute
-        // @sign: getSubmitRoute()  
-        // @return: submit_route OR `null`
-        //
-        // Returns an `Object` with __method__ and __path__ keys which represent a RESTful route, which
-        // is the route that's called when the form is submitted.  
-        // Checks the `submit_route` option, if it's an `Object` then use its path value, or if it's a `String`
-        // then use it as __path__.  
-        // If this option isn't set check for the `actoin` attribute of `$element`.  
-        // If that isn't set too then return `null`.  
-        // if this option isn`t set, check for the method value or check the `method` attribute on `$element`, or
-        // simply use 'get'.
-        getSubmitRoute  : function () {
-            var route = this.options.submit_route,
-                path = route ? route.path || route : this.$element.attr('action');
-            return path ? { method: route && route.method || this.$element.attr('method') || 'get', path: path } : null;
-        },
-        // ### widget.clearErrors
-        // @sign: clearErrors()
-        // @return: this
-        //
-        // Clears error messages in the DOM.
+        /**
+         * Finds all child elements that match the `error_selector` option,
+         * or `.error` as default, and empties them.
+         * 
+         * Related options:
+         * * `error_selector`: query selector for finding elements containing error messages and emptying them.
+         * 
+         * @memberOf Form
+         * @instance
+         * @returns {Form}
+         */
         clearErrors     : function () {
-            // looks for elements with `error` `class` and empties them.
-            this.$element.find('.error').empty();
+            (this.$wrapper || this.$element).find(this.options.error_selector || '.error').empty();
             return this;
         }
     }, ['Submitted']);
