@@ -12,7 +12,39 @@
         cancelAnimFrame = uijet.utils.cancelAnimFrame,
         // get the prefixed `transform` property
         style_prop = uijet.utils.getStyleProperty('transform'),
-        translation_re = /translate(?:X|Y|Z|3d)?\(([^\)]+)\)/;
+        translation_re = /translate(?:X|Y|Z|3d)?\(([^\)]+)\)/,
+        _dragHandler = function (el, deltas, force_move, use_translate) {
+            //TODO: make the animation property value (translate, etc.) as a return value of a generic method of uijet
+            var horizontal, property, trans, px = 'px';
+            if ( this.dragging || force_move ) {
+                //TODO: this will override other transforms  
+                // if `axis` is set then animate only along that axis
+                if ( this._drag_axis ) {
+                    horizontal = that._drag_axis === 'X';
+
+                    if ( use_translate ) {
+                        trans = horizontal ? deltas.dx : deltas.dy;
+                        el.style[style_prop] = 'translate' + this._drag_axis + '(' + trans + 'px)';
+                    }
+                    else {
+                        property = horizontal ? 'left' : 'top';
+                        el.style[property] = deltas[property] + px;
+                    }
+                }
+                else {
+                    if ( use_translate ) {
+                        trans = deltas.dx + 'px,' + deltas.dy + px;
+                        el.style[style_prop] = uijet.support['3d'] ?
+                            'translate3d(' + trans + ',0)' :
+                            'translate(' + trans + ')';
+                    }
+                    else {
+                        el.style.top = deltas.top + px;
+                        el.style.left = deltas.left + px;
+                    }
+                }
+            }
+        };
 
     /**
      * Dragged mixin class.
@@ -423,11 +455,16 @@
             }
             return $el;
         },
-        // ### widget._getScrolledParent
-        // @sign: _getScrolledParent(el)  
-        // @return: scrolled_parent
-        //
-        // Returns the scrolled parent element of the element `el`.
+        /**
+         * Gets the closest ancestor of the given element that
+         * will get a native scrollbar.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @param {HTMLELement} el - the contained element to start from.
+         * @returns {HTMLElement} - the scrolled container.
+         * @private
+         */
         _getScrolledParent  : function (el) {
             var parent = el.parentNode,
                 scrolled_re = /auto|scroll/,
@@ -442,53 +479,31 @@
             }
             return parent;
         },
-        // ### widget.drag
-        // @sign: drag(el, deltas, [force_move])  
-        // @return: this
-        //
-        // Moves the element `el` to its new position.using `deltas`
+        /**
+         * Moves the element around.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @param {HTMLElement} el - the element to move.
+         * @param {Object} deltas - the deltas to use for translating the element, as `dx`/`dy` or `left`/`top`.
+         * @param {boolean} [force_move] - whether to force the move, although not in a dragging state.
+         * @returns {Dragged}
+         */
         drag               : function (el, deltas, force_move) {
-            var that = this,
-                use_translate = this._use_translate;
-            this._last_drag_anim = requestAnimFrame(function () {
-                //TODO: make the animation property value (translate, etc.) as a return value of a generic method of uijet
-                var horizontal, property, trans, px = 'px';
-                if ( that.dragging || force_move ) {
-                    //TODO: this will override other transforms  
-                    // if `axis` is set then animate only along that axis
-                    if ( that._drag_axis ) {
-                        horizontal = that._drag_axis === 'X';
-
-                        if ( use_translate ) {
-                            trans = horizontal ? deltas.dx : deltas.dy;
-                            el.style[style_prop] = 'translate' + that._drag_axis + '(' + trans + 'px)';
-                        }
-                        else {
-                            property = horizontal ? 'left' : 'top';
-                            el.style[property] = deltas[property] + px;
-                        }
-                    }
-                    else {
-                        if ( use_translate ) {
-                            trans = deltas.dx + 'px,' + deltas.dy + px;
-                            el.style[style_prop] = uijet.support['3d'] ?
-                                'translate3d(' + trans + ',0)' :
-                                'translate(' + trans + ')';
-                        }
-                        else {
-                            el.style.top = deltas.top + px;
-                            el.style.left = deltas.left + px;
-                        }
-                    }
-                }
-            });
+            this._last_drag_anim = requestAnimFrame(
+                _dragHandler.bind(this, el, deltas, !!force_move, this._use_translate)
+            );
             return this;
         },
-        // ### widget._cacheStyle
-        // @sign: _cacheStyle(el)  
-        // @return: this
-        //
-        // Caches the top, left, height and width style properties of the given `el` element.
+        /**
+         * Caches pre-specified style properties of element `el`.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @param {HTMLElement} el - the element to cache its style.
+         * @returns {Dragged}
+         * @private
+         */
         _cacheStyle         : function (el) {
             var style = el.style,
                 i = 0, prop, value;
@@ -503,11 +518,15 @@
             }
             return this;
         },
-        // ### widget._clearCachedStyle
-        // @sign: _clearCachedStyle(el)  
-        // @return: this
-        //
-        // Re-sets the style properties of element `el` and deletes the old cache.
+        /**
+         * Resets element `el`'s style from cache and clears that cache.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @param {HTMLElement} el - the element to reset its style.
+         * @returns {Dragged}
+         * @private
+         */
         _clearCachedStyle   : function (el) {
             var cache = this.draggee_style_cache,
                 style = el.style,
@@ -523,7 +542,19 @@
             delete this.draggee_style_cache;
             return this;
         },
-        //TODO: add docs
+        /**
+         * Sets the boundaries for dragging contained draggee.
+         * 
+         * Related options:
+         * * `drag_contain`: whether to contain the drag.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @param {HTMLElement} draggee - the element being dragged.
+         * @param {HTMLElement} parent - the containing ancestor element.
+         * @returns {Dragged}
+         * @private
+         */
         _contain            : function (draggee, parent) {
             var using_translate = this._use_translate, parent_style;
             if ( this.options.drag_contain ) {
