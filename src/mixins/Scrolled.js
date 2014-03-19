@@ -7,6 +7,14 @@
         factory(uijet);
     }
 }(function (uijet) {
+
+    /**
+     * Scrolled mixin class.
+     * 
+     * @class Scrolled
+     * @extends uijet.BaseWidget
+     * @mixin
+     */
     uijet.Mixin('Scrolled', {
         scrolled            : true,
         prepareElement      : function () {

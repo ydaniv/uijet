@@ -14,8 +14,26 @@
         style_prop = uijet.utils.getStyleProperty('transform'),
         translation_re = /translate(?:X|Y|Z|3d)?\(([^\)]+)\)/;
 
+    /**
+     * Dragged mixin class.
+     * 
+     * @class Dragged
+     * @extends uijet.BaseWidget
+     * @mixin
+     */
     uijet.Mixin('Dragged', {
         dragged             : true,
+        /**
+         * Initializes options related to dragging.
+         * 
+         * Related options:
+         * * `dont_translate`: if `true` uijet will use `top`/`left` style attributes instead of `transform:translate`.
+         * * `keep_position`: whether to keep the dragged element's position after drop.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @returns {Dragged}
+         */
         init                : function () {
             this._super.apply(this, arguments);
 
@@ -37,6 +55,17 @@
             this._cached_drag_styles = cached_styles;
             return this;
         },
+        /**
+         * Binds the drag handler, unless the `dont_auto_drag`
+         * option is `true`.
+         * 
+         * Related options:
+         * * `dont_auto_drag`: if `true` the drag handler will not be automatically bound.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @returns {Dragged}
+         */
         appear              : function () {
             var options = this.options;
             this._super.apply(this, arguments);
@@ -45,6 +74,17 @@
             }
             return this;
         },
+        /**
+         * Unbinds the drag handler, unless the `dont_auto_drag`
+         * option is `true`.
+         * 
+         * Related options:
+         * * `dont_auto_drag`: if `true` the drag handler will not be unbound automatically.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @returns {Dragged}
+         */
         disappear           : function () {
             if ( ! this.options.dont_auto_drag ) {
                 this.unbindDrag();
@@ -52,20 +92,16 @@
             this._super.apply(this, arguments);
             return this;
         },
-        // ### widget.bindDrag
-        // @sign: bindDrag([over_callback], [axis])  
-        // @return: this
-        //
-        // Sets the widget in a draggable state.  
-        // `over_callback` is called every time the mouse/touchmove event is fired.  
-        // The over callback takes the move event object as first argument, an `Object` with `dx` and `dy` properties
-        // for the x and y deltas respectively and the jQuery-wrapped dragged element, or it's clone, as third argument.  
-        // If `axis` is supplied - as a `String`: `'X'` or `'Y'`- the drag will be enabled in that axis only.  
-        // Callbacks for drag start and end can be registered via the signals `post_drag_start` and `post_drag_end`
-        // respectively.
-        // The start callback takes the mousedown/touchstart event object as first argument and and the dragged element or it's clone as second.  
-        // The end callback takes the mouseup/touchend event objet as first argument, the end position object -
-        // with the keys: x, y, dx, dy - as second and the dragged element or it's clone as third argument.
+        /**
+         * Binds the dragstart handler to the event that will trigger
+         * the drag start, according to touch support.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @param {function} [over_callback] - a custom handler for handling `dragover`.
+         * @param {string} [axis] - locks dragging to occur only along the specified axis.
+         * @returns {Dragged}
+         */
         bindDrag            : function (over_callback, axis) {
             // get the element used for starting drag
             var $drag_element = this._getDragElement(),
@@ -79,7 +115,14 @@
             ($drag_element && $drag_element.length ? $drag_element : $el).one(uijet.support.click_events.start, this._dragstart_handler);
             return this;
         },
-        //TODO: add docs
+        /**
+         * Unbinds the dragstart handler from the event that will trigger
+         * the drag start, according to touch support.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @returns {Dragged}
+         */
         unbindDrag          : function () {
             // get the element used for starting drag
             var $drag_element = this._getDragElement(),
@@ -89,7 +132,30 @@
             ($drag_element && $drag_element.length ? $drag_element : $el).off(uijet.support.click_events.start, this._dragstart_handler);
             return this;
         },
-        //TODO: add docs
+        /**
+         * Handler for the drag start event.
+         * 
+         * Related options:
+         * * `drag_delay`: amounts of miliseconds to wait before actually starting the drag. Defaults to `150`.
+         * * `drag_clone`: whether to clone the dragged element. Useful for "copying" operations.
+         * * `drag_parent`: query selector for the element that will be used to contain the dragging action.
+         * * `drag_once`: if `true` the drag start handler will not be automatically re-bound.
+         * * `drag_contain`: if `true` then dragging will only be allowed inside the parent element of the draggee.
+         * 
+         * Signals:
+         * * `pre_drag_init`: triggered after drag event was triggered but before preconditions for dragging (i.e. delay) were met.
+         * . Takes start event object, the wrapped draggee element, and the start position object as `{x, y, left, top}`.
+         * * `pre_drag_start`: triggered before dragging is started but after preconditions for dragging (i.e. delay) were met.
+         * Takes start event object and the wrapped draggee element.
+         * * `post_drag_start`: triggered after dragging started. Takes start event object and the wrapped draggee element.
+         * * `post_drag_end`: triggered after drop. Takes the drop event object, the end position object as
+         * `{x, y, dx, dy}`, and the wrapped draggee element.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @param {Object} down_e - drag start event object, e.g. `mousedown`, `touchstart`.
+         * @private
+         */
         _startHandler       : function (down_e) {
             var that = this,
                 // get the top container of the widget
@@ -292,25 +358,33 @@
                 _finally();
             }
         },
-        // ### widget._initdraggee
-        // @sign: _initdraggee($original, $draggee)  
-        // @return: this
-        //
-        // Initializes the dragged element. Sets its position, dimensions and other styles.
-        _initdraggee         : function ($orig, $draggee) {
+        /**
+         * Initializes the draggee element.
+         * 
+         * Related options:
+         * * `drag_parent`: query selector for the element that will be used to contain the dragging action.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @param {HTMLElement[]} $origin - the wrapped origin element that is the target for dragging.
+         * @param HTMLElement[]} [$draggee] - a wrapped element to use as the draggee. Falls back to `$origin`.
+         * @returns {Dragged}
+         * @private
+         */
+        _initdraggee         : function ($origin, $draggee) {
             var parent = this.options.drag_parent || uijet.$element[0],
-                orig = $orig[0],
-                draggee = $draggee ? $draggee[0] : orig,
+                origin = $origin[0],
+                draggee = $draggee ? $draggee[0] : origin,
                 offset;
             // get the offset of the original element from the `uijet.$element`
-            offset = uijet.utils.getOffsetOf(orig, parent);
+            offset = uijet.utils.getOffsetOf(origin, parent);
             // set the position and dimensions of the `$draggee`
             draggee.style.cssText += 'left:' + offset.x +
                 'px;top:' + offset.y +
-                'px;width:' + orig.offsetWidth +
-                'px;height:' + orig.offsetHeight + 'px';
+                'px;width:' + origin.offsetWidth +
+                'px;height:' + origin.offsetHeight + 'px';
             // add the `uijet_draggee` class to the dragged element
-            ($draggee || $orig).addClass('uijet_draggee');
+            ($draggee || $origin).addClass('uijet_draggee');
             // and append it the `uijet.$element` if needed
             if ( draggee.parentNode !== parent ) {
                 parent.appendChild(draggee);
@@ -318,12 +392,18 @@
             this._contain(draggee, parent);
             return this;
         },
-        // ### widget._getDragElement
-        // @sign: _getDragElement  
-        // @return: $element
-        //
-        // Checks if the `drag_element` option is set and returns a DOM query result object from it.
-        // That drag start event will be contained to that element alone (defaults to the widget's top container).
+        /**
+         * Gets the element to use as target for the dragging action.
+         * 
+         * Related options:
+         * * `drag_element`: an element, query selector, or a function that retuns those, which will be used
+         * as the dragging target. Defaults to top container of the instance's element.
+         * 
+         * @memberOf Dragged
+         * @instance
+         * @returns {HTMLElement[]} - the target element.
+         * @private
+         */
         _getDragElement     : function () {
             var option, $el;
             // if the option is set

@@ -1,26 +1,46 @@
-// ### AMD wrapper
 (function (factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet'], function (uijet) {
+        define([
+            'uijet_dir/uijet'
+        ], function (uijet) {
             return factory(uijet);
         });
     } else {
         factory(uijet);
     }
 }(function (uijet) {
+
+    /**
+     * Preloaded mixin class.
+     * 
+     * @class Preloaded
+     * @extends uijet.BaseWidget
+     * @mixin
+     */
     uijet.Mixin('Preloaded', {
         preloaded   : true,
-        // ### widget.preload
-        // @sign: preload([assets])  
-        // @return: promises_array
-        //
-        // Preloads assets, specified either by the `assets` argument or the `options.assets`.  
-        // `assets` should be an `Array` of URLs to the assets.  
-        // Returns an `Array` of promise objects that resolve once all assets finished loading,
-        // successfully or not.
+        init        : function () {
+            
+            return this._super.apply(this, arguments);
+        },
+        /**
+         * Preloads a list of assets.
+         * 
+         * Currently, only images are supported, with the following extensions:
+         * * jpg/jpeg
+         * * png
+         * * gif
+         * 
+         * Related options:
+         * * `assets`: list of URLs for assets to preload.
+         * 
+         * @memberOf Preloaded
+         * @instance
+         * @param {Array} [assets] - list of URLs of assets to preload.
+         * @returns {Promise[]}
+         */
         preload     : function (assets) {
             var dfrds = [],
-                that = this,
                 IMG_EXTENSIONS = 'jpg|jpeg|png|gif';
             // loop over the assets
             (assets || uijet.utils.returnOf(this.options.assets, this) || []).forEach(function (path) {
@@ -28,19 +48,27 @@
                 // check if this is an image file by looking at its extension
                 if ( ~ IMG_EXTENSIONS.search(RegExp(path.substring(path.lastIndexOf('.')), 'i')) ) {
                     // it's an image so call `preloadIamge`
-                    dfrd = that.preloadImage(path);
+                    dfrd = this.preloadImage(path);
                 }
                 // push the promise to the stack
                 dfrds.push(dfrd || {});
-            });
+            }, this);
             return dfrds;
         },
-        // ### widget.preloadImage
-        // @sign: preloadImage(path)  
-        // @return: promise
-        //
-        // Takes a path `String` and returns a promise that resolves when the image,
-        // loaded with the given `path` has completed loading either successfully or not.
+        /**
+         * Loads an image specified by `path`, and returns a promise
+         * for this action.
+         * 
+         * Related options:
+         * * `preload_img_el`: whether to use an `<img>` element to preload.
+         * Otherwise the `Image` object will be used.
+         * Necessary in some less compliant platforms.
+         * 
+         * @memberOf Preloaded
+         * @instance
+         * @param {string} path - URL of an image.
+         * @returns {Promise}
+         */
         preloadImage: function (path) {
             var img, dfrd = uijet.Promise();
             // if the `preload_img_el` option is set

@@ -7,22 +7,42 @@
         factory(uijet);
     }
 }(function (uijet) {
+
+    /**
+     * Floated mixin class.
+     * 
+     * @class Floated
+     * @extends uijet.BaseWidget
+     * @mixin
+     */
     uijet.Mixin('Floated', {
         floated         : true,
         options         : {
             // make sure `position()` is called by default
             position: true
         },
+        /**
+         * Initializes the floating state using by calling {@link Floated#setFloat}.
+         * 
+         * @memberOf Floated
+         * @instance
+         * @returns {Floated}
+         */
         prepareElement  : function () {
             this._super()
                 .setFloat();
             return this;
         },
-        // ### widget.setFloat
-        // @sign: setFloat()  
-        // @return: this
-        //
-        // Makes sure the element is floating, meaning, wraps it and adds the `float` class to `$wrapper`.
+        /**
+         * Enables floating state.
+         * Sets `this.floating` to `true`, and adds the `float` class
+         * to the top container element.
+         * Floated instances are {@link BaseWidget#_wrap}'ed by default.
+         * 
+         * @memberOf Floated
+         * @instance
+         * @returns {Floated}
+         */
         setFloat        : function () {
             if ( ! this.floating ) {
                 // wrap and set the `float` class
@@ -32,6 +52,16 @@
             }
             return this;
         },
+        /**
+         * Positions the floating element.
+         * 
+         * Related options:
+         * * `float_position`: an `Object` or `string` representing the position to use for the element.
+         * 
+         * @memberOf Floated
+         * @instance
+         * @returns {Floated}
+         */
         position        : function () {
             var float_position;
             // if float_position position wasn't set
@@ -45,6 +75,13 @@
             this._float_position_set  = true;
             return this._super();
         },
+        /**
+         * Returns the elements back to its floating position.
+         * 
+         * @memberOf Floated
+         * @instance
+         * @returns {Floated}
+         */
         appear          : function () {
             // needed to be set programmatically at the end to prevent Webkit from not setting the right height
             this.$element[0].style.overflow = 'hidden';
@@ -53,6 +90,14 @@
             this._super();
             return this;
         },
+        /**
+         * Throws the element away from the viewport,
+         * by default this is up to outer space.
+         * 
+         * @memberOf Floated
+         * @instance
+         * @returns {Floated}
+         */
         disappear       : function () {
             var that = this,
                 hide_handler = function () {
@@ -67,6 +112,15 @@
             }
             return this;
         },
+        /**
+         * Parses a given `position` and sets it as a CSS rule
+         * in the document.
+         * 
+         * @memberOf Floated
+         * @instance
+         * @param {string|Object} position - style attributes for positioning the floated element.
+         * @returns {Floated}
+         */
         floatPosition   : function (position) {
             if ( position ) {
                 if ( uijet.utils.isObj(position) ) {
@@ -74,14 +128,22 @@
                 }
                 if ( typeof position == 'string' ) {
                     // create a CSS rule of positioning this floatee
-                    this.setRule(position);
+                    this._setRule(position);
                 }
             }
             return this;
         },
-        setRule         : function (css_text) {
+        /**
+         * Inserts a parsed CSS text as a CSS rule to the document.
+         * 
+         * @memberOf Floated
+         * @instance
+         * @param {string} css_text - parsed CSS text for positioning the floated element.
+         * @returns {Floated}
+         * @private
+         */
+        _setRule        : function (css_text) {
             var selector = '#' + this._wrap().$wrapper.attr('id') + '.float.show',
-                index = 0,
                 bottom_style;
 
             if ( this.float_rule_sheet ) {
@@ -105,6 +167,15 @@
             }
             return this;
         },
+        /**
+         * Parses an `Object` containing style attributes into a `string`.
+         * 
+         * @memberOf Floated
+         * @instance
+         * @param {Object} position - a map of style attributes to values, either `number`s or `string`s.
+         * @returns {string} - the parsed CSS text.
+         * @private
+         */
         _parsePosition  : function (position) {
             var css_text = '',
                 key;
@@ -113,6 +184,17 @@
             }
             return css_text;
         },
+        /**
+         * Inserts a style rule to a given style `sheet`.
+         * 
+         * @memberOf Floated
+         * @instance
+         * @param {CSSStyleSheet} sheet - a style sheet object.
+         * @param {string} selector - a CSS query selector.
+         * @param {string} css_text - style attributes.
+         * @returns {Floated}
+         * @private
+         */
         //TODO: implement cleaning of old styles
         _addRule        : function (sheet, selector, css_text) {
             var index = (sheet.cssRules ? sheet.cssRules : sheet.rules).length;

@@ -25,6 +25,13 @@
         }, uijet.BaseWidget.prototype);
     }
 
+    /**
+     * Templated mixin class.
+     * 
+     * @class Templated
+     * @extends uijet.BaseWidget
+     * @mixin
+     */
     uijet.Mixin('Templated', {
         templated       : true,
         init            : function () {

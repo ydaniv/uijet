@@ -7,6 +7,14 @@
         factory(uijet);
     }
 }(function (uijet) {
+
+    /**
+     * Layered mixin class.
+     * 
+     * @class Layered
+     * @extends uijet.BaseWidget
+     * @mixin
+     */
     uijet.Mixin('Layered', {
         layered         : true,
         prepareElement  : function () {
