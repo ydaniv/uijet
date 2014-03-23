@@ -13,10 +13,17 @@
      * 
      * @class Layered
      * @extends uijet.BaseWidget
-     * @mixin
      */
     uijet.Mixin('Layered', {
         layered         : true,
+        /**
+         * Prepare the top container for being layered.
+         * Adds the `layered` class to the top container element.
+         * 
+         * @memberOf Layered
+         * @instance
+         * @returns {Layered}
+         */
         prepareElement  : function () {
             this._super();
             // since this relies on CSS this mixin must be included in the right order in relation to other mixins
@@ -25,21 +32,45 @@
             (this.$wrapper || this.$element).addClass('layered');
             return this;
         },
+        /**
+         * Disables state of "current" of this layer.
+         * Removes the `current` class from the top container element.
+         * 
+         * @memberOf Layered
+         * @instance
+         * @returns {Layered}
+         */
         sleep           : function () {
             this._super();
             (this.$wrapper || this.$element).removeClass('current');
             return this;
         },
+        /**
+         * Enables state of "current" of this layer.
+         * Adds the `current` class to the top container element, while calling
+         * {@link Layered#sleep} on all of its sibling widgets.
+         * 
+         * @memberOf Layered
+         * @instance
+         * @returns {Layered}
+         */
         appear          : function () {
             this.setCurrent()
                 ._super();
             return this;
         },
-        // ### widget.setCurrent
-        // @sign: setCurrent()  
-        // @return: this
-        //
-        // Hooks to `uijet.switchLayer` to make sure this widget is the top layer among its sibling widgets.
+        /**
+         * Sets this instance as the current top layer among its siblings
+         * that share same DOM parent element.
+         * 
+         * Related options:
+         * * `keep_layer_awake`: if set on a sibling widget instance, that instance will not be put to {@link Layered#sleep} once
+         * this instance awakes.
+         * 
+         * @memberOf Layered
+         * @instance
+         * @returns {Layered}
+         */
         setCurrent      : function () {
             uijet._switchLayer(this);
             return this;

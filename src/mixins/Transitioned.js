@@ -13,7 +13,6 @@
      * 
      * @class Transitioned
      * @extends uijet.BaseWidget
-     * @mixin
      */
     uijet.Mixin('Transitioned', {
         transitioned    : true,

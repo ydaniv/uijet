@@ -51,8 +51,6 @@
          */
         register: function () {
             this._super();
-            // check if this is the current screen
-            this.checkState();
             if ( this.options.state == 'current' ) {
                 switchView(this);
             }

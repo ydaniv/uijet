@@ -15,7 +15,6 @@
      * 
      * @class Toggled
      * @extends uijet.BaseWidget
-     * @mixin
      */
     uijet.Mixin('Toggled', {
         /**
