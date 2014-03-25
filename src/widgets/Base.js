@@ -243,7 +243,7 @@
                     return that.wake();
                 } else {
                     that.sleep();
-                    return uijet.Promise.reject(e);
+                    return uijet.Promise().reject(e);
                 }
             };
 
