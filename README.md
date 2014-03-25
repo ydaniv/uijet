@@ -121,6 +121,20 @@ Adapters' properties are always copied to the instance object (the top of the pr
 
     //TBD
 
+## Documentation
+
+You can generate documentation with [Grunt]](http://gruntjs.com/):
+
+1. Install development dependencies:
+
+    npm install
+
+2. Generate documentation and start a static server to view it with:
+
+    grunt rtfm
+
+Then open `localhost:8000` in your browser.
+
 ## Quick start
 
 Grab the a boilerplate from `boilerplates` and open `index.html` in your browser.
