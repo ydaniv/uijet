@@ -16,8 +16,8 @@
             /**
              * Stub for template compilation, to be implemented by the engine module.
              * 
-             * @param {*} template
-             * @returns {*}
+             * @param {string} template - a template string.
+             * @returns {string} - the `template` argument.
              */
             compile: function (template) {
                 return template;
@@ -30,73 +30,25 @@
      * 
      * @class Templated
      * @extends uijet.BaseWidget
-     * @mixin
      */
     uijet.Mixin('Templated', {
         templated       : true,
+        /**
+         * Starts loading the template.
+         * 
+         * Related options:
+         * * `dont_auto_fetch_template`: if `true` will not load the template file on `init()`.
+         * 
+         * @memberOf Templated
+         * @instance
+         * @returns {Templated}
+         */
         init            : function () {
             this._super.apply(this, arguments);
-            if ( ! this.options.dont_fetch_template_on_init ) {
+            if ( ! this.options.dont_auto_fetch_template ) {
                 this.fetchTemplate();
             }
             return this;
-        },
-        wake            : function (context) {
-            var that = this,
-                do_render, dfrd_wake, promises, _fail, _success, _activate;
-            // if already awake and there's no new data coming in then no reason to continue
-            if ( this.awake && ! context ) return this._finally();
-            // if `context` is an object
-            if ( uijet.utils.isObj(context) ) {
-                // use it to update the instance's `context`
-                this.setContext(context);
-            }
-            // fire `pre_wake` signal
-            // we also send the `context` argument as a second param
-            do_render = this.notify(true, 'pre_wake', context);
-            // create a new deferred wake promise object
-            dfrd_wake = uijet.Promise();
-            // wake up the kids
-            promises = this.wakeContained(context);
-            // in case of failure
-            _fail = function (e) {
-                // notify failure signal
-                var retry = that.notify.apply(that, [true, 'wake_failed'].concat(Array.prototype.slice.call(arguments)));
-                if ( retry ) {
-                    // if user asked to retry the wake again
-                    that.wake();
-                } else {
-                    dfrd_wake.reject(e);
-                    that.sleep();
-                }
-            };
-            // final activation once content is ready
-            _activate = function () {
-                // bind DOM events
-                that.bindAll()
-                    .appear()
-                    .awake = true;
-                that.notify(true, 'post_wake');
-                dfrd_wake.resolve();
-                that._finally();
-            };
-            // in case of success
-            if ( do_render === false ) {
-                _success = _activate;
-            } else {
-                _success = function () {
-                    uijet.when(that.fetchTemplate())
-                        .then(that.render.bind(that), _fail)
-                        .then(_activate, _fail);
-                };
-            }
-            // if `sync` option is `true` then call success after all children are awake
-            uijet.whenAll(promises).then(
-                this.options.sync ? _success : _success(),
-                _fail
-            );
-
-            return dfrd_wake ? dfrd_wake.promise() : {};
         },
         // ### widget.fetchTemplate
         // @sign: fetchTemplate()  

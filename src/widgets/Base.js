@@ -204,8 +204,14 @@
          * 
          * Signals:
          * * `pre_wake`: triggered before waking of contained widgets, takes `wake()`'s `context` param as argument.
+         * If it returns `false` the instance will not call {@link BaseWidget#render}.
          * * `post_wake`: triggered at the end of a successful wake, takes `wake()`'s `context` param as argument.
          * * `wake_failed`: triggered at the end of a failed wake, takes all arguments of the rejected {@link BaseWidget#wakeContained}.
+         * If it returns `true` `wake()` will be invoked again.
+         * 
+         * Related options:
+         * * `sync`: when `true` a successful starting sequence will only begin once all promises returned by `wake()` calls
+         * of all child components are resolved. Otherwise, will start immediately.
          * 
          * @memberOf BaseWidget
          * @instance
@@ -214,7 +220,7 @@
          */
         wake            : function (context) {
             var that = this,
-                dfrds, success;
+                do_render, contained_wakes, success, fail, activate;
             // if already awake and there's no new data coming in then no reason to continue
             if ( this.awake && ! context ) return this._finally();
             // if `context` is an object
@@ -222,34 +228,59 @@
                 // use it to update the instance's `context`
                 this.setContext(context);
             }
-            // fire `pre_wake` signal
-            // send the `context` argument as a second param
-            this.notify(true, 'pre_wake', context);
-            // the rest of the tasks needed to be performed
-            success = function () {
+            // fire `pre_wake` signal the `context` param as an argument
+            // if `do_render` is `false` it will disable rendering
+            do_render = this.notify(true, 'pre_wake', context);
+
+            // wake up all contained widgets
+            contained_wakes = this.wakeContained(context);
+
+            // in case of failure
+            fail = function (e) {
+                // notify failure signal
+                if ( true === that.notify.apply(that, [true, 'wake_failed'].concat(Array.prototype.slice.call(arguments))) ) {
+                    // if user asked to retry the wake again
+                    return that.wake();
+                } else {
+                    that.sleep();
+                    return uijet.Promise.reject(e);
+                }
+            };
+
+            // final activation once all is ready
+            activate = function () {
+                var appearance;
                 // there was context to change but if we're set then bail out
                 if ( ! that.awake ) {
-                    that.render()
-                        // bind DOM events
-                        .bindAll()
-                        .appear()
-                        .awake = true;
+                    // bind DOM events
+                    that.bindAll();
+                    // show it
+                    appearance = that.appear();
+                    that.awake = true;
                 }
                 that.notify(true, 'post_wake', context);
                 that._finally();
+                // in case there's an animation on `appear()`
+                return appearance;
             };
-            // wake up all contained widgets
-            dfrds = this.wakeContained(context);
+
+            // in case of success
+            if ( do_render === false ) {
+                success = activate;
+            }
+            else {
+                success = function () {
+                    return uijet.when(that.render(), fail)
+                        .then(activate, fail);
+                };
+            }
 
             // if this widget is to be waken up in sync with its children then let it call
             // success once they're done, or fail if any fails
             // otherwise call success
-            return uijet.whenAll(dfrds).then(
+            return uijet.whenAll(contained_wakes).then(
                 this.options.sync ? success : success(),
-                function () {
-                    that.notify(true, 'wake_failed', arguments);
-                    that.sleep();
-                }
+                fail
             );
         },
         /**
