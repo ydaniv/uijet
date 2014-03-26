@@ -270,7 +270,7 @@
             }
             else {
                 success = function () {
-                    return uijet.when(that.render(), fail)
+                    return uijet.when(that.render())
                         .then(activate, fail);
                 };
             }
