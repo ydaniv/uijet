@@ -206,8 +206,8 @@
          * * `pre_wake`: triggered before waking of contained widgets, takes `wake()`'s `context` param as argument.
          * If it returns `false` the instance will not call {@link BaseWidget#render}.
          * * `post_wake`: triggered at the end of a successful wake, takes `wake()`'s `context` param as argument.
-         * * `wake_failed`: triggered at the end of a failed wake, takes all arguments of the rejected {@link BaseWidget#wakeContained}.
-         * If it returns `true` `wake()` will be invoked again.
+         * * `wake_failed`: triggered at the end of a failed wake, takes all arguments of the rejected {@link BaseWidget#wakeContained},
+         * or `render()` call. If it returns a truthy value `wake()` will be invoked again, otherwise `sleep()`.
          * 
          * Related options:
          * * `sync`: when `true` a successful starting sequence will only begin once all promises returned by `wake()` calls
@@ -236,33 +236,10 @@
             contained_wakes = this.wakeContained(context);
 
             // in case of failure
-            fail = function (e) {
-                // notify failure signal
-                if ( true === that.notify.apply(that, [true, 'wake_failed'].concat(Array.prototype.slice.call(arguments))) ) {
-                    // if user asked to retry the wake again
-                    return that.wake();
-                } else {
-                    that.sleep();
-                    return uijet.Promise().reject(e);
-                }
-            };
+            fail = this._deactivate.bind(this, context);
 
             // final activation once all is ready
-            activate = function () {
-                var appearance;
-                // there was context to change but if we're set then bail out
-                if ( ! that.awake ) {
-                    // bind DOM events
-                    that.bindAll();
-                    // show it
-                    appearance = that.appear();
-                    that.awake = true;
-                }
-                that.notify(true, 'post_wake', context);
-                that._finally();
-                // in case there's an animation on `appear()`
-                return appearance;
-            };
+            activate = this._activate.bind(this, context);
 
             // in case of success
             if ( do_render === false ) {
@@ -830,6 +807,62 @@
         remove          : function (reinsert) {
             var el = (this.$wrapper || this.$center_wrapper || this.$element)[reinsert ? 'detach' : 'remove']();
             return reinsert ? el : this;
+        },
+        /**
+         * Completes the waking sequence by activating and showing
+         * the instance.
+         * This is a the fulfilled handler of `wake()`. 
+         * 
+         * Signals:
+         * * `post_wake`: triggered at the end of a successful wake, takes `wake()`'s `context` param as argument.
+         * 
+         * @param {*} [context] - the context argument passed to {@link BaseWidget#wake}.
+         * @returns {*} - the result of calling `appear()`, which could be a `Promise`.
+         * @private
+         */
+        _activate       : function (context) {
+            var appearance;
+            // there was context to change but if we're set then bail out
+            if ( ! this.awake ) {
+                // bind DOM events
+                this.bindAll();
+                // show it
+                appearance = this.appear();
+                this.awake = true;
+            }
+            this.notify(true, 'post_wake', context);
+            this._finally();
+            // in case there's an animation on `appear()`
+            return appearance;
+        },
+        /**
+         * Completes the waking sequence of a broken waking sequence.
+         * This is a the rejected handler of `wake()`.
+         * 
+         * If `wake_failed` returns a truthy result it's passed to another call to
+         * `wake()`, and another attempt will be made.
+         * If not, `sleep()` is called and the `reason` is returned in a subsequent
+         * rejected `Promise`, and the widgets branch will continue to fold back. 
+         * 
+         * Signals:
+         * * `wake_failed`: triggered at the beginning, takes all arguments of the rejected {@link BaseWidget#wakeContained},
+         * or `render()` call.
+         * 
+         * @param {*} context - the context argument passed to {@link BaseWidget#wake}.
+         * @param {*} reason - the rejection reason.
+         * @returns {*} - the result of another call to `wake()` or a rejected `Promise`.
+         * @private
+         */
+        _deactivate     : function (context, reason) {
+            var new_context;
+            // notify failure signal
+            if ( new_context = this.notify.apply(this, [true, 'wake_failed'].concat(Array.prototype.slice.call(arguments))) ) {
+                // if user asked to retry the wake again
+                return this.wake(new_context);
+            } else {
+                this.sleep();
+                return uijet.Promise().reject(reason);
+            }
         },
         /**
          * Generates an id for the instance.
