@@ -35,6 +35,7 @@
         templated       : true,
         /**
          * Starts loading the template.
+         * Builds the URL to fetch the template from options.
          * 
          * Related options:
          * * `dont_auto_fetch_template`: if `true` will not load the template file on `init()`.
@@ -45,94 +46,47 @@
          */
         init            : function () {
             this._super.apply(this, arguments);
+
+            this.template_url = uijet.options.templates_path + (this.options.template_name || this.id) + '.' + uijet.options.templates_extension;
+
             if ( ! this.options.dont_auto_fetch_template ) {
-                this.fetchTemplate();
+                this._fetchTemplate();
             }
             return this;
         },
-        // ### widget.fetchTemplate
-        // @sign: fetchTemplate()  
-        // @return: promise OR this
-        //
-        // Gets the template from the server to be used for this widget via XHR.  
-        // If `partials` option is set, an `Object` mapping partial name to its file name, loop over it and fetch all the partials needed.  
-        // If those partials are stored deeper under the global templates' path use the `partials_dir` option
-        // to specify it.  
-        fetchTemplate   : function () {
-            // if we don't have the template cached
-            if ( ! this.has_template ) {
-                if ( this._template_promise ) return this._template_promise;
-                // create a promise for retrieving all templates
-                var dfrd = uijet.Promise(), promise = dfrd.promise(),
-                    that = this,
-                    // a stack for all template GET requests
-                    requests = [],
-                    // an error callback handler
-                    failure = function (response) {
-                        // tell the user we failed
-                        that.notify.apply(that, [true, 'fetchTemplate_error'].concat(uijet.utils.toArray(arguments)));
-                        // fail the whole fetching process
-                        dfrd.reject();
-                    },
-                    clear_promise = function () {
-                        delete that._template_promise;
-                    },
-                    partials = this.options.partials,
-                    partials_dir = this.options.partials_dir || '',
-                    p;
-                // make sure we clear the promise from cache once it's done or failed
-                promise.then(clear_promise, clear_promise);
-                // cache the fetching promise
-                this._template_promise = promise;
-                // request the template
-                requests.push(uijet.xhr(this.getTemplateUrl())
-                    .then(function (response) {
-                        // cache result
-                        that.template = that.compile(response);
-                    }, failure)
-                );
-                // if we need to fetch partial templates
-                if ( partials ) {
-                    this.partials || (this.partials = {});
-                    // loop over them
-                    for ( p in partials ) (function (name, path) {
-                        // build the path to each partial
-                        var partial_path = uijet.options.templates_path +
-                                            partials_dir +
-                                            path + "." +
-                                            uijet.options.templates_extension;
-                        // request that partial
-                        requests.push(uijet.xhr(partial_path)
-                            .then(function (partial) {
-                                // when done cache it
-                                that.partials[name] = partial;
-                            }, failure)
-                        );
-                    }(p, partials[p]));
-                }
-                // when all requests are resolved
-                uijet.whenAll(requests).then(function () {
-                    // set state to `has_tempalte`
-                    that.has_template = true;
-                    // tell the user we're done
-                    that.notify(true, 'post_fetch_template');
-                    // resolve the entire fetching promise
-                    dfrd.resolve();
-                });
-                return promise;
-            }
-            // like a fulfilled promise
-            return this;
-        },
+        /**
+         * Renders the template.
+         * Attempts to fetch the template if it wasn't fetched.
+         * 
+         * It is also possible to defer the end of rendering till after all
+         * content images have been fully loaded using the `defer_images` option.
+         * 
+         * Signals:
+         * * `pre_render`: triggered after content is generated but before old contents of `this.$element` is removed.
+         * Takes the generated HTML string.
+         * * `pre_html_insert`: triggered before content is inserted into the element. Takes the generated HTML string.
+         * If it returns `false` then content insertion will be skipped.
+         * * `post_render`: triggered at the end.
+         * 
+         * Related options:
+         * * `insert_before`: an element, or a query selector, to insert the rendered content before. By default
+         * content is appended to the end `this.$element`'s contents.
+         * * `defer_images`: if truthy it invokes {@link Templated#deferLoadables} and the returned `Promise`
+         * will depend on that action being resolved.
+         * 
+         * @memberOf Templated
+         * @instance
+         * @returns {Promise}
+         */
         render          : function () {
             // generate the HTML
             var that = this, _super = this._super,
                 _html, loadables, do_insert;
 
             if ( ! this.has_template ) {
-                // if `render` was called directly then add a convenience call to fetchTemplate
-                return this.fetchTemplate()
-                    .then(that.render.bind(that));
+                // if `render` was called directly then add a convenience call to _fetchTemplate
+                return this._fetchTemplate()
+                    .then(this.render.bind(this));
             }
             else {
                 _html = this.generate();
@@ -167,11 +121,15 @@
                 });
             }
         },
-        // ### widget.deferLoadables
-        // @sign: deferLoadables()  
-        // @return: promises_array OR [{}]
-        //
-        // Deferrs the flow to continue after all images have been loaded.  
+        /**
+         * Finds all content images, `<img>` tags or in inlined
+         * styles, and returns a `Promise` that is resolved once
+         * all of these are loaded.
+         * 
+         * @memberOf Templated
+         * @instance
+         * @returns {Promise[]}
+         */
         //TODO: Make this work over either all images or as defined by `this.options.defer_images`  
         //TODO: consider moving this to base to defer also non-templated loadables
         deferLoadables  : function () {
@@ -186,7 +144,7 @@
                     _img = null;
                     dfrd.resolve();
                 },
-                src, _img, dfrd;
+                _img, dfrd;
             if ( _inlines && _inlines[1] ) {
                 _img = new Image();
                 dfrd = uijet.Promise();
@@ -212,17 +170,72 @@
                 }
                 promises.push(_dfrd.promise());
             });
-            return promises.length ? promises : [{}];
+            return promises;
         },
-        // ### widget.getTemplateUrl
-        // @sign: getTemplateUrl()  
-        // @return: template_url
-        //
-        // Gets the URL used by the widget to fetch its template.  
-        // Uses uijet's `templates_path` option as a prefix, followed by either `template_name` option or the `id`
-        // property, with uijet's `templates_extension` option as the extension suffix.
-        getTemplateUrl  : function () {
-            return uijet.options.templates_path + (this.options.template_name || this.id) + '.' + uijet.options.templates_extension;
+        /**
+         * Loads the template(s).
+         * 
+         * Signals:
+         * * `fetch_template_error`: 
+         * 
+         * Related options:
+         * * `template_name`: name of the template file to load. Defaults to `this.id`.
+         * * `partials`: list of file names of partials to load. 
+         * * `partials_dir`: if the partial fields are nested set this to the name of the dir that contains them.
+         * 
+         * Related uijet options:
+         * * `templates_path`: path for the templates directory.
+         * * `templates_extension`: extension for the template files.
+         * 
+         * @memberOf Templated
+         * @instance
+         * @returns {Promise|Templated}
+         */
+        _fetchTemplate  : function () {
+            // if we don't have the template cached
+            if ( ! this.has_template ) {
+                // create a promise for retrieving all templates
+                var that = this,
+                    // a stack for all template GET requests
+                    requests = [],
+                    partials = this.options.partials,
+                    partials_dir = this.options.partials_dir || '',
+                    p;
+
+                // request the template
+                requests.push(uijet.xhr(this.template_url)
+                    .then(function (response) {
+                        // cache result
+                        that.template = that.compile(response);
+                    }));
+
+                // if we need to fetch partial templates
+                if ( partials ) {
+                    this.partials || (this.partials = {});
+                    // loop over them
+                    for ( p in partials ) (function (name, path) {
+                        // build the path to each partial
+                        var partial_path = uijet.options.templates_path +
+                                            partials_dir +
+                                            path + "." +
+                                            uijet.options.templates_extension;
+                        // request that partial
+                        requests.push(uijet.xhr(partial_path)
+                            .then(function (partial) {
+                                // when done cache it
+                                that.partials[name] = partial;
+                            }));
+                    }(p, partials[p]));
+                }
+
+                // when all requests are resolved
+                return uijet.whenAll(requests).then(function () {
+                    // set state to `has_tempalte`
+                    that.has_template = true;
+                });
+            }
+            // like a fulfilled promise
+            return this;
         }
     });
 }));
