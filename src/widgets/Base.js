@@ -299,6 +299,7 @@
                 this.notify(true, 'pre_sleep');
                 // unbind DOM events
                 this.unbindAll()
+                    //TODO: need to wrap with uijet.when() since disappear() might be async
                     // hide
                     .disappear(no_transitions)
                     // stop contained widgets
@@ -826,6 +827,7 @@
             if ( ! this.awake ) {
                 // bind DOM events
                 this.bindAll();
+                //TODO: need to wrap with uijet.when() since appear() might be async
                 // show it
                 appearance = this.appear();
                 this.awake = true;
