@@ -21,6 +21,7 @@
          * 
          * Related options:
          * * `promise`: a promise object, or a function that returns one, that once resolved invokes `wake()`.
+         * If it's a function it takes the `context` argument as param.
          * 
          * @memberOf Deferred
          * @instance
