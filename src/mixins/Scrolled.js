@@ -21,6 +21,9 @@
          * Prepares the element to be scrolled in a wrapping
          * container.
          * 
+         * Related options:
+         * * `horizontal`: if `true` then then `horizontal` class is added to the element.
+         * 
          * @memberOf Scrolled
          * @instance
          * @returns {Scrolled}
@@ -144,6 +147,10 @@
         },
         /**
          * Ensures `this.$element` wraps around its content.
+         * 
+         * Related options:
+         * * `horizontal`: if `true` makes sure that the element's width stretches to the width of its content.
+         * * `grid_layout`: disables the above stretching.
          * 
          * @memberOf Scrolled
          * @instance
