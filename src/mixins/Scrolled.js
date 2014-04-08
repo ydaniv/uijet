@@ -13,7 +13,6 @@
      * 
      * @class Scrolled
      * @extends uijet.BaseWidget
-     * @mixin
      */
     uijet.Mixin('Scrolled', {
         scrolled            : true,
