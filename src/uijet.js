@@ -1698,7 +1698,8 @@
          * @returns {uijet}
          */
         destroyContained    : function (id) {
-            var _contained, l, _w;
+            var args = arraySlice.call(arguments, 1),
+                _contained, l, _w;
             // find `id`
             if ( id in widgets ) {
                 // get the ids of its contained child widgets
@@ -1709,7 +1710,7 @@
                     if ( _contained[l] in widgets ) {
                         // and destroy
                         _w = widgets[_contained[l]].self;
-                        _w.destroy();
+                        _w.destroy.apply(_w, args);
                     }
                 }
             }

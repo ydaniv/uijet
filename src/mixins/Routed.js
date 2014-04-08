@@ -50,7 +50,7 @@
         destroy         : function () {
             this.notify(true, 'pre_destroy');
             this.unregisterRoutes()
-                ._super();
+                ._super.apply(this, arguments);
             return this;
         },
         /**

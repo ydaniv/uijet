@@ -147,7 +147,7 @@
                 }
             }
 
-           baseDestroy.call(this);
+           baseDestroy.apply(this, arguments);
 
             delete this.resource;
         }
