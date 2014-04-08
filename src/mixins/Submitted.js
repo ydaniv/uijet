@@ -7,8 +7,23 @@
         factory(uijet);
     }
 }(function (uijet) {
+
+    /**
+     * Scrolled mixin class.
+     * 
+     * @class Submitted
+     * @extends uijet.BaseWidget
+     */
     uijet.Mixin('Submitted', {
         submitted       : true,
+        /**
+         * Submits the element's serialized data.
+         * The data is first validated and then either published as a route,
+         * or sent as an XHR to a remote URI.
+         * 
+         * @param {Object} [request_data]
+         * @returns {Promise}
+         */
         // ### widget.submit
         // @sign: submit([request_data])  
         // @return: this OR uijet.xhr()
