@@ -434,6 +434,7 @@
     function Base () {
         this.signals_cache = {};
         this.signals = Object.create(this.signals_cache);
+        this._memoize_signal_args = {};
     }
 
     /**
@@ -537,6 +538,26 @@
                 once && (this.signals[topic] = null);
                 return handler.apply(this, args);
             }
+        },
+        //TODO: add docs to holdSignal
+        holdSignal     : function (topic) {
+            this.signals[topic] = function () {
+                var args = arraySlice.call(arguments);
+                args.unshift(topic);
+                if ( this.signals.hasOwnProperty(topic) && this.signals[topic] === null ) {
+                    args.unshift(true);
+                }
+                this._memoize_signal_args[topic] = args;
+            };
+        },
+        //TODO: add docs to releaseSignal
+        releaseSignal   : function (topic) {
+            var args;
+            if ( args = this._memoize_signal_args[topic] ) {
+                delete this.signals[topic];
+                delete this._memoize_signal_args[topic];
+            }
+            return this.notify.apply(this, args || arguments);
         },
         /**
          * Registers the given handler under the given type `topic`.
