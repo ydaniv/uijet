@@ -539,18 +539,39 @@
                 return handler.apply(this, args);
             }
         },
-        //TODO: add docs to holdSignal
+        /**
+         * Holds a signal's handler from being triggered.
+         * 
+         * @memberOf uijet.Base
+         * @instance
+         * @param {string} topic - the name of the signal to hold.
+         * @returns {uijet.Base}
+         */
         holdSignal     : function (topic) {
             this.signals[topic] = function () {
                 var args = arraySlice.call(arguments);
+                // add topic to arguments
                 args.unshift(topic);
+                // if this topic is set to `null` then it's `once` call
                 if ( this.signals.hasOwnProperty(topic) && this.signals[topic] === null ) {
+                    // add `true` to arguments for `once`
                     args.unshift(true);
                 }
+                // remember the arguments we used
                 this._memoize_signal_args[topic] = args;
             };
+            return this;
         },
-        //TODO: add docs to releaseSignal
+        /**
+         * Releases and triggers a held signal.
+         * The handler is invoked with the arguments it was provided
+         * with on previous calls to {@link Base#notify} with same `topic`.
+         * 
+         * @memberOf uijet.Base
+         * @instance
+         * @param {string} topic - the signal to release and trigger.
+         * @returns {*} - the result of signal handler's call.
+         */
         releaseSignal   : function (topic) {
             var args;
             if ( args = this._memoize_signal_args[topic] ) {
