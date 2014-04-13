@@ -40,8 +40,8 @@
                 //TODO: TBD
                 return this;
             },
-            runRoute        : function (route, is_inner) {
-                is_inner ? Router.dispatch('on', route) : Router.setRoute(route);
+            runRoute        : function (route, is_silent) {
+                is_silent ? Router.dispatch('on', route) : Router.setRoute(route);
                 return this;
             }
         });
