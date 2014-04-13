@@ -1,4 +1,3 @@
-// ### AMD wrapper
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet', 'director'], function (uijet) {
