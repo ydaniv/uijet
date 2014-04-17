@@ -11,8 +11,8 @@
         generate: function () {
             return this.template(this.getContext());
         },
-        compile : function (template, options) {
-            return _.template(template, null, options);
+        compile : function (template) {
+            return _.template(template, null, this.options.compile_options);
         }
     }, uijet.BaseWidget.prototype);
 
