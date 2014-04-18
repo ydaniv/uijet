@@ -14,8 +14,8 @@
     /**
      * Router adapter for the Backbone.js router
      * 
-     * @module modules/router/backbone
-     * @augments uijet
+     * @module module:router/backbone
+     * @extends uijet
      * @see {@link http://http://backbonejs.org/#Router|Backbone.Router}
      * @param {Object} router - an instance of the Backbone.Router or a config object for its initialization.
      */
@@ -27,7 +27,7 @@
             /**
              * Registers a route to be handled by a given `Routed` `widget` instance.
              *
-             * @instance
+             * @method module:router/backbone#setRoute
              * @param {Object} widget - the widget instance that will intercept this route.
              * @param {string} [route] - the route to register to. Defaults to calling `widget.getRoute()`.
              * @param {string|function} [callback] - key that maps to a method of the widget or the router, or a function,
@@ -64,7 +64,7 @@
             /**
              * Removes a registered route.
              * 
-             * @instance
+             * @method module:router/backbone#unsetRoute
              * @param {string} route - a route that is registered on the router.
              * @returns {uijet}
              * @see {@link http://backbonejs.org/#Router|Backbone.Router#off}
@@ -82,7 +82,7 @@
             /**
              * Executes a handler for a given `route`.
              * 
-             * @instance
+             * @method module:router/backbone#runRoute
              * @param {string} route - the route to execute.
              * @returns {uijet}
              * @see {@link http://backbonejs.org/docs/backbone.html#section-195|Backbone.History#loadUrl}
@@ -94,7 +94,7 @@
             /**
              * Delegates to the Backbone Router's `navigate()`.
              * 
-             * @instance
+             * @method module:router/backbone#navigate
              * @returns {uijet}
              * @see {@link http://http://backbonejs.org/#Router-navigate|Backbone.Router#navigate}
              */
