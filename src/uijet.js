@@ -1192,11 +1192,11 @@
                             args = _resources[res];
                             // a value in the `resources` option can also be an tuple of the class and initial state
                             if ( isArr(args) ) {
-                                args.unshift(_res);
+                                args.unshift(res);
                                 this.Resource.apply(this, args);
                             }
                             else {
-                                this.Resource(_res, args);
+                                this.Resource(res, args);
                             }
                         }
                     }
@@ -1214,12 +1214,12 @@
                         .then(function () {
                             // build and init declared widgets
                             // notice that here all modules are already loaded so this will run through
-                            that.start(declared_widgets, true);
+                            this.start(declared_widgets, true);
 
                             //when all declared widgets are initialized, set `uijet.initialized` to `true`
-                            that.initialized = true;
+                            this.initialized = true;
                             // kick-start the GUI - unless ordered not to
-                            _options.dont_start || that.startup();
+                            _options.dont_start || this.startup();
                         }.bind(this));
                 }
                 // no options given
