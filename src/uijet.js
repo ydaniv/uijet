@@ -1130,6 +1130,8 @@
          * Valid options:
          * 
          * * `element`: {string|HTMLElement} the container element of the application. Defualts to `'body'`.
+         * * `app_events`: {Object} a map of names of app events to subscribe to, to their handlers.
+         * * `resources`: {Object} a map of names of resources to register, to their classes, or a tuple of the class and initial state.
          * * `dont_cover`: {boolean} whether to instruct the app's container to stretch across the entire viewport. Defaults to `false`.
          * * `dont_start`: {boolean} whether to call `uijet.startup()` and kick-start the UI. Defaults to `false`.
          * * `dont_wake`: {boolean} whether to call `wake()` on all top level widgets. Defaults to `false`.
@@ -1142,9 +1144,7 @@
         init                : function (options) {
             // wrap the actuall initialization function
             var _init = function (_options) {
-                var _methods = {},
-                    that = this,
-                    k, task, q;
+                var task, q, _resources, _app_events;
                 this.options = _options || {};
                 // set top container
                 this.$element = this.$(this.options.element || 'body');
@@ -1184,6 +1184,31 @@
                         this.init_queue = [{}];
                     }
 
+                    // register all resources
+                    if ( _resources = _options.resources ) {
+                        var res, args;
+                        // `resources` option is a map of resource registry name to its class
+                        for ( res in _resources ) {
+                            args = _resources[res];
+                            // a value in the `resources` option can also be an tuple of the class and initial state
+                            if ( isArr(args) ) {
+                                args.unshift(_res);
+                                this.Resource.apply(this, args);
+                            }
+                            else {
+                                this.Resource(_res, args);
+                            }
+                        }
+                    }
+
+                    // subscribe to all evets
+                    if ( _app_events = _options.app_events ) {
+                        var e;
+                        for ( e in _app_events ) {
+                            this.subscribe(e, _app_events[e]);
+                        }
+                    }
+
                     // after all tasks resolve
                     this.whenAll( this.init_queue )
                         .then(function () {
@@ -1195,7 +1220,7 @@
                             that.initialized = true;
                             // kick-start the GUI - unless ordered not to
                             _options.dont_start || that.startup();
-                        });
+                        }.bind(this));
                 }
                 // no options given
                 else {
