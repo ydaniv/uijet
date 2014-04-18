@@ -11,16 +11,18 @@
     }
 }(function (uijet) {
 
-    if ( ! uijet.BaseWidget.prototype.compile ) {
+    if ( ! uijet.BaseWidget.prototype.generate ) {
         uijet.use({
             /**
-             * Stub for template compilation, to be implemented by the engine module.
+             * Generates an HTML string from a template.
              * 
-             * @param {string} template - a template string.
-             * @returns {string} - the `template` argument.
+             * @see {@link uijet.utils#format}
+             * @memberOf BaseWidget
+             * @instance
+             * @returns {string} - generated html string.
              */
-            compile: function (template) {
-                return template;
+            generate: function () {
+                return uijet.utils.format(this.template, this.getContext());
             }
         }, uijet.BaseWidget.prototype);
     }
@@ -208,7 +210,7 @@
                 requests.push(uijet.xhr(this.template_url)
                     .then(function (response) {
                         // cache result
-                        that.template = that.compile(response);
+                        that.template = that.compile ? that.compile(response) : response;
                     }));
 
                 // if we need to fetch partial templates
