@@ -11,7 +11,7 @@
      * Handlebars engine module.
      * 
      * @module engine/handlebars
-     * @extends uijet
+     * @extends BaseWidget
      * @see {@link http://handlebarsjs.com/}
      * @exports Handlebars
      */

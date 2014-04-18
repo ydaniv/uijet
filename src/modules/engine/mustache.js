@@ -11,7 +11,7 @@
      * Mustache engine module.
      * 
      * @module engine/mustache
-     * @extends uijet
+     * @extends BaseWidget
      * @see {@link https://github.com/janl/mustache.js/#usage}
      * @exports Mustache
      */

@@ -11,7 +11,7 @@
      * Lodash engine module.
      * 
      * @module engine/lodash
-     * @extends uijet
+     * @extends BaseWidget
      * @see {@link http://lodash.com/docs#template}
      * @exports lodash
      */
