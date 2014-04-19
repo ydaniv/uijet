@@ -8,7 +8,21 @@
     }
 }(this, function (uijet, $, root) {
     $ = $ || root.Zepto;
+    /**
+     * Zepto dom module.
+     * 
+     * @module dom/zepto
+     * @extends uijet
+     * @see {@link http://zeptojs.com/}
+     * @exports Zepto
+     */
     uijet.use({
+        /**
+         * Reference to Zepto.
+         * 
+         * @see {@link http://zeptojs.com/}
+         * @method module:dom/zepto#$
+         */
         $   : $
     }, uijet);
 

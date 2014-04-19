@@ -7,7 +7,21 @@
         factory(uijet, root.jQuery);
     }
 }(this, function (uijet, $) {
+    /**
+     * jQuery dom module.
+     * 
+     * @module dom/jquery
+     * @extends uijet
+     * @see {@link http://api.jquery.com/}
+     * @exports jQuery
+     */
     uijet.use({
+        /**
+         * Reference to jQuery.
+         * 
+         * @see {@link http://api.jquery.com/}
+         * @method module:dom/jquery#$
+         */
         $   : $
     }, uijet);
 
