@@ -9,7 +9,24 @@
 }(this, function (uijet, $, root) {
     $ = $ || root.Zepto;
 
+    /**
+     * Zepto xhr module.
+     * 
+     * @module xhr/zepto
+     * @extends uijet
+     * @see {@link http://zeptojs.com/#$.ajax}
+     * @exports Zepto
+     */
     uijet.use({
+        /**
+         * Sends an XHR via {@link http://zeptojs.com/#$.ajax}.
+         * Maps `success`, `error` and `complete` options to
+         * `done`, `fail` and `always` of the returned Promise.
+         * 
+         * @param {string|Object} url - remote URI to query, or a config object for `Zepto.ajax()`.
+         * @param {Object} [options] - config object for `Zepto.ajax()`.
+         * @returns {Promise}
+         */
         xhr : function (url, options) {
             var deferred = uijet.Promise(),
                 promise = deferred.promise(),
@@ -26,7 +43,7 @@
                 // add it to `_options`
                 _options.url = url;
             }
-            // if  `url` is an `Object` then use it as the config instead of `options`
+            // if `url` is an `Object` then use it as the config instead of `options`
             else if ( uijet.utils.isObj(url) ) {
                 options = url;
             }
