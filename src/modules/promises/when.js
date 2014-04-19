@@ -6,9 +6,27 @@
     } else {
         factory(uijet, root.when);
     }
-}(this, function (uijet, when, undefined) {
+}(this, function (uijet, when) {
 
+    /**
+     * when.js promises module.
+     * 
+     * @module promises/when
+     * @extends uijet
+     * @see {@link https://github.com/cujojs/when/wiki}
+     * @exports when
+     */
     uijet.use({
+        /**
+         * Returns a deferred object.
+         * 
+         * **note**: for the sake of interoperability `promise` property is converted into a
+         * method and a `state()` method is added which follows the spec of {@link http://api.jquery.com/deferred.state/}.
+         * 
+         * @method module:promises/when#Promise
+         * @see {@link https://github.com/cujojs/when/blob/master/docs/api.md#whendefer}
+         * @returns {deferred} - a "deferred" object.
+         */
         Promise     : function () {
 
             var deferred = when.defer(),
@@ -33,9 +51,36 @@
 
             return deferred;
         },
+        /**
+         * Returns a Promise that is resolved once all
+         * Promises in the `promises` list are resolved,
+         * or rejected if one of those is rejected.
+         * 
+         * @method module:promises/when#whenAll
+         * @see {@link https://github.com/cujojs/when/blob/master/docs/api.md#whenall}
+         * @param {*[]} promises - array of Promises and/or values.
+         * @returns {Promise}
+         */
         whenAll     : when.all,
+        /**
+         * Converts any given argument into a Promise.
+         * If that argument is a Promise it returns it.
+         * 
+         * @method module:promises/when#when
+         * @see {@link https://github.com/cujojs/when/blob/master/docs/api.md#when}
+         * @param {*} value - value or promise to convert into a Promise.
+         * @returns {Promise}
+         */
         when        : when,
-        isPromise   : when.isPromise
+        /**
+         * Whether the given `obj` argument is Promise-like object.
+         * 
+         * @method module:promises/when#isPromise
+         * @see {@link https://github.com/cujojs/when/blob/master/docs/api.md#whenispromiselike}
+         * @param {*} obj - argument to check.
+         * @returns {boolean}
+         */
+        isPromise   : when.isPromiseLike
     }, uijet, when);
 
     return when;
