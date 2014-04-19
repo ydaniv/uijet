@@ -57,8 +57,9 @@
          */
         when        : Q.when,
         /**
-         * Converts any given argument into a Promise.
-         * If that argument is a Promise it returns it.
+         * Returns a Promise that is resolved once all
+         * Promises in the `promises` list are resolved,
+         * or rejected if one of those is rejected.
          * 
          * @method module:promises/q#when
          * @see {@link https://github.com/kriskowal/q/wiki/API-Reference#promiseall}
