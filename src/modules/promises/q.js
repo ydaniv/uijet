@@ -7,8 +7,25 @@
         factory(uijet, root.Q);
     }
 }(this, function (uijet, Q) {
-
+    /**
+     * Q promises module.
+     * 
+     * @module promises/q
+     * @extends uijet
+     * @see {@link https://github.com/kriskowal/q#resources}
+     * @exports Q
+     */
     uijet.use({
+        /**
+         * Returns a deferred object.
+         * 
+         * **note**: for the sake of interoperability `promise` property is converted into a
+         * method and a `state()` method is added which follows the spec of {@link http://api.jquery.com/deferred.state/}.
+         * 
+         * @method module:promises/q#Promise
+         * @see {@link https://github.com/kriskowal/q/wiki/API-Reference#qdefer}
+         * @returns {deferred} - a "deferred" object.
+         */
         Promise     : function () {
 
             var deferred = Q.defer(),
@@ -29,9 +46,36 @@
 
             return deferred;
         },
+        /**
+         * Converts any given argument into a Promise.
+         * If that argument is a Promise it returns it.
+         * 
+         * @method module:promises/q#when
+         * @see {@link https://github.com/kriskowal/q/wiki/API-Reference#promise-methods}
+         * @param {*} value - value or promise to convert into a Promise.
+         * @returns {Promise}
+         */
         when        : Q.when,
+        /**
+         * Converts any given argument into a Promise.
+         * If that argument is a Promise it returns it.
+         * 
+         * @method module:promises/q#when
+         * @see {@link https://github.com/kriskowal/q/wiki/API-Reference#promiseall}
+         * @param {*[]} promises - array of Promises and/or values.
+         * @returns {Promise}
+         */
         whenAll     : Q.all,
-        isPromise   : Q.isPromise
+        /**
+         * Whether the given `obj` argument is a Promise.
+         * 
+         * @method module:promises/q#isPromise
+         * @param {*} obj - argument to check.
+         * @returns {boolean}
+         */
+        isPromise   : function (obj) {
+            return Q.isPromise(obj) || Q.isPromiseAlike(obj);
+        }
     }, uijet, Q);
 
     return Q;
