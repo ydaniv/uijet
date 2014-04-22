@@ -13,6 +13,16 @@
     }
 }(this, function (uijet, rivets) {
 
+    /**
+     * Rivets-Backbone binding module.
+     * 
+     * @module binding/rivets-backbone
+     * @extends BaseWidget
+     * @see {@link http://www.rivetsjs.com/docs/}
+     * @see {@link http://backbonejs.org/}
+     * @exports Rivets
+     */
+
     /*
      * Configure rivets to work with Backbone.js
      */
@@ -48,8 +58,22 @@
         }
     };
 
-    var base_widget_proto = uijet.BaseWidget.prototype, baseRegister = base_widget_proto.register, baseDestroy = base_widget_proto.destroy;
+    var base_widget_proto = uijet.BaseWidget.prototype,
+        baseRegister = base_widget_proto.register,
+        baseDestroy = base_widget_proto.destroy;
 
+    /**
+     * Triggers data binding on `init()`.
+     * 
+     * #### Related options:
+     * 
+     * * `dont_bind`: if `true` prevents from `bindData()` to be invoked here during `init()` stage.
+     * If this instance is `templated` then `bindData()` is never called here.
+     * 
+     * @memberOf module:binding/rivets-backbone.BaseWidget
+     * @instance
+     * @returns {uijet.BaseWidget}
+     */
     base_widget_proto.register = function () {
         baseRegister.call(this);
 
@@ -60,6 +84,14 @@
         return this;
     };
 
+    /**
+     * Unbinds the data from the view
+     * 
+     * @see {@link http://www.rivetsjs.com/docs/}
+     * @memberOf module:binding/rivets-backbone.BaseWidget
+     * @instance
+     * @returns {uijet.BaseWidget}
+     */
     base_widget_proto.destroy = function () {
         if ( this.rv_view ) {
             this.rv_view.unbind();
@@ -69,6 +101,13 @@
     };
 
     uijet.use({
+        /**
+         * Binds the data to the view.
+         * 
+         * @see {@link http://www.rivetsjs.com/docs/}
+         * @method module:binding/rivets-backbone#bindData
+         * @returns {uijet}
+         */
         bindData: function () {
             var observables = uijet.utils.returnOf(this.options.observe, this),
                 k, observable;
