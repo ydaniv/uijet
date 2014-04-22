@@ -57,7 +57,8 @@
         /**
          * Initializes options related to dragging.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `dont_translate`: if `true` uijet will use `top`/`left` style attributes instead of `transform:translate`.
          * * `keep_position`: whether to keep the dragged element's position after drop.
          * 
@@ -90,7 +91,8 @@
          * Binds the drag handler, unless the `dont_auto_drag`
          * option is `true`.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `dont_auto_drag`: if `true` the drag handler will not be automatically bound.
          * 
          * @memberOf Dragged
@@ -109,7 +111,8 @@
          * Unbinds the drag handler, unless the `dont_auto_drag`
          * option is `true`.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `dont_auto_drag`: if `true` the drag handler will not be unbound automatically.
          * 
          * @memberOf Dragged
@@ -166,14 +169,16 @@
         /**
          * Handler for the drag start event.
          * 
-         * Related options:
-         * * `drag_delay`: amounts of miliseconds to wait before actually starting the drag. Defaults to `150`.
+         * #### Related options:
+         * 
+         * * `drag_delay`: amounts of milliseconds to wait before actually starting the drag. Defaults to `150`.
          * * `drag_clone`: whether to clone the dragged element. Useful for "copying" operations.
          * * `drag_parent`: query selector for the element that will be used to contain the dragging action.
          * * `drag_once`: if `true` the drag start handler will not be automatically re-bound.
          * * `drag_contain`: if `true` then dragging will only be allowed inside the parent element of the draggee.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_drag_init`: triggered after drag event was triggered but before preconditions for dragging (i.e. delay) were met.
          * . Takes start event object, the wrapped draggee element, and the start position object as `{x, y, left, top}`.
          * * `pre_drag_start`: triggered before dragging is started but after preconditions for dragging (i.e. delay) were met.
@@ -392,7 +397,8 @@
         /**
          * Initializes the draggee element.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `drag_parent`: query selector for the element that will be used to contain the dragging action.
          * 
          * @memberOf Dragged
@@ -426,7 +432,8 @@
         /**
          * Gets the element to use as target for the dragging action.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `drag_element`: an element, query selector, or a function that retuns those, which will be used
          * as the dragging target. Defaults to top container of the instance's element.
          * 
@@ -544,7 +551,8 @@
         /**
          * Sets the boundaries for dragging contained draggee.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `drag_contain`: whether to contain the drag.
          * 
          * @memberOf Dragged

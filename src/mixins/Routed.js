@@ -16,6 +16,7 @@
      * other widgets to run routes.
      */
     /**
+     * Extends {@link BaseWidget} with the ability to trigger routes.
      * 
      * @augments uijet.BaseWidget
      */
@@ -69,7 +70,8 @@
         /**
          * Registers all routes.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `alias_routes`: list of additional routes that will be registered as alias of this instance's route.
          * 
          * @returns {*}
@@ -87,7 +89,8 @@
         /**
          * Unregisters all routes.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `alias_routes`: all aliases registered with this instance that will be unregistered.
          * 
          * @memberOf Routed

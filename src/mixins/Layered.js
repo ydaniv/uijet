@@ -63,7 +63,8 @@
          * Sets this instance as the current top layer among its siblings
          * that share same DOM parent element.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `keep_layer_awake`: if set on a sibling widget instance, that instance will not be put to {@link Layered#sleep} once
          * this instance awakes.
          * 

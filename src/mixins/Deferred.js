@@ -19,7 +19,8 @@
         /**
          * Wraps the `wake()` call with a promise that defers it.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `promise`: a promise object, or a function that returns one, that once resolved invokes `wake()`.
          * If it's a function it takes the `context` argument as param.
          * 

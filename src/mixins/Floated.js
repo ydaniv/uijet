@@ -54,7 +54,8 @@
         /**
          * Positions the floating element.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `float_position`: an `Object` or `string` representing the position to use for the element.
          * 
          * @memberOf Floated

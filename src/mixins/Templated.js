@@ -39,7 +39,8 @@
          * Starts loading the template.
          * Builds the URL to fetch the template from options.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `dont_auto_fetch_template`: if `true` will not load the template file on `init()`.
          * 
          * @memberOf Templated
@@ -65,14 +66,16 @@
          * It is also possible to defer the end of rendering till after all
          * content images have been fully loaded using the `defer_images` option.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_render`: triggered after content is generated but before old contents of `this.$element` is removed.
          * Takes the generated HTML string.
          * * `pre_html_insert`: triggered before content is inserted into the element. Takes the generated HTML string.
          * If it returns `false` then content insertion will be skipped.
          * * `post_render`: triggered at the end.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `insert_before`: an element, or a query selector, to insert the rendered content before. By default
          * content is appended to the end `this.$element`'s contents.
          * * `defer_images`: if truthy it invokes {@link Templated#deferLoadables} and the returned `Promise`
@@ -179,15 +182,18 @@
         /**
          * Loads the template(s).
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `fetch_template_error`: 
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `template_name`: name of the template file to load. Defaults to `this.id`.
          * * `partials`: list of file names of partials to load. 
          * * `partials_dir`: if the partial fields are nested set this to the name of the dir that contains them.
          * 
-         * Related uijet options:
+         * #### Related uijet options:
+         * 
          * * `templates_path`: path for the templates directory.
          * * `templates_extension`: extension for the template files.
          * 

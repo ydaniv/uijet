@@ -21,7 +21,8 @@
          * The data is first validated and then either published as a route,
          * or sent as a request to a remote URI.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_submit`: triggered after validation passed. Optionally may return a context object passed on as an
          * argument to {@link Submitted#getSubmitUrl}.
          * * `post_submit_data`: triggered in the success handler for the (XHR) submission request.
@@ -31,13 +32,15 @@
          * * `not_valid`: triggered after validation failed. Takes the failure object of failing field(s) and message(s)
          * and the the data submitted for validation.
          * 
-         * App events:
+         * #### App events:
+         * 
          * * `<this.id>.submitted`: published if there's no `submit_url` or if `route_submit` is `true` and
          * router module is not loaded. Takes the serialized data.
          * * `<this.id>.post_submit_data`: published at the end of a successful response of a submission via request.
          * Takes the response object.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `route_submit`: if `true` attempts to submit the serialized data via routing, if a router module is loaded.
          * If not it will fallback to publishing an event named `<this.id>.submitted` with the serialized data.
          * * `submit_xhr_config`: a config object to override config of the XHR sent on submission.
@@ -110,7 +113,8 @@
          * Sets {@link Submitted#getSerialized} with the `serializer` option.
          * This function will serialize the instance.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `serializer`: `function` that serializes the instance and returns the data.
          * 
          * @memberOf Submitted
@@ -131,7 +135,8 @@
          * Every function should return a `string` of error message in case of failure, otherwise
          * it's considered valid.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `validators`: map of field names to validation functions. Each function should return an
          * error message string in case of validation error, otherwise it is considered passed.
          * 
@@ -191,7 +196,8 @@
          * Takes an optional context to use for parsing the URI, defaults to
          * the `context` of the instance.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `submit_url`: a URI to submit the data to. This can be a `string`, an `Object` in the
          * form of `{ path: String, method: String}` ({@see uijet.utils#parseRestUrl}), a template to format or
          * `function` returning one of the above.
@@ -212,7 +218,8 @@
          * Serializes the instance's state and returns the data.
          * This is just a stub that needs to be implemented and set to the `serializer` option.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `serializer`: a function that will serialize the state and will be used instead of this stub.
          * 
          * @memberOf Submitted

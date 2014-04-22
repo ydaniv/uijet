@@ -22,9 +22,10 @@
          * Automatically start preloading assets, unless instructed
          * not to via `dont_preload` option.
          * 
-         * *Note*: {@link Preloaded#preload} is invoked before `_super()` is called.
+         * **note**: {@link Preloaded#preload} is invoked before `_super()` is called.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `dont_preload`: unless set to `true`, the instance will automatically call {@link Preloaded#preload} on `init()`.
          * 
          * @memberOf Preloaded
@@ -41,11 +42,13 @@
          * Preloads a list of assets.
          * 
          * Currently, only images are supported, with the following extensions:
+         * 
          * * jpg/jpeg
          * * png
          * * gif
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `assets`: list of URLs for assets to preload.
          * 
          * @memberOf Preloaded
@@ -73,7 +76,8 @@
          * Loads an image specified by `path`, and returns a promise
          * for this action.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `preload_img_el`: whether to use an `<img>` element to preload.
          * Otherwise the `Image` object will be used.
          * Necessary in some less compliant platforms.

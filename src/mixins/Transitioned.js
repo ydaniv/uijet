@@ -19,7 +19,8 @@
         /**
          * Transitions the element into view
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_appear`: triggered at the beginning.
          * 
          * @memberOf Transitioned
@@ -42,7 +43,8 @@
          * Transitions the element out of view or simply hides it
          * if `no_transitions` is truthy.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_disappear`: triggered at the beginning, before the transition starts.
          * 
          * @memberOf Transitioned
@@ -78,7 +80,8 @@
          * Transitions the instance's top container, either into view
          * or out of it, depending on `direction`.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `post_transit`: triggered at end of transition. Takes the `direction` argument.
          * 
          * @memberOf Transitioned
