@@ -23,6 +23,7 @@
          * Maps `success`, `error` and `complete` options to
          * `done`, `fail` and `always` of the returned Promise.
          * 
+         * @method module:xhr/zepto#xhr
          * @param {string|Object} url - remote URI to query, or a config object for `Zepto.ajax()`.
          * @param {Object} [options] - config object for `Zepto.ajax()`.
          * @returns {Promise}

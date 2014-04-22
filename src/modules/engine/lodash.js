@@ -29,7 +29,8 @@
         /**
          * Precompiles a template string to an executable.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `compile_options`: the `options` object argument sent
          * 
          * @see {@link http://lodash.com/docs#template}

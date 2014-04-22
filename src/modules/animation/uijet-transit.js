@@ -37,10 +37,12 @@
          * state and optionally (and by default) turns hardware acceleration on
          * on transitions of this instance.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_prepareelement`: triggered at the beginning of this method.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `animation_type`: the type of animation to use for the transition.
          * * `dont_promote`: whether to prevent promotion of this element to its own layer, aka hardware acceleration.
          * 
@@ -128,7 +130,8 @@
          * @namespace special_animations
          * @memberOf animation/uijet-transit
          * 
-         * Animation types:
+         * #### Animation types:
+         * 
          * * `fold`: folds the element's height from 0 to full height.
          */
         special_animations  : {
@@ -160,7 +163,8 @@
         /**
          * Transitions a widget's element into or out of view.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `animation_type`: type of animation to use. Defaults to `uijet.options.animation_type` which defaults to `fade`.
          * 
          * @memberOf animation/uijet-transit
