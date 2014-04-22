@@ -19,7 +19,7 @@
          * Reference to jQuery.ajax().
          * 
          * @see {@link http://api.jquery.com/jQuery.ajax/}
-         * @method module:dom/jquery#xhr
+         * @method module:xhr/jquery#xhr
          * @returns {Promise}
          */
         xhr :$.ajax

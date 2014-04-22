@@ -58,7 +58,7 @@
          * 
          * @method module:promises/when#whenAll
          * @see {@link https://github.com/cujojs/when/blob/master/docs/api.md#whenall}
-         * @param {*[]} promises - array of Promises and/or values.
+         * @param {Array} promises - array of Promises and/or values.
          * @returns {Promise}
          */
         whenAll     : when.all,

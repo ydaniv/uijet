@@ -44,6 +44,8 @@
          * * `animation_type`: the type of animation to use for the transition.
          * * `dont_promote`: whether to prevent promotion of this element to its own layer, aka hardware acceleration.
          * 
+         * @memberOf animation/uijet-transit.Transitioned
+         * @instance
          * @returns {Transitioned}
          */
         prepareElement  : function () {
@@ -63,6 +65,8 @@
         /**
          * Applies transition out of view.
          * 
+         * @memberOf animation/uijet-transit.Transitioned
+         * @instance
          * @param {boolean} [no_transitions] - whether to suppress the animation.
          * @returns {transitioned}
          */
@@ -96,6 +100,8 @@
         /**
          * Applies `prepareElement()` of this module on `this.$wrapper`.
          * 
+         * @memberOf animation/uijet-transit.Transitioned
+         * @instance
          * @returns {Transitioned}
          * @private
          */
@@ -120,7 +126,7 @@
          * The sandbox module.
          *
          * @namespace special_animations
-         * @memberOf uijet
+         * @memberOf animation/uijet-transit
          * 
          * Animation types:
          * * `fold`: folds the element's height from 0 to full height.
@@ -157,6 +163,7 @@
          * Related options:
          * * `animation_type`: type of animation to use. Defaults to `uijet.options.animation_type` which defaults to `fade`.
          * 
+         * @memberOf animation/uijet-transit
          * @param {Widget} widget - the widget instance to transition.
          * @param {string} [direction] - direction of transition - `'in'` or `'out'`. Defaults to `'in'`.
          * @param {function} [callback] - callback to invoke at end of transition.
@@ -215,6 +222,7 @@
         /**
          * Animates an elements' properties.
          * 
+         * @memberOf animation/uijet-transit
          * @param {HTMLElement[]} $el - wrapped HTMLElement to animate.
          * @param {string|Object} props - valid CSS text to set on the element's style, or a map of style properties.
          * @param {function} [callback] - callback to run at the end of the animation.

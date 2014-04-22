@@ -61,9 +61,9 @@
          * Promises in the `promises` list are resolved,
          * or rejected if one of those is rejected.
          * 
-         * @method module:promises/q#when
+         * @method module:promises/q#whenAll
          * @see {@link https://github.com/kriskowal/q/wiki/API-Reference#promiseall}
-         * @param {*[]} promises - array of Promises and/or values.
+         * @param {Array} promises - array of Promises and/or values.
          * @returns {Promise}
          */
         whenAll     : Q.all,

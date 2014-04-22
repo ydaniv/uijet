@@ -30,7 +30,7 @@
          * 
          * @method module:promises/jquery#whenAll
          * @see {@link http://api.jquery.com/jQuery.when/}
-         * @param {*[]} promises - array of Promises and/or values.
+         * @param {Array} promises - array of Promises and/or values.
          * @returns {Promise}
          */
         whenAll     : function (promises) {

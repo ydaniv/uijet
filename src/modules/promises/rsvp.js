@@ -67,7 +67,7 @@
          * 
          * @method module:promises/rsvp#whenAll
          * @see {@link https://github.com/tildeio/rsvp.js/#arrays-of-promises}
-         * @param {*[]} promises - array of Promises and/or values.
+         * @param {Array} promises - array of Promises and/or values.
          * @returns {Promise}
          */
         whenAll     : RSVP.all,
