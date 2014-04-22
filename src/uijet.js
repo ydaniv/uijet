@@ -705,6 +705,7 @@
      * with `mixins` and `widgets` keys containing `Array`s of names of mixins and widgets.
      *
      * According to the `deps` argument it behaves as follows:
+     * 
      * * `string` it's assumed to be a name of a mixin.
      * * `Array` it's assumed to be a list of mixin names.
      * * `Object` it's assumed to be a standard dependencies object and its `mixins` and `widgets` keys are normalized to `Array`s.
@@ -850,7 +851,7 @@
     /**
      * Gets the offset of `child` relative to `parent`.
      *
-     * __note__: if `child` is not child of `parent` then the returned result will show only `0`s.
+     * **note**: if `child` is not child of `parent` then the returned result will show only `0`s.
      *
      * @memberOf uijet.utils
      * @param {HTMLElement} child - child element to get its offset.
@@ -1069,7 +1070,7 @@
          * Defines a lazy factory of a widget declaration.
          * This declaration can be re-used to prevent repetition of common properties.
          *
-         * __note__: the config of this declaration is copied to every generated instance so make sure you don't leak references.
+         * **note**: the config of this declaration is copied to every generated instance so make sure you don't leak references.
          *
          * @memberOf uijet
          * @param {string} name - identifier for this widget factory.
@@ -1127,7 +1128,7 @@
          * @param {Object} [options] - configuration object for `uijet`.
          * @returns {uijet}
          * 
-         * Valid options:
+         * #### uijet options:
          * 
          * * `element`: {string|HTMLElement} the container element of the application. Defualts to `'body'`.
          * * `app_events`: {Object} a map of names of app events to subscribe to, to their handlers.
@@ -1567,7 +1568,7 @@
          * * `factory`: a `String` that identifies a widget factory created using `uijet.Factory(factory, ...)`.
          * * `config`: an `Object` that is used as the widget's `options`.
          * 
-         * __note__: For valid instance options see related module.
+         * **note**: For valid instance options see related module.
          * 
          * @memberOf uijet
          * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
@@ -1696,7 +1697,7 @@
          * If the `pre_startup` callback is defined it will run in the beginning.
          * It publishes the `startup` event and wakes all widgets on the root widgets tree.
          * 
-         * __note__: if using your app is contained inside `View` widgets, then you probably
+         * **note**: if using your app is contained inside `View` widgets, then you probably
          * want to set `options.dont_wake = true` so they will be awaken by the router.
          * 
          * @memberOf uijet

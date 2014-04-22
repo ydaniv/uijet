@@ -42,7 +42,8 @@
         /**
          * Needed for caching the initial active view.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `state`: if set to `'current'` then caches this instance as the currently active view.
          * 
          * @memberOf View

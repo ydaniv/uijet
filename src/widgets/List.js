@@ -24,7 +24,8 @@
         /**
          * If `initial` options is set calls {@link List#click} event on it.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `initial`: 
          * 
          * @memberOf List
@@ -44,7 +45,8 @@
          * Adds list related classes to `this.$element` and binds
          * {@link List#click} to a selection event on it.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `item_selector`: a query selector that states an item in the list. Defaults to `'li'`.
          * * `click_target`: a query selector to delegate the selection event form.
          * * `horizontal`: if `true` adds the `horizontal` class to `this.$element`.
@@ -96,13 +98,15 @@
         /**
          * Handler for items selection event.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_select`: triggered in the beginning. Takes the wrapped selected item and event object as arguments.
          *     * If it returns `false` the `<this.id>.selected` event and `post_select` signals will not be triggered.
          *     * If it returns any other defined value, that value will be used as the data argument passed to the `<this.id>.selected` event handler.
          * * `post_select`: triggered at the end. Takes the wrapped selected item and event object as arguments.
          * 
-         * App Events:
+         * #### App Events:
+         * 
          * * `<this.id>.selected`: takes the result of {@link List#getTransfer} or
          * 
          * @memberOf List
@@ -174,7 +178,7 @@
         getTransfer     : function ($selected) {
             return $selected;
         },
-        /*
+        /**
          * Deletes reference to `this.$selected`.
          * 
          * @memberOf List

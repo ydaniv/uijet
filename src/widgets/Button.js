@@ -22,7 +22,8 @@
         /**
          * Binds the {@link Button#click} handler and handles initial state.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `disabled`: whether this button is initially disabled.
          * * `click_event`: space separated event types to use for binding the {@link Button#click}.
          * 
@@ -68,11 +69,13 @@
         /**
          * A handler for a selection event (e.g. `click`).
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_click`: if not disabled triggered before publishing events. If it returns `false`
          * events will not be published. 
          * 
-         * App Events:
+         * #### App Events:
+         * 
          * * `<this.id>.clicked`: the DOM event is translated into an app event, passed an `Object` with `context` and the
          * `event` object as properties.
          * * `app.clicked`: since default behavior of click event is disabled and propagation is stopped this is used for

@@ -37,7 +37,8 @@
         /**
          * Paints the container and makes sure its hidden.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `darken`: adds the `darken` class to the top container element.
          * 
          * @memberOf Overlay

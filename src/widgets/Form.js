@@ -84,10 +84,12 @@
                  * Delegates `change` event from value changes of child field elements
                  * to an app event publishing.
                  * 
-                 * Related options:
+                 * #### Related options:
+                 * 
                  * * `change_exclude`: list of `name`s, or a function that returns it, of fields to exclude from `change` event delegation. 
                  * 
-                 * App Events:
+                 * #### App Events:
+                 * 
                  * * `<this.id>_<name>.changed`: published when the field with name `name` fires `change` event.
                  * Takes `Object` with `event` obejct and `value`.
                  * 
@@ -137,7 +139,8 @@
          * Triggers `focus` event on the first input, ones the instance
          * appears, unless `dont_focus` option is set to `true`.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `dont_focus`: tells the instance not to focus its first input on appearing.
          * 
          * @memberOf Form
@@ -160,7 +163,8 @@
          * Finds all child elements that match the `error_selector` option,
          * or `.error` as default, and empties them.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `error_selector`: query selector for finding elements containing error messages and emptying them.
          * 
          * @memberOf Form

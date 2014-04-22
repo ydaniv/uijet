@@ -106,7 +106,8 @@
          * `init()` is invoked by uijet when it is `init()`ed itself
          * or when you `start()` a widget ad-hoc.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `post_init`: triggered at the end of this method.
          * 
          * @memberOf BaseWidget
@@ -140,7 +141,7 @@
         /**
          * Registers the widget into uijet's sandbox.
          * 
-         * *Note*: It is recommended to call `this._super()` first thing
+         * **note**: It is recommended to call `this._super()` first thing
          * when overriding this method, to make sure the widget is in the sandbox.
          * 
          * @memberOf BaseWidget
@@ -202,14 +203,16 @@
          * {@link BaseWidget#setContext} if it is an `Object`, to `pre_wake` and
          * `post_wake` signals and to {@link BaseWidget#wakeContained}.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_wake`: triggered before waking of contained widgets, takes `wake()`'s `context` param as argument.
          * If it returns `false` the instance will not call {@link BaseWidget#render}.
          * * `post_wake`: triggered at the end of a successful wake, takes `wake()`'s `context` param as argument.
          * * `wake_failed`: triggered at the end of a failed wake, takes all arguments of the rejected {@link BaseWidget#wakeContained},
          * or `render()` call. If it returns a truthy value `wake()` will be invoked again, otherwise `sleep()`.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `sync`: when `true` a successful starting sequence will only begin once all promises returned by `wake()` calls
          * of all child components are resolved. Otherwise, will start immediately.
          * 
@@ -281,10 +284,12 @@
          * Every contained widget will also be stopped and this
          * will continue trickling down recursively.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `destroy_on_sleep`: if `true` this widget will self destruct when put to sleep.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_sleep`: triggered at the beginning of this instance is awake.
          * * `post_sleep`: triggered at the end of this instance is awake.
          * 
@@ -329,7 +334,8 @@
          * this instance.
          * A *lifecycle method*, destroys the instance and all its contained widgets.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_destroy`: triggered at the beginning.
          * 
          * @memberOf BaseWidget
@@ -366,7 +372,8 @@
         /**
          * Initializes the instance's element.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `type_class`: classes that define the type of the widget's component and are set on the elements `class` attribute.
          * * `extra_class`: space separated class names to be added to the element's `class` attribute.
          * * `position`: `string|Object` to be passed to {@link BaseWidget#position}.
@@ -514,7 +521,8 @@
         /**
          * Placeholder for rendering logic.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_render`: triggered at the beginning.
          * 
          * @memberOf BaseWidget
@@ -529,7 +537,8 @@
          * Makes the instance's element appear in the UI.
          * By default this only calls {@link BaseWidget#_setCloak} which toggles `visibility`.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `pre_appear`: triggered at the beginning.
          * * `post_appear`: triggered at the end.
          * 
@@ -546,7 +555,8 @@
         /**
          * Makes the instance's element disappear from the UI.
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `post_disappear`: triggered at the end.
          * 
          * @memberOf BaseWidget
@@ -677,7 +687,8 @@
          * inside the instance's element.
          * It can also be a function that returns a wrapped element.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `click_event`: space separated event types to use for triggering selection. Defaults to {@link uijet.support.click_events.full}.
          * 
          * @memberOf BaseWidget
@@ -713,7 +724,8 @@
         /**
          * Perform initialization tasks based on `this.options`.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `signals`: {@link BaseWidget#listen}s to each of the specified events.
          * * `dom_events`: prepares all specified DOM events for {@link BaseWidget#bind}ing.
          * * `app_events`: {@link BaseWidget#subscribe}s to each of the specified events.
@@ -762,7 +774,8 @@
          * First attempts to check `options`, then falls back to the element's `id` attribute,
          * then to calling {@link BaseWidget#_generateId}.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `id`: the id to use.
          * 
          * @memberOf BaseWidget
@@ -779,7 +792,8 @@
         /**
          * Sets `this.$element`.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `element`: the element to use as either query selector, element object, wrapped element, or a function returning one of the above.
          * 
          * @memberOf BaseWidget
@@ -816,7 +830,8 @@
          * the instance.
          * This is a the fulfilled handler of `wake()`. 
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `post_wake`: triggered at the end of a successful wake, takes `wake()`'s `context` param as argument.
          * 
          * @param {*} [context] - the context argument passed to {@link BaseWidget#wake}.
@@ -848,7 +863,8 @@
          * If not, `sleep()` is called and the `reason` is returned in a subsequent
          * rejected `Promise`, and the widgets branch will continue to fold back. 
          * 
-         * Signals:
+         * #### Signals:
+         * 
          * * `wake_failed`: triggered at the beginning, takes all arguments of the rejected {@link BaseWidget#wakeContained},
          * or `render()` call.
          * 
@@ -886,7 +902,8 @@
         /**
          * Utility for wrapping the widget's element in a container element.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `dont_wrap`: skips wrapping and sets `$wrapper` to `$element`.
          * * `wrapper_class`: extra class names to be set on the container element.
          * * `wrapper_tag`: a name of a tag to use for the container element. Defaults to `div`.
@@ -936,7 +953,8 @@
         /**
          * Gets the size of a widget's element, taking its child elements into account.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `horizontal`: controls size calculation - height of a single child element and width of all children 
          * when `true`, or vise versa if falsy.
          * 
@@ -1011,7 +1029,8 @@
          * e.g. results from calling {@link BaseWidget#render}, meaning all that's *not* in
          * `$original_children`, set by {@link BaseWidget#_saveOriginal} on {@link BaseWidget#init}.
          * 
-         * Related options:
+         * #### Related options:
+         * 
          * * `extend_rendered`: set to `true` if you wish to keep the content with every render.
          * 
          * @memberOf BaseWidget
