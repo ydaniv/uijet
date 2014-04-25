@@ -15,16 +15,21 @@
      * @see {@link https://github.com/flatiron/director|Director}
      * @param {Object} router - an instance of `Router` or a config object for its initialization.
      * @param {Object} [config] - configuration object for {@link https://github.com/flatiron/director#configuration|`Router.configure`}.
+     * @param {string} [initial] - initial route to redirect to {@link https://github.com/flatiron/director#initredirect|`Router.init(redirect)`}.
      * @exports module:router/director
      */
-    return function (router, config) {
+    return function (router, config, initial) {
         var _router = router instanceof root.Router ? router : new root.Router(router);
 
-        if ( config ) {
-            _router.configure(config).init();
+        if ( config && typeof config == 'object' ) {
+            _router.configure(config);
         }
-        else if ( ! _router.handler ) {
-            _router.init();
+
+        if ( ! _router.handler ) {
+            if ( typeof config == 'string' ) {
+                initial = config;
+            }
+            _router.init(initial);
         }
 
         uijet.use({
