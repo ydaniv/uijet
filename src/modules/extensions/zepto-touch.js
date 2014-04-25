@@ -7,6 +7,15 @@
         factory(uijet);
     }
 }(this, function (uijet) {
+    /**
+     * Zepto touch extension module.
+     * 
+     * Loads the Zepto touch module and sets the default
+     * click event to `tap`.
+     * 
+     * @module extension/zepto-touch
+     * @see {@link http://zeptojs.com/#touch}
+     */
     if ( uijet.support.touch ) {
         uijet.support.click_events.full = 'tap';
     }
