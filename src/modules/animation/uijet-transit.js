@@ -22,8 +22,6 @@
         // get the Transitioned mixin
         transitioned = uijet.Mixin('Transitioned');
 
-    // 
-    // on the top element
     /**
      * Extends the Transitioned mixin to leverage this
      * animation module.
@@ -125,10 +123,8 @@
 
     uijet.use({
         /**
-         * The sandbox module.
-         *
          * @namespace special_animations
-         * @memberOf animation/uijet-transit
+         * @memberOf module:animation/uijet-transit
          * 
          * #### Animation types:
          * 
@@ -167,7 +163,7 @@
          * 
          * * `animation_type`: type of animation to use. Defaults to `uijet.options.animation_type` which defaults to `fade`.
          * 
-         * @memberOf animation/uijet-transit
+         * @memberOf module:animation/uijet-transit
          * @param {Widget} widget - the widget instance to transition.
          * @param {string} [direction] - direction of transition - `'in'` or `'out'`. Defaults to `'in'`.
          * @param {function} [callback] - callback to invoke at end of transition.
@@ -226,7 +222,7 @@
         /**
          * Animates an elements' properties.
          * 
-         * @memberOf animation/uijet-transit
+         * @memberOf module:animation/uijet-transit
          * @param {HTMLElement[]} $el - wrapped HTMLElement to animate.
          * @param {string|Object} props - valid CSS text to set on the element's style, or a map of style properties.
          * @param {function} [callback] - callback to run at the end of the animation.
