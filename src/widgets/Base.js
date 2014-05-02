@@ -907,6 +907,7 @@
          * * `dont_wrap`: skips wrapping and sets `$wrapper` to `$element`.
          * * `wrapper_class`: extra class names to be set on the container element.
          * * `wrapper_tag`: a name of a tag to use for the container element. Defaults to `div`.
+         * * `cloak`: if this instance is cloaked, hiding is transferred to the container.
          * 
          * @memberOf BaseWidget
          * @instance
@@ -918,7 +919,8 @@
             if ( ! this.$wrapper ) {
                 if ( this.options.dont_wrap ) {
                     this.$wrapper = this.$element;
-                } else {
+                }
+                else {
                     classes = 'uijet_wrapper ' + utils.toArray(this.options.type_class).join('_wrapper ') + '_wrapper';
                     this.options.wrapper_class && (classes += ' ' + this.options.wrapper_class);
                     // wrap and cache the wrapper
@@ -926,6 +928,11 @@
                         'class' : classes,
                         id      : this.id + '_wrapper'
                     })).parent();
+
+                    if ( this.options.cloak ) {
+                        this._setCloak(true);
+                        this.$element[0].style.removeProperty('visibility');
+                    }
                 }
             }
             return this;
@@ -994,10 +1001,12 @@
         },
         /**
          * Toggles the element's `visibility`, depending on the `cloak` param.
+         * Used for hiding the widget from view while it is asleep.
          * 
          * If `cloak` is truthy it's set to `hidden`, otherwise to `visible`.
          * 
-         * This is used to minimize paints while the widget is asleep.
+         * #### Related options:
+         * * `cloak`: only if truthy will this method affect the element.
          * 
          * @memberOf BaseWidget
          * @instance
@@ -1006,7 +1015,9 @@
          * @private
          */
         _setCloak       : function (cloak) {
-            this.$element[0].style.visibility = cloak ? 'hidden' : 'visible';
+            if ( this.options.cloak ) {
+                (this.$wrapper || this.$element)[0].style.visibility = cloak ? 'hidden' : 'visible';
+            }
             return this;
         },
         /**
