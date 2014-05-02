@@ -20,16 +20,17 @@
      * @see {@link http://backbonejs.org/}
      * @exports Backbone
      */
-    var base_widget_proto = uijet.BaseWidget.prototype,
-        baseRegister = base_widget_proto.register,
-        baseGetContext = base_widget_proto.getContext,
-        baseDestroy = base_widget_proto.destroy;
 
+    /**
+     * Extending {@link uijet.Base} with {@Link http://backbonejs.org/#Events|Backbone.Events}.
+     * 
+     * @see {@link http://backbonejs.org/#Events}
+     */
     uijet.Base.extend(Backbone.Events);
 
     /**
-     * Extends the Transitioned mixin to leverage this
-     * animation module.
+     * Extends the BaseWidget class to use Backbone's Collection and
+     * Models as resources.
      * 
      * @class module:data/backbone.Resourced
      * @extends uijet.BaseWidget
