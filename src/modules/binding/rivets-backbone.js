@@ -112,26 +112,34 @@
             var observables = uijet.utils.returnOf(this.options.observe, this),
                 k, observable;
 
+            // if observe option is not set but we have a resource option set
             if ( ! observables && this.options.resource ) {
 
                 observables = {};
 
+                // if resource is a name in resources registry
                 if ( typeof this.options.resource == 'string' ) {
+                    // add it to observables under its name 
                     observables[this.options.resource] = this.resource || uijet.Resource(this.options.resource);
                 }
                 else {
                     // implicitly skip
+                    // we're probably handling observation in a higher level, i.e. "each-/repeat-" binding
                     return this;
                 }
             }
 
+            // if we have observables
             if ( observables ) {
                 for ( k in observables ) {
                     observable = observables[k];
+                    // if we have an observable that maps to a name
                     if ( typeof observable == 'string' ) {
+                        // use that name to fetch a resource
                         observables[k] = uijet.Resource(observable);
                     }
                 }
+                // finally add the instance under its id to observables, to use it a bit like a ViewModel
                 observables[this.id] = this;
 
                 this.rv_view = rivets.bind(this.$wrapper || this.$element, observables, this.options.bind_options);
