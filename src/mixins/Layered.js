@@ -15,6 +15,9 @@
      * @extends uijet.BaseWidget
      */
     uijet.Mixin('Layered', {
+        options         : {
+            cloak   : true
+        },
         layered         : true,
         /**
          * Prepare the top container for being layered.
