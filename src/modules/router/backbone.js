@@ -14,11 +14,11 @@
     /**
      * Router adapter for the Backbone.js router
      * 
-     * @module module:router/backbone
+     * @module router/backbone
      * @extends uijet
      * @see {@link http://http://backbonejs.org/#Router|Backbone.Router}
      * @param {Object} router - an instance of the Backbone.Router or a config object for its initialization.
-     * @exports module:router/backbone
+     * @exports router/backbone
      */
     return function (router) {
         var Router = router instanceof Backbone.Router ? router : new Backbone.Router(router);
