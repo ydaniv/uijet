@@ -31,24 +31,28 @@
      * Extends the Transitioned mixin to leverage this
      * animation module.
      * 
-     * @class Resourced
+     * @class module:data/backbone.Resourced
      * @extends uijet.BaseWidget
      */
-    uijet.use({
+    uijet.utils.extendProto(uijet.BaseWidget.prototype, {
         /**
          * Assigns the resource to `this.resource` and enhances {@link BaseWidget#getContext}
          * to integrate with `Backbone.Model` and `Backbone.Collection`.
          * 
          * Binds the data events.
          * 
-         * @method Resourced#register
+         * #### Related options:
+         * 
+         * * `resource_name`: a key to use when referencing the model's attributes form the `context` object.
+         * Defaults to the `resource` option if it's a `string`, otherwise to `'<this.id>_data'`.
+         * 
+         * @method module:data/backbone.Resourced#register
          * @returns {Widget} this
          */
         register        : function () {
             var resource_name = this.options.resource_name,
-                dont_merge_resource = this.options.dont_merge_resource,
                 resource;
-            baseRegister.call(this);
+            this._super.call(this);
 
             if ( resource = this.options.resource ) {
                 if ( typeof resource == 'string' ) {
@@ -66,39 +70,79 @@
                     }
                 }
 
-                this.getContext = function () {
-                    var context = baseGetContext.call(this),
-                        result_set;
-                    if ( this.resource instanceof Backbone.Collection ) {
-                        if ( context.where && uijet.utils.isObj(context.where) ) {
-                            result_set = this.resource.where(context.where);
-                        }
-                        else if ( context.filter && uijet.utils.isFunc(context.filter) ) {
-                            result_set = this.resource.filter(context.filter, this);
-                        }
-                        else if ( typeof context.filter == 'string' ) {
-                            result_set = this.resource[context.filter].apply(this.resource, context.filter_args);
-                        }
-                        else if ( 'filtered' in context ) {
-                            result_set = context.filtered;
-                        }
-                        else {
-                            result_set = this.resource.models;
-                        }
-                        this.setContext(resource_name, result_set);
-                    }
-                    else {
-                        dont_merge_resource ?
-                            this.setContext(resource_name, this.resource.attributes) :
-                            this.setContext(this.resource.attributes);
-                    }
-                    return context;
-                };
+                this._resource_name = resource_name;
 
                 this.bindDataEvents();
             }
 
             return this;
+        },
+        /**
+         * Gets the `context` object or a specific property in it.
+         * 
+         * If the instance has a resource it's more likely you'll use
+         * the `context` object to store filters to use for querying the
+         * resource and use the actual resource to store and get data.
+         * 
+         * If the resource is a Collection you can use the following:
+         * 
+         * #### Filter options:
+         * 
+         * * `where`: argument to delegate to {@link http://backbonejs.org/#Collection-where|Collection.where()}.
+         * * `filter`: argument to delegate to {@link http://backbonejs.org/#Collection-filter|Collection.filter()}.
+         * The second `context` argument will be the widget's instance. Can be used in 2 variations:
+         * * * as `function`: will be used as a filter function run in the instance's context.
+         * * * as `string`: to reference a method of the collection to use for filtering.
+         * That will be run in the resource's context and handed the arguments given in `filter_args`.
+         * * `filter_args`: array of arguments to use in conjunction with `filter` as a `string`.
+         * * `filtered`: predefined filtered list of models to use. Can be imported from another resource.
+         * 
+         * If the resource is a Model you get 2 options:
+         * 
+         * * `dont_merge_resource`=`true`: a reference to the model's attributes will be added to the `context`
+         * object under the key of calculated `resource_name`.
+         * * otherwise: the model's attributes will be merged into the `context` object.
+         * 
+         * #### Related options:
+         * 
+         * * `dont_merge_resource`: whether to merge the model's attributes to the `context` object or just reference
+         * it from there using `resource_name`.
+         * * `resource_name`: a key to use when referencing the model's attributes form the `context` object.
+         * Defaults to the `resource` option if it's a `string`, otherwise to `'<this.id>_data'`.
+         * 
+         * @method module:data/backbone.Resourced#getContext
+         * @param {string} [key] - string for getting a specific property of the data `context` object.
+         * @returns {Object|Model[]}
+         */
+        getContext      : function (key) {
+            var context = this._super(key),
+                result_set;
+            if ( this.resource ) {
+                if ( this.resource instanceof Backbone.Collection ) {
+                    if ( context.where && uijet.utils.isObj(context.where) ) {
+                        result_set = this.resource.where(context.where);
+                    }
+                    else if ( context.filter && uijet.utils.isFunc(context.filter) ) {
+                        result_set = this.resource.filter(context.filter, this);
+                    }
+                    else if ( typeof context.filter == 'string' ) {
+                        result_set = this.resource[context.filter].apply(this.resource, context.filter_args);
+                    }
+                    else if ( 'filtered' in context ) {
+                        result_set = context.filtered;
+                    }
+                    else {
+                        result_set = this.resource.models;
+                    }
+                    this.setContext(this._resource_name, result_set);
+                }
+                else {
+                    this.options.dont_merge_resource ?
+                        this.setContext(this._resource_name, this.resource.attributes) :
+                        this.setContext(this.resource.attributes);
+                }
+            }
+            return context;
         },
         /**
          * Sets the resource's (Collection's) `comparator` and forces sorting
@@ -109,7 +153,7 @@
          * * `sorting`: map of predefined `comparator` functions/strings that can be used to sort the resource.
          * 
          * @see {@link http://backbonejs.org/#Collection-comparator}
-         * @method Resourced#sort
+         * @method module:data/backbone.Resourced#sort
          * @param {string} sorting - a key to match a predefined sorting comparator.
          * @returns {Widget} this
          */
@@ -138,7 +182,7 @@
          * * `data_events`: if the instance's `data_events` option is not set, this wii be used as default.
          * 
          * @see {@link http://backbonejs.org/#Events-listenTo}
-         * @method Resourced#bindDataEvents
+         * @method module:data/backbone.Resourced#bindDataEvents
          * @returns {Widget} this
          */
         bindDataEvents  : function () {
@@ -181,7 +225,7 @@
          * Unbinds all data events handlers registered with this instance. 
          * 
          * @see {@link http://backbonejs.org/#Events-stopListening}
-         * @method Resourced#unbindDataEvents
+         * @method module:data/backbone.Resourced#unbindDataEvents
          * @param {Model|Collection} [resource] - a resource to stop listening to. Defaults to `this.resource`.
          * @returns {Widget} this
          */
@@ -198,7 +242,7 @@
          * 
          * * `resource`: used as the default for `resource_name` param.
          * 
-         * @method Resourced#setResource
+         * @method module:data/backbone.Resourced#setResource
          * @param {Model|Collection} resource - a new instance of a resource to use as this widget's resource.
          * Also updates registry with this instance.
          * @param {string} [resource_name] - the name this resource is to be registered under.
@@ -220,7 +264,7 @@
          * collection.
          * 
          * @see {@link http://backbonejs.org/#Model-destroy}
-         * @method Resourced#destroy
+         * @method module:data/backbone.Resourced#destroy
          * @param {boolean} [remove_only] - if `true` will not invoke the resource's destroy method.
          * @returns {Widget} this
          */
@@ -239,15 +283,15 @@
                 }
             }
 
-           var res = baseDestroy.apply(this, arguments);
+           this._super.apply(this, arguments);
 
             this.resource = null;
 
             return res;
         }
-    }, base_widget_proto)
+    });
 
-    .use({
+    uijet.use({
         /**
          * Defines and creates a model's class extending {@link http://backbonejs.org/#Model|Backbone.Model}.
          * 
