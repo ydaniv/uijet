@@ -31,8 +31,8 @@
      * Extends the Transitioned mixin to leverage this
      * animation module.
      * 
-     * @name data/backbone.Resourced
-     * @extends Resourced
+     * @class Resourced
+     * @extends uijet.BaseWidget
      */
     uijet.use({
         /**
@@ -41,7 +41,7 @@
          * 
          * Binds the data events.
          * 
-         * @method module:data/backbone.Resourced#register
+         * @method Resourced#register
          * @returns {Widget} this
          */
         register        : function () {
@@ -109,7 +109,7 @@
          * * `sorting`: map of predefined `comparator` functions/strings that can be used to sort the resource.
          * 
          * @see {@link http://backbonejs.org/#Collection-comparator}
-         * @method module:data/backbone.Resourced#sort
+         * @method Resourced#sort
          * @param {string} sorting - a key to match a predefined sorting comparator.
          * @returns {Widget} this
          */
@@ -125,9 +125,9 @@
          * 
          * ### Supported events:
          * 
-         * * {@type string}: a name of a widget's method. Defaults to publishing an event that takes the arguments in
+         * * `string`: a name of a widget's method. Defaults to publishing an event that takes the arguments in
          * a single array as the `data` param. Also respects the `'-'` prefix for global events.
-         * * {@type function}: a function to use as the handler.
+         * * `function`: a function to use as the handler.
          * 
          * #### Related options:
          * 
@@ -138,7 +138,7 @@
          * * `data_events`: if the instance's `data_events` option is not set, this wii be used as default.
          * 
          * @see {@link http://backbonejs.org/#Events-listenTo}
-         * @method module:data/backbone.Resourced#bindDataEvents
+         * @method Resourced#bindDataEvents
          * @returns {Widget} this
          */
         bindDataEvents  : function () {
@@ -181,7 +181,7 @@
          * Unbinds all data events handlers registered with this instance. 
          * 
          * @see {@link http://backbonejs.org/#Events-stopListening}
-         * @method module:data/backbone.Resourced#unbindDataEvents
+         * @method Resourced#unbindDataEvents
          * @param {Model|Collection} [resource] - a resource to stop listening to. Defaults to `this.resource`.
          * @returns {Widget} this
          */
@@ -198,7 +198,7 @@
          * 
          * * `resource`: used as the default for `resource_name` param.
          * 
-         * @method module:data/backbone.Resourced#setResource
+         * @method Resourced#setResource
          * @param {Model|Collection} resource - a new instance of a resource to use as this widget's resource.
          * Also updates registry with this instance.
          * @param {string} [resource_name] - the name this resource is to be registered under.
@@ -220,7 +220,7 @@
          * collection.
          * 
          * @see {@link http://backbonejs.org/#Model-destroy}
-         * @method module:data/backbone.Resourced#destroy
+         * @method Resourced#destroy
          * @param {boolean} [remove_only] - if `true` will not invoke the resource's destroy method.
          * @returns {Widget} this
          */
@@ -252,7 +252,7 @@
          * Defines and creates a model's class extending {@link http://backbonejs.org/#Model|Backbone.Model}.
          * 
          * @see {@link http://backbonejs.org/#Model-extend}
-         * @memberOf module:data/backbone
+         * @method module:data/backbone#Model
          * @param {Object} properties - instance properties to add to this model.
          * @param {Object} [class_properties] - class properties to add to this model.
          * @returns {Model}
@@ -263,7 +263,7 @@
          * {@link http://backbonejs.org/#Collection|Backbone.Collection}.
          * 
          * @see {@link http://backbonejs.org/#Collection-extend}
-         * @memberOf module:data/backbone
+         * @method module:data/backbone#Collection
          * @param {Object} properties - instance properties to add to this collection.
          * @param {Object} [class_properties] - class properties to add to this collection. 
          * @returns {Collection}
@@ -272,6 +272,7 @@
         /**
          * Instantiates a Backbone Model/Collection.
          * 
+         * @method module:data/backbone#newResource
          * @param {function} resource - the resource's constructor.
          * @param {Object|Array|null} [initial] - initial data to use to initialize the resource.
          * @param {Object} [options] - valid options for Backbone's Models/Collections construction.
