@@ -1,7 +1,7 @@
 {
   "name": "uijet",
   "description": "Killer UI for web-apps.",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "main": "src/uijet.js",
   "scripts": {
     "test": "spec"
