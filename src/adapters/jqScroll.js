@@ -19,6 +19,7 @@
          * Initializes the jqScroll scroller.
          * 
          * #### Related options:
+         * 
          * * `jqscroll_options`: config option for the `.scroller()` constructor.
          * * `horizontal`: if `true` then vertical scroller is disabled, as long as `grid_layout` option is off.
          * * `grid_layout`: if `true` then vertical scroller will _NOT_ be disabled disabled.
