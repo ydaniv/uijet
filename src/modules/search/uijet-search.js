@@ -44,6 +44,7 @@
         /**
          * Sets documents to populate the index.
          * 
+         * @method SearchIndex#set
          * @param {Array} docs - documents to search in.
          * @returns {SearchIndex}
          */
@@ -54,6 +55,7 @@
         /**
          * Adds more documents to the index to search in.
          * 
+         * @method SearchIndex#add
          * @param {Array} docs - documents to add to the index.
          * @returns {SearchIndex}
          */
@@ -64,6 +66,7 @@
         /**
          * Performs search using given `term` and returns list of results.
          * 
+         * @method SearchIndex#search
          * @param {string} term - the search term to use for searching the documents.
          * @param {string|null} [ref] - override the `ref` option just for this search.
          * @returns {Array} - results list. Can be a list of documents or values specified by `ref` option.
@@ -118,8 +121,7 @@
     /**
      * Mixin that adds searching logic to widgets.
      * 
-     * @class Searched
-     * @lends Searched.prototype
+     * @class module:search/uijet-search.Searched
      * @extends uijet.BaseWidget
      */
     {
@@ -130,11 +132,10 @@
          * 
          * * `search` {@type Object}: {@link SearchIndex} instance configuration object.
          * 
-         * @memberOf Searched
-         * @instance
+         * @method module:search/uijet-search.Searched#index
          * @param {Object} [options] - {@link SearchIndex} instance configuration object.
          * Defaults to `search` config option.
-         * @returns {Widget}
+         * @returns {Widget} this
          */
         index       : function (options) {
             this.search_index = new uijet.search.Index(options || this.options.search);
@@ -143,8 +144,7 @@
         /**
          * Performs search using given `term` and returns list of results.
          * 
-         * @memberOf Searched
-         * @instance
+         * @method module:search/uijet-search.Searched#search
          * @param {string} term - the search term to use for searching the documents.
          * @param {string|null} [ref] - override the `ref` option just for this search.
          * @returns {Array} - results list. Can be a list of documents or values specified by `ref` option.
@@ -155,8 +155,7 @@
         /**
          * Highlights results in given `text` by mathcing against `term`.
          * 
-         * @memberOf Searched
-         * @instance
+         * @method module:search/uijet-search.Searched#highlight
          * @param {string} text - the text to search in.
          * @param {string} term - the term to find and highlight.
          * @returns {string} - the highlighted text.
