@@ -13,6 +13,7 @@
      * 
      * @class iScroll
      * @extends Scrolled
+     * @see {@link http://iscrolljs.com/}
      */
     uijet.Adapter('iScroll', {
         /**
@@ -25,6 +26,7 @@
          * * `horizontal`: if `true` and `grid_layout` option is off then vertical scroller is disabled.
          * * `grid_layout`: if `true` the vertical scroller will not be disabled.
          * 
+         * @see {@link http://iscrolljs.com/#configuring}
          * @memberOf iScroll
          * @instance
          * @returns {Widget} this
@@ -50,6 +52,7 @@
         /**
          * Destroys the scroller.
          * 
+         * @see {@link http://iscrolljs.com/#destroy}
          * @memberOf iScroll
          * @instance
          * @returns {Widget} this
@@ -68,6 +71,7 @@
          * * `y`: the vertical offset to scroll to in pixels, or offset to move to if `by` is `true`.
          * * `[by]`: if `true` then iScroll's `scrollBy()` will be used instead of `scrollTo()`. 
          * 
+         * @see {@link http://iscrolljs.com/#indicators}
          * @memberOf iScroll
          * @instance
          * @param {HTMLElement|Object} element - the element to scroll to or an `object` containing the offsets.

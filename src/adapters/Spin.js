@@ -13,6 +13,7 @@
      * 
      * @class Spin
      * @extends BaseWidget
+     * @see {@link http://fgnass.github.io/spin.js/}
      */
     uijet.Adapter('Spin', {
         /**

@@ -13,6 +13,7 @@
      * 
      * @class jqScroll
      * @extends Scrolled
+     * @see {@link https://github.com/ydaniv/jqScroll#usage}
      */
     uijet.Adapter('jqScroll', {
         /**

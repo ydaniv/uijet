@@ -14,6 +14,7 @@
      * 
      * @class jqWheelScroll
      * @extends Scrolled
+     * @see {@link https://github.com/ydaniv/jqScroll#usage}
      */
     uijet.Adapter('jqWheelScroll', {
         /**
