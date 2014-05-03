@@ -7,12 +7,33 @@
         factory(uijet);
     }
 }(function (uijet) {
+
+    /**
+     * jquery-mousewheel + jqScroll adapter class for the Scrolled mixin.
+     * Adds mousewheel support to jqScroll scrollers.
+     * 
+     * @class jqWheelScroll
+     * @extends Scrolled
+     */
     uijet.Adapter('jqWheelScroll', {
+        /**
+         * Initializes the jqScroll scroller.
+         * 
+         * #### Related options:
+         * 
+         * * `jqscroll_options`: config option for the `.scroller()` constructor.
+         * * `horizontal`: if `true` then vertical scroller is disabled, as long as `grid_layout` option is off.
+         * * `grid_layout`: if `true` then vertical scroller will _NOT_ be disabled disabled.
+         * 
+         * @memberOf jqWheelScroll
+         * @instance
+         * @returns {Widget} this
+         */
         scroll  : function () {
             var that = this, el, is_horizontal,
                 jqS_ops = this.options.jqscroll_options || {};
 
-            if ( is_horizontal = (this.options.horizontal  && ! this.options.grid_layout) ) {
+            if ( is_horizontal = (this.options.horizontal && ! this.options.grid_layout) ) {
                 jqS_ops.horizontal = true;
                 jqS_ops.vertical = false;
             }
@@ -29,11 +50,26 @@
 
             return this;
         },
+        /**
+         * Destroys the scroller instance.
+         * 
+         * @memberOf jqWheelScroll
+         * @instance
+         * @returns {Widget} this
+         */
         unscroll: function () {
             this.$wrapper && this.$wrapper.scroller && this.$wrapper.scroller('destroy');
             this.scroll_on = false;
             return this;
         },
+        /**
+         * Scrolls to specified element or to a specified offset from the parent.
+         * 
+         * @memberOf jqWheelScroll
+         * @instance
+         * @param {HTMLElement|number} position - the element to scroll to or an offset in pixels to scroll to.
+         * @returns {Widget} this
+         */
         scrollTo: function (position) {
             this.$wrapper.scroller('scrollTo', position);
             return this;
