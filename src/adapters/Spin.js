@@ -7,7 +7,28 @@
         factory(uijet, Spinner);
     }
 }(function (uijet, Spinner) {
+
+    /**
+     * Spin.js adapter class.
+     * 
+     * @class Spin
+     * @extends BaseWidget
+     */
     uijet.Adapter('Spin', {
+        /**
+         * Initializes a spinner and turns it on.
+         * 
+         * #### Related options:
+         * 
+         * * `spinner_options`: config object for the spinner instance constructor. 
+         * 
+         * The above config object can take an extra option `element` which can be an element, query selector,
+         * or a function returning one of these, to use as the spinner's container.
+         * 
+         * @memberOf Spin
+         * @instance
+         * @returns {Widget} this
+         */
         spin        : function () {
             var spinner_defaults = {
                     lines       : 12,
@@ -47,11 +68,26 @@
 
             return this;
         },
+        /**
+         * Turns the spinner off.
+         * 
+         * @memberOf Spin
+         * @instance
+         * @returns {Widget} this
+         */
         spinOff     : function () {
             this.spinner && this.spinner.stop();
             this.spin_on = false;
             return this;
         },
+        /**
+         * Toggles the spinner.
+         * 
+         * @memberOf Spin
+         * @instance
+         * @param {boolean} [switch_on] - enforces toggling on or off. If `true` then toggled to on.
+         * @returns {Widget} this
+         */
         spinToggle  : function (switch_on) {
             typeof switch_on == 'boolean' ?
                 switch_on ?
