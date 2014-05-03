@@ -9,7 +9,7 @@
 }(this, function (uijet, iScroll) {
 
     /**
-     * iScroll adatpter class.
+     * iScroll adapter class.
      * 
      * @class iScroll
      * @extends Scrolled
