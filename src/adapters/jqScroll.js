@@ -9,7 +9,7 @@
 }(function (uijet) {
 
     /**
-     * jqScroll adapter class.
+     * jqScroll adapter class for the Scrolled mixin.
      * 
      * @class jqScroll
      * @extends Scrolled
@@ -20,7 +20,8 @@
          * 
          * #### Related options:
          * * `jqscroll_options`: config option for the `.scroller()` constructor.
-         * * `horizontal`: if `true` then vertical scroller is disabled.
+         * * `horizontal`: if `true` then vertical scroller is disabled, as long as `grid_layout` option is off.
+         * * `grid_layout`: if `true` then vertical scroller will _NOT_ be disabled disabled.
          * 
          * @memberOf jqScroll
          * @instance
@@ -28,7 +29,7 @@
          */
         scroll  : function () {
             var jqS_ops = this.options.jqscroll_options || {};
-            if ( this.options.horizontal ) {
+            if ( this.options.horizontal && ! this.options.grid_layout ) {
                 jqS_ops.horizontal = true;
                 jqS_ops.vertical = false;
             }
