@@ -68,7 +68,7 @@
                 }
             }
             else {
-                $el.velocity('reverse', callback);
+                $el.velocity('reverse', (callback && { complete : callback }));
             }
 
             return this;
