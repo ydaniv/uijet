@@ -111,7 +111,30 @@ Adapters' properties are always copied to the instance object (the top of the pr
 
 ### Events & Signals
 
-    //TBD
+uijet component instances do not return a handle you can imperatively execute methods with, hence
+the only way you can perform actions on components or achieve inter component communication is via
+registering handlers to events.
+
+All handlers are always bound to the instance, so inside them you can use `this` as a handle to the instance.
+
+#### Signals
+
+Events triggered during a widget's lifecycle and provide an inner component API.
+
+Signals usually take the form of an AOP like handlers, e.g. `pre_methodname`, `post_methodname`.
+
+#### DOM Events
+
+The familiar DOM events triggered by user interaction.
+These are always bound to the instance's `$element`.
+uijet makes extensive use of event delegation and bounds by default only to widgets.
+So, for example, in a List widget all click events on the child items are bound to the list
+container and handled at that level.
+
+#### App Events
+
+Custom events for inter-component communication, or simply to publish events between different
+modules, e.g. between the uijet sandbox and components, or between a router and components.
 
 ## uijet.css
 
