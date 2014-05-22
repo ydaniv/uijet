@@ -12,7 +12,7 @@
      * jqScroll adapter class for the Scrolled mixin.
      * 
      * @class jqScroll
-     * @extends Scrolled
+     * @extends module:Scrolled
      * @see {@link https://github.com/ydaniv/jqScroll#usage}
      */
     uijet.Adapter('jqScroll', {

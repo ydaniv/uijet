@@ -12,7 +12,7 @@
      * iScroll adapter class for the Scrolled mixin.
      * 
      * @class iScroll
-     * @extends Scrolled
+     * @extends module:Scrolled
      * @see {@link http://iscrolljs.com/}
      */
     uijet.Adapter('iScroll', {

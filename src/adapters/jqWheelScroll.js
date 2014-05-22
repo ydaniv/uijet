@@ -13,7 +13,7 @@
      * Adds mousewheel support to jqScroll scrollers.
      * 
      * @class jqWheelScroll
-     * @extends Scrolled
+     * @extends module:Scrolled
      * @see {@link https://github.com/ydaniv/jqScroll#usage}
      */
     uijet.Adapter('jqWheelScroll', {
