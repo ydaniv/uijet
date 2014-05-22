@@ -135,12 +135,12 @@
 
     uijet.use({
         /**
-         * @namespace special_animations
-         * @memberOf module:animation/uijet-transit
-         * 
          * #### Animation types:
          * 
          * * `fold`: folds the element's height from 0 to full height.
+         * 
+         * @namespace special_animations
+         * @memberOf module:animation/uijet-transit
          */
         special_animations  : {
             fold: function (widget, is_in) {
