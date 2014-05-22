@@ -203,18 +203,6 @@ on the on the underlying framework. On some cases even no impact at all, whatsoe
 can choose either that, or [Zepto](http://zeptojs.com/), 
 or with a little effort even [Bonzo](https://github.com/ded/bonzo) and [Bean](https://github.com/fat/bean).
 
-## Usage
-
-    //TBD
-
-### Application startup
-
-    //TBD
-
-### Widget instances definition
-
-    //TBD
-
 ## Author
 
 Yehonatan Daniv
