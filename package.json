@@ -24,7 +24,7 @@
   "devDependencies": {
     "grunt": "~0.4.4",
     "grunt-jsdoc": "~0.5.4",
-    "jaguarjs-jsdoc": "git://github.com/davidshimjs/jaguarjs-jsdoc",
+    "jaguarjs-jsdoc": "git://github.com/ydaniv/jaguarjs-jsdoc",
     "jsdoc": "~3.3.0-alpha4",
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-connect": "~0.7.1",
