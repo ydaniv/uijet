@@ -24,7 +24,7 @@ module.exports = function (grunt) {
         },
         jsdoc  : {
             dist: {
-                src    : ['src/'],
+                src    : ['README.md', 'src/'],
                 jsdoc  : 'node_modules/.bin/jsdoc',
                 options: {
                     configure  : './conf.json',
