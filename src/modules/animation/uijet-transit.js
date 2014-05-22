@@ -20,7 +20,19 @@
     var requestAnimFrame = uijet.utils.requestAnimFrame,
         getStyle = uijet.utils.getStyle,
         // get the Transitioned mixin
-        transitioned = uijet.Mixin('Transitioned');
+        transitioned = uijet.Mixin('Transitioned'),
+        duration_re = /([\.\d]+)(ms|s)/,
+        _parseDuration = function (duration) {
+            var match = duration.match(duration_re),
+                multiplier = 1, res;
+            if ( match ) {
+                if ( match[2] == 's' ) {
+                    multiplier = 1000;
+                }
+                res = +match[1] * multiplier;
+            }
+            return (match && res) || 16;
+        };
 
     /**
      * Extends the Transitioned mixin to leverage this
@@ -226,16 +238,16 @@
          * @param {HTMLElement[]} $el - wrapped HTMLElement to animate.
          * @param {string|Object} props - valid CSS text to set on the element's style, or a map of style properties.
          * @param {function} [callback] - callback to run at the end of the animation.
-         * @returns {string|number} - id of the animation frame requested for this animation.
+         * @returns {Array} - ids of the animation frames requested for this animation + callback.
          */
         animate             : function ($el, props, callback) {
             var trans_end_event = uijet.support.transitionend,
                 have_callback = typeof callback == 'function',
-                request_id;
+                handles = [];
             $el.addClass('transitioned');
             have_callback && trans_end_event && $el.one(trans_end_event, callback);
-            request_id = requestAnimFrame(function () {
-                var style = $el[0].style, p;
+            handles.push(requestAnimFrame(function () {
+                var style = $el[0].style, p, duration, delay;
                 if ( typeof props == 'string' )
                     style.cssText = props;
                 else
@@ -244,11 +256,16 @@
                             style[p] = props[p];
                         else
                             style.setProperty(p, props[p]);
-            });
-            if ( ! trans_end_event ) {
-                request_id = have_callback && requestAnimFrame(callback);
-            }
-            return request_id;
+
+                // if there's a callback to trigger and no end event support
+                if ( have_callback && ! trans_end_event ) {
+                    //TODO: check if this works consistently across platforms, and when set individually or with shorthand
+                    duration = uijet.utils.getStyleProperty('transition-duration');
+                    delay = uijet.utils.getStyleProperty('transition-delay');
+                    handles.push(setTimeout(callback, _parseDuration(duration) + _parseDuration(delay)));
+                }
+            }));
+            return handles;
         }
     }, uijet);
 }));
