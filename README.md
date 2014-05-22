@@ -115,11 +115,18 @@ Adapters' properties are always copied to the instance object (the top of the pr
 
 ## uijet.css
 
-    //TBD
+A baseline stylesheet that defines basic structure for widgets, basic behavior for mixins,
+and some helper classes for managing the component's lifecycle.
+
+uijet.css does very little style resetting that's more targeted for applications, rather then
+simple content webpages.
+
+It's recommended to complement it with [normalize.css](http://necolas.github.io/normalize.css/).
 
 ### Theming
 
-    //TBD
+Currently there are no bundled themes in uijet.
+Hopefully, in the future there will be.
 
 ## Documentation
 
