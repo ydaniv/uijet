@@ -1,8 +1,8 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
-            'velocity',
             'uijet_dir/uijet',
+            'velocity',
             'uijet_dir/mixins/Transitioned'
         ], function (uijet) {
             return factory(uijet);
