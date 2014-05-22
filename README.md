@@ -134,7 +134,7 @@ container and handled at that level.
 #### App Events
 
 Custom events for inter-component communication, or simply to publish events between different
-modules, e.g. between the uijet sandbox and components, or between a router and components.
+modules, e.g. between the uijet sandbox and components, or a router and components.
 
 ## uijet.css
 
