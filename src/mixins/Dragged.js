@@ -49,7 +49,7 @@
     /**
      * Dragged mixin class.
      * 
-     * @class Dragged
+     * @mixin Dragged
      * @extends uijet.BaseWidget
      */
     uijet.Mixin('Dragged', {

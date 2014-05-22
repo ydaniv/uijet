@@ -13,7 +13,7 @@
     /**
      * Preloaded mixin class.
      * 
-     * @class Preloaded
+     * @mixin Preloaded
      * @extends uijet.BaseWidget
      */
     uijet.Mixin('Preloaded', {

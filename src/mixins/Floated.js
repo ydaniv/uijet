@@ -11,7 +11,7 @@
     /**
      * Floated mixin class.
      * 
-     * @class Floated
+     * @mixin Floated
      * @extends uijet.BaseWidget
      */
     uijet.Mixin('Floated', {

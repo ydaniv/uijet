@@ -10,8 +10,8 @@
 
     /**
      * Deferred mixin class.
-     * 
-     * @class Deferred
+     *
+     * @mixin Deferred
      * @extends uijet.BaseWidget
      */
     uijet.Mixin('Deferred', {
