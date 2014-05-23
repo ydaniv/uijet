@@ -284,7 +284,7 @@
                 }
             }
 
-           this._super.apply(this, arguments);
+            var res = this._super.apply(this, arguments);
 
             this.resource = null;
 
