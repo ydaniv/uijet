@@ -197,7 +197,7 @@ must adhere to.
 This requirement is a must for the top 3 Modules mentioned above, and a few other Mixins and Composites, 
 which rely on other Modules.
 The API enforcing is also what makes a Module swappable at any given point without any impact 
-on the on the underlying framework. On some cases even no impact at all, whatsoever, on your application.
+on the underlying framework. In some cases even no impact at all, whatsoever, on your application.
 
 *Example*: a dom Module adapter must be consistent with [jQuery](http://api.jquery.com/)'s API, so you
 can choose either that, or [Zepto](http://zeptojs.com/), 
