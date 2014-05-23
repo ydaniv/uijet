@@ -17,7 +17,7 @@
      * Rivets-Backbone binding module.
      * 
      * @module binding/rivets-backbone
-     * @extends BaseWidget
+     * @extends uijet.BaseWidget
      * @see {@link http://www.rivetsjs.com/docs/}
      * @see {@link http://backbonejs.org/}
      * @exports Rivets
@@ -68,7 +68,7 @@
          * If this instance is `templated` then `bindData()` is never called here.
          * 
          * @method module:binding/rivets-backbone#register
-         * @returns {uijet.BaseWidget}
+         * @returns {Widget} this
          */
         register: function () {
             this._super.apply(this, arguments);
@@ -84,7 +84,7 @@
          * 
          * @see {@link http://www.rivetsjs.com/docs/#getting-started}
          * @method module:binding/rivets-backbone#destroy
-         * @returns {uijet.BaseWidget}
+         * @returns {Widget} this
          */
         destroy : function () {
             if ( this.rv_view ) {
