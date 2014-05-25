@@ -29,13 +29,8 @@ define([
     'uijet_dir/modules/promises/jquery'
 ], function (uijet, $, Ebox) {
 
-    var MyApp = {
-        init: function () {
-            uijet.init();
-        }
-    };
+    uijet.init();
 
-    return MyApp;
 });
 
 ```
