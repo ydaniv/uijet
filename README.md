@@ -38,7 +38,7 @@ uijet performs 3 main roles:
 
 uijet embraces the principle of doing 1 thing (or at most 2) and doing it right.
 
-That's why it leaves all of the implementation of all the main parts of the application up 
+That's why it leaves the implementation of all the main parts of the application up 
 to external libraries, of your choice, and glues them together into a coherent interface 
 which allows them to be abstracted and easily swappable.
 
