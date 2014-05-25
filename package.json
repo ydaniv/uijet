@@ -29,6 +29,7 @@
     "grunt-contrib-clean": "~0.5.0",
     "grunt-contrib-connect": "~0.7.1",
     "docker": "~0.2.10",
-    "grunt-docker": "0.0.8"
+    "grunt-docker": "0.0.8",
+    "grunt-beautiful-docs": "~0.1.0"
   }
 }

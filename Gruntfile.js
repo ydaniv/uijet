@@ -24,11 +24,11 @@ module.exports = function (grunt) {
         },
         jsdoc  : {
             dist: {
-                src    : ['README.md', 'src/'],
+                src    : ['docs/src/', 'src/'],
                 jsdoc  : 'node_modules/.bin/jsdoc',
                 options: {
                     configure  : './conf.json',
-                    destination: 'docs'
+                    destination: 'docs/api'
                 }
             }
         },
@@ -37,16 +37,27 @@ module.exports = function (grunt) {
                 src : ['src/**/*.js'],
                 dest: 'doks'
             }
+        },
+        bfdocs : {
+            dist: {
+                options: {
+                    title   : 'uijet Documentation',
+                    manifest: 'bfdocs.json',
+                    dest    : 'docs/',
+                    theme   : 'default'
+                }
+            }
         }
     });
 
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-beautiful-docs');
 
     /* JSDoc based docs */
     grunt.loadNpmTasks('grunt-jsdoc');
 
-    grunt.registerTask('docs', ['clean:docs', 'jsdoc']);
+    grunt.registerTask('docs', ['clean:docs', 'bfdocs', 'jsdoc']);
     grunt.registerTask('rtfm', ['docs', 'connect:docs']);
 
     /* Docker based docs */
