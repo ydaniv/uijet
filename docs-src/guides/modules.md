@@ -16,7 +16,7 @@ Some modules hook themselves into uijet automatically, and export the 3rd party 
 for further customization.
 Others require further configuration, e.g. router modules.
 
-### Example:
+## Example Usage:
 
 An example of an application loading basic modules can look as follows:
 
@@ -39,6 +39,8 @@ In the above example we're loading uijet and the 3 mandatory modules required fo
 uijet to run. In this case we're using jQuery for DOM library, Evenbox as pubsub module
 and jQuery's Deferred object as Promises.
 
+### Using a module's API Over uijet
+
 Now we can use jQuery as an extension of uijet:
 
 ```javascript
@@ -55,6 +57,8 @@ uijet.when(someAction()).then(...);
 
 ```
 
+### Swapping modules
+
 If we would like later to use When.js for Promises, all we had to do is replace the above
 dependencies:
 
@@ -68,6 +72,8 @@ define([
 ```
 
 and we wouldn't have to change another line of code in our project.
+
+### Lazy-loading modules
 
 Lets say we now wish to add a router, Director.js in this case.
 All we need to do is add it to the app's dependencies:
@@ -85,7 +91,10 @@ In this case the module is not yet attached to uijet. The exported `Router` is
 a function that requires either a Director's `Router` instance or a config object 
 for creating an instance.
 
-Then, only after we do this:
+Since Director is already loaded and adds its own namespace to the global `window` object
+we can grab the `Router` constructor straight from there.
+
+Or alternatively, we could just do this:
 
 ```javascript
 
@@ -97,3 +106,72 @@ Router({
 
 The module will instantiate a Router instance and complete extending uijet to have
 routing capabilities.
+
+## modules Best Practices
+
+It's best to keep modules' specific tangent to your application's code, and separated
+from it, as much as possible. This will keep that modules easily swappable and much
+more maintainable.
+
+A good example for this are models.
+Lets say we're using the Backbone `data` module, i.e. using Backbone.js' models and collection
+for data management (a.k.a the M in the MVC).
+
+You could insert your model declarations directly to your app's main file, as in:
+
+*Bad!*
+
+`app.js`
+
+```javascript
+
+uijet.init({
+    resources: {
+        Todos: backbone.Collection.extend({
+            url: '/path/to/todos'
+        })
+    }
+});
+
+```
+
+Or this:
+
+*Good*
+
+`resources.js`
+
+```javascript
+
+define([
+    'uijet_dir/modules/data/backbone'
+], function (backbone) {
+
+    var Todos = backbone.Collection.extend({
+        url: '/path/to/todos'
+    });
+
+    return {
+        Todos: Todos
+    };
+
+});
+
+```
+
+`app.js`
+
+```javascript
+
+define([
+    'uijet_dir/uijet',
+    'resources'
+], function (uijet, resources) {
+
+    uijet.init({
+        resources: resources
+    });
+
+});
+
+```
