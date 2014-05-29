@@ -1,5 +1,4 @@
-uijet modules
-=============
+# uijet modules
 
 uijet embraces the principle of doing 1 thing (or at most 2) and doing it right.
 
@@ -21,9 +20,8 @@ Others require further configuration, e.g. router modules.
 An example of an application loading basic modules can look as follows:
 
 ```javascript
-
 define([
-    'uijet_dir/uijet',
+    'uijet',
     'uijet_dir/modules/dom/jquery',
     'uijet_dir/modules/pubsub/eventbox',
     'uijet_dir/modules/promises/jquery'
@@ -44,7 +42,6 @@ and jQuery's Deferred object as Promises.
 Now we can use jQuery as an extension of uijet:
 
 ```javascript
-
 uijet.$('div').addClass('fancy');
 
 ```
@@ -52,7 +49,6 @@ uijet.$('div').addClass('fancy');
 and wrap objects and function calls to return a promise:
 
 ```javascript
-
 uijet.when(someAction()).then(...);
 
 ```
@@ -63,7 +59,6 @@ If we would like later to use When.js for Promises, all we had to do is replace 
 dependencies:
 
 ```javascript
-
 define([
     ...,
     'uijet_dir/modules/promises/when'
@@ -73,13 +68,12 @@ define([
 
 and we wouldn't have to change another line of code in our project.
 
-### Lazy-loading modules
+### Lazy modules
 
 Lets say we now wish to add a router, Director.js in this case.
 All we need to do is add it to the app's dependencies:
 
 ```javascript
-
 define([
     ...,
     'uijet_dir/modules/router/director'
@@ -97,7 +91,6 @@ we can grab the `Router` constructor straight from there.
 Or alternatively, we could just do this:
 
 ```javascript
-
 Router({
     '/example': function () { console.log("example"); },
 })
@@ -124,7 +117,6 @@ You could insert your model declarations directly to your app's main file, as in
 `app.js`
 
 ```javascript
-
 uijet.init({
     resources: {
         Todos: backbone.Collection.extend({
@@ -142,7 +134,6 @@ Or this:
 `resources.js`
 
 ```javascript
-
 define([
     'uijet_dir/modules/data/backbone'
 ], function (backbone) {
@@ -162,9 +153,8 @@ define([
 `app.js`
 
 ```javascript
-
 define([
-    'uijet_dir/uijet',
+    'uijet',
     'resources'
 ], function (uijet, resources) {
 

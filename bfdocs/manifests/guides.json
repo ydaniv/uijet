@@ -1,0 +1,8 @@
+{
+    "rootDir": "../src/guides/",
+    "files": [
+        "modules.md",
+        "widgets.md",
+        "application.md"
+    ]
+}

@@ -24,7 +24,7 @@ module.exports = function (grunt) {
         },
         jsdoc  : {
             dist: {
-                src    : ['docs/src/', 'src/'],
+                src    : ['README.md', 'src/'],
                 jsdoc  : 'node_modules/.bin/jsdoc',
                 options: {
                     configure  : './conf.json',
@@ -39,11 +39,19 @@ module.exports = function (grunt) {
             }
         },
         bfdocs : {
-            dist: {
+            index : {
                 options: {
                     title   : 'uijet Documentation',
-                    manifest: 'bfdocs.json',
+                    manifest: 'bfdocs/manifests/index.json',
                     dest    : 'docs/',
+                    theme   : 'default'
+                }
+            },
+            guides: {
+                options: {
+                    title   : 'uijet Documentation | Guides',
+                    manifest: 'bfdocs/manifests/guides.json',
+                    dest    : 'docs/guides/',
                     theme   : 'default'
                 }
             }
