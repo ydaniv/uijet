@@ -37,6 +37,7 @@
      * Routed mixin class.
      * 
      * @mixin Routed
+     * @category Mixin
      * @extends uijet.BaseWidget
      */
     uijet.Mixin('Routed', {

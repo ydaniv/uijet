@@ -15,6 +15,8 @@
      * uijet-transit animation module.
      * 
      * @module animation/uijet-transit
+     * @category Module
+     * @sub-category Animation
      * @extends uijet
      */
     var requestAnimFrame = uijet.utils.requestAnimFrame,

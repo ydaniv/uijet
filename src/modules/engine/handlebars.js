@@ -11,6 +11,8 @@
      * Handlebars engine module.
      * 
      * @module engine/handlebars
+     * @category Module
+     * @sub-category Templates
      * @extends BaseWidget
      * @see {@link http://handlebarsjs.com/}
      * @exports Handlebars

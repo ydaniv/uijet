@@ -23,6 +23,7 @@
          * @constructor
          * @class Widget
          * @alias BaseWidget
+         * @category Widget
          * @extends uijet.Base
          */
         Widget = function () {

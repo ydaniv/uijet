@@ -12,6 +12,7 @@
      * Spin.js adapter class.
      * 
      * @class Spin
+     * @category Adapter
      * @extends uijet.BaseWidget
      * @see {@link http://fgnass.github.io/spin.js/}
      */

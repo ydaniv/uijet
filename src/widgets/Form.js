@@ -17,6 +17,7 @@
      * Form widget class.
      * 
      * @class Form
+     * @category Widget
      * @extends uijet.BaseWidget
      * @mixes Submitted
      */

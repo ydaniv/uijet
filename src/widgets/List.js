@@ -15,6 +15,7 @@
      * List widget class.
      * 
      * @class List
+     * @category Widget
      * @extends uijet.BaseWidget
      */
     uijet.Widget('List', {

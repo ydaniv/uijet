@@ -11,6 +11,8 @@
      * Lodash engine module.
      * 
      * @module engine/lodash
+     * @category Module
+     * @sub-category Templates
      * @extends BaseWidget
      * @see {@link http://lodash.com/docs#template}
      * @exports lodash

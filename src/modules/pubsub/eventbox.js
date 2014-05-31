@@ -11,6 +11,8 @@
      * Eventbox pubsub module.
      * 
      * @module pubsub/eventbox
+     * @category Module
+     * @sub-category Pub/Sub
      * @extends uijet
      * @see {@link https://github.com/ydaniv/eventbox#eventboxjs}
      * @exports Eventbox

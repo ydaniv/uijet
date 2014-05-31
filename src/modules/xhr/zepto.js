@@ -13,6 +13,8 @@
      * Zepto xhr module.
      * 
      * @module xhr/zepto
+     * @category Module
+     * @sub-category XHR
      * @extends uijet
      * @see {@link http://zeptojs.com/#$.ajax}
      * @exports Zepto

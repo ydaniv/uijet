@@ -15,6 +15,8 @@
      * Router adapter for the Backbone.js router
      * 
      * @module router/backbone
+     * @category Module
+     * @sub-category Router
      * @extends uijet
      * @see {@link http://http://backbonejs.org/#Router|Backbone.Router}
      * @param {Object} router - an instance of the Backbone.Router or a config object for its initialization.

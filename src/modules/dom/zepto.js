@@ -12,6 +12,8 @@
      * Zepto dom module.
      * 
      * @module dom/zepto
+     * @category Module
+     * @sub-category DOM
      * @extends uijet
      * @see {@link http://zeptojs.com/}
      * @exports Zepto

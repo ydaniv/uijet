@@ -11,6 +11,8 @@
      * jQuery xhr module.
      * 
      * @module xhr/jquery
+     * @category Module
+     * @sub-category XHR
      * @extends uijet
      * @see {@link http://api.jquery.com/category/ajax/}
      */

@@ -31,6 +31,7 @@
      * Templated mixin class.
      * 
      * @mixin Templated
+     * @category Mixin
      * @extends uijet.BaseWidget
      */
     uijet.Mixin('Templated', {

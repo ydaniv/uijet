@@ -12,6 +12,7 @@
      * Transitioned mixin class.
      * 
      * @mixin Transitioned
+     * @category Mixin
      * @extends uijet.BaseWidget
      */
     uijet.Mixin('Transitioned', {

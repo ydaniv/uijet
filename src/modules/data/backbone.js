@@ -16,6 +16,8 @@
      * Backbone data module.
      * 
      * @module data/backbone
+     * @category Module
+     * @sub-category Data
      * @extends uijet
      * @see {@link http://backbonejs.org/}
      * @exports Backbone
@@ -33,6 +35,7 @@
      * Models as resources.
      * 
      * @class module:data/backbone.Resourced
+     * @category Mixin
      * @extends uijet.BaseWidget
      */
     uijet.utils.extendProto(uijet.BaseWidget.prototype, {

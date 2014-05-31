@@ -101,6 +101,8 @@
      * uijet-search search module.
      * 
      * @module search/uijet-search
+     * @category Module
+     * @sub-category Search
      * @extends uijet
      */
     uijet.use({

@@ -33,6 +33,8 @@
      * RSVP promises module.
      * 
      * @module promises/rsvp
+     * @category Module
+     * @sub-category Promises
      * @extends uijet
      * @see {@link https://github.com/tildeio/rsvp.js/}
      * @exports RSVP

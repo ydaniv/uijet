@@ -12,6 +12,7 @@
      * Scrolled mixin class.
      * 
      * @mixin Submitted
+     * @category Mixin
      * @extends uijet.BaseWidget
      */
     uijet.Mixin('Submitted', {

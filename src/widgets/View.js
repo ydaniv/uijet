@@ -31,6 +31,7 @@
      * View widget class.
      * 
      * @class View
+     * @category Widget
      * @extends uijet.BaseWidget
      * @mixes Layered
      * @mixes Routed

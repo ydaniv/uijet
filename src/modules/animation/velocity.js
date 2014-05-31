@@ -16,6 +16,8 @@
      * Velocity.js animation module.
      * 
      * @module animation/velocity
+     * @category Module
+     * @sub-category Animation
      * @extends uijet
      */
 

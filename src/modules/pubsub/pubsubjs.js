@@ -46,6 +46,8 @@
      * PubSubJS pubsub module.
      * 
      * @module pubsub/pubsubjs
+     * @category Module
+     * @sub-category Pub/Sub
      * @extends uijet
      * @see {@link https://github.com/mroderick/PubSubJS#pubsubjs}
      * @exports PubSub

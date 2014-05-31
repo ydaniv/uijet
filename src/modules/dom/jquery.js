@@ -11,6 +11,8 @@
      * jQuery dom module.
      * 
      * @module dom/jquery
+     * @category Module
+     * @sub-category DOM
      * @extends uijet
      * @see {@link http://api.jquery.com/}
      * @exports jQuery

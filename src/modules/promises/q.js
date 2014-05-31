@@ -11,6 +11,8 @@
      * Q promises module.
      * 
      * @module promises/q
+     * @category Module
+     * @sub-category Promises
      * @extends uijet
      * @see {@link https://github.com/kriskowal/q#resources}
      * @exports Q

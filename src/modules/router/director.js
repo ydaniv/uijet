@@ -11,6 +11,8 @@
      * Router adapter for the Director router.
      * 
      * @module module:router/director
+     * @category Module
+     * @sub-category Router
      * @extends uijet
      * @see {@link https://github.com/flatiron/director|Director}
      * @param {Object} router - an instance of `Router` or a config object for its initialization.

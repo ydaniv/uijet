@@ -12,6 +12,7 @@
      * iScroll adapter class for the Scrolled mixin.
      * 
      * @class iScroll
+     * * @category Adapter
      * @extends module:Scrolled
      * @see {@link http://iscrolljs.com/}
      */

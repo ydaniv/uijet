@@ -12,6 +12,7 @@
      * jqScroll adapter class for the Scrolled mixin.
      * 
      * @class jqScroll
+     * @category Adapter
      * @extends module:Scrolled
      * @see {@link https://github.com/ydaniv/jqScroll#usage}
      */

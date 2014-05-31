@@ -11,6 +11,8 @@
      * jQuery promises module.
      * 
      * @module promises/jquery
+     * @category Module
+     * @sub-category Promises
      * @extends uijet
      * @see {@link http://api.jquery.com/category/deferred-object/}
      */

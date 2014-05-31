@@ -13,6 +13,7 @@
      * Overlay widget class.
      * 
      * @class Overlay
+     * @category Widget
      * @extends uijet.BaseWidget
      * @mixes Layered
      */

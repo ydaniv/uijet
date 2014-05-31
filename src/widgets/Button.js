@@ -12,6 +12,7 @@
      * Button widget class.
      * 
      * @class Button
+     * @category Widget
      * @extends uijet.BaseWidget
      */
     uijet.Widget('Button', {

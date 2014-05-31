@@ -17,6 +17,7 @@
      * It's basically a semantic wrapper on top of {@link BaseWidget}.
      * 
      * @class Pane
+     * @category Widget
      * @extends uijet.BaseWidget
      */
     uijet.Widget('Pane', {

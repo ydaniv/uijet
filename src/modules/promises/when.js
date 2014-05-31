@@ -12,6 +12,8 @@
      * when.js promises module.
      * 
      * @module promises/when
+     * @category Module
+     * @sub-category Promises
      * @extends uijet
      * @see {@link https://github.com/cujojs/when/wiki}
      * @exports when

@@ -13,6 +13,7 @@
      * Adds mousewheel support to jqScroll scrollers.
      * 
      * @class jqWheelScroll
+     * @category Adapter
      * @extends module:Scrolled
      * @see {@link https://github.com/ydaniv/jqScroll#usage}
      */
