@@ -8,12 +8,7 @@
         root.uijet.BaseWidget = factory(root.uijet, root);
     }
 }(this, function (uijet, _window) {
-    /**
-     * The base widget class.
-     * 
-     * @exports Widget
-     * @memberOf uijet
-     */
+
     var Object = _window.Object,
         // cache the utilities namespace
         utils = uijet.utils,
