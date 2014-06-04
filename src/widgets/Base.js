@@ -1076,7 +1076,7 @@
         }
     };
 
-    /**
+    /*
      * Export the base {@link Widget} constructor.
      */
     return uijet.Base.derive(Widget);
