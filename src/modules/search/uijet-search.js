@@ -16,18 +16,20 @@
      * 
      * #### Available options:
      * 
-     * * `fields` {@type Object}: a map of field names of the documents to search against.
+     * * `fields` {Object}: a map of field names of the documents to search against.
      * Currently values are ignored.
-     * * `ref` {@type string}: a field in the searched documents to use as reference for results.
+     * * `ref` {string}: a field in the searched documents to use as reference for results.
      * Defaults to `null` which uses the doc itself as ref, instead of a value of its field.
-     * * `query_flags` {@type string}: `RegExp`'s flags to use when performing search. Defaults to `'i'`.
+     * * `query_flags` {string}: `RegExp`'s flags to use when performing search. Defaults to `'i'`.
      * {@link https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions|See "Advanced Searching With Flags"}
-     * * `clean_term` {@type function}: method for cleaning the raw input term before searching.
+     * * `clean_term` {function}: method for cleaning the raw input term before searching.
      * 
      * @param {Object} [options] - instance configuration object.
      * @returns {SearchIndex}
      * @constructor
      * @class SearchIndex
+     * @memberOf module:search/uijet-search
+     * @inner
      */
     function SearchIndex (options) {
         if ( ! (this instanceof SearchIndex) ) return new SearchIndex(options);
@@ -44,7 +46,7 @@
         /**
          * Sets documents to populate the index.
          * 
-         * @method SearchIndex#set
+         * @method module:search/uijet-search~SearchIndex#set
          * @param {Array} docs - documents to search in.
          * @returns {SearchIndex}
          */
@@ -55,7 +57,7 @@
         /**
          * Adds more documents to the index to search in.
          * 
-         * @method SearchIndex#add
+         * @method module:search/uijet-search~SearchIndex#add
          * @param {Array} docs - documents to add to the index.
          * @returns {SearchIndex}
          */
@@ -66,7 +68,7 @@
         /**
          * Performs search using given `term` and returns list of results.
          * 
-         * @method SearchIndex#search
+         * @method module:search/uijet-search~SearchIndex#search
          * @param {string} term - the search term to use for searching the documents.
          * @param {string|null} [ref] - override the `ref` option just for this search.
          * @returns {Array} - results list. Can be a list of documents or values specified by `ref` option.
@@ -106,12 +108,12 @@
      * @extends uijet
      */
     uijet.use({
-        /**
+        /*
          * @namespace search
          * @memberOf module:search/uijet-search
          */
         search  : {
-            /**
+            /*
              * @constructor
              * @memberOf module:search/uijet-search.search
              */
