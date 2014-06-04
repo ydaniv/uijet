@@ -14,6 +14,8 @@
      * click event to `tap`.
      * 
      * @module extension/zepto-touch
+     * @category Module
+     * @sub-category Extensions
      * @see {@link http://zeptojs.com/#touch}
      */
     if ( uijet.support.touch ) {
