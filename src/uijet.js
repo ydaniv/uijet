@@ -1746,7 +1746,8 @@
         },
         /**
          * Puts to sleep all of the contained child widgets of widget with matching `id`.
-         * 
+         *
+         * @memberOf uijet 
          * @param {string} id - id of the widget we want its children to call `sleep()`.
          * @returns {uijet}
          */
