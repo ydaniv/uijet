@@ -831,6 +831,7 @@
          * * `post_wake`: triggered at the end of a successful wake, takes `wake()`'s `context` param as argument.
          * 
          * @memberOf BaseWidget
+         * @instance
          * @param {*} [context] - the context argument passed to {@link BaseWidget#wake}.
          * @returns {*} - the result of calling `appear()`, which could be a `Promise`.
          * @private
@@ -866,6 +867,7 @@
          * or `render()` call.
          * 
          * @memberOf BaseWidget
+         * @instance
          * @param {*} context - the context argument passed to {@link BaseWidget#wake}.
          * @param {*} reason - the rejection reason.
          * @returns {*} - the result of another call to `wake()` or a rejected `Promise`.
