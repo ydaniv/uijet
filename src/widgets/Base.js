@@ -88,7 +88,7 @@
             return result;
         };
 
-    /**
+    /*
      * Public, inheritable methods of {@link Widget} class.
      */
     Widget.prototype = {
@@ -830,6 +830,7 @@
          * 
          * * `post_wake`: triggered at the end of a successful wake, takes `wake()`'s `context` param as argument.
          * 
+         * @memberOf BaseWidget
          * @param {*} [context] - the context argument passed to {@link BaseWidget#wake}.
          * @returns {*} - the result of calling `appear()`, which could be a `Promise`.
          * @private
@@ -864,6 +865,7 @@
          * * `wake_failed`: triggered at the beginning, takes all arguments of the rejected {@link BaseWidget#wakeContained},
          * or `render()` call.
          * 
+         * @memberOf BaseWidget
          * @param {*} context - the context argument passed to {@link BaseWidget#wake}.
          * @param {*} reason - the rejection reason.
          * @returns {*} - the result of another call to `wake()` or a rejected `Promise`.
