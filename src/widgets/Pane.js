@@ -18,7 +18,7 @@
      * 
      * @class Pane
      * @category Widget
-     * @extends uijet.BaseWidget
+     * @extends BaseWidget
      */
     uijet.Widget('Pane', {
         options : {

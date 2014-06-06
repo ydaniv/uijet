@@ -18,7 +18,7 @@
      * 
      * @class Form
      * @category Widget
-     * @extends uijet.BaseWidget
+     * @extends BaseWidget
      * @mixes Submitted
      */
     uijet.Widget('Form', {
