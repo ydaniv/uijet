@@ -18,7 +18,7 @@
          * Calls `sleep()` on current active view and caches
          * `view` in its place.
          * 
-         * @function View
+         * @function View~switchView
          * @param {View} view - the new View instance to cache as current active view.
          * @inner
          */
