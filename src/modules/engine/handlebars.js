@@ -1,10 +1,10 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'handlebars', 'uijet_dir/widgets/Base'], function (uijet, Handlebars) {
+        define(['uijet_dir/uijet', 'handlebars', 'uijet_dir/modules/engine/cache', 'uijet_dir/widgets/Base'], function (uijet, Handlebars) {
             return factory(uijet, Handlebars);
         });
     } else {
-        factory(uijet, root.Handlebars);
+        factory(root.uijet, root.Handlebars);
     }
 }(this, function (uijet, Handlebars) {
     /**

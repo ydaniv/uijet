@@ -1,10 +1,10 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'lodash', 'uijet_dir/widgets/Base'], function (uijet, _) {
+        define(['uijet_dir/uijet', 'lodash', 'uijet_dir/modules/engine/cache', 'uijet_dir/widgets/Base'], function (uijet, _) {
             return factory(uijet, _);
         });
     } else {
-        factory(uijet, root._);
+        factory(root.uijet, root._);
     }
 }(this, function (uijet, _) {
     /**
