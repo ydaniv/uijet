@@ -15,22 +15,22 @@
      * 
      * @mixin Toggled
      * @category Mixin
-     * @extends uijet.BaseWidget
+     * @extends BaseWidget
      */
     uijet.Mixin('Toggled', {
         /**
-         * @namespace {Object} Toggled#options
+         * @member {Object} Toggled#options
          */
         options : {
             /**
-             * @namespace {Object} Toggled#options.app_events
+             * @member {Object} Toggled#options.app_events
              */
             app_events  : {
                 /**
                  * Toggles the widget off, delegating to {@link Toggled#sleep}, if it's
                  * in opened tate, and a click was performed in the app.
                  * 
-                 * @function Toggled#options.app_events."app.clicked"
+                 * @member {function} Toggled#options.app_events."app.clicked"
                  * @param {Object} event - `click` event object.
                  */
                 'app.clicked'   : function (event) {
