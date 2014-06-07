@@ -141,8 +141,7 @@
          * 
          * * `fold`: folds the element's height from 0 to full height.
          * 
-         * @namespace special_animations
-         * @memberOf module:animation/uijet-transit
+         * @member {Object} module:animation/uijet-transit.special_animations
          */
         special_animations  : {
             fold: function (widget, is_in) {
