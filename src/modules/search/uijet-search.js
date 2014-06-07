@@ -24,12 +24,10 @@
      * {@link https://developer.mozilla.org/en/docs/Web/JavaScript/Guide/Regular_Expressions|See "Advanced Searching With Flags"}
      * * `clean_term` {function}: method for cleaning the raw input term before searching.
      * 
+     * @member module:search/uijet-search~SearchIndex
+     * @inner
      * @param {Object} [options] - instance configuration object.
      * @returns {SearchIndex}
-     * @constructor
-     * @class SearchIndex
-     * @memberOf module:search/uijet-search
-     * @inner
      */
     function SearchIndex (options) {
         if ( ! (this instanceof SearchIndex) ) return new SearchIndex(options);
@@ -41,7 +39,7 @@
         this.documents = [];
     }
 
-    SearchIndex.prototype = /** @lends SearchIndex.prototype */ {
+    SearchIndex.prototype = /** @lends module:search/uijet-search~SearchIndex.prototype */ {
         constructor : SearchIndex,
         /**
          * Sets documents to populate the index.
@@ -125,7 +123,8 @@
     /**
      * Mixin that adds searching logic to widgets.
      * 
-     * @class module:search/uijet-search.Searched
+     * @mixin module:search/uijet-search.Searched
+     * @category Mixin
      * @extends BaseWidget
      */
     {
