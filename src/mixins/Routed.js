@@ -18,7 +18,7 @@
     /**
      * Extends {@link BaseWidget} with the ability to trigger routes.
      * 
-     * @augments uijet.BaseWidget
+     * @augments BaseWidget
      */
     uijet.use({
         /**

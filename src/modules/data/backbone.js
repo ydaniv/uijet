@@ -36,7 +36,7 @@
      * 
      * @class module:data/backbone.Resourced
      * @category Mixin
-     * @extends uijet.BaseWidget
+     * @extends BaseWidget
      */
     uijet.utils.extendProto(uijet.BaseWidget.prototype, {
         /**

@@ -13,7 +13,7 @@
      * 
      * @mixin Submitted
      * @category Mixin
-     * @extends uijet.BaseWidget
+     * @extends BaseWidget
      */
     uijet.Mixin('Submitted', {
         submitted       : true,

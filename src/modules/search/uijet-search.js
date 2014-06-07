@@ -126,7 +126,7 @@
      * Mixin that adds searching logic to widgets.
      * 
      * @class module:search/uijet-search.Searched
-     * @extends uijet.BaseWidget
+     * @extends BaseWidget
      */
     {
         /**

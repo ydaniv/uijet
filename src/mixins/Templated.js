@@ -32,7 +32,7 @@
      * 
      * @mixin Templated
      * @category Mixin
-     * @extends uijet.BaseWidget
+     * @extends BaseWidget
      */
     uijet.Mixin('Templated', {
         templated       : true,

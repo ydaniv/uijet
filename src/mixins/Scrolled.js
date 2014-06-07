@@ -13,7 +13,7 @@
      * 
      * @mixin Scrolled
      * @category Mixin
-     * @extends uijet.BaseWidget
+     * @extends BaseWidget
      */
     uijet.Mixin('Scrolled', {
         scrolled            : true,
