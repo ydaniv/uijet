@@ -3,7 +3,7 @@
 
 Widgets are declaration of generic and reusable UI components.
 
-The basic __widgets__ that come bundled with uijet are the most basic building blocks
+The basic __Widgets__ that come bundled with uijet are the most basic building blocks
 for creating any type of UI component. uijet gives you the tools for both extending
 them and composing them together to form any kind of UI component you can think of.
 
@@ -16,7 +16,7 @@ These are:
 * Form
 * View
 
-A view (as in the V in MVC) instance in an application is an instance of a widget.
+A view (as in the V in MVC) instance in an application is an instance of a Widget.
 
 ## Using Widgets
 
@@ -40,29 +40,29 @@ define([
 });
 ```
 
-uijet will automatically load the `List` Widget, create an instance of it, and attach it
+uijet will automatically load the `List` Widget, create an instance of it, and bind it
 to the DOM element set in the `element` option, once uijet initializes.
 
 The actual `List` view that will be created with the `id`: `groovie_list` is *injected* with
 the `List` Widget and all its *dependencies*.
 
-Note the `uiject.declare()` does not return an instance of the created view, rather it
+Note that `uiject.declare()` *does not return an instance* of the created view, rather it
 *registers* it to the uijet *sandbox*.
 The only way another component can communicate with it is via events.
 
 ## Using Composites
 
-uijet also has __composites__ bundled with it, which are higher level components
-that are composed from 2 or more basic __widgets__.
+uijet also has __Composites__ bundled with it, which are higher level components
+that are composed from 2 or more basic __Widgets__.
 
-Some of uijet's composites are:
+Some of uijet's Composites are:
 
 * Modal
 * Slider
 * Select
 * Datepicker
 
-Using a bundled composite only requires you to load that Widget beforehand:
+Using a bundled Composite only requires you to load it beforehand:
 
 ```javascript
 define([
@@ -154,17 +154,17 @@ Here the `KickAssList` is injected as a dependency to our `kewl_list` view.
 
 ### Starting a view instance:
 
-Under the hood uijet creates an instance of the component created from your view declaration,
-which holds Widget definition, optionally injected Mixins and Adapters, and all of that Widget's
-dependencies from its own definition.
+Under the hood uijet creates an instance of the component created from your view declaration.
+That declaration holds a Widget definition and the sum of all of its dependencies injected to it -
+other Widgets, Mixins, Adapters.
 
-uijet does then
+uijet then calls the `init()` method of that instance, and it's good to go.
 
 ## Using Factories
 
 uijet is all about reusing.
-The `uijet.Widget()` lets you reuse a *class* (definition) of a generic component. To reuse
-an instance (declaration) you use `uijet.Factory()`, as follows:
+The `uijet.Widget()` lets you reuse a *class* (a __definition__) of a generic component. To reuse
+an instance (a __declaration__) you use `uijet.Factory()`, as follows:
 
 ```javascript
 uijet.Factory('TransitionedButton', {
