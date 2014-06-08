@@ -1,6 +1,6 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'mustache', 'uijet_dir/modules/engine/cache', 'uijet_dir/widgets/Base'], function (uijet, Mustache) {
+        define(['uijet_dir/uijet', 'mustache', 'uijet_dir/modules/engine/_cache', 'uijet_dir/widgets/Base'], function (uijet, Mustache) {
             return factory(uijet, Mustache);
         });
     } else {

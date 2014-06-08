@@ -16,7 +16,9 @@
                 return template;
             }
             else {
-                return uijet.xhr(template_url);
+                return uijet.xhr(template_url).then(function (response) {
+                    return uijet.templates[template_url] = response;
+                });
             }
         }
     });
