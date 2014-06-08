@@ -1,12 +1,12 @@
 requirejs.config({
-    baseUrl : '.',
-    paths   : {
-        uijet_dir   : 'lib/uijet',
-        zepto       : 'lib/zepto',
-        eventbox    : 'lib/eventbox',
-        q           : 'lib/q'
+    baseUrl: '/',
+    paths  : {
+        uijet_dir: 'vendor/uijet',
+        zepto    : 'vendor/zepto',
+        eventbox : 'vendor/eventbox',
+        when     : 'vendor/when'
     }
 });
 requirejs(['app'], function (myApp) {
-    myApp.init();
+    myApp.start();
 });

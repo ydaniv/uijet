@@ -2,17 +2,14 @@ define([
     'uijet_dir/uijet',
     'uijet_dir/modules/dom/zepto',
     'uijet_dir/modules/pubsub/eventbox',
-    'uijet_dir/modules/promises/q',
-    'uijet_dir/modules/xhr/zepto'
-], function (uijet, $, Ebox, Q) {
+    'uijet_dir/modules/promises/when'
+], function (uijet, $, Ebox, when) {
     
-    var MyApp =  {
-            init            : function (options) {
-                uijet.init({
-                    element : '#main'
-                });
-            }
-        };
-
-    return MyApp;
+    return {
+        start: function () {
+            uijet.init({
+                element : '#main'
+            });
+        }
+    };
 });
