@@ -4,7 +4,7 @@ Every application that uses uijet needs to initialize uijet using it's `init()` 
 
 ## uijet.init()
 
-So a basic uijet-based app will look like this:
+So a basic uijet-based app will start like this:
 
 ```javascript
 define([
