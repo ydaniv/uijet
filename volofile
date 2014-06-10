@@ -13,26 +13,25 @@ module.exports = {
             v.rm('composites');
             v.rm('mixins');
             v.rm('modules');
-            v.rm('themes');
             v.rm('widgets');
+            v.rm('styles');
             v.rm('uijet.js');
             v.rm('uijet.css');
+            v.rm('uijet.less');
         }
 
         v.mv('src/adapters', 'adapters');
         v.mv('src/composites', 'composites');
         v.mv('src/mixins', 'mixins');
         v.mv('src/modules', 'modules');
-        v.mv('src/themes', 'themes');
         v.mv('src/widgets', 'widgets');
+        v.mv('src/styles', 'styles');
         v.mv('src/uijet.js', 'uijet.js');
         v.mv('src/uijet.css', 'uijet.css');
+        v.mv('src/uijet.less', 'uijet.less');
 
         v.rm('src');
-        v.rm('boilerplates');
         v.rm('.gitignore');
-        v.rm('LICENSE');
-        v.rm('README.md');
         v.rm('bower.json');
         v.rm('volofile');
 
