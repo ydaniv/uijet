@@ -1,5 +1,8 @@
 # Authoring an Application with uijet
 
+Let's review the basic flow of authoring an application using uijet.
+We're going to use AMD module loader for the example bellow.
+
 Every application that uses uijet needs to initialize uijet using it's `init()` method.
 
 ## uijet.init()
