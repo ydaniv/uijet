@@ -1,6 +1,6 @@
 {
-    "rootDir": "../src/",
+    "rootDir": "../../",
     "files": [
-        "index.md"
+        "README.md"
     ]
 }
