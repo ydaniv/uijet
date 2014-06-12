@@ -40,8 +40,10 @@ define([
 });
 ```
 
-uijet will automatically load the `List` Widget, create an instance of it, and bind it
-to the DOM element set in the `element` option, once uijet initializes.
+In the above example we load `uijet` and use it to `declare()` an instance of a `List` widget.
+
+Once uijet starts it will automatically load the `List` Widget, create an instance of it, and bind it
+to the DOM element set in the `element` option.
 
 The actual `List` view that will be created with the `id`: `groovie_list` is *injected* with
 the `List` Widget and all its *dependencies*.
@@ -115,7 +117,7 @@ uijet.Widget('KickAssList', {
 ]);
 ```
 
-In the example above we defined a new `List` Widget that inherits from the basic `List`.
+In the example above we defined a new `KickAssList` Widget that inherits from the basic `List`.
 
 We could also add a Mixin dependency:
 
@@ -129,6 +131,9 @@ uijet.Widget('KickAssList', {
 ```
 
 Now every `KickAssList` instance is automatically enhanced with the `Floated` Mixin.
+
+Note that although `Floated` here is a dependency of `KickAssList`, it is still a Mixin enhancing
+the Widget, so properties of `Floated` will override those of `KickAssList`.
 
 ### Declaring a view instance:
 
@@ -179,3 +184,18 @@ uijet.Factory('TransitionedButton', {
 As you can see in the example above, `uijet.Factory()` is used similarly as `uijet.declare()`,
 only difference is it only takes a single declaration object, and requires a `name` as first
 argument.
+
+## Ad-hoc starting a view:
+ 
+uijet also has an imperative way to declare and start a view instance, using the
+`uijet.start()` method.
+This method takes the same arguments as `uijet.declare()`, and will both declare and start
+the views declarations provided to it.
+
+Since uijet also needs to check whether there are dependencies that needs to be loaded, this
+starting process will happen asynchronously once all dependencies are loaded, or simply on
+next task of the queue of the JS engine.
+ 
+If you're sure that all dependencies for the declaration(s) you've provided to `uijet.start()`
+are all already loaded you can provide it a second argument `true`, which will cause the
+starting to happen immediately and synchronously.
