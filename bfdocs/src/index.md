@@ -1,6 +1,6 @@
 # uijet
 
-## Killer UI for web-apps.
+## Killer UI for web apps.
 
 uijet lets you create awesome, cross-platform applications and keeps your code maintainable.
 

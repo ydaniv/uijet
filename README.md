@@ -1,6 +1,6 @@
 # uijet
 
-Killer UI for web-apps.
+Killer UI for web apps.
 
 [http://uijet.com](http://uijet.com)
 
