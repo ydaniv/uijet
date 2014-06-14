@@ -1,15 +1,16 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
-            'rivets'
-        ], function (rivets) {
-            return factory(rivets);
+            'rivets',
+            'uijet_dir/uijet'
+        ], function (rivets, uijet) {
+            return factory(rivets, uijet);
         });
     }
     else {
-        factory(root.rivets);
+        factory(root.rivets, root.uijet);
     }
-}(this, function (rivets) {
+}(this, function (rivets, uijet) {
 
     /*
      * Adopted and compiled from: 
@@ -79,8 +80,15 @@
                 }
                 options.config.preloadData = true;
                 template = el.cloneNode(true);
-                view = new rivets._.View(template, data, options);
-                view.bind();
+                var binder;
+                if ( binder = this.view.options[this.type] ) {
+                    var view_id = binder(template, data, options);
+                    view = uijet.__getRvView(view_id);
+                }
+                else {
+                    view = new rivets._.View(template, data, options);
+                    view.bind();
+                }
                 this.iterated.splice(index, 0, view);
                 iterated_mirror.splice(index, 0, model);
                 element_list.push({

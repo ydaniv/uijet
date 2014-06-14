@@ -13,6 +13,14 @@
     }
 }(this, function (uijet, rivets) {
 
+    var _views_cache = {};
+
+    uijet.use({
+        __getRvView: function (id) {
+            return _views_cache[id];
+        }
+    });
+
     /**
      * Rivets-Backbone binding module.
      * 
@@ -147,6 +155,7 @@
 
                 // bind and hold on to the bound view
                 this.rv_view = rivets.bind(this.$wrapper || this.$element, observables, this.options.bind_options);
+                _views_cache[this.id] = this.rv_view;
             }
             return this;
         }
