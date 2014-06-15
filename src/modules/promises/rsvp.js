@@ -8,27 +8,6 @@
     }
 }(this, function (uijet, RSVP) {
 
-    var p_proto = RSVP.Promise.prototype;
-
-    if ( ! ('state' in p_proto) && ! ('promise' in p_proto) ) {
-        p_proto.state = function () {
-            var state = 'pending';
-            if ( this.isResolved ) {
-                state = 'resolved';
-            }
-            else if ( this.isRejected ) {
-                state = 'rejected';
-            }
-            return state;
-        };
-        p_proto.promise = function () {
-            return this;
-        };
-    }
-    else {
-        throw new Error('Integration Error: RSVP.Promise.prototype already has that property.');
-    }
-
     /**
      * RSVP promises module.
      * 
@@ -42,15 +21,33 @@
     uijet.use({
         /**
          * Returns a deferred object.
-         * 
-         * **note**: for the sake of interoperability `promise` property is converted into a
-         * method and a `state()` method is added which follows the spec of {@link http://api.jquery.com/deferred.state/}.
+         *
+         * **note**: for the sake of interoperability `promise` property is converted into a method.
          * 
          * @method module:promises/rsvp#Promise
          * @see {@link https://github.com/tildeio/rsvp.js/#deferred}
          * @returns {deferred} - a "deferred" object.
          */
-        Promise     : RSVP.defer,
+        defer       : function () {
+            var deferred = RSVP.defer(),
+                promise = deferred.promise;
+
+            deferred.promise = function () {
+                return promise;
+            };
+
+            return deferred;
+        },
+        /**
+         * Constructs a promise object.
+         *
+         * @method module:promises/rsvp#Promise
+         * @see {@link https://github.com/tildeio/rsvp.js/#basic-usage}
+         * @returns {Promise} - a Promise object.
+         */
+        Promise     : function (resolver) {
+            return new RSVP.Promise(resolver);
+        },
         /**
          * Converts any given argument into a Promise.
          * If that argument is a Promise it returns it.
@@ -59,9 +56,7 @@
          * @param {*} value - value or promise to convert into a Promise.
          * @returns {Promise}
          */
-        when        : function (value) {
-            return this.isPromise(value) ? value : this.Promise().resolve(value);
-        },
+        when        : RSVP.Promise.resolve,
         /**
          * Returns a Promise that is resolved once all
          * Promises in the `promises` list are resolved,
@@ -72,7 +67,25 @@
          * @param {Array} promises - array of Promises and/or values.
          * @returns {Promise}
          */
-        whenAll     : RSVP.all,
+        whenAll     : RSVP.Promise.all,
+        /**
+         * Returns a Promise object that is rejected with the given reason.
+         *
+         * @method module:promises/es6#reject
+         * @param {Error} reason - the reason for rejecting the Promise.
+         * @returns {Promise}
+         */
+        reject      : RSVP.Promise.reject,
+        /**
+         * Returns a promise that resolves or rejects
+         * as soon as one of the promises in the iterable
+         * resolves or rejects, with the value or reason from that promise.
+         *
+         * @method module:promises/rsvp#race
+         * @param {Promise[]} promises - array of Promises.
+         * @returns {Promise}
+         */
+        race        : RSVP.Promise.race,
         /**
          * Whether the given `obj` argument is a Promise.
          * 

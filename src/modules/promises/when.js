@@ -20,35 +20,30 @@
      */
     uijet.use({
         /**
-         * Returns a deferred object.
-         * 
-         * **note**: for the sake of interoperability `promise` property is converted into a
-         * method and a `state()` method is added which follows the spec of {@link http://api.jquery.com/deferred.state/}.
-         * 
+         * Constructs a promise object.
+         *
          * @method module:promises/when#Promise
+         * @see {@link https://github.com/cujojs/when/blob/master/docs/api.md#whenpromise}
+         * @returns {Promise} - a Promise object.
+         */
+        Promise: when.promise,
+        /**
+         * Returns a deferred object.
+         *
+         * **note**: for the sake of interoperability `promise` property is converted into a method.
+         *
+         * @method module:promises/when#defer
          * @see {@link https://github.com/cujojs/when/blob/master/docs/api.md#whendefer}
          * @returns {deferred} - a "deferred" object.
          */
-        Promise     : function () {
+        defer  : function () {
 
             var deferred = when.defer(),
-                _promise = deferred.promise,
-                state = 'pending';
+                promise = deferred.promise;
 
             // turn promise property to a callable
             deferred.promise = function () {
-                return _promise;
-            };
-
-            // polyfill the promise.state() method
-            _promise.then(function () {
-                state = 'resolved';
-            }, function () {
-                state = 'rejected';
-            });
-
-            deferred.state = function () {
-                return state;
+                return promise;
             };
 
             return deferred;
@@ -74,6 +69,14 @@
          * @returns {Promise}
          */
         when        : when,
+        /**
+         * Returns a Promise object that is rejected with the given reason.
+         *
+         * @method module:promises/when#reject
+         * @param {Error} reason - the reason for rejecting the Promise.
+         * @returns {Promise}
+         */
+        reject : when.reject,
         /**
          * Whether the given `obj` argument is Promise-like object.
          * 
