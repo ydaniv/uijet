@@ -31,7 +31,7 @@
          * @returns {Promise}
          */
         xhr : function (url, options) {
-            var deferred = uijet.Promise(),
+            var deferred = uijet.defer(),
                 promise = deferred.promise(),
                 _options = {
                     success : function (response) {

@@ -155,7 +155,7 @@
                 _img, dfrd;
             if ( _inlines && _inlines[1] ) {
                 _img = new Image();
-                dfrd = uijet.Promise();
+                dfrd = uijet.defer();
                 _img.src = _inlines[1];
                 if ( _img.complete ) {
                     _img = null;
@@ -168,7 +168,7 @@
             }
             $imgs.each(function (i, img) {
                 var _dfrd, _resolver;
-                _dfrd = uijet.Promise();
+                _dfrd = uijet.defer();
                 _resolver = _dfrd.resolve.bind(_dfrd);
                 if ( img.complete ) {
                     _resolver();

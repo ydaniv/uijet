@@ -1168,7 +1168,7 @@
                             task = this.init_queue[q];
                             // each task should be a `function` that takes a deferred object and returns a promise
                             if ( isFunc(task) ) {
-                                this.init_queue[q] = task.call(this, uijet.Promise());
+                                this.init_queue[q] = task.call(this, uijet.defer());
                             }
                         }
                     }
@@ -1341,7 +1341,7 @@
             _config = widget.config;
             // if falsy then import dependencies first and then do the starting
             if ( ! skip_import ) {
-                _dfrd_start = this.Promise();
+                _dfrd_start = this.defer();
                 // the import's callback
                 _self = function () {
                     that._start(widget, true);

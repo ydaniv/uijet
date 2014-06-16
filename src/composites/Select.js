@@ -85,7 +85,7 @@
             return this;
         },
         setSelected : function (toggle) {
-            var deferred = uijet.Promise();
+            var deferred = uijet.defer();
             this.publish('_set_selected', {
                 toggle  : toggle,
                 deferred: deferred

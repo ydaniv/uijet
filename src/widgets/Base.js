@@ -881,7 +881,7 @@
                 return this.wake(new_context);
             } else {
                 this.sleep();
-                return uijet.Promise().reject(reason);
+                return uijet.reject(reason);
             }
         },
         /**

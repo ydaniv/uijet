@@ -89,7 +89,7 @@
          * @returns {Promise}
          */
         preloadImage: function (path) {
-            var img, dfrd = uijet.Promise();
+            var img, dfrd = uijet.defer();
             // if the `preload_img_el` option is set
             if ( this.options.preload_img_el ) {
                 // use the DOM's createElement to create the image

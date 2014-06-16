@@ -213,10 +213,10 @@
                     left: offset.x
                 },
                 $doc = uijet.$(document),
-                dfrd = uijet.Promise(),
+                dfrd = uijet.defer(),
                 start_time = down_e.timeStamp,
                 initial_translation,
-                _finally, delayHandler, cancelHandler,
+                _finally, delayHandler, cancelHandler, cancelled,
                 MOVE_E, END_E, $draggee, draggee;
 
             // must prevent default action here to prevent selection and prevent event trickling on iOS
@@ -259,12 +259,16 @@
 
             // a lambda for checking if the set delay time has passed
             delayHandler = function (move_e) {
-                if ( move_e.timeStamp - start_time >= delay ) dfrd.resolve();
+                if ( move_e.timeStamp - start_time >= delay ) {
+                    cancelled = true;
+                    dfrd.resolve();
+                }
             };
             // a callback for canceling the drag
             cancelHandler = function (up_e) {
                 // if the end event was fired before the delay
-                if ( up_e && dfrd.state() === 'pending' && up_e.timeStamp - start_time < delay ) {
+                if ( up_e && !cancelled && up_e.timeStamp - start_time < delay ) {
+                    cancelled = true;
                     // cancel the drag
                     dfrd.reject();
                 } else {

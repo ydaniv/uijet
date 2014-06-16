@@ -92,7 +92,7 @@
          */
         transit         : function (direction) {
             // create a promise object
-            this.transit_dfrd = uijet.Promise();
+            this.transit_dfrd = uijet.defer();
             this.transit_promise = this.transit_dfrd.promise();
             // do transition
             uijet.transit(this, direction, function () {

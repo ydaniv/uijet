@@ -93,7 +93,7 @@
                                     function (e) {
                                         // emit the `submit_error` signal
                                         this.notify.apply(that, ['submit_error'].concat(Array.prototype.slice.call(arguments)));
-                                        return uijet.Promise().reject(e);
+                                        return uijet.reject(e);
                                     }
                                 );
                             }
@@ -106,7 +106,7 @@
                     // failed validation
                     function (failed) {
                         that.notify('not_valid', failed, _data);
-                        return uijet.Promise().reject(failed);
+                        return uijet.reject(failed);
                     }
                 );
         },
@@ -171,7 +171,7 @@
                                 return function (reason) {
                                     // set the reason to the failed object under the name of the failing field
                                     failed[field_name] = reason;
-                                    return uijet.Promise().reject(failed);
+                                    return uijet.reject(failed);
                                 };
                             }(v))));
                         }
@@ -190,7 +190,7 @@
             return valid ?
                    uijet.whenAll(promises) :
                    // otherwise return a rejected promise with the `failed` map as reason
-                   uijet.Promise().reject(failed);
+                   uijet.reject(failed);
         },
         /**
          * Gets the URI to use for submitting the request or routing to.
