@@ -96,7 +96,7 @@
          * @returns {boolean}
          */
         isPromise   : when.isPromiseLike
-    }, uijet, when);
+    });
 
     return when;
 }));
