@@ -26,7 +26,7 @@
          * @see {@link https://github.com/cujojs/when/blob/master/docs/api.md#whenpromise}
          * @returns {Promise} - a Promise object.
          */
-        Promise: when.promise,
+        Promise     : when.promise,
         /**
          * Returns a deferred object.
          *
@@ -36,7 +36,7 @@
          * @see {@link https://github.com/cujojs/when/blob/master/docs/api.md#whendefer}
          * @returns {deferred} - a "deferred" object.
          */
-        defer  : function () {
+        defer       : function () {
 
             var deferred = when.defer(),
                 promise = deferred.promise;
@@ -76,7 +76,7 @@
          * @param {Error} reason - the reason for rejecting the Promise.
          * @returns {Promise}
          */
-        reject : when.reject,
+        reject      : when.reject,
         /**
          * Returns a promise that resolves or rejects
          * as soon as one of the promises in the iterable
