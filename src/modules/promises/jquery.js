@@ -18,13 +18,27 @@
      */
     uijet.use({
         /**
-         * Constructs a deferred object.
-         * 
+         * Constructs a promise object.
+         *
          * @method module:promises/jquery#Promise
+         * @returns {Promise} - a Promise object.
+         */
+        Promise     : function (resolver) {
+            var deferred = $.Deferred(),
+                promise = deferred.promise();
+
+            resolver(deferred.resolve.bind(deferred), deferred.reject.bind(deferred));
+
+            return promise;
+        },
+        /**
+         * Constructs a deferred object.
+         *
+         * @method module:promises/jquery#defer
          * @see {@link http://api.jquery.com/jQuery.Deferred/}
          * @returns {Deferred} - a Deferred object.
          */
-        Promise     : $.Deferred,
+        defer       : $.Deferred,
         /**
          * Returns a Promise that is resolved once all
          * Promises in the `promises` list are resolved,
@@ -48,6 +62,16 @@
          * @returns {Promise}
          */
         when        : $.when,
+        /**
+         * Returns a Promise object that is rejected with the given reason.
+         *
+         * @method module:promises/jquery#reject
+         * @param {Error} reason - the reason for rejecting the Promise.
+         * @returns {Promise}
+         */
+        reject      : function (reason) {
+            return $.Deferred.reject(reason);
+        },
         /**
          * Whether the given `obj` argument is a Promise.
          * 
