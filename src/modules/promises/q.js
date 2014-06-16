@@ -19,16 +19,23 @@
      */
     uijet.use({
         /**
-         * Returns a deferred object.
-         * 
-         * **note**: for the sake of interoperability `promise` property is converted into a
-         * method and a `state()` method is added which follows the spec of {@link http://api.jquery.com/deferred.state/}.
-         * 
+         * Constructs a promise object.
+         *
          * @method module:promises/q#Promise
+         * @see {@link https://github.com/cujojs/when/blob/master/docs/api.md#whenpromise}
+         * @returns {Promise} - a Promise object.
+         */
+        Promise     : Q.Promise,
+        /**
+         * Returns a deferred object.
+         *
+         * **note**: for the sake of interoperability `promise` property is converted into a method.
+         *
+         * @method module:promises/q#defer
          * @see {@link https://github.com/kriskowal/q/wiki/API-Reference#qdefer}
          * @returns {deferred} - a "deferred" object.
          */
-        Promise     : function () {
+        defer       : function () {
 
             var deferred = Q.defer(),
                 promise = deferred.promise;
@@ -36,14 +43,6 @@
             // turn promise property to a callable
             deferred.promise = function () {
                 return promise;
-            };
-
-            deferred.state = function () {
-                return this.isFulfilled() ?
-                        'resolved' :
-                        this.isRejected() ?
-                            'rejected' :
-                            'pending';
             };
 
             return deferred;
@@ -57,7 +56,7 @@
          * @param {*} value - value or promise to convert into a Promise.
          * @returns {Promise}
          */
-        when        : Q.when,
+        when        : Q,
         /**
          * Returns a Promise that is resolved once all
          * Promises in the `promises` list are resolved,
@@ -68,7 +67,25 @@
          * @param {Array} promises - array of Promises and/or values.
          * @returns {Promise}
          */
-        whenAll     : Q.all,
+        whenAll     : Q.Promise.all,
+        /**
+         * Returns a Promise object that is rejected with the given reason.
+         *
+         * @method module:promises/q#reject
+         * @param {Error} reason - the reason for rejecting the Promise.
+         * @returns {Promise}
+         */
+        reject      : Q.Promise.reject,
+        /**
+         * Returns a promise that resolves or rejects
+         * as soon as one of the promises in the iterable
+         * resolves or rejects, with the value or reason from that promise.
+         *
+         * @method module:promises/q#race
+         * @param {Promise[]} promises - array of Promises.
+         * @returns {Promise}
+         */
+        race        : Q.Promise.race,
         /**
          * Whether the given `obj` argument is a Promise.
          * 
@@ -79,7 +96,7 @@
         isPromise   : function (obj) {
             return Q.isPromise(obj) || Q.isPromiseAlike(obj);
         }
-    }, uijet, Q);
+    });
 
     return Q;
 }));
