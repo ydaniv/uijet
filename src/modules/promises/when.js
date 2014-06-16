@@ -78,6 +78,16 @@
          */
         reject : when.reject,
         /**
+         * Returns a promise that resolves or rejects
+         * as soon as one of the promises in the iterable
+         * resolves or rejects, with the value or reason from that promise.
+         *
+         * @method module:promises/when#race
+         * @param {Promise[]} promises - array of Promises.
+         * @returns {Promise}
+         */
+        race        : when.Promise.race,
+        /**
          * Whether the given `obj` argument is Promise-like object.
          * 
          * @method module:promises/when#isPromise
