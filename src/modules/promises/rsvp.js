@@ -1,10 +1,10 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'rsvp'], function (uijet) {
-            return factory(uijet, root.RSVP, root);
+        define(['uijet_dir/uijet', 'rsvp'], function (uijet, RSVP) {
+            return factory(uijet, RSVP || root.RSVP);
         });
     } else {
-        factory(uijet, root.RSVP, root);
+        factory(uijet, root.RSVP);
     }
 }(this, function (uijet, RSVP) {
 
@@ -56,7 +56,9 @@
          * @param {*} value - value or promise to convert into a Promise.
          * @returns {Promise}
          */
-        when        : RSVP.Promise.resolve,
+        when   : function (value) {
+            return RSVP.Promise.resolve(value);
+        },
         /**
          * Returns a Promise that is resolved once all
          * Promises in the `promises` list are resolved,
@@ -67,7 +69,9 @@
          * @param {Array} promises - array of Promises and/or values.
          * @returns {Promise}
          */
-        whenAll     : RSVP.Promise.all,
+        whenAll: function (promises) {
+            return RSVP.Promise.all(promises);
+        },
         /**
          * Returns a Promise object that is rejected with the given reason.
          *
@@ -75,7 +79,9 @@
          * @param {Error} reason - the reason for rejecting the Promise.
          * @returns {Promise}
          */
-        reject      : RSVP.Promise.reject,
+        reject : function (reason) {
+            return RSVP.Promise.reject(reason);
+        },
         /**
          * Returns a promise that resolves or rejects
          * as soon as one of the promises in the iterable
@@ -85,7 +91,9 @@
          * @param {Promise[]} promises - array of Promises.
          * @returns {Promise}
          */
-        race        : RSVP.Promise.race,
+        race   : function (promises) {
+            return RSVP.Promise.race(promises);
+        },
         /**
          * Whether the given `obj` argument is a Promise.
          * 
