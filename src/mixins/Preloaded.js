@@ -89,31 +89,34 @@
          * @returns {Promise}
          */
         preloadImage: function (path) {
-            var img, dfrd = uijet.defer();
-            // if the `preload_img_el` option is set
-            if ( this.options.preload_img_el ) {
-                // use the DOM's createElement to create the image
-                img = document.createElement('img');
-            } else {
-                // otherwise create a new `Image` object
-                img = new Image();
-            }
-            // set the `src`
-            img.src = path;
-            // if this image is already cached it might be done already
-            if ( img.complete ) {
-                // clear the memory and resolve the promise
-                img = null;
-                dfrd.resolve();
-            } else {
-                // image is not in cache so set a resolving handler on its events
-                img.onload = img.onerror = function () {
+            return uijet.Promise(function (resolve, reject) {
+                var img;
+                // if the `preload_img_el` option is set
+                if ( this.options.preload_img_el ) {
+                    // use the DOM's createElement to create the image
+                    img = document.createElement('img');
+                }
+                else {
+                    // otherwise create a new `Image` object
+                    img = new Image();
+                }
+                // set the `src`
+                img.src = path;
+                // if this image is already cached it might be done already
+                if ( img.complete ) {
                     // clear the memory and resolve the promise
                     img = null;
-                    dfrd.resolve();
-                };
-            }
-            return dfrd.promise();
+                    resolve();
+                }
+                else {
+                    // image is not in cache so set a resolving handler on its events
+                    img.onload = img.onerror = function () {
+                        // clear the memory and resolve the promise
+                        img = null;
+                        resolve();
+                    };
+                }
+            }.bind(this));
         }
     });
 }));

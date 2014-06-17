@@ -1331,7 +1331,7 @@
             var that = this,
                 _factory = widget.factory,
                 _config = widget.config,
-                _type, _dfrd_start, _self, mixedin_type, _w, l, _d, _c, _mixins, _adapters, _widgets;
+                _type, mixedin_type, _w, l, _d, _c, _mixins, _adapters, _widgets;
             // if this is a  cached factory declaration
             if ( _factory && widget_factories[_factory] ) {
                 // use it to generate an instance's declaration
@@ -1341,16 +1341,17 @@
             _config = widget.config;
             // if falsy then import dependencies first and then do the starting
             if ( ! skip_import ) {
-                _dfrd_start = this.defer();
-                // the import's callback
-                _self = function () {
-                    that._start(widget, true);
-                    _dfrd_start.resolve();
-                    return this;
-                };
-                // do import
-                this.importModules(this._extractDependencies([widget]), _self);
-                return _dfrd_start.promise();
+                return this.Promise(function (resolve, reject) {
+                    // do import
+                    this.importModules(
+                        this._extractDependencies([widget]),
+                        // the import's callback
+                        function () {
+                            that._start(widget, true);
+                            return resolve();
+                        }
+                    );
+                }.bind(this));
             }
             // skip import
             else {
