@@ -4,7 +4,7 @@ requirejs.config({
         uijet_dir: 'vendor/uijet',
         zepto    : 'vendor/zepto',
         eventbox : 'vendor/eventbox',
-        when     : 'vendor/when'
+        rsvp: 'vendor/rsvp'
     }
 });
 requirejs(['app'], function (myApp) {

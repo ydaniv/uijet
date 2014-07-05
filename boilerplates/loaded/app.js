@@ -7,10 +7,10 @@ define([
     'uijet_dir/modules/binding/rivets-backbone',
     'uijet_dir/modules/dom/jquery',
     'uijet_dir/modules/animation/velocity',
-    'uijet_dir/modules/promises/when',
+    'uijet_dir/modules/promises/rsvp',
     'uijet_dir/modules/pubsub/eventbox',
     'uijet_dir/modules/xhr/jquery'
-], function (uijet, Router, resources, routes, Backbone, rivets, $, velocity, when, Ebox) {
+], function (uijet, Router, resources, routes, Backbone, rivets, $, velocity, RSVP, Ebox) {
     
     return {
         router: Router({

@@ -5,7 +5,7 @@ requirejs.config({
         uijet_dir  : 'vendor/uijet',
         jquery     : 'vendor/jquery',
         eventbox   : 'vendor/eventbox',
-        when       : 'vendor/when',
+        rsvp: 'vendor/rsvp',
         velocity   : 'vendor/velocity',
         backbone   : 'vendor/backbone',
         lodash     : 'vendor/lodash.underscore',

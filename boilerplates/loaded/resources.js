@@ -1,7 +1,9 @@
-define(['backbone'], function (Backbone) {
+define([
+    'backbone'
+], function (Backbone) {
 
     var Products = new Backbone.Collection.extend({
-        url  : '/products'
+        url: '/products'
     });
 
     return {
