@@ -16,11 +16,14 @@
         _dragHandler = function (el, deltas, force_move, use_translate) {
             //TODO: make the animation property value (translate, etc.) as a return value of a generic method of uijet
             var horizontal, property, trans, px = 'px';
+            // allow another animation frame to be requested
+            this._last_drag_anim = null;
+
             if ( this.dragging || force_move ) {
                 //TODO: this will override other transforms  
                 // if `axis` is set then animate only along that axis
                 if ( this._drag_axis ) {
-                    horizontal = that._drag_axis === 'X';
+                    horizontal = this._drag_axis === 'X';
 
                     if ( use_translate ) {
                         trans = horizontal ? deltas.dx : deltas.dy;
@@ -376,6 +379,7 @@
                             // otherwise handle cancellation for non-cloned
                             if ( ! is_cloned ) {
                                 cancelAnimFrame(that._last_drag_anim);
+                                that._last_drag_anim = null;
                                 $draggee.removeClass('uijet_draggee');
                                 that._clearCachedStyle(draggee);
                             }
@@ -501,9 +505,11 @@
          * @returns {Dragged}
          */
         drag               : function (el, deltas, force_move) {
-            this._last_drag_anim = requestAnimFrame(
-                _dragHandler.bind(this, el, deltas, !!force_move, this._use_translate)
-            );
+            if ( !this._last_drag_anim ) {
+                this._last_drag_anim = requestAnimFrame(
+                    _dragHandler.bind(this, el, deltas, !!force_move, this._use_translate)
+                );
+            }
             return this;
         },
         /**
