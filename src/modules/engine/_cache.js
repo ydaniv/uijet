@@ -3,14 +3,15 @@
         define(['uijet_dir/uijet'], function (uijet) {
             return factory(uijet);
         });
-    } else {
+    }
+    else {
         factory(root.uijet);
     }
 }(this, function (uijet) {
 
     uijet.use({
-        templates   : {},
-        template    : function (template_url) {
+        templates: {},
+        template : function (template_url) {
             var template;
             if ( template = uijet.templates[template_url] ) {
                 return template;
