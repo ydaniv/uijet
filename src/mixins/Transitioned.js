@@ -91,16 +91,16 @@
          * @returns {Promise} - the transition promise.
          */
         transit         : function (direction) {
-            // create a promise object
-            this.transit_dfrd = uijet.defer();
-            this.transit_promise = this.transit_dfrd.promise();
-            // do transition
-            uijet.transit(this, direction, function () {
-                // get this widget off the top
-                (this.$wrapper || this.$element).removeClass('z_top');
-                this.transit_dfrd.resolve();
-                this.notify(true, 'post_transit', direction);
-            });
+            this.transit_promise = uijet.Promise(function (resolve) {
+                // do transition
+                uijet.transit(this, direction, function () {
+                    // get this widget off the top
+                    (this.$wrapper || this.$element).removeClass('z_top');
+                    resolve();
+                    this.notify(true, 'post_transit', direction);
+                });
+            }.bind(this));
+
             return this.transit_promise;
         },
         /**

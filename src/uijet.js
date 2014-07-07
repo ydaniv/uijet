@@ -994,15 +994,14 @@
                 if ( missingDependency(_deps) ) {
                     // defer the widget class definition till we have promises module loaded
                     // plus its dependencies are loaded
-                    this.init_queue.push(function (deferred) {
+                    this.init_queue.push(function (resolve) {
                         // make sure they're all loaded
                         this.importModules(_deps,
                             function () {
                                 widget_classes[type] = this._generate(props, _deps.mixins, _deps.widgets);
-                                deferred.resolve();
+                                resolve();
                             }.bind(this)
                         );
-                        return deferred.promise();
                     });
                     // setting a placeholder for this widget definition so that uijet
                     // will not get confused and try to load it from elsewhere, e.g. in `_extractDependencies()`
@@ -1166,9 +1165,11 @@
                     if ( q = this.init_queue.length ) {
                         while ( q-- ) {
                             task = this.init_queue[q];
-                            // each task should be a `function` that takes a deferred object and returns a promise
+                            // each task should be a `function` that takes a resolve and reject functions
                             if ( isFunc(task) ) {
-                                this.init_queue[q] = task.call(this, uijet.defer());
+                                // tasks' context is bound to uijet
+                                // all tasks in queue are replaced by coresponding promises
+                                this.init_queue[q] = uijet.Promise(task.bind(this));
                             }
                         }
                     }
@@ -1660,13 +1661,14 @@
          * @memberOf uijet
          * @param {Object} modules - a map of module paths to list of module/file names to load.
          * @param {function} [callback] - a callback to run once the modules are loaded.
+         * @param {function} [error] - an error callback to run if loading failed.
          * @returns {*}
          */
         //TODO: refactor to be library agnostic.
         //TODO: fix AMD check, currently depends on RequireJS.
         //TODO: refactor to be a separate module.
         //TODO: allow registration of custom paths.
-        importModules       : function (modules, callback) {
+        importModules       : function (modules, callback, error) {
             var imports = [], m, l;
             // if using an AMD loader
             if ( typeof _window.require == 'function' ) {
@@ -1678,7 +1680,7 @@
                 // if there's anything to import
                 if ( imports.length ) {
                     // import it
-                    return _window.require(imports, callback);
+                    return _window.require(imports, callback, error);
                 }
             }
             // if nothing to import or not using AMD
@@ -1726,16 +1728,16 @@
          */
         wakeContained       : function  (id, context) {
             var _contained = widgets[id].contained,
-                deferreds = [],
+                promises = [],
                 _widget,
                 l = _contained.length;
             while ( l-- ) {
                 _widget = widgets[_contained[l]].self;
                 if ( _widget && ! returnOf(_widget.options.dont_wake, _widget) ) {
-                    deferreds.unshift(_widget.wake(context));
+                    promises.unshift(_widget.wake(context));
                 }
             }
-            return deferreds;
+            return promises;
         },
         /**
          * Puts to sleep all of the contained child widgets of widget with matching `id`.

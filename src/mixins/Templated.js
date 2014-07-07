@@ -146,37 +146,40 @@
                 // get innerHTML of `$element`
                 _html = this.$element[0].innerHTML,
                 // match all URLs of images in the HTML
-                _inlines = _html.match(/url\(['"]?([\w\/:\.-]*)['"]?\)/),
-                promises = [],
-                _inlines_resolver = function () {
-                    _img = null;
-                    dfrd.resolve();
-                },
-                _img, dfrd;
-            if ( _inlines && _inlines[1] ) {
-                _img = new Image();
-                dfrd = uijet.defer();
-                _img.src = _inlines[1];
-                if ( _img.complete ) {
-                    _img = null;
-                    dfrd.resolve();
-                } else {
-                    _img.onload = _inlines_resolver;
-                    _img.onerror = _inlines_resolver;
-                }
-                promises.push(dfrd.promise());
+                inlined = _html.match(/url\(['"]?([\w\/:\.-]*)['"]?\)/g),
+                promises = [];
+            if ( inlined && inlined.length ) {
+                promises = inlined.map(function (inline) {
+                    return uijet.Promise(function (resolve) {
+                        var _img = new Image();
+                        _img.src = inline;
+                        if ( _img.complete ) {
+                            _img = null;
+                            resolve();
+                        }
+                        else {
+                            _img.onload = function (resolve) {
+                                _img = null;
+                                resolve();
+                            };
+                            _img.onerror = function (resolve) {
+                                _img = null;
+                                resolve();
+                            };
+                        }
+                    });
+                });
             }
             $imgs.each(function (i, img) {
-                var _dfrd, _resolver;
-                _dfrd = uijet.defer();
-                _resolver = _dfrd.resolve.bind(_dfrd);
-                if ( img.complete ) {
-                    _resolver();
-                } else {
-                    img.onload = _resolver;
-                    img.onerror = _resolver;
-                }
-                promises.push(_dfrd.promise());
+                promises.push(uijet.Promise(function (resolve) {
+                    if ( img.complete ) {
+                        resolve();
+                    }
+                    else {
+                        img.onload = resolve;
+                        img.onerror = resolve;
+                    }
+                }));
             });
             return promises;
         },
