@@ -27,19 +27,22 @@
          */
         generate: function () {
             return Mustache.render(this.template, this.getContext(), this.partials);
-        },
+        }
+    }, uijet.BaseWidget.prototype)
+
+        .use({
         /**
          * Parses a template string ahead of time for faster rendering.
          * 
          * @see {@link https://github.com/janl/mustache.js/#pre-parsing-and-caching-templates}
-         * @method module:engine/mustache#compile
+         * @method uijet#compile
          * @param {string} template - template string to compile.
          * @returns {string} - the same `template` string.
          */
         compile : function (template) {
             return Mustache.parse(template), template;
         }
-    }, uijet.BaseWidget.prototype);
+        });
 
     return Mustache;
 }));

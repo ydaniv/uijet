@@ -32,19 +32,22 @@
          */
         generate: function () {
             return this.template(this.getContext(), {helpers: this.helpers, partials: this.partials})
-        },
+        }
+    }, uijet.BaseWidget.prototype)
+
+        .use({
         /**
          * Precompiles a template string to an executable.
          * 
          * @see {@link http://handlebarsjs.com/precompilation.html}
-         * @method module:engine/handlebars#compile
+         * @method uijet#compile
          * @param {string} template - template string to compile.
          * @returns {function} - precompiled template function.
          */
         compile : function (template) {
             return Handlebars.compile(template);
         }
-    }, uijet.BaseWidget.prototype);
+        });
 
     return Handlebars;
 }));

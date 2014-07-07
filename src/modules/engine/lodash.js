@@ -27,7 +27,10 @@
          */
         generate: function () {
             return this.template(this.getContext());
-        },
+        }
+    }, uijet.BaseWidget.prototype)
+
+        .use({
         /**
          * Precompiles a template string to an executable.
          * 
@@ -36,14 +39,14 @@
          * * `compile_options`: the `options` object argument sent
          * 
          * @see {@link http://lodash.com/docs#template}
-         * @method module:engine/lodash#compile
+         * @method uijet#compile
          * @param {string} template - template string to compile.
          * @returns {function} - precompiled template function.
          */
         compile : function (template) {
             return _.template(template, null, this.options.compile_options);
         }
-    }, uijet.BaseWidget.prototype);
+        });
 
     return _;
 }));

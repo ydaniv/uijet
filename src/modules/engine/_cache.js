@@ -17,7 +17,7 @@
             }
             else {
                 return uijet.xhr(template_url).then(function (response) {
-                    return uijet.templates[template_url] = response;
+                    return uijet.templates[template_url] = uijet.compile(response);
                 });
             }
         }

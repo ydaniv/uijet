@@ -215,9 +215,9 @@
 
                 // request the template
                 requests.push(uijet.template(this.template_url)
-                    .then(function (response) {
+                    .then(function (template) {
                         // cache result
-                        that.template = that.compile ? that.compile(response) : response;
+                        that.template = template;
                     }));
 
                 // if we need to fetch partial templates
