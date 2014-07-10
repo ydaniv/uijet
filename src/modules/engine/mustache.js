@@ -41,13 +41,13 @@
              * Parses a template string ahead of time for faster rendering.
              *
              * @see {@link https://github.com/janl/mustache.js/#pre-parsing-and-caching-templates}
-         * @method uijet#compile
-         * @param {string} template - template string to compile.
-         * @returns {string} - the same `template` string.
-         */
+             * @method uijet#compile
+             * @param {string} template - template string to compile.
+             * @returns {string} - the same `template` string.
+             */
             compile: function (template) {
-            return Mustache.parse(template), template;
-        }
+                return Mustache.parse(template), template;
+            }
         });
 
     return Mustache;
