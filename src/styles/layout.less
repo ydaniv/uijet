@@ -1,220 +1,261 @@
 @import 'mixins';
 
+
 .center {
-    display: table;
-    height: 100%;
+    display : table;
+    height  : 100%;
 
     & > .centered {
-        display: table-cell;
-        vertical-align: middle;
+        display        : table-cell;
+        vertical-align : middle;
     }
 }
 
+
 .uijet_app {
-    visibility: hidden;
-    position: relative;
+    visibility : hidden;
+    position   : relative;
     .spread();
 
     &.cover {
-        position: absolute;
+        position : absolute;
     }
 }
+
 
 .uijet_button,
 .uijet_form button,
 .uijet_form input[type=submit],
 .uijet_form input[type=button] {
-    display: inline-block;
-    cursor: pointer;
+    display : inline-block;
+    cursor  : pointer;
 }
 
+
 .uijet_list {
-    width: 100%;
-    list-style: none;
+    width      : 100%;
+    list-style : none;
 
     &.horizontal {
-        height: 100%;
+        height : 100%;
 
         & > li {
-            display: inline-block;
-            float: left;
-            height: 100%;
+            display : inline-block;
+            float   : left;
+            height  : 100%;
         }
 
         &.align_center {
-            text-align: center;
+            text-align : center;
 
             & > li {
-                float: none;
+                float : none;
             }
         }
 
         &.align_right {
-            text-align: right;
+            text-align : right;
 
             & > li {
-                float: right;
+                float : right;
             }
         }
     }
 
     & > li {
         .border-box();
-        cursor: pointer;
+        cursor : pointer;
     }
 }
 
+
 .uijet_pane {
-    width: 100%;
-    height: 100%;
+    width  : 100%;
+    height : 100%;
 }
 
+
 .uijet_overlay {
-    position: fixed;
+    position : fixed;
     .spread();
 
     &.darken {
-        background-color: rgba(20,20,20,0.7);
+        background-color : rgba(20, 20, 20, 0.7);
     }
 }
+
 
 .uijet_overlay.z_top,
 .uijet_overlay_wrapper.z_top {
-    z-index: 1000;
+    z-index : 1000;
 }
+
 
 .uijet_overlay_wrapper.darken {
-    background-color: rgba(20,20,20,0.7);
+    background-color : rgba(20, 20, 20, 0.7);
 
     & > .uijet_overlay.darken {
-        background-color: transparent;
+        background-color : transparent;
     }
 }
 
-.uijet_view {
-    visibility: hidden;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    /*right: -100%;*/
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-
-    &.z_top {
-        z-index: 10;
-    }
-}
-
-.uijet_view_container {
-    position: relative;
-    width: 100%;
-    height: 100%;
-}
-
-.uijet_video {
-    width: 100%;
-    height: 100%;
-}
 
 .uijet_widget {
     .border-box();
 }
 
+
 .uijet_wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
+    position : relative;
+    width    : 100%;
+    height   : 100%;
+    overflow : hidden;
     .border-box();
 
     &.scrolled > .uijet_widget {
-        height: auto;
+        height : auto;
     }
 
     &.center {
-        display: table;
+        display : table;
     }
 
     & > .uijet_widget {
-        position: relative;
+        position : relative;
     }
 }
+
 
 .uijet_wrapper.float, .uijet_widget.float {
-    width: auto;
-    height: auto;
+    width  : auto;
+    height : auto;
 }
+
 
 .uijet_center_wrapper {
-    display: table-cell;
-    vertical-align: middle;
+    display        : table-cell;
+    vertical-align : middle;
 
     & > .uijet_widget {
-        position: static;
-        margin: auto;
+        position : static;
+        margin   : auto;
     }
 }
+
 
 .current {
-    z-index: 1;
+    z-index : 1;
 }
+
 
 .z_top {
-    z-index: 10;
+    z-index : 10;
 }
+
 
 .layered {
-    position: absolute;
+    position : absolute;
 }
 
+
 .float {
-    position: absolute;
-    z-index: 200;
-    top: -9000px;
-    height: auto;
+    position : absolute;
+    z-index  : 200;
+    top      : -9000px;
+    height   : auto;
 
     &.show {
-        top: 0;
+        top : 0;
     }
 
     & > .uijet_widget {
-        position: static;
+        position : static;
         /*overflow: hidden;*/
     }
 }
 
+
 .uijet_draggee {
-    position: absolute !important;
-    z-index: 1001 !important;
-    margin: 0 !important;
-    -webkit-box-shadow: 0 0 8px 2px rgba(66, 66, 66, .5);
-    -moz-box-shadow: 0 0 8px 2px rgba(66, 66, 66, .5);
-    box-shadow: 0 0 8px 2px rgba(66, 66, 66, .5);
+    position           : absolute !important;
+    z-index            : 1001 !important;
+    margin             : 0 !important;
+    -webkit-box-shadow : 0 0 8px 2px rgba(66, 66, 66, .5);
+    -moz-box-shadow    : 0 0 8px 2px rgba(66, 66, 66, .5);
+    box-shadow         : 0 0 8px 2px rgba(66, 66, 66, .5);
 }
+
 
 .uijet_select_wrapper {
-    height: auto;
-    overflow: visible;
+    height   : auto;
+    overflow : visible;
 }
+
 
 .uijet_dropmenubutton_wrapper {
-    overflow: visible;
+    overflow : visible;
 }
 
-.hide { display: none !important; }
+
+.hide {
+    display : none !important;
+}
+
 
 /* ==|== non-semantic helper classes ======================================== */
-.ir { border: 0; overflow: hidden; background-color: transparent; }
-.ir:before {
-    content: "";
-    display: block;
-    width: 0;
-    height: 150%;
+.ir {
+    border           : 0;
+    overflow         : hidden;
+    background-color : transparent;
 }
-.hidden { display: none !important; visibility: hidden; }
-.visuallyhidden { border: 0; clip: rect(0 0 0 0); height: 1px; margin: -1px; overflow: hidden; padding: 0; position: absolute; width: 1px; }
-.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus { clip: auto; height: auto; margin: 0; overflow: visible; position: static; width: auto; }
-.invisible { visibility: hidden; }
-.clearfix:before, .clearfix:after { content: " "; display: table; }
-.clearfix:after { clear: both; }
+
+
+.ir:before {
+    content : "";
+    display : block;
+    width   : 0;
+    height  : 150%;
+}
+
+
+.hidden {
+    display    : none !important;
+    visibility : hidden;
+}
+
+
+.visuallyhidden {
+    border   : 0;
+    clip     : rect(0 0 0 0);
+    height   : 1px;
+    margin   : -1px;
+    overflow : hidden;
+    padding  : 0;
+    position : absolute;
+    width    : 1px;
+}
+
+
+.visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
+    clip     : auto;
+    height   : auto;
+    margin   : 0;
+    overflow : visible;
+    position : static;
+    width    : auto;
+}
+
+
+.invisible {
+    visibility : hidden;
+}
+
+
+.clearfix:before, .clearfix:after {
+    content : " ";
+    display : table;
+}
+
+
+.clearfix:after {
+    clear : both;
+}
