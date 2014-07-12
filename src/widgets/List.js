@@ -59,8 +59,7 @@
          * @returns {List}
          */
         prepareElement  : function () {
-            var that = this,
-                _horizontal = this.options.horizontal,
+            var _horizontal = this.options.horizontal,
                 class_attrs = [],
                 click_event = this.options.click_event,
                 _align;
@@ -158,16 +157,20 @@
          */
         setSelected     : function (toggle) {
             var $old = this.$selected;
+
             if ( toggle && toggle[0] && toggle[0].nodeType ) {
                 this.$selected = toggle;
                 toggle = true;
-            } else if ( toggle && toggle.nodeType === 1 ) {
+            }
+            else if ( toggle && toggle.nodeType === 1 ) {
                 //TODO: check if uijet.$() can be replaced here with this.$element.find().
                 this.$selected = uijet.$(toggle);
                 toggle = true;
-            } else {
+            }
+            else {
                 toggle = !!toggle;
             }
+
             if ( this.$selected && this.$selected.parent().length ) {
                 if ( toggle ) {
                     $old && $old.removeClass('selected');
