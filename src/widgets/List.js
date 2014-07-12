@@ -38,7 +38,7 @@
                 initial = this.options.initial;
             // if `initial` option is set the perform selection inside the widget
             if ( initial ) {
-                this.click(uijet.utils.toElement(initial, this.$element));
+                this.select(initial);
             }
             return res;
         },
@@ -85,15 +85,25 @@
                 this.$element.addClass(class_attrs.join(' '));
             }
             // delegate all clicks from `item_element` option as selector or `item_selector`  
-            this.$element.on(
-                click_event || uijet.support.click_events.full,
-                this._click_target || this._item_selector,
-                function (e) {
-                    // pass the target and event object as arguments
-                    return that.click(this, e);
-                }
+            this.bind(
+                    (click_event || uijet.support.click_events.full) + ' ' +
+                    (this._click_target || this._item_selector),
+                this.click
             );
             this._super();
+            return this;
+        },
+        /**
+         * Wraps {@see List#click} and triggers item selection using
+         * the `target` argument.
+         *
+         * @memberOf List
+         * @instance
+         * @param {string} target - selector for the item to select.
+         * @returns {List}
+         */
+        select          : function (target) {
+            this.click(uijet.utils.toElement(target, this.$element));
             return this;
         },
         /**
