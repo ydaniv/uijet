@@ -41,31 +41,15 @@
             return this;
         },
         /**
-         * Positions the button using {@link BaseWidget#position}.
+         * Wraps {@see Button#click}.
          * 
          * @memberOf Button
          * @instance
          * @returns {Button}
          */
-        render          : function () {
-            // virtually call `position` on each `wake`
-            this.position()
-                ._super();
+        select          : function () {
+            this.click();
             return this;
-        },
-        /**
-         * Triggers selection on the element or an inner target.
-         * 
-         * @memberOf Button
-         * @instance
-         * @param {function|string|HTMLElement} [target] - query selector, HTMLElement, or a wrapped element to trigger selection on.
-         */
-        select          : function (target) {
-            if ( typeof target == 'undefined' ) {
-                this.$element.trigger(uijet.support.click_events.full);
-            } else {
-                this._super(target);
-            }
         },
         /**
          * A handler for a selection event (e.g. `click`).
@@ -101,8 +85,10 @@
                     uijet.publish('app.clicked', event);
                 }
             }
-            event.preventDefault();
-            event.stopPropagation();
+            if ( event ) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
             return this;
         },
         /**
