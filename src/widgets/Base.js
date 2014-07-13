@@ -132,6 +132,8 @@
                 .register()
                 // wrapping, styling, positioning, etc.
                 .prepareElement()
+                // init contained components
+                .initContained()
                 // cache reference to initial markup that was coded into the element by user
                 ._saveOriginal();
 
@@ -142,6 +144,33 @@
 
             this.notify(true, 'post_init');
 
+            return this;
+        },
+        /**
+         * Initializes contained widget instances.
+         *
+         * If the `container` option of the contained widgets is not
+         * set, it will be automatically set to the `id` of this widget.
+         *
+         * #### Related options:
+         *
+         * * `components`: list of contained components to init.
+         *
+         * @memberOf BaseWidget
+         * @instance
+         * @returns {Widget}
+         */
+        initContained   : function () {
+            var container_id = this.id,
+                contained;
+            if ( contained = this.options.components ) {
+                contained.forEach(function (child) {
+                    if ( !child.config.container ) {
+                        child.config.container = container_id;
+                    }
+                });
+                uijet.start(contained);
+            }
             return this;
         },
         /**
