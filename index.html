@@ -1,180 +1,292 @@
 <!DOCTYPE html>
 <html>
-
   <head>
-    <meta charset='utf-8' />
-    <meta http-equiv="X-UA-Compatible" content="chrome=1" />
-    <meta name="description" content="UIjet : Killer UI for web-apps." />
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
 
-    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
 
-    <title>UIjet</title>
+    <title>uijet by ydaniv</title>
   </head>
 
   <body>
+    <header>
+      <div class="inner">
+        <h1>uijet</h1>
+        <h2>Killer UI for web-apps.</h2>
+        <a href="https://github.com/ydaniv/uijet" class="button"><small>View project on</small>GitHub</a>
+      </div>
+    </header>
 
-    <!-- HEADER -->
-    <div id="header_wrap" class="outer">
-        <header class="inner">
-          <a id="forkme_banner" href="https://github.com/ydaniv/uijet">View on GitHub</a>
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a name="uijet" class="anchor" href="#uijet"><span class="octicon octicon-link"></span></a>uijet</h1>
 
-          <h1 id="project_title">UIjet</h1>
-          <h2 id="project_tagline">Killer UI for web-apps.</h2>
+<p>Killer UI for web apps.</p>
 
-            <section id="downloads">
-              <a class="zip_download_link" href="https://github.com/ydaniv/uijet/zipball/master">Download this project as a .zip file</a>
-              <a class="tar_download_link" href="https://github.com/ydaniv/uijet/tarball/master">Download this project as a tar.gz file</a>
-            </section>
-        </header>
-    </div>
+<h2>
+<a name="in-short" class="anchor" href="#in-short"><span class="octicon octicon-link"></span></a>In short</h2>
 
-    <!-- MAIN CONTENT -->
-    <div id="main_content_wrap" class="outer">
-      <section id="main_content" class="inner">
-        <p><a href="http://uijet.com">http://uijet.com</a></p>
+<p>uijet lets you create awesome, cross-platform applications and keeps your code maintainable.</p>
 
-<h2>Overview</h2>
+<p>uijet creates another layer of abstraction allowing you to focus 
+on flow of your application's logic while you generate code of the highest quality.</p>
 
-<p>UIjet lets you create awesome, cross-platform web applications with rich UI and keeps your code maintainable.</p>
-
-<p>It creates another layer of abstraction which allows you to create any UI widget you can think of
-easily while you generate code of the highest level of quality.</p>
-
-<h2>Quick start</h2>
-
-<p>Include uijet.css and themes/rhenium.css in your document's <code>head</code> tag.</p>
-
-<h3>With AMD - using require.js</h3>
-
-<p>Include the require.js file at the bottom of your <code>&lt;body&gt;</code> tag.</p>
-
-<h4>Suggested configuration</h4>
-
-<p>Above it, open a <code>&lt;script&gt;</code> tag and in it include your require object.
-Assuming you'll place all the 3rd party code under 'lib', it should look like:</p>
-
-<pre><code>var require = {
-    baseUrl : '/static_path/js/',
-    paths   : {
-        uijet_dir   : 'lib/uijet',
-        plugins     : 'lib'
-        // rest of needed paths ...
-    },
-    callback: function () {
-        requirejs([
-            'uijet',
-            'uijet_dir/modules/pubsub/eventbox',
-            'uijet_dir/modules/dom/jquery',
-            'uijet_dir/modules/promises/jquery'
-        ], function (uijet) {
-            uijet.init();
-        });
-    }
-};
-</code></pre>
-
-<p>Where the <em>must have</em> configurations are:</p>
+<h3>
+<a name="main-emphasis" class="anchor" href="#main-emphasis"><span class="octicon octicon-link"></span></a>Main emphasis</h3>
 
 <ul>
-<li>
-<strong>baseUrl</strong> - pointing to your base static folder.</li>
-<li>
-<strong>paths</strong> - you need to config the paths to <em>uijet_dir</em> - where your UIjet library is located - and 
-third party plugins, which are adapted into UIjet, need to be configured under the <em>plugins</em> key.</li>
-<li>
-<strong>callback</strong> - to make sure everything works correctly it's best to use this option and put you initialization
-call in there.</li>
-</ul><h3>Plugging in modules</h3>
+<li>Event-driven.</li>
+<li>Decouple everything.</li>
+<li>Reuse everything. Especially external libraries.</li>
+<li>Code quality and maintainability.</li>
+<li>Complete portability of same codebase across different platforms.</li>
+<li>High performance and solid memory management.</li>
+<li>Scalable architecture.</li>
+<li>Reusable components.</li>
+<li>Declarative code, in JS (not just markup!)</li>
+</ul><h2>
+<a name="srsly-now-whats-it-all-about" class="anchor" href="#srsly-now-whats-it-all-about"><span class="octicon octicon-link"></span></a>Srsly now, what's it all about</h2>
 
-<p>To be able to use UIjet you must plug into it the following modules:</p>
+<p>uijet allows you to create UI from a rapid prototype to a full-blown-large-scale application.
+uijet performs 3 main roles:</p>
+
+<ul>
+<li>IoC container for your application, and injects dependencies into your app and UI components.</li>
+<li>Glues all your favorite libraries with a consistent API which makes them easily swappable.</li>
+<li>Maintainable and scalable UI made of declarative, reusable, decoupled components. </li>
+</ul><h2>
+<a name="concepts" class="anchor" href="#concepts"><span class="octicon octicon-link"></span></a>Concepts</h2>
+
+<h3>
+<a name="modules" class="anchor" href="#modules"><span class="octicon octicon-link"></span></a>Modules</h3>
+
+<p>uijet embraces the principle of doing 1 thing (or at most 2) and doing it right.</p>
+
+<p>That's why it leaves the implementation of all the main parts of the application up 
+to external libraries, of your choice, and glues them together into a coherent interface 
+which allows them to be abstracted and easily swappable.</p>
+
+<h4>
+<a name="uijetuse" class="anchor" href="#uijetuse"><span class="octicon octicon-link"></span></a>uijet.use</h4>
+
+<p>The entry point of adding a module into uijet.</p>
+
+<h3>
+<a name="widgets" class="anchor" href="#widgets"><span class="octicon octicon-link"></span></a>Widgets</h3>
+
+<p>These are the most basic building blocks for creating any type of UI component.
+uijet gives you the tools for both extending them and composing them together to form 
+the components we all know and love.</p>
+
+<h4>
+<a name="uijetwidget" class="anchor" href="#uijetwidget"><span class="octicon octicon-link"></span></a>uijet.Widget</h4>
+
+<p>Defines a class of a reusable component.</p>
+
+<p><em>Examples</em>: Pane, Button, List, etc.</p>
+
+<h4>
+<a name="uijetfactory" class="anchor" href="#uijetfactory"><span class="octicon octicon-link"></span></a>uijet.Factory</h4>
+
+<p>Declares a blueprint for a factory of a component's instance.</p>
+
+<h4>
+<a name="uijetdeclare" class="anchor" href="#uijetdeclare"><span class="octicon octicon-link"></span></a>uijet.declare</h4>
+
+<p>Declares an instance of a component in the app.</p>
+
+<h4>
+<a name="uijetstart" class="anchor" href="#uijetstart"><span class="octicon octicon-link"></span></a>uijet.start</h4>
+
+<p>Initializes a component's instance(s), and registers it (them) into
+uijet's sandbox.</p>
+
+<h3>
+<a name="composites" class="anchor" href="#composites"><span class="octicon octicon-link"></span></a>Composites</h3>
+
+<p>More comprehensive components which extends the basic, generic widgets and mixes them 
+into a single component.</p>
+
+<p>This is usually done by providing <code>uijet.Wiget()</code> the third parameter which defines 
+dependencies for this component class.</p>
+
+<p><em>Examples</em>: Datepicker, Slider, Teaser, Modal, etc.</p>
+
+<h3>
+<a name="mixins--adapters" class="anchor" href="#mixins--adapters"><span class="octicon octicon-link"></span></a>Mixins &amp; Adapters</h3>
+
+<p>Maintainability is all about deconstructing your code into small pieces 
+which perform a single main task, and then mixing them together.</p>
+
+<p>Mixins are specifically for encapsulating behaviors for components, and 
+then enhance components with these behaviors as desired.</p>
+
+<p><em>Examples</em>: Toggled, Templated, Transitioned, etc.</p>
+
+<p>Adapters are usually for adding missing behavior by acting as a mediator 
+to external libraries which implement that code, and abstract those libraries 
+with a consistent API.</p>
+
+<p><em>Example</em>: if you want a List component to be scrolled using a JS based plugin, 
+targeted for mouse wheel when used on desktop, and then with a different library, 
+targeted for touch gestures when used on handheld devices.</p>
+
+<h4>
+<a name="uijetmixin" class="anchor" href="#uijetmixin"><span class="octicon octicon-link"></span></a>uijet.Mixin</h4>
+
+<p>Defines a Mixin that can be injected into components' classes.
+Mixins are always injected on top of Widget dependencies and before the instance object.</p>
+
+<h4>
+<a name="uijetadapter" class="anchor" href="#uijetadapter"><span class="octicon octicon-link"></span></a>uijet.Adapter</h4>
+
+<p>Defines an Adapter that can be injected onto a component's instances.
+Adapters' properties are always copied to the instance object (the top of the prototype chain).</p>
+
+<h3>
+<a name="events--signals" class="anchor" href="#events--signals"><span class="octicon octicon-link"></span></a>Events &amp; Signals</h3>
+
+<p>uijet component instances do not return a handle you can imperatively execute methods with, hence
+the only way you can perform actions on components or achieve inter component communication is via
+registering handlers to events.</p>
+
+<p>All handlers are always bound to the instance, so inside them you can use <code>this</code> as a handle to the instance.</p>
+
+<h4>
+<a name="signals" class="anchor" href="#signals"><span class="octicon octicon-link"></span></a>Signals</h4>
+
+<p>Events triggered during a widget's lifecycle and provide an inner component API.</p>
+
+<p>Signals usually take the form of an AOP like handlers, e.g. <code>pre_methodname</code>, <code>post_methodname</code>.</p>
+
+<h4>
+<a name="dom-events" class="anchor" href="#dom-events"><span class="octicon octicon-link"></span></a>DOM Events</h4>
+
+<p>The familiar DOM events triggered by user interaction.
+These are always bound to the instance's <code>$element</code>.
+uijet makes extensive use of event delegation and bounds by default only to widgets.
+So, for example, in a List widget all click events on the child items are bound to the list
+container and handled at that level.</p>
+
+<h4>
+<a name="app-events" class="anchor" href="#app-events"><span class="octicon octicon-link"></span></a>App Events</h4>
+
+<p>Custom events for inter-component communication, or simply to publish events between different
+modules, e.g. between the uijet sandbox and components, or a router and components.</p>
+
+<h2>
+<a name="uijetcss" class="anchor" href="#uijetcss"><span class="octicon octicon-link"></span></a>uijet.css</h2>
+
+<p>A baseline stylesheet that defines basic structure for widgets, basic behavior for mixins,
+and some helper classes for managing the component's lifecycle.</p>
+
+<p>uijet.css does very little style resetting that's more targeted for applications, rather then
+simple content webpages.</p>
+
+<p>It's recommended to complement it with <a href="http://necolas.github.io/normalize.css/">normalize.css</a>.</p>
+
+<h3>
+<a name="theming" class="anchor" href="#theming"><span class="octicon octicon-link"></span></a>Theming</h3>
+
+<p>Currently there are no bundled themes in uijet.
+Hopefully, in the future there will be.</p>
+
+<h2>
+<a name="documentation" class="anchor" href="#documentation"><span class="octicon octicon-link"></span></a>Documentation</h2>
+
+<p>You can generate documentation with <a href="http://gruntjs.com/">Grunt</a>:</p>
+
+<ol>
+<li>Install development dependencies:</li>
+</ol><div class="highlight highlight-bash"><pre>npm install
+</pre></div>
+
+<ol>
+<li>Generate documentation and start a static server to view it with:</li>
+</ol><div class="highlight highlight-bash"><pre>grunt rtfm
+</pre></div>
+
+<p>Then open <code>localhost:8000</code> in your browser.</p>
+
+<h2>
+<a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick start</h2>
+
+<p>Grab the a boilerplate from <code>boilerplates</code> and open <code>index.html</code> in your browser.</p>
+
+<h2>
+<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h2>
+
+<p>uijet has no direct dependencies, however:</p>
+
+<ul>
+<li>It favors the use of an AMD module loader, like <a href="http://requirejs.org/">RequireJS</a> or <a href="https://github.com/cujojs/curl">curl.js</a>.</li>
+<li>The list of available module adapters is currently short, but you can easily create your own.</li>
+</ul><h3>
+<a name="required-dependencies" class="anchor" href="#required-dependencies"><span class="octicon octicon-link"></span></a>Required dependencies</h3>
+
+<p>For uijet to run you must include an adapter in your app from each of the following Modules:</p>
 
 <ul>
 <li>pubsub</li>
 <li>promises</li>
 <li>dom</li>
-</ul><p>You can simply add those module adapters from UIjet's modules library and activate them:</p>
+</ul><p>All the rest are completely up to you.</p>
 
-<pre><code>// ...
-callback: function () {
-    requirejs([
-        'uijet',
-        'uijet_dir/modules/pubsub/eventbox',
-        'uijet_dir/modules/dom/jquery',
-        'uijet_dir/modules/promises/jquery'
-    ], function (uijet, Eventbox, $) {
-        // init uijet
-        uijet.init();
-    });
-}
-// ...
-</code></pre>
+<h3>
+<a name="mandatory-modules-apis" class="anchor" href="#mandatory-modules-apis"><span class="octicon octicon-link"></span></a>Mandatory Modules' APIs</h3>
 
-<p>The above modules are required for UIjet to work. The rest of the modules are optional.</p>
+<p>Although the dependency may be indirect, uijet does enforce a strict API that each Module adapter 
+must adhere to.
+This requirement is a must for the top 3 Modules mentioned above, and a few other Mixins and Composites, 
+which rely on other Modules.
+The API enforcing is also what makes a Module swappable at any given point without any impact 
+on the underlying framework. In some cases even no impact at all, whatsoever, on your application.</p>
 
-<h3>Without AMD</h3>
+<p><em>Example</em>: a dom Module adapter must be consistent with <a href="http://api.jquery.com/">jQuery</a>'s API, so you
+can choose either that, or <a href="http://zeptojs.com/">Zepto</a>, 
+or with a little effort even <a href="https://github.com/ded/bonzo">Bonzo</a> and <a href="https://github.com/fat/bean">Bean</a>.</p>
 
-<p>Include the libraries you are using with the modules (e.g. jQuery if using the dom/jquery module).
-Include uijet.js followed by widgets/Base.js and the rest of the widgets you need afterwards.
-If you require any mixins (or if they're required by any of the widgets you're using) include them after the widgets.
-If you require any adapters include those too after the mixins along with each library they adapt to.</p>
-
-<h3>Installation notes</h3>
-
-<p>UIjet makes only one layer in the application and depends on other integral components
-that should reside within the application:</p>
-
-<ul>
-<li>Custom events/Messaging library</li>
-<li>Promises API library</li>
-<li>DOM wrapper library</li>
-<li>[optional] XMLHttpRequest/XHR2/CORS wrapper library</li>
-<li>[optional] Template engine</li>
-<li>[optional] URL router</li>
-</ul><p><strong>Note</strong>: UIjet is not directly dependent on any other 3rd party code but also does not attempts to do anything that
-others already do, and do it well. On the other hand, UIjet defines simple methods and conventions for hooking up any
-3rd party library you need into it.</p>
-
-<h2>Dependencies</h2>
-
-<ul>
-<li>Custom events library of choice</li>
-<li>Promises API library of choice</li>
-<li>DOM API wrapping library of choice</li>
-<li>[optional] XHR wrapping library of choice</li>
-<li>[optional] Template engine of choice</li>
-<li>[optoinal] URL router of choice</li>
-<li>[optional] require.js</li>
-</ul><h2>Usage</h2>
-
-<h3>Application startup</h3>
-
-<pre><code>//TBD
-</code></pre>
-
-<h3>Widget instances definition</h3>
-
-<pre><code>//TBD
-</code></pre>
-
-<h2>Author</h2>
+<h2>
+<a name="author" class="anchor" href="#author"><span class="octicon octicon-link"></span></a>Author</h2>
 
 <p>Yehonatan Daniv</p>
 
-<h2>Special thanks</h2>
+<h2>
+<a name="special-thanks" class="anchor" href="#special-thanks"><span class="octicon octicon-link"></span></a>Special thanks</h2>
 
 <p>Venvid Technologies</p>
-      </section>
+
+<p>JetBrains, for their awesome IDE.
+<br><a href="http://www.jetbrains.com/pycharm/"><img src="http://www.jetbrains.com/img/logos/pycharm_logo.gif" width="250" alt="PyCharm logo"></a></p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/ydaniv/uijet/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/ydaniv/uijet/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/ydaniv/uijet"></a> is maintained by <a href="https://github.com/ydaniv">ydaniv</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
     </div>
 
-    <!-- FOOTER  -->
-    <div id="footer_wrap" class="outer">
-      <footer class="inner">
-        <p class="copyright">UIjet maintained by <a href="https://github.com/ydaniv">ydaniv</a></p>
-        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
-      </footer>
-    </div>
-
-    
-
+  
   </body>
 </html>
