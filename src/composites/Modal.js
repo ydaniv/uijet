@@ -12,11 +12,28 @@
         factory(uijet);
     }
 }(function (uijet) {
+    /**
+     * Modal dialog composite class.
+     *
+     * @class Modal
+     * @extends BaseWidget
+     * @category Composite
+     */
     uijet.Widget('Modal', {
         options : {
             type_class: ['uijet_pane', 'uijet_modal'],
             position  : 'center'
         },
+        /**
+         * Creates an {@see Overlay} instance for the underlay.
+         *
+         * #### Related options:
+         *
+         * * `underlay`: config object for the Overlay used as the modal's underlay.
+         *
+         * @methodOf Modal
+         * @returns {Widget}
+         */
         register: function () {
             var overlay,
                 overlay_id;
@@ -38,7 +55,7 @@
                 id          : overlay_id,
                 container   : this.id,
                 darken      : true
-            }, this.options.underlay_options || {}) }, true);
+            }, this.options.underlay || {}) }, true);
 
             return this;
         }
