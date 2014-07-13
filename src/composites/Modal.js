@@ -19,11 +19,10 @@
         },
         register: function () {
             var overlay,
-                overlay_id,
-                buttons_configs,
-                conf,
-                buttons;
+                overlay_id;
+
             this._super();
+
             // since this is a modal dialog,
             // create the overlay element
             overlay = document.createElement('div');
@@ -40,18 +39,7 @@
                 container   : this.id,
                 darken      : true
             }, this.options.underlay_options || {}) }, true);
-            // if we have buttons to create
-            if ( buttons_configs = uijet.utils.toArray(this.options.buttons) ) {
-                buttons = [];
-                while ( conf = buttons_configs.shift() ) {
-                    conf.container || (conf.container = this.id);
-                    buttons.push({
-                        type    : 'Button',
-                        config  : conf
-                    });
-                }
-                uijet.start(buttons);
-            }
+
             return this;
         }
     });
