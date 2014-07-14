@@ -54,7 +54,8 @@
                 element     : overlay,
                 id          : overlay_id,
                 container   : this.id,
-                darken      : true
+                darken: true,
+                cloak : true
             }, this.options.underlay || {}) }, true);
 
             return this;
