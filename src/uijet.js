@@ -4,7 +4,8 @@
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
-;(function (root, factory) {
+;
+(function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(function () {
             return factory(root);
@@ -20,31 +21,33 @@
     var Function = _window.Function,
         Object = _window.Object,
         Array = _window.Array,
-        BROWSER_PREFIX = { style : ['webkit', 'Moz', 'O', 'ms'], prop : ['WebKit', 'webkit', 'moz', 'o', 'ms'], matches: {} },
-        OPPOSITES = {top:'bottom',bottom:'top',right:'left',left:'right'},
-        // regexp for simple string format
+        BROWSER_PREFIX = { style: ['webkit', 'Moz', 'O', 'ms'], prop: [
+            'WebKit', 'webkit', 'moz', 'o', 'ms'
+        ], matches              : {} },
+        OPPOSITES = {top: 'bottom', bottom: 'top', right: 'left', left: 'right'},
+    // regexp for simple string format
         SUBSTITUTE_RE = /\{([^\s\}]+)\}/g,
-        // native utilities caching
+    // native utilities caching
         objToString = Object.prototype.toString,
         arraySlice = Array.prototype.slice,
-        // sandbox's registries
+    // sandbox's registries
         mixins = {},
         adapters = {},
         declared_widgets = [],
-        widgets = { __app__: { contained : []} },
+        widgets = { __app__: { contained: []} },
         resources = {},
-        // caching pre-built predefined widgets' classes
-        // `{ proto : widget_prototype, deps : dependencies }`
+    // caching pre-built predefined widgets' classes
+    // `{ proto : widget_prototype, deps : dependencies }`
         widget_definitions = {},
-        // caching built pre-defined widgets' classes
+    // caching built pre-defined widgets' classes
         widget_classes = {},
-        // caching built and mixed-in widgets' classes
+    // caching built and mixed-in widgets' classes
         widget_mixedin_classes = {},
-        // caching widgets declarations factories
+    // caching widgets declarations factories
         widget_factories = {},
-        // constants
+    // constants
         TOP_ADAPTER_NAME = 'TopAdapter',
-        // modules paths
+    // modules paths
         import_paths = {
             widgets : 'uijet_dir/widgets/',
             adapters: 'uijet_dir/adapters/',
@@ -52,14 +55,18 @@
         },
         /**
          * Utility for deferring a function by adding it to the process queue.
-         * 
+         *
          * @method
          * @memberOf uijet.utils
          * @param {function} f - the function to defer.
          */
         async = _window.setImmediate ?
-            function (f) { _window.setImmediate(f); } :
-            function (f) { _window.setTimeout(f, 0);},
+                function (f) {
+                    _window.setImmediate(f);
+                } :
+                function (f) {
+                    _window.setTimeout(f, 0);
+                },
         /**
          * Searches for a prefixed name of `name` inside `obj`.
          *
@@ -83,23 +90,23 @@
          */
         requestAnimFrame = (function () {
             return _window.requestAnimationFrame ||
-                getPrefixed('RequestAnimationFrame', _window) ||
-                function( callback ){
-                    return _window.setTimeout(callback, 1000 / 60);
-                };
+                   getPrefixed('RequestAnimationFrame', _window) ||
+                   function (callback) {
+                       return _window.setTimeout(callback, 1000 / 60);
+                   };
         }()),
         /**
          * Polyfill for cancelAnimationFrame
          */
         cancelAnimFrame = (function () {
-            return _window.cancelAnimationFrame                      ||
-                getPrefixed('CancelRequestAnimationFrame', _window)  ||
-                getPrefixed('CancelAnimationFrame', _window)         ||
-                function( requestId ){
-                    return _window.clearTimeout(requestId);
-                };
+            return _window.cancelAnimationFrame ||
+                   getPrefixed('CancelRequestAnimationFrame', _window) ||
+                   getPrefixed('CancelAnimationFrame', _window) ||
+                   function (requestId) {
+                       return _window.clearTimeout(requestId);
+                   };
         }()),
-        // check for touch support
+    // check for touch support
         has_touch = !!(('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
         /**
          * Checks if given argument is an `Array`.
@@ -115,7 +122,7 @@
                 return objToString.call(obj) == '[object Array]';
             };
         }()),
-        // the sandbox
+    // the sandbox
         uijet;
 
     /** a simple shim of Function.bind to support Safari 5- (mostly old iOS) and Android <4 */
@@ -138,6 +145,7 @@
     function isObj (obj) {
         return objToString.call(obj) == '[object Object]';
     }
+
     /**
      * Checks if argument `obj` is an `Function`.
      *
@@ -148,6 +156,7 @@
     function isFunc (obj) {
         return typeof obj == 'function';
     }
+
     /**
      * Checks if given argument is an `Arguments` object.
      *
@@ -157,6 +166,7 @@
     function isArgs (obj) {
         return objToString.call(obj) == '[object Arguments]';
     }
+
     /**
      * Utility for either wrapping an argument with an `Array` or return a copy of that array.
      * If an array-like object is given then converts it into a plain `Array`.
@@ -182,16 +192,17 @@
         }
         return arr;
     }
+
     /**
-     * Returns an interpolated string based on a given template, 
+     * Returns an interpolated string based on a given template,
      * a string format pattern and a data context.
-     * 
+     *
      * `data` can be either an Object, in which case replacement
      * is done based on keywords matching, or an Array, in which
      * replacement is done based on order.
-     * 
+     *
      * The template format is `{param}` with no whitespace allowed inside.
-     * 
+     *
      * @memberOf uijet.utils
      * @param template {string} - template string to interpolate on.
      * @param {Object|string[]} [data] - data context object to use as lookup for interpolation.
@@ -200,10 +211,11 @@
     function format (template, data) {
         var use_keys = isObj(data),
             n = 0;
-        return template.replace(SUBSTITUTE_RE, function(match, key){
+        return template.replace(SUBSTITUTE_RE, function (match, key) {
             return use_keys ? data[key] : data[n++];
         });
     }
+
     /**
      * Gets the computed style object (`CSSStyleDeclaration`) of an `HTMLElement` `el`.
      * If `prop` is supplied they return it's value.
@@ -224,7 +236,7 @@
         if ( prop ) {
             if ( isArr(prop) ) {
                 res = {};
-                for ( var i = 0 ; p = prop[i++] ; ) {
+                for ( var i = 0; p = prop[i++]; ) {
                     res[p] = style.getPropertyValue(p);
                 }
                 return res;
@@ -233,12 +245,13 @@
         }
         return style;
     }
+
     /**
      * Checks if given argument is `Function`, and either calls it with
      * optional second argument as its context or simply returns it if it's not callable.
      *
      * Any additional parameters after `ctx` are sent as arguments to call of `arg`.
-     * 
+     *
      * @memberOf uijet.utils
      * @param {*} arg - argument to check if callable and return its call or itself if not.
      * @param {Object} [ctx] - context object to use for the call.
@@ -247,10 +260,11 @@
     function returnOf (arg, ctx) {
         return isFunc(arg) ? arg.apply(ctx || _window, arraySlice.call(arguments, 2)) : arg;
     }
+
     /**
      * Parses and formats a URL into an object containing `method`
      * and `path` for making a proper RESTful request.
-     * 
+     *
      * @memberOf uijet.utils
      * @param {string|Object} url - The URL to use for the request or an `Object` in the form of `{ method: <method>, path: <path>}`.
      * @param {Object} [context] - context object to use for formatting the URL.
@@ -267,12 +281,13 @@
             else if ( isObj(url) ) {
                 // or parse the URL under `path`
                 path = format(url.path, context);
-            } else {
+            }
+            else {
                 return;
             }
             return {
                 method: url.method || 'GET',
-                path: path || (url.path ? url.path : url)
+                path  : path || (url.path ? url.path : url)
             };
         }
     }
@@ -280,7 +295,7 @@
     /**
      * Normalizes `obj` into a wrapped DOM element object via the used DOM module,
      * if it's either a string or an HTMLElement.
-     * 
+     *
      * @memberOf uijet.utils
      * @param {string|HTMLElement} obj - either a query string or an HTMLElement to wrap.
      * @returns {*} - the wrapped object or simply `obj`.
@@ -417,9 +432,11 @@
      * @returns {function} - the target constructor.
      */
     function copyStaticMethods (source, target) {
-        for ( var m in source )
-            if ( source.hasOwnProperty(m) && isFunc(source[m]) )
+        for ( var m in source ) {
+            if ( source.hasOwnProperty(m) && isFunc(source[m]) ) {
                 target[m] = source[m];
+            }
+        }
         return target;
     }
 
@@ -475,7 +492,7 @@
      * Public, inheritable methods of {@see Base} class.
      */
     Base.prototype = {
-        constructor : Base,
+        constructor  : Base,
         /**
          * Registers a handler for the given type.
          *
@@ -485,8 +502,8 @@
          * @param {function} handler - the signal's handler to register.
          * @returns {uijet.Base}
          */
-        listen          : function (topic, handler) {
-            this.signals_cache[topic] =  this._parseHandler(handler);
+        listen       : function (topic, handler) {
+            this.signals_cache[topic] = this._parseHandler(handler);
             return this;
         },
         /**
@@ -498,8 +515,8 @@
          * @param {string} [topic] - the signal's type to remove.
          * @returns {uijet.Base}
          */
-        unlisten        : function (topic) {
-            if ( ! topic ) {
+        unlisten     : function (topic) {
+            if ( !topic ) {
                 for ( topic in this.signals_cache ) {
                     this.unlisten(topic);
                 }
@@ -524,7 +541,7 @@
          * @param {...*} [args] - arguments to hand over to the signal's handler.
          * @returns {*} - returned result of the triggered handler or `undefined`.
          */
-        notify          : function (topic, args) {
+        notify       : function (topic, args) {
             var handler, own_args_len = 1, once = false;
             // if first argument is a boolean it means it's a directive to whether this signal is triggered once
             if ( typeof topic == 'boolean' && topic ) {
@@ -541,13 +558,13 @@
         },
         /**
          * Holds a signal's handler from being triggered.
-         * 
+         *
          * @memberOf uijet.Base
          * @instance
          * @param {string} topic - the name of the signal to hold.
          * @returns {uijet.Base}
          */
-        holdSignal     : function (topic) {
+        holdSignal   : function (topic) {
             this.signals[topic] = function () {
                 var args = arraySlice.call(arguments);
                 // add topic to arguments
@@ -566,13 +583,13 @@
          * Releases and triggers a held signal.
          * The handler is invoked with the arguments it was provided
          * with on previous calls to {@link Base#notify} with same `topic`.
-         * 
+         *
          * @memberOf uijet.Base
          * @instance
          * @param {string} topic - the signal to release and trigger.
          * @returns {*} - the result of signal handler's call.
          */
-        releaseSignal   : function (topic) {
+        releaseSignal: function (topic) {
             var args;
             if ( args = this._memoize_signal_args[topic] ) {
                 delete this.signals[topic];
@@ -585,7 +602,7 @@
          * If `handler` is a `Function` it is bound to this instance as its context.
          * If `handler` is a `String` it is used to find a method of same name to use as handler.
          * If no method was found then a signal with same type's handler is used.
-         * If `handler` is a `String` and ends with a '+' then the `arguments` supplied to this 
+         * If `handler` is a `String` and ends with a '+' then the `arguments` supplied to this
          * handler will be passed to that method/signal handler.
          *
          * @memberOf uijet.Base
@@ -595,7 +612,7 @@
          * @returns {uijet.Base}
          */
         //TODO: change the implementation to support an array of handlers per topic so this won't simply replace existing handlers
-        subscribe       : function (topic, handler) {
+        subscribe    : function (topic, handler) {
             handler = isFunc(handler) ? handler.bind(this) : this._parseHandler(handler);
             // add this handler to `app_events` to allow quick unsubscribing later
             this.app_events[topic] = handler;
@@ -612,8 +629,8 @@
          * @param {function} [handler] - the handler to remove from the registry.
          * @returns {uijet.Base}
          */
-        unsubscribe     : function (topic, handler) {
-            if ( ! handler && this.app_events ) {
+        unsubscribe  : function (topic, handler) {
+            if ( !handler && this.app_events ) {
                 handler = this.app_events[topic];
                 delete this.app_events[topic];
             }
@@ -631,29 +648,29 @@
          * @param {*} [data] - argument to pass to the event's handler as data.
          * @returns {uijet.Base}
          */
-        publish         : function (topic, data) {
+        publish      : function (topic, data) {
             uijet.publish(this.id + '.' + topic, data);
             return this;
         },
         /**
          * Normalizes a `handler` into a function if it's a `String`.
-         * 
+         *
          * If `handler` is a:
-         * 
+         *
          * 1. Method of this instance -> use this method.
          * 2. A registered signal handler -> use this handler.
          * 3. Otherwise -> create a new function that publishes this string as an event.
-         * 
+         *
          * * If `handler` ends with `'+'` then it will be invoked with the arguments sent to it as its parameters.
          * * If `handler` starts with a `'-'` then it will be published as global event with the `<id>.` prefix.
-         * 
+         *
          * @memberOf uijet.Base
          * @instance
          * @param {string|function} handler - a handler or a string representation of a handler.
          * @returns {function} - the parsed handler.
          * @private
          */
-        _parseHandler   : function (handler) {
+        _parseHandler: function (handler) {
             var that = this,
                 apply_args = false,
                 is_global = false,
@@ -705,7 +722,7 @@
      * with `mixins` and `widgets` keys containing `Array`s of names of mixins and widgets.
      *
      * According to the `deps` argument it behaves as follows:
-     * 
+     *
      * * `string` it's assumed to be a name of a mixin.
      * * `Array` it's assumed to be a list of mixin names.
      * * `Object` it's assumed to be a standard dependencies object and its `mixins` and `widgets` keys are normalized to `Array`s.
@@ -715,7 +732,9 @@
      * @returns {Object|undefined} - a standard dependencies object.
      */
     function normalizeDeps (deps) {
-        if ( ! deps ) return;
+        if ( !deps ) {
+            return;
+        }
         var deps_as_obj = isObj(deps),
             _deps = {};
         // if `deps` is an `Object`
@@ -735,21 +754,23 @@
     /**
      * Gets a normalized `object` of dependencies, as returned by {@see normalizeDeps},
      * and checks for modules in it that are not yet defined, in `mixins` and `widget_classes`.
-     * 
+     *
      * If any dependency is missing returns `true`, otherwise `false`.
-     * 
+     *
      * @param {Object} deps - normalized dependencies declaration.
      * @returns {boolean} missing - whether there's a dependency that's not defined yet.
      */
     function missingDependency (deps) {
         var m, len;
         for ( len = deps.mixins.length; m = deps.mixins[--len]; ) {
-            if ( ! (m in mixins) )
+            if ( !(m in mixins) ) {
                 return true;
+            }
         }
         for ( len = deps.widgets.length; m = deps.widgets[--len]; ) {
-            if ( ! (m in widget_classes) )
+            if ( !(m in widget_classes) ) {
                 return true;
+            }
         }
         return false;
     }
@@ -758,7 +779,7 @@
      * Creates a new class from a given prototype object or a constructor function,
      * optionally inheriting the prototype/constructor `_extends`.
      * Returns the created class constructor.
-     * 
+     *
      * @memberOf uijet.utils
      * @param {function|Object} proto - a constructor or an object to use as the top level prototype.
      * @param {function|Object} [_extends] - a constructor of a class to inherit from or simply an object to add to the prototype chain.
@@ -802,7 +823,9 @@
             cases = BROWSER_PREFIX.style,
             prefix, camelized, i = 0;
         // return un-prefixed if found
-        if ( prop in style) return prop;
+        if ( prop in style ) {
+            return prop;
+        }
         // check cache
         if ( prop in BROWSER_PREFIX.matches ) {
             // return the cached property name
@@ -813,28 +836,29 @@
             camelized = prop[0].toUpperCase() + prop.slice(1);
             // try cached prefix
             if ( prefix = BROWSER_PREFIX.prefix ) {
-                if ( (prefix +  camelized) in style ) {
+                if ( (prefix + camelized) in style ) {
                     // cache result
-                    BROWSER_PREFIX.matches[prop] = prefix +  camelized;
-                    return prefix +  camelized;
+                    BROWSER_PREFIX.matches[prop] = prefix + camelized;
+                    return prefix + camelized;
                 }
             }
             else {
                 // executed once until a match is found
                 // try all prefixes
                 while ( prefix = cases[i++] ) {
-                    if ( (prefix +  camelized) in style ) {
+                    if ( (prefix + camelized) in style ) {
                         // cache the prefix that worked
                         BROWSER_PREFIX.prefix = prefix;
                         // cache the result
-                        BROWSER_PREFIX.matches[prop] = prefix +  camelized;
-                        return prefix +  camelized;
+                        BROWSER_PREFIX.matches[prop] = prefix + camelized;
+                        return prefix + camelized;
                     }
                 }
             }
         }
         return null;
     }
+
     /**
      * Checks if the first element contains the second element.
      *
@@ -845,9 +869,10 @@
      */
     function contains (a, b) {
         return b && (a.contains ?
-                a != b && a.contains(b) :
-                !!( a.compareDocumentPosition( b ) & 16 ));
+                     a != b && a.contains(b) :
+                     !!( a.compareDocumentPosition(b) & 16 ));
     }
+
     /**
      * Gets the offset of `child` relative to `parent`.
      *
@@ -860,14 +885,19 @@
      */
     function getOffsetOf (child, parent) {
         var result = { x: 0, y: 0 };
-        if ( ! child || ! parent || child === parent || ! contains(parent, child) ) return result;
+        if ( !child || !parent || child === parent || !contains(parent, child) ) {
+            return result;
+        }
         // loop up the DOM tree until offsetParent is `null`
         do {
-            if ( child === parent ) break;
+            if ( child === parent ) {
+                break;
+            }
             // aggregate left and top offsets
             result.x += child.offsetLeft;
             result.y += child.offsetTop;
-        } while ( child = child.offsetParent );
+        }
+        while ( child = child.offsetParent );
         return result;
     }
 
@@ -876,69 +906,69 @@
      *
      * @namespace uijet
      */
-    uijet =  {
+    uijet = {
         route_prefix        : '',
         route_suffix        : '',
         init_queue          : [],
         /**
          * Detected browser features
-         * 
+         *
          * @member {Object} uijet.support
          * @namespace
          */
         support             : {
             /**
              * Whether this platform supports touch.
-             * 
+             *
              * @member {boolean} uijet.support.touch
              */
-            touch           : has_touch,
-            click_events    : has_touch ?
+            touch        : has_touch,
+            click_events : has_touch ?
                 // can be replaced with gestures (like 'tap') if handled by other library
-                /**
-                 * Event types in touch supported platforms.
-                 * 
-                 * @member {Object} uijet.support.click_events
-                 * @property {string} full - 'touchstart'
-                 * @property {string} start - 'touchstart'
-                 * @property {string} move - 'touchmove'
-                 * @property {string} end - 'touchend'
-                 */
-                { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
-                /**
-                 * Event types in platforms where touch is not supported.
-                 * 
-                 * @member {Object} uijet.support.click_events(2)
-                 * @property {string} full - 'click'
-                 * @property {string} start - 'mousedown'
-                 * @property {string} move - 'mousemove'
-                 * @property {string} end - 'mouseup'
-                 */
-                { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' },
+            /**
+             * Event types in touch supported platforms.
+             *
+             * @member {Object} uijet.support.click_events
+             * @property {string} full - 'touchstart'
+             * @property {string} start - 'touchstart'
+             * @property {string} move - 'touchmove'
+             * @property {string} end - 'touchend'
+             */
+                           { full: 'touchstart', start: 'touchstart', move: 'touchmove', end: 'touchend' } :
+            /**
+             * Event types in platforms where touch is not supported.
+             *
+             * @member {Object} uijet.support.click_events(2)
+             * @property {string} full - 'click'
+             * @property {string} start - 'mousedown'
+             * @property {string} move - 'mousemove'
+             * @property {string} end - 'mouseup'
+             */
+                           { full: 'click', start: 'mousedown', move: 'mousemove', end: 'mouseup' },
             /**
              * Whether this platform supports transforms.
-             * 
+             *
              * @member {string} uijet.support.transform
              */
-            transform       : !!getStyleProperty('transform'),
+            transform    : !!getStyleProperty('transform'),
             /**
              * Whether this platform supports transitions.
-             * 
+             *
              * @member {string} uijet.support.transition
              */
-            transition      : !!getStyleProperty('transition'),
+            transition   : !!getStyleProperty('transition'),
             /**
              * Whether this platform supports 3D transforms.
-             * 
+             *
              * @member {boolean} uijet.support.3d
              */
-            '3d'            : !!getStyleProperty('perspective'),
+            '3d'         : !!getStyleProperty('perspective'),
             /**
              * Holds the name of the `trasitionend` event in this platform.
-             * 
+             *
              * @member {string} uijet.support.transitionend
              */
-            transitionend   : (function (name) {
+            transitionend: (function (name) {
                 return name ? ({
                     transition      : 'transitionend',
                     MozTransition   : 'transitionend',
@@ -990,7 +1020,7 @@
             this._define(type, props, _deps);
             // create and cache the class
             // if we have dependencies
-            if ( _deps && ! this.initialized ) {
+            if ( _deps && !this.initialized ) {
                 if ( missingDependency(_deps) ) {
                     // defer the widget class definition till we have promises module loaded
                     // plus its dependencies are loaded
@@ -1026,8 +1056,9 @@
          */
         Mixin               : function (name, props) {
             if ( arguments.length === 1 ) {
-                if ( name in mixins )
+                if ( name in mixins ) {
                     return mixins[name];
+                }
             }
             mixins[name] = props;
             return this;
@@ -1071,7 +1102,7 @@
         Factory             : function (name, declaration) {
             widget_factories[name] = function (config) {
                 // create a copy of the original declaration
-                var copy = { type : declaration.type };
+                var copy = { type: declaration.type };
                 // make sure the original `config` object is copied
                 copy.config = extend({}, declaration.config);
                 // mix in additional configurations
@@ -1106,21 +1137,21 @@
                 resources[name] = resource;
             }
             else {
-                resources[name] =  uijet.newResource.apply(uijet, arraySlice.call(arguments, 1));
+                resources[name] = uijet.newResource.apply(uijet, arraySlice.call(arguments, 1));
             }
             return this;
         },
         /**
          * Initializes and starts the uijet sandbox and all the declared widgets.
-         * This also triggers the import and injection of all required modules 
+         * This also triggers the import and injection of all required modules
          * that haven't been loaded yet.
-         * 
+         *
          * @memberOf uijet
          * @param {Object} [options] - configuration object for `uijet`.
          * @returns {uijet}
-         * 
+         *
          * #### uijet options:
-         * 
+         *
          * * `element`: {string|HTMLElement} the container element of the application. Defualts to `'body'`.
          * * `app_events`: {Object} a map of names of app events to subscribe to, to their handlers.
          * * `resources`: {Object} a map of names of resources to register, to their classes, or a tuple of the class and initial state.
@@ -1143,7 +1174,7 @@
                 this.$element.addClass('uijet_app');
 
                 // unless requested by the user
-                if ( ! this.options.dont_cover ) {
+                if ( !this.options.dont_cover ) {
                     // make the app contaier cover the entire viewport
                     this.$element.addClass('cover');
                 }
@@ -1175,7 +1206,9 @@
                     }
                     // no tasks in queue
                     else {
-                        this.init_queue = [{}];
+                        this.init_queue = [
+                            {}
+                        ];
                     }
 
                     // register all resources
@@ -1204,7 +1237,7 @@
                     }
 
                     // after all tasks resolve
-                    this.whenAll( this.init_queue )
+                    this.whenAll(this.init_queue)
                         .then(function () {
                             // build and init declared widgets
                             // notice that here all modules are already loaded so this will run through
@@ -1235,7 +1268,7 @@
         },
         /**
          * Caches a definition of a widget in uijet.
-         * 
+         *
          * @memberOf uijet
          * @param {string} _name - identifier for the widget.
          * @param {Object} _props - the widget's prototype.
@@ -1245,8 +1278,8 @@
          */
         _define             : function (_name, _props, _deps) {
             widget_definitions[_name] = {
-                proto   : Create(_props),
-                deps    : _deps
+                proto: Create(_props),
+                deps : _deps
             };
             return this;
         },
@@ -1255,7 +1288,7 @@
          * Assumes all given dependencies (mixins and widgets) are already loaded
          * and registered with `uijet`.
          *
-         * @memberOf uijet 
+         * @memberOf uijet
          * @param {Object} _props - this widget's prototype.
          * @param {string|string[]} [_mixins] - mixin dependencies.
          * @param {string|string[]} [_widgets] - widget dependencies.
@@ -1298,7 +1331,7 @@
                 if ( m = _mixins_to_use.length ) {
                     for ( ; _mixin = _mixins_to_use[--m]; ) {
                         // add every mixin form the parents' mixins that's not in the list to its beginning
-                        if ( !~ _mixins_copy.indexOf(_mixin) ) {
+                        if ( !~_mixins_copy.indexOf(_mixin) ) {
                             _mixins_copy.unshift(_mixin);
                         }
                     }
@@ -1321,7 +1354,7 @@
         },
         /**
          * Performs all the work for {@see uijet.start()}.
-         * 
+         *
          * @memberOf uijet
          * @param {Object} widget - a widget declaration.
          * @param {boolean} [skip_import] - whether to skip module import. Defaults to falsy.
@@ -1341,7 +1374,7 @@
             _type = widget.type;
             _config = widget.config;
             // if falsy then import dependencies first and then do the starting
-            if ( ! skip_import ) {
+            if ( !skip_import ) {
                 return this.Promise(function (resolve, reject) {
                     // do import
                     this.importModules(
@@ -1419,7 +1452,7 @@
          * If none was found and it reached the `body` element then this instance will be
          * registered as a top level widget. This, for example, means that, unless configured
          * not to, once uijet starts this widget will be awaken automatically.
-         * 
+         *
          * @memberOf uijet
          * @param {Object} widget - a widget's instance to register.
          * @returns {uijet}
@@ -1427,10 +1460,10 @@
         register            : function (widget) {
             // get the parent element
             var _parent = null,
-                // create the registry object
+            // create the registry object
                 _current = {
-                    self        : widget,
-                    contained   : []
+                    self     : widget,
+                    contained: []
                 },
                 _id = widget.id,
                 _body = _window.document.body,
@@ -1476,7 +1509,7 @@
                     else {
                         // add it to the registry
                         widgets[_container] = {
-                            contained   : [_id]
+                            contained: [_id]
                         };
                     }
                 }
@@ -1488,7 +1521,7 @@
             // walk the DOM tree upwards until we hit `body`
             while ( _parent && _parent !== _body ) {
                 // if we hit a `uijet_widget`
-                if ( ~ _parent.className.indexOf('uijet_widget') ) {
+                if ( ~_parent.className.indexOf('uijet_widget') ) {
                     // get its `id`.  
                     // important to get the attribute and not do `element.id`, since it might break
                     // when the element is a `<form>` and has an `<input name=id>`.
@@ -1502,7 +1535,7 @@
                     // if the parent is not in the registry then add it
                     else {
                         widgets[_parent_id] = {
-                            contained   : [_id]
+                            contained: [_id]
                         };
                     }
                     _container = _parent_id;
@@ -1513,7 +1546,7 @@
                 _parent = _parent.parentNode;
             }
             // no container set or found
-            if ( ! _current.container ) {
+            if ( !_current.container ) {
                 // register this widget as a top level widget
                 widgets.__app__.contained.push(_id);
                 _container = '__app__';
@@ -1525,7 +1558,7 @@
         /**
          * Removes a widget from the uijet sandbox registry.
          * This is usually triggered by a widget when its {@see BaseWidget.destroy()} method is called.
-         * 
+         *
          * @memberOf uijet
          * @param {Object} widget - a widget's instance to unregister.
          * @returns {uijet}
@@ -1545,25 +1578,25 @@
             return this;
         },
         /**
-         * Caches widget declarations before uijet is initialized, 
+         * Caches widget declarations before uijet is initialized,
          * for lazy starting them at the end of its initialization.
-         * 
+         *
          * It's best to declare widgets in the order of their appearance
          * in the widgets tree (usually maps one-to-one to the DOM tree), so that
          * a widget is always declared before its contained widgets are declared, and so on.
-         * 
+         *
          * In some cases it's a must to declare widgets in a specific order ( see {@see uijet.position()} ).
-         * 
+         *
          * A declaration object usually contains `type` and `config` properties.
          * It may also contain a `factory` property, instead of the `type` one, if
          * this is an instance that's using a pre-declared widget factory.
-         * 
+         *
          * * `type`: a `String` that identifies a widget class created using `uijet.Widget(type, ...)`.
          * * `factory`: a `String` that identifies a widget factory created using `uijet.Factory(factory, ...)`.
          * * `config`: an `Object` that is used as the widget's `options`.
-         * 
+         *
          * **note**: For valid instance options see related module.
-         * 
+         *
          * @memberOf uijet
          * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
          * @returns {uijet}
@@ -1582,7 +1615,7 @@
          * For explanations on widget declarations see {@see uijet.declare()}.
          * Returns a {@see Promise} that is resolved once all declared instances finished initializing,
          * or gets rejected if something fails.
-         * 
+         *
          * `skip_import` is used to forcibly skip modules importing, so this method
          * will complete synchronously, otherwise it will check for missing modules to import.
          * Usually you should _not_ have to specify it at all, unless you know what you're doing
@@ -1609,17 +1642,18 @@
                 while ( _c = declarations[i] ) {
                     // and start every one of them
                     dfrd_starts[i] = this._start(_c, skip_import);
-                    i+=1;
+                    i += 1;
                 }
                 // return a promise of all `declarations` started
                 return this.whenAll(dfrd_starts);
             }
-            throw new Error('`widgets` must be either an Object or an Array. Instead got: ' + objToString.call(declarations));
+            throw new Error('`widgets` must be either an Object or an Array. Instead got: ' +
+                            objToString.call(declarations));
         },
         /**
-         * Extracts widgets' dependency modules to be imported from a list of 
+         * Extracts widgets' dependency modules to be imported from a list of
          * standard widget instance declarations ( see {@see uijet.declare()} ).
-         * 
+         *
          * @memberOf uijet
          * @param {Object[]} declarations - list of widget declarations to extract dependencies from.
          * @returns {{widgets: string[], mixins: string[], adapters: string[]}}
@@ -1632,22 +1666,22 @@
                     adapters: []
                 },
                 _w, _m, _m_type, _m_list;
-            for ( var i = 0 ; _w = declarations[i] ; i++ ) {
+            for ( var i = 0; _w = declarations[i]; i++ ) {
                 if ( _m_type = _w.type ) {
                     // if this widget type wasn't loaded and isn't in the dependencies list then add it
-                    (widget_classes[_m_type] || ~ deps.widgets.indexOf(_m_type)) || deps.widgets.push(_m_type);
+                    (widget_classes[_m_type] || ~deps.widgets.indexOf(_m_type)) || deps.widgets.push(_m_type);
                 }
                 // check for adapters option
                 if ( _m_list = toArray(_w.config.adapters) ) {
-                    for ( var n = 0 ; _m = _m_list[n++] ; ) {
+                    for ( var n = 0; _m = _m_list[n++]; ) {
                         // grab each one and add it if it wasn't loaded before and not already in the list
-                        (adapters[_m] || ~ deps.adapters.indexOf(_m)) || deps.adapters.push(_m);
+                        (adapters[_m] || ~deps.adapters.indexOf(_m)) || deps.adapters.push(_m);
                     }
                 }
                 // check for mixins option and give it the same treatment like we did with adapters
                 if ( _m_list = toArray(_w.config.mixins) ) {
-                    for ( n = 0 ; _m = _m_list[n++] ; ) {
-                        (mixins[_m] || ~ deps.mixins.indexOf(_m)) || deps.mixins.push(_m);
+                    for ( n = 0; _m = _m_list[n++]; ) {
+                        (mixins[_m] || ~deps.mixins.indexOf(_m)) || deps.mixins.push(_m);
                     }
                 }
             }
@@ -1657,7 +1691,7 @@
          * Imports all missing modules
          * If there's nothing to load or AMD isn't in use it returns the call to `callback` OR `uijet`.
          * Returns either the result of calling `callback` or simply `uijet`.
-         * 
+         *
          * @memberOf uijet
          * @param {Object} modules - a map of module paths to list of module/file names to load.
          * @param {function} [callback] - a callback to run once the modules are loaded.
@@ -1673,10 +1707,13 @@
             // if using an AMD loader
             if ( typeof _window.require == 'function' ) {
                 // create list of modules to import with paths prepended
-                for ( m in modules )
-                    if ( m in import_paths )
-                        for ( l = modules[m].length; l-- ; )
+                for ( m in modules ) {
+                    if ( m in import_paths ) {
+                        for ( l = modules[m].length; l--; ) {
                             imports.push(import_paths[m] + modules[m][l]);
+                        }
+                    }
+                }
                 // if there's anything to import
                 if ( imports.length ) {
                     // import it
@@ -1691,10 +1728,10 @@
          * Starts up uijet.
          * If the `pre_startup` callback is defined it will run in the beginning.
          * It publishes the `startup` event and wakes all widgets on the root widgets tree.
-         * 
+         *
          * **note**: if using your app is contained inside `View` widgets, then you probably
          * want to set `options.dont_wake = true` so they will be awaken by the router.
-         * 
+         *
          * @memberOf uijet
          * @returns {uijet}
          */
@@ -1709,7 +1746,7 @@
             this.$element[0].style.visibility = 'visible';
             this.publish('startup');
 
-            if ( ! this.options.dont_wake ) {
+            if ( !this.options.dont_wake ) {
                 // ☼ good morning sunshine ☼
                 this.wakeContained('__app__');
             }
@@ -1720,20 +1757,20 @@
          * Wakes all of the contained child widgets of widget with matching `id`.
          * If `context` is supplied it is passed to each child widget's `wake()`.
          * Returns an array of promises, each returned from a child's `wake()`.
-         * 
+         *
          * @memberOf uijet
          * @param {string} id - id of the widget we want its children to wake.
          * @param {Object} [context] - context provided to the `wake()` call of this widget.
          * @returns {Promise[]} - promises returned from children's `wake()` call.
          */
-        wakeContained       : function  (id, context) {
+        wakeContained       : function (id, context) {
             var _contained = widgets[id].contained,
                 promises = [],
                 _widget,
                 l = _contained.length;
             while ( l-- ) {
                 _widget = widgets[_contained[l]].self;
-                if ( _widget && ! returnOf(_widget.options.dont_wake, _widget) ) {
+                if ( _widget && !returnOf(_widget.options.dont_wake, _widget) ) {
                     promises.unshift(_widget.wake(context));
                 }
             }
@@ -1742,7 +1779,7 @@
         /**
          * Puts to sleep all of the contained child widgets of widget with matching `id`.
          *
-         * @memberOf uijet 
+         * @memberOf uijet
          * @param {string} id - id of the widget we want its children to call `sleep()`.
          * @returns {uijet}
          */
@@ -1756,7 +1793,7 @@
         },
         /**
          * Destroys all the contained child widgets of widget with matching `id`.
-         * 
+         *
          * @memberOf uijet
          * @param {string} id - id of the widget we want its children to call `destroy()`.
          * @returns {uijet}
@@ -1784,7 +1821,7 @@
          * Positions a widget.
          * Takes into account the position and size set in sibling widgets' options,
          * to create a fluid UI.
-         * 
+         *
          * @memberOf uijet
          * @param {Object} widget - the widget instance to position.
          * @param {string[]} [exclude] - list of style property names to exclude from setting.
@@ -1814,19 +1851,21 @@
             for ( len = siblings.length; len--; ) {
                 sibling = siblings[len];
                 // if it's this widget bail from this iteration
-                if ( sibling == widget.id ) continue;
+                if ( sibling == widget.id ) {
+                    continue;
+                }
                 // if we have a cached processed position on a sibling widget
                 if ( processed_position = widgets[sibling].self.processed_position ) {
                     set_style = true;
                     // loop over position properties of the sibling
                     for ( p in processed_position ) {
                         // if this property is not to be excluded
-                        if ( !~ exclude.indexOf(p) ) {
+                        if ( !~exclude.indexOf(p) ) {
                             // if we already processed this property
                             if ( p in processed ) {
                                 // if it's using same units AND size of property of this widget is smaller then it's sibling's 
                                 if ( processed[p].unit === processed_position[p].unit &&
-                                    processed[p].size < processed_position[p].size ) {
+                                     processed[p].size < processed_position[p].size ) {
                                     // set the size to the sibling's size
                                     processed[p].size = processed_position[p].size;
                                 }
@@ -1858,60 +1897,23 @@
             // if we found something to set
             if ( set_style ) {
                 // make sure we allow the widget to be fluid 
-                if ( 'left' in position || 'right' in position ) position.width = 'auto';
-                if ( 'top' in position || 'bottom' in position ) position.height = 'auto';
+                if ( 'left' in position || 'right' in position ) {
+                    position.width = 'auto';
+                }
+                if ( 'top' in position || 'bottom' in position ) {
+                    position.height = 'auto';
+                }
                 // set the styles
                 widget.style(position);
             }
         },
         /**
-         * This method will be deprecated and moved into Layered mixin.
-         *
-         * #### Related options:
-         *
-         * * `keep_layer_awake`: tells uijet to ignore Layered instances with this option set to `true`
-         * when waking a sibling Layered instance in same layer.
-         * 
-         * @memberOf uijet
-         * @param {Object} widget - the widget to switch to.
-         * @returns {uijet}
-         * @private
-         */
-        _switchLayer        : function (widget) {
-            var container_id = widgets[widget.id].container,
-                siblings = container_id && widgets[container_id] ?
-                           widgets[container_id].contained || [] :
-                           [],
-                _parent = (widget.$wrapper || widget.$element)[0].parentNode,
-                $top, sibling;
-
-            for ( var l = 0; sibling = siblings[l]; l++ ) {
-                sibling = widgets[sibling].self;
-                if ( sibling.layered && sibling !== widget && sibling.awake ) {
-                    $top = (sibling.$wrapper || sibling.$element);
-                    if ( $top[0].parentNode === _parent ) {
-                        if ( sibling.options.keep_layer_awake ) {
-                            sibling.options.state = 'awake';
-                            $top.removeClass('current');
-                        }
-                        else {
-                            sibling.sleep();
-                        }
-                    }
-                }
-            }
-
-            widget.options.state = 'current';
-            (widget.$wrapper || widget.$element).addClass('current');
-            return this;
-        },
-        /**
          * Builds a context object from the returned arguments of a route.
          * Named parameters in `route` are indexed in the context object by name.
          * Unnamed parameters are indexed by position in `args_array`.
-         * 
+         *
          * Also supports splat params using the prefix `'*'`.
-         * 
+         *
          * @memberOf uijet
          * @param {string} route - The route string to analyze.
          * @param {*} [args_array] - The list of arguments sent to a route's callback.
@@ -1919,7 +1921,7 @@
          */
         buildContext        : function (route, args_array) {
             var context = {},
-                // matches anything that contains ':' followed by a name
+            // matches anything that contains ':' followed by a name
                 named_arg_re = /.*:([-\w]+)/,
                 parts = route.split('/'),
                 i = 0, n = 0,
@@ -1936,7 +1938,7 @@
                     context[match[1]] = args_array.shift();
                     n += 1;
                 }
-                else if ( ~ part.indexOf('(') ) {
+                else if ( ~part.indexOf('(') ) {
                     // if it's unnamed then add it by its index in `args_array`
                     context[n] = args_array.shift();
                     n += 1;
@@ -1955,7 +1957,7 @@
 
     /**
      * Set a namespace on uijet for utility functions.
-     * 
+     *
      * @namespace utils
      * @memberOf uijet
      */
@@ -1980,13 +1982,13 @@
         /**
          * Makes sure a mixin's `name` is in the requested `position` of the
          * returned `array` of mixin names.
-         * 
+         *
          * Sometimes `array` could be an optional `mixins` option of some widget, in
          * which case the author of the widget's prototype expects to get `name`
          * wrapped in an `Array`.
          * There's also a chance `array` could be another mixin's name, in which case
          * it will be wrapped in an array and the operation is repeated.
-         * 
+         *
          * @memberOf uijet.utils
          * @param {string[]|string|undefined} array - The list of mixin names.
          * @param {string} name - The name of the mixin to add.
@@ -1995,11 +1997,11 @@
          */
         putMixin        : function putMixin (array, name, position) {
             var index;
-            if ( ! array ) {
+            if ( !array ) {
                 // no mixins, so just return `name`
                 return [name];
             }
-            else if ( ! isArr(array) ) {
+            else if ( !isArr(array) ) {
                 // `array` is probably a `string` so wrap in an `array` and do it again
                 return putMixin([array], name, position);
             }
@@ -2008,11 +2010,13 @@
                 position = typeof position == 'number' ? position : array.length;
 
                 index = array.indexOf(name);
-                if ( ~ index ) {
+                if ( ~index ) {
                     // if `name` is found in `array`
                     if ( index === position )
-                        // if it's in the right position bail out
+                    // if it's in the right position bail out
+                    {
                         return array;
+                    }
                     // it's not in the right position so remove it
                     array.splice(index, 1);
                 }
@@ -2022,8 +2026,12 @@
             return array;
         },
         // wrap these objects since they point to native objects which is forbidden  
-        requestAnimFrame: function (f) { return requestAnimFrame(f); },
-        cancelAnimFrame : function (id) { return cancelAnimFrame(id); }
+        requestAnimFrame: function (f) {
+            return requestAnimFrame(f);
+        },
+        cancelAnimFrame : function (id) {
+            return cancelAnimFrame(id);
+        }
     };
 
     // expose `Base`
