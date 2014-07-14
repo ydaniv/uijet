@@ -1849,8 +1849,10 @@
             else {
                 // if there's something to set then make sure it's set
                 for ( p in position ) {
-                    set_style = true;
-                    break;
+                    if ( position.hasOwnProperty(p) ) {
+                        set_style = true;
+                        break;
+                    }
                 }
             }
             // if we found something to set
@@ -1864,6 +1866,11 @@
         },
         /**
          * This method will be deprecated and moved into Layered mixin.
+         *
+         * #### Related options:
+         *
+         * * `keep_layer_awake`: tells uijet to ignore Layered instances with this option set to `true`
+         * when waking a sibling Layered instance in same layer.
          * 
          * @memberOf uijet
          * @param {Object} widget - the widget to switch to.
@@ -1877,23 +1884,23 @@
                            [],
                 _parent = (widget.$wrapper || widget.$element)[0].parentNode,
                 $top, sibling;
-            if ( !~ widget.options.type_class.indexOf('uijet_view') ) {
-                for ( var l = 0; sibling = siblings[l]; l++ ) {
-                    sibling = widgets[sibling].self;
-                    if ( sibling.layered && sibling !== widget && sibling.awake ) {
-                        $top = (sibling.$wrapper || sibling.$element);
-                        if ( $top[0].parentNode === _parent ) {
-                            if ( sibling.options.keep_layer_awake ) {
-                                sibling.options.state = 'awake';
-                                $top.removeClass('current');
-                            }
-                            else {
-                                sibling.sleep();
-                            }
+
+            for ( var l = 0; sibling = siblings[l]; l++ ) {
+                sibling = widgets[sibling].self;
+                if ( sibling.layered && sibling !== widget && sibling.awake ) {
+                    $top = (sibling.$wrapper || sibling.$element);
+                    if ( $top[0].parentNode === _parent ) {
+                        if ( sibling.options.keep_layer_awake ) {
+                            sibling.options.state = 'awake';
+                            $top.removeClass('current');
+                        }
+                        else {
+                            sibling.sleep();
                         }
                     }
                 }
             }
+
             widget.options.state = 'current';
             (widget.$wrapper || widget.$element).addClass('current');
             return this;
