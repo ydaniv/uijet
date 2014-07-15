@@ -12,11 +12,31 @@
     }
 }(function (uijet) {
 
+    /**
+     * SelectMenu composite class.
+     * Defines the `menu` part of the {@see Select} Composite.
+     *
+     * @class SelectMenu
+     * @extends List
+     * @category Composite
+     */
     uijet.Widget('SelectMenu', {
         options     : {
             type_class: ['uijet_list', 'uijet_select_menu'],
             dont_wake : true
         },
+        /**
+         * If supplied `toggle` argument is an object with a `resolve`
+         * property it calls it with `this.$selected` as a value.
+         *
+         * @methodOf SelectMenu
+         * @param {Object|boolean|HTMLElement|HTMLElement[]} [toggle] - a new item element
+         * to set as the selected one, or `true` to toggle it if already cached. Can also
+         * be an object with `toggle` and `resolve`, usually if invoked by the parent's {@see Select#select}.
+         * In that case `toggle` will be the original `toggle` argument and `resolve` will be a resolver
+         * for the selection promise.
+         * @returns {SelectMenu}
+         */
         setSelected : function (toggle) {
             var resolve;
             if ( toggle && toggle.resolve ) {
@@ -24,18 +44,36 @@
                 toggle = toggle.toggle;
             }
             this._super(toggle);
-            return resolve ?
-                   resolve(this.$selected) :
-                this;
+            resolve && resolve(this.$selected);
+            return this;
         }
     }, {
         widgets : ['List']
     });
 
+    /**
+     * Select composite class.
+     *
+     * @class Select
+     * @extends Button
+     * @category Composite
+     */
     uijet.Widget('Select', {
         options      : {
             type_class  : ['uijet_button', 'uijet_select']
         },
+        /**
+         * Constructs a {@see SelectMenu} instance.
+         *
+         * #### Related options:
+         *
+         * * `menu`: the SelectMenu declaration's config to be used for this instance.
+         * * `content`: an element or a selector for an element to be used as element
+         * containing the selected item's content.
+         *
+         * @methodOf Select
+         * @returns {Select}
+         */
         initContained: function () {
             this._wrap();
 
@@ -82,12 +120,28 @@
 
             return this._super.apply(this, arguments);
         },
+        /**
+         * Updates the content element and triggers `post_select`.
+         *
+         * @methodOf Select
+         * @param {HTMLElement[]} $selected - the wrapped selected item.
+         * @returns {*} - the results of notifying `post_select`.
+         * @private
+         */
         _setSelected : function ($selected) {
             if ( $selected && $selected.length ) {
                 this.$content.text($selected.text());
             }
-            return this;
+            return this.notify('post_select', $selected);
         },
+        /**
+         * Triggers selection in the menu component and in turn
+         * updates the text in the content element.
+         *
+         * @methodOf Select
+         * @param {boolean|HTMLElement|HTMLElement[]} [toggle] - a new item element to set as the selected one, or `true` to toggle it if already cached.
+         * @returns {Promise}
+         */
         setSelected  : function (toggle) {
             var that = this,
                 promise = uijet.Promise(function (resolve) {
@@ -96,13 +150,35 @@
                         resolve: resolve
                     });
                 });
-            promise.then(this._setSelected.bind(this));
-            return this;
+            return promise.then(this._setSelected.bind(this));
         },
+        /**
+         * Performs selection of an item in the menu, according to
+         * supplied `$selected` argument.
+         *
+         * #### Signals:
+         *
+         * * `pre_select`: triggered before selection is started. If `false` is returned
+         * the selection will not be made. Gets passed the menu's selected wrapped item.
+         * * `post_select`: triggered after selection is complete and rendered. If `false` is
+         * returned the `<this.id>.selected` event of this instance will not be triggered.
+         * Gets passed the menu's selected wrapped item.
+         *
+         * #### App Events:
+         *
+         * * `<this.id>.selected`: triggered
+         *
+         * @methodOf Select
+         * @param {HTMLElement[]} $selected - the wrapped selected item.
+         * @returns {Select}
+         */
         select       : function ($selected) {
-            this.setSelected($selected);
-            this.notify('post_select', $selected);
-            return this.publish('selected', $selected);
+            if ( this.notify('pre_select', $selected) !== false ) {
+                this.setSelected($selected).then(function (publish) {
+                    publish !== false && this.publish('selected', $selected);
+                }.bind(this));
+            }
+            return this;
         }
     }, {
         widgets : ['Button']
