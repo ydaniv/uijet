@@ -122,8 +122,9 @@
          * * `post_select`: triggered at the end. Takes the wrapped selected item and event object as arguments.
          * 
          * #### App Events:
-         * 
-         * * `<this.id>.selected`: takes the result of {@link List#getTransfer} or
+         *
+         * * `<this.id>.selected`: takes the result of {@link List#getTransfer}, or the result of the `pre_select`
+         * signal handler, or simply defaults to the selected wrapped item element.
          * 
          * @memberOf List
          * @instance
