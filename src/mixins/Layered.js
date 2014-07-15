@@ -120,7 +120,7 @@
                 if ( sibling !== this && sibling.awake ) {
                     sibling_top = (sibling.$wrapper || sibling.$element)[0];
                     // and sibling's parent node is same as this instance's element parent node
-                    if ( sibling_top && sibling_top[0].parentNode === _parent ) {
+                    if ( sibling_top && sibling_top.parentNode === _parent ) {
                         // if asked to keep awake
                         if ( sibling.options.keep_layer_awake ) {
                             // just change state from current to simply awake
