@@ -13,15 +13,19 @@
 }(function (uijet) {
 
     uijet.Widget('SelectMenu', {
+        options     : {
+            type_class: ['uijet_list', 'uijet_select_menu'],
+            dont_wake : true
+        },
         setSelected : function (toggle) {
-            var deferred;
-            if ( toggle && toggle.deferred ) {
-                deferred = toggle.deferred;
+            var resolve;
+            if ( toggle && toggle.resolve ) {
+                resolve = toggle.resolve;
                 toggle = toggle.toggle;
             }
             this._super(toggle);
-            return deferred ?
-                deferred.resolve(this.$selected) :
+            return resolve ?
+                   resolve(this.$selected) :
                 this;
         }
     }, {
@@ -29,12 +33,11 @@
     });
 
     uijet.Widget('Select', {
-        options     : {
+        options      : {
             type_class  : ['uijet_button', 'uijet_select']
         },
-        init        : function () {
-            this._super.apply(this, arguments)
-                ._wrap();
+        initContained: function () {
+            this._wrap();
 
             var menu_id = this.id + '_menu',
                 has_element = this.options.menu && this.options.menu.element,
@@ -53,7 +56,7 @@
                 putMixin = uijet.utils.putMixin,
                 menu_declaration;
 
-            this.options.content || (this.options.content = uijet.$('<span>').prependTo(this.$element));
+            this.$content = uijet.utils.toElement(this.options.content) || uijet.$('<span>').prependTo(this.$element);
 
             menu_app_events[this.id + '.clicked'] = 'toggle';
             menu_app_events[this.id + '._set_selected'] = 'setSelected+';
@@ -64,36 +67,39 @@
                     element     : has_element || uijet.$('<ul>', {
                         id  : menu_id
                     }).appendTo($el),
-                    container   : this.id,
-                    dont_wake   : true,
                     mixins      : putMixin(putMixin(menu_mixins, 'Toggled'), 'Floated'),
-                    type_class  : ['uijet_list', 'uijet_select_menu'], 
                     app_events  : menu_app_events
                 }, this.options.menu || {})
             };
 
-            uijet.start(menu_declaration);
+            // move the menu declaration into list of components to be declared 
+            if ( !this.options.components ) {
+                this.options.components = [];
+            }
+            this.options.components.unshift(menu_declaration);
 
             this.subscribe(menu_id + '.selected', this.select);
 
-            return this;
+            return this._super.apply(this, arguments);
         },
-        _setSelected: function ($selected) {
+        _setSelected : function ($selected) {
             if ( $selected && $selected.length ) {
-                this.options.content.text($selected.text());
+                this.$content.text($selected.text());
             }
             return this;
         },
-        setSelected : function (toggle) {
-            var deferred = uijet.defer();
-            this.publish('_set_selected', {
-                toggle  : toggle,
-                deferred: deferred
-            });
-            deferred.promise().then(this._setSelected.bind(this));
+        setSelected  : function (toggle) {
+            var that = this,
+                promise = uijet.Promise(function (resolve) {
+                    that.publish('_set_selected', {
+                        toggle : toggle,
+                        resolve: resolve
+                    });
+                });
+            promise.then(this._setSelected.bind(this));
             return this;
         },
-        select      : function ($selected) {
+        select       : function ($selected) {
             this.setSelected($selected);
             this.notify('post_select', $selected);
             return this.publish('selected', $selected);
