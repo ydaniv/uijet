@@ -87,7 +87,10 @@
             this.bind(
                     (click_event || uijet.support.click_events.full) + ' ' +
                     (this._click_target || this._item_selector),
-                this.click
+                function (e) {
+                    //TODO: document this jQuery specific event object property
+                    this.click(e.delegateTarget, e);
+                }
             );
             this._super();
             return this;
