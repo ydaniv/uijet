@@ -59,7 +59,8 @@
          * @returns {List}
          */
         prepareElement  : function () {
-            var _horizontal = this.options.horizontal,
+            var that = this,
+                _horizontal = this.options.horizontal,
                 class_attrs = [],
                 click_event = this.options.click_event,
                 _align;
@@ -83,15 +84,17 @@
             if ( class_attrs.length ) {
                 this.$element.addClass(class_attrs.join(' '));
             }
+
+            //TODO: research what's the best option is to have both: events delegated to parent and handler is passed target item as first argument
             // delegate all clicks from `item_element` option as selector or `item_selector`  
-            this.bind(
-                    (click_event || uijet.support.click_events.full) + ' ' +
-                    (this._click_target || this._item_selector),
+            this.$element.on(
+                    click_event || uijet.support.click_events.full,
+                    this._click_target || this._item_selector,
                 function (e) {
-                    //TODO: document this jQuery specific event object property
-                    this.click(e.delegateTarget, e);
-                }
-            );
+                    // pass the target and event object as arguments
+                    return that.click(this, e);
+                });
+
             this._super();
             return this;
         },
