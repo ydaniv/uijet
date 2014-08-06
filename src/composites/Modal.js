@@ -39,7 +39,8 @@
          */
         initContained: function () {
             var buttons = this.options.buttons,
-                overlay, overlay_id, components;
+                components = this.options.components,
+                overlay, overlay_id;
 
             // since this is a modal dialog,
             // create the overlay element
@@ -51,9 +52,6 @@
             // insert the overlay to the app's element's as its first child
             uijet.$element[0].insertBefore(overlay, uijet.$element[0].firstChild);
 
-            if ( !(components = this.options.components) ) {
-                this.options.components = components = [];
-            }
             // create the overlay widget
             components.unshift({ type: 'Overlay', config: uijet.utils.extend(true, {
                 element     : overlay,

@@ -35,19 +35,16 @@
          * @returns {Dialog}
          */
         initContained: function () {
-            var components, buttons;
+            var components = this.options.components,
+                buttons = this.options.buttons;
 
-            if ( buttons = this.options.buttons ) {
+            if ( buttons ) {
                 buttons = buttons.map(function (config) {
                     return {
                         type  : 'Button',
                         config: config
                     };
                 });
-
-                if ( !(components = this.options.components) ) {
-                    this.options.components = components = [];
-                }
 
                 components.unshift.apply(components, buttons);
             }

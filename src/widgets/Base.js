@@ -758,6 +758,8 @@
             ! this._bound_dom_events && (this._bound_dom_events = []);
             // make sure we have a `type_class` option set
             ! this.options.type_class && (this.options.type_class = DEFAULT_TYPE_CLASS);
+            // make sure we have `components` option set
+            !this.options.components && (this.options.components = []);
             return this;
         },
         /**
