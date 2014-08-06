@@ -12,6 +12,7 @@
         factory(uijet);
     }
 }(function (uijet) {
+
     /**
      * Modal dialog composite class.
      *
@@ -26,19 +27,19 @@
         },
         /**
          * Creates an {@see Overlay} instance for the underlay.
+         * Also translates the `buttons` option into a part of the `components` option.
          *
          * #### Related options:
          *
          * * `underlay`: config object for the Overlay used as the modal's underlay.
+         * * `buttons`: array of config objects for Button components to create.
          *
          * @methodOf Modal
-         * @returns {Widget}
+         * @returns {Modal}
          */
-        register: function () {
-            var overlay,
-                overlay_id;
-
-            this._super();
+        initContained: function () {
+            var buttons = this.options.buttons,
+                overlay, overlay_id, components;
 
             // since this is a modal dialog,
             // create the overlay element
@@ -49,8 +50,12 @@
             overlay.appendChild((this.$wrapper || this.$element)[0]);
             // insert the overlay to the app's element's as its first child
             uijet.$element[0].insertBefore(overlay, uijet.$element[0].firstChild);
+
+            if ( !(components = this.options.components) ) {
+                this.options.components = components = [];
+            }
             // create the overlay widget
-            uijet.start({ type: 'Overlay', config: uijet.utils.extend(true, {
+            components.unshift({ type: 'Overlay', config: uijet.utils.extend(true, {
                 element     : overlay,
                 id          : overlay_id,
                 container   : this.id,
@@ -58,7 +63,18 @@
                 cloak : true
             }, this.options.underlay || {}) }, true);
 
-            return this;
+            if ( buttons ) {
+                buttons = buttons.map(function (config) {
+                    return {
+                        type  : 'Button',
+                        config: config
+                    };
+                });
+
+                components.unshift.apply(components, buttons);
+            }
+
+            return this._super.apply(this, arguments);
         }
     });
 }));
