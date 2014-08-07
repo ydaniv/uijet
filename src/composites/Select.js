@@ -91,15 +91,17 @@
                         }
                     }
                 },
-                putMixin = uijet.utils.putMixin,
-                menu_declaration;
+                putMixin = uijet.utils.putMixin;
 
+            // cache the content element
             this.$content = uijet.utils.toElement(this.options.content) || uijet.$('<span>').prependTo(this.$element);
 
+            // register the menu component to events
             menu_app_events[this.id + '.clicked'] = 'toggle';
             menu_app_events[this.id + '._set_selected'] = 'setSelected+';
 
-            menu_declaration = {
+            // move the menu declaration into list of components to be declared 
+            this.options.components.unshift({
                 type    : 'SelectMenu',
                 config  : uijet.utils.extend(true, {
                     element     : has_element || uijet.$('<ul>', {
@@ -108,14 +110,9 @@
                     mixins      : putMixin(putMixin(menu_mixins, 'Toggled'), 'Floated'),
                     app_events  : menu_app_events
                 }, this.options.menu || {})
-            };
+            });
 
-            // move the menu declaration into list of components to be declared 
-            if ( !this.options.components ) {
-                this.options.components = [];
-            }
-            this.options.components.unshift(menu_declaration);
-
+            // subscribe the Select to selection event of the menu component
             this.subscribe(menu_id + '.selected', this.select);
 
             return this._super.apply(this, arguments);
@@ -143,14 +140,13 @@
          * @returns {Promise}
          */
         setSelected  : function (toggle) {
-            var that = this,
-                promise = uijet.Promise(function (resolve) {
-                    that.publish('_set_selected', {
+            return uijet.Promise(function (resolve) {
+                this.publish('_set_selected', {
                         toggle : toggle,
                         resolve: resolve
                     });
-                });
-            return promise.then(this._setSelected.bind(this));
+            }.bind(this))
+                .then(this._setSelected.bind(this));
         },
         /**
          * Performs selection of an item in the menu, according to
