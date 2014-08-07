@@ -11,6 +11,14 @@
         factory(uijet);
     }
 }(function (uijet) {
+
+    /**
+     * Slider composite class.
+     *
+     * @class Slider
+     * @extends BaseWidget
+     * @category Composite
+     */
     uijet.Widget('Slider', {
         options : {
             type_class  : 'uijet_slider',
@@ -18,9 +26,23 @@
                 position: 'relative'
             }
         },
-        register: function () {
-            this._super.apply(this, arguments);
-
+        /**
+         * Initializes options, starts the Slider's handle Button and
+         * slides it to its initial position.
+         *
+         * #### Related options:
+         *
+         * * `handle`: the config object of the handle Button widget.
+         * * `initial`: initial value to set the slider to.
+         * * `vertical`: whether this is a vertical slider.
+         * * `min`: minimal value for the slider.
+         * * `max`: maximal value for the slider.
+         * * `step`: interval value of each step between min to max.
+         *
+         * @methodOf Slider
+         * @returns {Slider}
+         */
+        initContained   : function () {
             var options = this.options,
                 handle_ops = options.handle || {},
                 initial = +options.initial,
@@ -39,17 +61,20 @@
             //TODO: add support for a double-handle slider
             // set some button defaults
             if ( ! handle_ops.element ) {
-                handle_ops.element = uijet.$('<span/>').appendTo(this.$element);
+                handle_ops.element = uijet.$('<span>').appendTo(this.$element);
             }
 
+            // make sure handle Button has Dragged mixin at the bottom of the list
             handle_ops.mixins = uijet.utils.putMixin(handle_ops.mixins, 'Dragged', 0);
 
+            // register handle Button to the `<id>.update_ui` event and update its position
             handle_app_events[this.id + '.update_ui'] = function (position) {
                 var deltas = {};
                 deltas[vertical ? 'top' : 'left'] = position;
                 this.drag(this.$element[0], deltas, true);
             };
 
+            // make sure the Slider is listening to a click event that will cause a slide to clicked point
             if ( ! (uijet.support.click_events.full in this.options.dom_events) ) {
                 this.options.dom_events[uijet.support.click_events.full] = function (e) {
                     if ( e.target === this.$element[0] ) {
@@ -62,8 +87,8 @@
                 };
             }
 
-            // start button
-            uijet.start({
+            // add the handle Button to components
+            options.components.unshift({
                 type    : 'Button',
                 config  : uijet.utils.extend(true, {
                     type_class      : ['uijet_button', 'uijet_slider_handle'],
@@ -84,12 +109,26 @@
                     app_events      : handle_app_events
                 }, handle_ops)
             });
-            this._handle_size = this.$element.find('.uijet_slider_handle')[0][vertical ? 'offsetHeight' : 'offsetWidth'];
+
+            var res = this._super.apply(this, arguments);
+
+            // cache the handle's size
+            this._handle_size = this.$element.find('.uijet_slider_handle')[0][vertical ? 'offsetHeight' :
+                                                                              'offsetWidth'];
+            // slide handle to initial position
             this.slide(initial, false, true);
 
-            return this;
+            return res;
         },
-        //TODO: add docs
+        /**
+         * Sets the `slider_value` property of the instance and updates UI, e.g.
+         * the handle's position.
+         *
+         * @methodOf Slider
+         * @param {number} value - a value to set the slider to.
+         * @param {boolean} [dont_update_ui] - whether to NOT update the handle's position. Defaults to `false`.
+         * @param {boolean} [dont_publish] - whether to NOT publish the `<id>.changed` event. Defaults to `false`.
+         */
         slide   : function (value, dont_update_ui, dont_publish) {
             // step & value calculation taken from jQueryUI's slider
             // https://github.com/jquery/jquery-ui/blob/master/ui/jquery.ui.slider.js#L559
@@ -114,7 +153,14 @@
                 this.publish('update_ui', this._valueToPosition(this.slider_value));
             }
         },
-        //TODO: add docs
+        /**
+         * Ensures `value` is between `max` and `min`.
+         *
+         * @methodOf Slider
+         * @param {number} value - number to trim.
+         * @returns {Slider}
+         * @private
+         */
         _trimValue      : function (value) {
             value = +value;
             if ( value > this.options.max ) {
@@ -125,7 +171,14 @@
             }
             return value;
         },
-        //TODO: add docs
+        /**
+         * Converts a given value into a position of the handle in pixels.
+         *
+         * @methodOf Slider
+         * @param {value} value - value on the slider to convert to a position of the handle.
+         * @returns {number} - a position, in pixels, on the slider, corresponding to given `value`.
+         * @private
+         */
         _valueToPosition: function (value) {
             var percent = (value - this.slider_min) / (this.slider_max - this.slider_min),
                 size = +uijet.utils.getStyle(
@@ -134,7 +187,14 @@
                 ).slice(0, -2) - (this._handle_size || 0);
             return (percent * size) | 0;
         },
-        //TODO: add docs
+        /**
+         * Converts a given position in pixels on the slider to a valid value.
+         *
+         * @methodOf Slider
+         * @param {number} position - a position on the slider in pixels.
+         * @returns {number} - a valid value of the slider, corresponding to a given position on the slider.
+         * @private
+         */
         _positionToValue: function (position) {
             var size = +uijet.utils.getStyle(
                     this.$element[0],
