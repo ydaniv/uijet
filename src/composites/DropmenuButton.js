@@ -13,18 +13,39 @@
         factory(uijet);
     }
 }(function (uijet) {
+
+    /**
+     * Dropmenu Button composite class.
+     *
+     * @class DropmenuButton
+     * @extends Button
+     * @category Composite
+     */
     uijet.Widget('DropmenuButton', {
         options         : {
             type_class: ['uijet_button', 'uijet_dropmenubutton'],
             dont_wrap   : false
         },
-        prepareElement  : function () {
-            this._super.apply(this, arguments)
-                ._wrap();
+        /**
+         * Initializes menu component, and arrow button component if set.
+         *
+         * #### Related options:
+         *
+         * * `menu`: the menu component's config.
+         * * `arrow`: the arrow Button component's config.
+         * Can also be set to `true` and the default arrow button component will be created.
+         *   * `dont_close`: when `true` keeps the menu open on selection. Otherwise its `close()` method is invoked.
+         *
+         * @methodOf DropmenuButton
+         * @returns {DropmenuButton}
+         */
+        initContained   : function () {
+            this._wrap();
 
             var id = this.id,
                 drop_menu_id = id + '_menu',
                 options = this.options,
+                components = options.components,
                 drop_arrow_id, drop_arrow_config,
                 // configure the dropdown menu
                 drop_menu_config = uijet.utils.extend(true, {
@@ -32,7 +53,6 @@
                     container       : id,
                     dont_wake       : true,
                     sync            : true,
-                    dont_select     : true,
                     extra_class     : 'uijet_menu',
                     float_position  : function () {
                         var wrapper = this._wrap().$wrapper[0],
@@ -45,7 +65,7 @@
                     signals         : {
                         pre_select  : function ($selected, e) {
                             e.stopPropagation();
-                            if ( this.options.dont_select ) {
+                            if ( !this.options.dont_close ) {
                                 this.sleep();
                             }
                         },
@@ -78,8 +98,8 @@
                     this.opened ? this.wake(data.context) : this.sleep();
                 },
 
-                add_arrow = !!(options.add_arrow || options.arrow),
-                drop_menu, drop_arrow, floated_index;
+                add_arrow = !!options.arrow,
+                drop_menu, drop_arrow;
 
             // if we need a separate arrow button configure it
             if ( add_arrow ) {
@@ -90,7 +110,7 @@
                     id          : drop_arrow_id,
                     container   : id,
                     extra_class : 'uijet_droparrow'
-                }, options.arrow || {});
+                }, uijet.utils.isObj(options.arrow) ? options.arrow : {});
 
                 // make sure arrow element is set
                 if ( ! drop_arrow_config.element ) {
@@ -100,6 +120,7 @@
                 }
             }
 
+            // ensure all components react to click
             drop_menu_events[id + '.clicked'] = clicked_handler;
             if ( drop_arrow_id ) {
                 drop_menu_events[drop_arrow_id + '.clicked'] = clicked_handler;
@@ -115,20 +136,21 @@
                 drop_menu = uijet.utils.toElement(drop_menu_config.element);
 
                 if ( drop_menu && drop_menu[0] ) {
+                    // append the menu element to the widget
                     (drop_arrow || this.$wrapper[0]).appendChild(drop_menu[0]);
                 }
             }
 
-            // create the arrow button widget if needed
-            add_arrow && uijet.start({ type: 'Button', config: drop_arrow_config });
+            // add the arrow button widget to components if needed
+            add_arrow && components.unshift({ type: 'Button', config: drop_arrow_config });
 
             // make sure the drop menu is Floated
             drop_menu_config.mixins = uijet.utils.putMixin(drop_menu_config.mixins, 'Floated');
 
             // create the menu widget
-            uijet.start({ type: 'List', config: drop_menu_config });
+            components.unshift({ type: 'List', config: drop_menu_config });
 
-            return this;
+            return this._super.apply(this, arguments);
         }
     }, {
         widgets : ['Button']
