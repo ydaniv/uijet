@@ -20,7 +20,7 @@
      * @category Composite
      */
     uijet.Widget('Slider', {
-        options : {
+        options: {
             type_class  : 'uijet_slider',
             style       : {
                 position: 'relative'
@@ -129,7 +129,7 @@
          * @param {boolean} [dont_update_ui] - whether to NOT update the handle's position. Defaults to `false`.
          * @param {boolean} [dont_publish] - whether to NOT publish the `<id>.changed` event. Defaults to `false`.
          */
-        slide: function (value, dont_update_ui, dont_publish) {
+        slide  : function (value, dont_update_ui, dont_publish) {
             // step & value calculation taken from jQueryUI's slider
             // https://github.com/jquery/jquery-ui/blob/master/ui/jquery.ui.slider.js#L559
             var step = this.slider_step,
