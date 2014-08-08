@@ -23,7 +23,8 @@
     uijet.Widget('SelectMenu', {
         options     : {
             type_class: ['uijet_list', 'uijet_select_menu'],
-            dont_wake : true
+            dont_wake : true,
+            cloak     : true
         },
         /**
          * If supplied `toggle` argument is an object with a `resolve`
