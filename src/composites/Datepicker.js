@@ -17,43 +17,75 @@
         return Object.prototype.toString.call(obj) == '[object Date]';
     }
 
+    /**
+     * Datepicker composite class.
+     *
+     * @class Datepicker
+     * @extends BaseWidget
+     * @category Composite
+     */
     uijet.Widget('Datepicker', {
-        options     : {
+        options      : {
             type_class  : ['uijet_pane', 'uijet_datepicker'],
             sync        : true
         },
-        prepareElement  : function () {
+        /**
+         * Translate the `datelist`, `next` and `prev` option into a part of the `components` option.
+         *
+         * #### App events:
+         *
+         * * `<id>_datelist._update_current_date`: this widget registers to this event to update the
+         * `current_date` element's content with current selected date.
+         *
+         * #### Related options:
+         *
+         * * `datelist`: config objects for the DateList component to create.
+         * * `next`: config objects for the next Button component to create.
+         * * `prev`: config objects for the prev Button component to create.
+         * * `current_date`: element or selector for the element which will serve as the heading
+         * that contains cuurent date.
+         * * `max_date`: max possible date for selection.
+         * * `min_date`: min possible date for selection.
+         *
+         * @methodOf Datepicker
+         * @returns {Datepicker}
+         */
+        initContained: function () {
             var $ = uijet.$,
                 id = this.id,
                 $el = this.$element,
                 datepiker_ops = this.options,
+                datelist_ops = datepiker_ops.datelist || {},
+                prev_ops = datepiker_ops.prev || {},
+                next_ops = datepiker_ops.next || {},
+                components = datepiker_ops.components,
 
                 // create all the elements we need to construct our datepicker
                 // here's our heading which states current month and year
-                $current_date = $('<h1/>', {
+                $current_date = uijet.utils.toElement(datepiker_ops.current_date) || $('<h1>', {
                     'class' : 'uijet_datepicker_current_date'
                 }).appendTo($el),
 
                 // this is the prev month button
-                $prev = $('<span/>', {
+                $prev = prev_ops.element || $('<span>', {
                     id      : id + '_prev',
                     'class' : 'uijet_datepicker_arrow uijet_datepicker_prev'
                 }).prependTo($el),
 
                 // and this is the next month button
-                $next = $('<span/>', {
+                $next = next_ops.element || $('<span>', {
                     id      : id + '_next',
                     'class' : 'uijet_datepicker_arrow uijet_datepicker_next'
                 }).appendTo($el),
 
                 // and here is our list of dates
-                $dateslist = $('<ul/>', {
-                    id      : id + '_dateslist'
+                $datelist = datelist_ops.element || $('<ul>', {
+                    id: id + '_datelist'
                 }).appendTo($el),
 
                 // configure our dates list widget
-                dateslist_config = {
-                    element     : $dateslist,
+                datelist_config = uijet.utils.extend(true, {
+                    element: $datelist,
                     container   : id,
                     signals     : {
                         pre_select  : function ($selected, e) {
@@ -71,53 +103,67 @@
                     app_events  : {},
                     min_date    : datepiker_ops.min_date,
                     max_date    : datepiker_ops.max_date
-                };
+                }, datelist_ops);
 
-            this._super();
-
-            this.subscribe(id + '_dateslist._update_current_date', function (text) {
+            this.subscribe(id + '_datelist._update_current_date', function (text) {
                 $current_date.text(text);
             });
 
-            // add user defined options to defaults for dates list
-            dateslist_config = uijet.utils.extend(true, dateslist_config, datepiker_ops.dateslist || {});
-            // create the dates List
-            uijet.start({ type: 'DatepickerList', config: dateslist_config });
-            // create the next/prev buttons
-            uijet.start({ type: 'Button', config: uijet.utils.extend(true, {
+            // add the dates List to components
+            components.push({ type: 'DateList', config: datelist_config });
+
+            // add the next/prev Buttons to components
+            components.push({ type: 'Button', config: uijet.utils.extend(true, {
                 element     : $next,
                 id          : id + '_next',
                 container   : id
             }, datepiker_ops.next || {}) });
-            uijet.start({ type: 'Button', config: uijet.utils.extend(true, {
+            components.push({ type: 'Button', config: uijet.utils.extend(true, {
                 element     : $prev,
                 id          : id + '_prev',
                 container   : id
             }, datepiker_ops.prev || {}) });
 
-            return this;
+            return this._super.apply(this, arguments);
         }
     });
 
-    uijet.Widget('DatepickerList', {
+    /**
+     * DateList composite class.
+     *
+     * @class DateList
+     * @extends List
+     * @category Composite
+     */
+    uijet.Widget('DateList', {
         options : {
-            type_class  : ['uijet_list', 'uijet_datepicker_list']
+            type_class: ['uijet_list', 'uijet_datelist']
         },
-        init        : function () {
+        /**
+         * Subscribe to next/prev button clicks.
+         *
+         * #### Related options:
+         *
+         * * `max_date`: max possible date for selection. Usually set by the container Datepicker.
+         * * `min_date`: min possible date for selection. Usually set by the container Datepicker.
+         *
+         * @methodOf DateList
+         * @returns {DateList}
+         */
+        init    : function () {
             var now = new Date(),
-                id, min_date;
+                container_id = this.container,
+                min_date;
 
             this.month = now.getMonth();
             this.year = now.getFullYear();
 
+            this.holdSignal('post_init');
             // do init
             this._super.apply(this, arguments);
 
-            // a bit of a hacky way to get the datepicker's original id
-            id = this.id.replace('_dateslist', '');
-
             // subscribe to the next/prev clicks
-            this.subscribe(id + '_next.clicked', function () {
+            this.subscribe(container_id + '_next.clicked', function () {
                 var max_year, current_year, max_date, go_next = true;
                 if ( max_date = this.options.max_date ) {
                     max_year = max_date.getFullYear();
@@ -125,7 +171,7 @@
                     go_next = max_year > current_year || (max_year === current_year && max_date.getMonth() > this.current_date.getMonth());
                 }
                 go_next && this.nextMonth().wake(true);
-            }).subscribe(id + '_prev.clicked', function () {
+            }).subscribe(container_id + '_prev.clicked', function () {
                 var min_year, current_year, min_date, go_prev = true;
                 if ( min_date = this.options.min_date ) {
                     min_year = min_date.getFullYear();
@@ -148,35 +194,24 @@
                     this.options.min_date = min_date;
                 }
             }
+
+            this.releaseSignal('post_init');
+
             return this;
         },
-        datesOfMonth: function () {
-            var i = 1,
-                dates = [],
-                last_day = 31,
-                now = new Date(),
-                current_y = this.year,
-                current_m = this.month,
-                current = new Date(current_y, current_m, (this.current_date || now).getDate()),
-                first = new Date(current_y, current_m, 1),
-                last = new Date(current_y, current_m, last_day);
-
-            this.current_date = current;
-            this.now = now;
-            this.day_offset = first.getDay();
-
-            // find the last date of the month
-            while ( last.getMonth() > current_m )
-                last = new Date(current_y, current_m, --last_day);
-
-            // create the list of dates
-            while ( i <= last_day )
-                dates.push(i++);
-
-            return dates;
-        },
-        render      : function () {
-            var dates = this.datesOfMonth(),
+        /**
+         * Renders the date list.
+         *
+         * #### App events:
+         *
+         * * `<id>._update_current_date`: triggered after content is re-rendered so selection can be synced.
+         *
+         * @methodOf DateList
+         * @returns {DateList}
+         */
+        render  : function () {
+            var dates = this._datesOfMonth(),
+                width = this.$element[0].firstElementChild.offsetWidth,
                 html, $dates, min_date, max_date;
             
             // create the HTML
@@ -204,9 +239,8 @@
             }
 
             // position the dates under the right days of the week using the offset
-            this.$element[0]
-                .firstElementChild.style.marginLeft =
-                    this.day_offset * this.$element[0].firstElementChild.offsetWidth + 'px';
+            this.$element[0].firstElementChild.style.marginLeft = this.day_offset * width + 'px';
+
             // set current date title
             this.publish(
                 '_update_current_date',
@@ -216,29 +250,89 @@
                     // remove day of month
                     .replace(/\s[0-9]+,/, '')
             );
+
             return this._super.apply(this, arguments);
         },
-        nextMonth   : function () {
+        /**
+         * Changes state to next month.
+         *
+         * @methodOf DateList
+         * @returns {DateList}
+         */
+        nextMonth: function () {
             this.month += 1;
             if ( this.month === 12 ) {
                 this.nextYear().month = 0;
             }
             return this;
         },
-        prevMonth   : function () {
+        /**
+         * Changes state to previous month.
+         *
+         * @methodOf DateList
+         * @returns {DateList}
+         */
+        prevMonth: function () {
             this.month -= 1;
             if ( this.month === -1 ) {
                 this.prevYear().month = 11;
             }
             return this;
         },
-        nextYear    : function () {
+        /**
+         * Changes state to next year.
+         *
+         * @methodOf DateList
+         * @returns {DateList}
+         */
+        nextYear: function () {
             this.year += 1;
             return this;
         },
-        prevYear    : function () {
+        /**
+         * Changes state to previous month.
+         *
+         * @methodOf DateList
+         * @returns {DateList}
+         */
+        prevYear: function () {
             this.year -= 1;
             return this;
+        },
+        /**
+         * Generates a list of possible dates of current month
+         * as a list of integers, starting from 1 and ending
+         * at current month's last day.
+         *
+         * @methodOf DateList
+         * @returns {number[]} - array of integers representing the possible dates of current month.
+         */
+        _datesOfMonth: function () {
+            var i = 1,
+                dates = [],
+                last_day = 31,
+                now = new Date(),
+                current_y = this.year,
+                current_m = this.month,
+                current = new Date(current_y, current_m, (this.current_date || now).getDate()),
+                first = new Date(current_y, current_m, 1),
+                last = new Date(current_y, current_m, last_day);
+
+            this.current_date = current;
+            this.now = now;
+            this.day_offset = first.getDay();
+
+            // find the last date of the month
+            while ( last.getMonth() > current_m ) {
+                last = new Date(current_y, current_m, --last_day);
+            }
+
+            // create the list of dates
+            while ( i <= last_day ) {
+                dates.push(i++);
+            }
+
+            return dates;
         }
     }, {
         widgets : ['List']

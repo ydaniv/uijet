@@ -457,12 +457,12 @@ video:focus {
 }
 
 
-.uijet_datepicker_list {
+.uijet_datelist {
     text-align : left;
 }
 
 
-.uijet_datepicker_list > li {
+.uijet_datelist > li {
     display        : inline-block;
     width          : 1.7rem;
     height         : 1.7rem;
