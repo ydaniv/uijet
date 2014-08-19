@@ -59,7 +59,7 @@
                 container   : this.id,
                 darken: true,
                 cloak : true
-            }, this.options.underlay || {}) }, true);
+            }, this.options.underlay || {}) });
 
             if ( buttons ) {
                 buttons = buttons.map(function (config) {
