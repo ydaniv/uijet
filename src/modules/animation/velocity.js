@@ -31,8 +31,8 @@
          * #### Related options:
          * 
          * * `animation_type`: the animation configuration to perform. Defaults to `uijet.options.animation_type` which defaults to `{ opacity: [1, 0] }`.
-         * 
-         * @memberOf module:animation/velocity
+         *
+         * @method module:animation/velocity#transit
          * @param {Widget} widget - the widget instance to transition.
          * @param {string} [direction] - direction of transition - `'in'` or `'out'`. Defaults to `'in'`.
          * @param {function} [callback] - callback to invoke at end of transition.
@@ -77,12 +77,12 @@
         },
         /**
          * Animates an elements' properties.
-         * 
-         * @memberOf module:animation/velocity
+         *
+         * @method module:animation/velocity#animate
          * @param {HTMLElement[]} $el - wrapped HTMLElement to animate.
          * @param {string|Object} props - valid CSS text to set on the element's style, or a map of style properties.
          * @param {Object|number} [options] - config object or duration in milliseconds.
-         * @param {stirng|Array} [easing] - easing function name or array of values for generating an easing function.
+         * @param {string|Array} [easing] - easing function name or array of values for generating an easing function.
          */
         animate             : function ($el, props, options, easing) {
             $el.velocity(props, options, easing);
