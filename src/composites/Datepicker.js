@@ -8,7 +8,8 @@
         ], function (uijet) {
             return factory(uijet);
         });
-    } else {
+    }
+    else {
         factory(uijet);
     }
 }(function (uijet) {
@@ -26,8 +27,8 @@
      */
     uijet.Widget('Datepicker', {
         options      : {
-            type_class  : ['uijet_pane', 'uijet_datepicker'],
-            sync        : true
+            type_class: ['uijet_pane', 'uijet_datepicker'],
+            sync      : true
         },
         /**
          * Translate the `datelist`, `next` and `prev` option into a part of the `components` option.
@@ -60,35 +61,35 @@
                 next_ops = datepiker_ops.next || {},
                 components = datepiker_ops.components,
 
-                // create all the elements we need to construct our datepicker
-                // here's our heading which states current month and year
+            // create all the elements we need to construct our datepicker
+            // here's our heading which states current month and year
                 $current_date = uijet.utils.toElement(datepiker_ops.current_date) || $('<h1>', {
-                    'class' : 'uijet_datepicker_current_date'
+                    'class': 'uijet_datepicker_current_date'
                 }).appendTo($el),
 
-                // this is the prev month button
+            // this is the prev month button
                 $prev = prev_ops.element || $('<span>', {
-                    id      : id + '_prev',
-                    'class' : 'uijet_datepicker_arrow uijet_datepicker_prev'
+                    id     : id + '_prev',
+                    'class': 'uijet_datepicker_arrow uijet_datepicker_prev'
                 }).prependTo($el),
 
-                // and this is the next month button
+            // and this is the next month button
                 $next = next_ops.element || $('<span>', {
-                    id      : id + '_next',
-                    'class' : 'uijet_datepicker_arrow uijet_datepicker_next'
+                    id     : id + '_next',
+                    'class': 'uijet_datepicker_arrow uijet_datepicker_next'
                 }).appendTo($el),
 
-                // and here is our list of dates
+            // and here is our list of dates
                 $datelist = datelist_ops.element || $('<ul>', {
                     id: id + '_datelist'
                 }).appendTo($el),
 
-                // configure our dates list widget
+            // configure our dates list widget
                 datelist_config = uijet.utils.extend(true, {
-                    element: $datelist,
-                    container   : id,
-                    signals     : {
-                        pre_select  : function ($selected, e) {
+                    element  : $datelist,
+                    container: id,
+                    signals  : {
+                        pre_select: function ($selected, e) {
                             // if this date is disabled bail out
                             if ( $selected.hasClass('disabled') ) {
                                 e.stopPropagation();
@@ -100,9 +101,8 @@
                             uijet.publish(id + '.picked', this.current_date);
                         }
                     },
-                    app_events  : {},
-                    min_date    : datepiker_ops.min_date,
-                    max_date    : datepiker_ops.max_date
+                    min_date : datepiker_ops.min_date,
+                    max_date : datepiker_ops.max_date
                 }, datelist_ops);
 
             this.subscribe(id + '_datelist._update_current_date', function (text) {
@@ -114,14 +114,14 @@
 
             // add the next/prev Buttons to components
             components.push({ type: 'Button', config: uijet.utils.extend(true, {
-                element     : $next,
-                id          : id + '_next',
-                container   : id
+                element  : $next,
+                id       : id + '_next',
+                container: id
             }, datepiker_ops.next || {}) });
             components.push({ type: 'Button', config: uijet.utils.extend(true, {
-                element     : $prev,
-                id          : id + '_prev',
-                container   : id
+                element  : $prev,
+                id       : id + '_prev',
+                container: id
             }, datepiker_ops.prev || {}) });
 
             return this._super.apply(this, arguments);
@@ -136,7 +136,7 @@
      * @category Composite
      */
     uijet.Widget('DateList', {
-        options : {
+        options      : {
             type_class: ['uijet_list', 'uijet_datelist']
         },
         /**
@@ -150,7 +150,7 @@
          * @methodOf DateList
          * @returns {DateList}
          */
-        init    : function () {
+        init         : function () {
             var now = new Date(),
                 container_id = this.container,
                 min_date;
@@ -168,7 +168,8 @@
                 if ( max_date = this.options.max_date ) {
                     max_year = max_date.getFullYear();
                     current_year = this.current_date.getFullYear();
-                    go_next = max_year > current_year || (max_year === current_year && max_date.getMonth() > this.current_date.getMonth());
+                    go_next = max_year > current_year ||
+                              (max_year === current_year && max_date.getMonth() > this.current_date.getMonth());
                 }
                 go_next && this.nextMonth().wake(true);
             }).subscribe(container_id + '_prev.clicked', function () {
@@ -176,20 +177,21 @@
                 if ( min_date = this.options.min_date ) {
                     min_year = min_date.getFullYear();
                     current_year = this.current_date.getFullYear();
-                    go_prev = min_year < current_year || (min_year === current_year && min_date.getMonth() < this.current_date.getMonth());
+                    go_prev = min_year < current_year ||
+                              (min_year === current_year && min_date.getMonth() < this.current_date.getMonth());
                 }
                 go_prev && this.prevMonth().wake(true);
             });
 
             // make sure min/max dates are instances of `Date` object
             if ( min_date = this.options.min_date ) {
-                if ( ! isDate(min_date) ) {
+                if ( !isDate(min_date) ) {
                     min_date = new Date(min_date);
                     this.options.min_date = min_date;
                 }
             }
             if ( min_date = this.options.min_date ) {
-                if ( ! isDate(min_date) ) {
+                if ( !isDate(min_date) ) {
                     min_date = new Date(min_date);
                     this.options.min_date = min_date;
                 }
@@ -209,11 +211,11 @@
          * @methodOf DateList
          * @returns {DateList}
          */
-        render  : function () {
+        render       : function () {
             var dates = this._datesOfMonth(),
                 width = this.$element[0].firstElementChild.offsetWidth,
                 html, $dates, min_date, max_date;
-            
+
             // create the HTML
             html = '<li>' + dates.join('</li><li>') + '</li>';
 
@@ -259,7 +261,7 @@
          * @methodOf DateList
          * @returns {DateList}
          */
-        nextMonth: function () {
+        nextMonth    : function () {
             this.month += 1;
             if ( this.month === 12 ) {
                 this.nextYear().month = 0;
@@ -272,7 +274,7 @@
          * @methodOf DateList
          * @returns {DateList}
          */
-        prevMonth: function () {
+        prevMonth    : function () {
             this.month -= 1;
             if ( this.month === -1 ) {
                 this.prevYear().month = 11;
@@ -285,7 +287,7 @@
          * @methodOf DateList
          * @returns {DateList}
          */
-        nextYear: function () {
+        nextYear     : function () {
             this.year += 1;
             return this;
         },
@@ -295,7 +297,7 @@
          * @methodOf DateList
          * @returns {DateList}
          */
-        prevYear: function () {
+        prevYear     : function () {
             this.year -= 1;
             return this;
         },
@@ -335,6 +337,6 @@
             return dates;
         }
     }, {
-        widgets : ['List']
+        widgets: ['List']
     });
 }));
