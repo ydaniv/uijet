@@ -42,7 +42,7 @@
                     container   : id,
                     dont_wake   : true,
                     mixins      : ['Floated', 'Toggled'],
-                    dateslist   : {
+                    datelist: {
                         signals : {
                             post_select : function () {
                                 this.publish('sleep_picker');
