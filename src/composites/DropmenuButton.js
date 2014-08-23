@@ -84,19 +84,7 @@
                     }
                 }, options.menu || {}),
                 drop_menu_events = drop_menu_config.app_events,
-                clicked_handler = function (data) {
-                    var target, top;
-                    if ( ! data || data === true ) {
-                        this.opened = typeof data == 'boolean' ? data : ! this.opened;
-                    }
-                    else {
-                        target = data.event.target;
-                        top = (this.$wrapper || this.$element)[0];
-                        // always close if clicked on the menu, otherwise toggle
-                        this.opened = !(target === top || uijet.$.contains(top, target)) && ! this.opened;
-                    }
-                    this.opened ? this.wake(data.context) : this.sleep();
-                },
+                clicked_handler = 'toggleMenu+',
 
                 add_arrow = !!options.arrow,
                 drop_menu, drop_arrow;
@@ -121,8 +109,10 @@
             }
 
             // ensure all components react to click
-            drop_menu_events[id + '.clicked'] = clicked_handler;
-            if ( drop_arrow_id ) {
+            if ( !drop_menu_events[id + '.clicked'] ) {
+                drop_menu_events[id + '.clicked'] = clicked_handler;
+            }
+            if ( drop_arrow_id && !drop_menu_events[drop_arrow_id + '.clicked'] ) {
                 drop_menu_events[drop_arrow_id + '.clicked'] = clicked_handler;
             }
 
@@ -151,6 +141,19 @@
             components.unshift({ type: 'List', config: drop_menu_config });
 
             return this._super.apply(this, arguments);
+        },
+        toggleMenu      : function (data) {
+            var target, top;
+            if ( !data || data === true ) {
+                this.opened = typeof data == 'boolean' ? data : !this.opened;
+            }
+            else {
+                target = data.event.target;
+                top = (this.$wrapper || this.$element)[0];
+                // always close if clicked on the menu, otherwise toggle
+                this.opened = !(target === top || uijet.$.contains(top, target)) && !this.opened;
+            }
+            this.opened ? this.wake(data.context) : this.sleep();
         }
     }, {
         widgets : ['Button']
