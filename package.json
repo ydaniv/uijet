@@ -1,0 +1,35 @@
+{
+  "name": "uijet",
+  "description": "Killer UI for web-apps.",
+    "version": "0.0.59",
+  "main": "src/uijet.js",
+  "scripts": {
+    "test": "spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://ydaniv@github.com/ydaniv/uijet.git"
+  },
+  "keywords": [
+    "ui"
+  ],
+  "author": "Yehonatan Daniv",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/ydaniv/uijet/issues"
+  },
+  "homepage": "https://github.com/ydaniv/uijet",
+  "amd": {},
+  "volo": {},
+  "devDependencies": {
+    "grunt": "~0.4.4",
+    "grunt-jsdoc": "~0.5.4",
+    "jaguarjs-jsdoc": "git://github.com/ydaniv/jaguarjs-jsdoc",
+    "jsdoc": "~3.3.0-alpha4",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-connect": "~0.7.1",
+    "docker": "~0.2.10",
+    "grunt-docker": "0.0.8",
+    "grunt-beautiful-docs": "~0.1.0"
+  }
+}

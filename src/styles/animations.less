@@ -1,0 +1,91 @@
+.promoted {
+    -webkit-transform: translateZ(0);
+}
+
+.transitioned {
+    -webkit-transition-duration: .5s;
+       -moz-transition-duration: .5s;
+         -o-transition-duration: .5s;
+            transition-duration: .5s;
+    -webkit-transition-timing-function: ease;
+       -moz-transition-timing-function: ease;
+         -o-transition-timing-function: ease;
+            transition-timing-function: ease;
+    -webkit-transition-property: opacity, -webkit-transform, height;
+       -moz-transition-property: opacity, -moz-transform, height;
+         -o-transition-property: opacity, -o-transform, height;
+            transition-property: opacity, -ms-transform, transform, height;
+}
+
+/*TODO: might need to replace the -webkit-transform targeting for 3d hardware acceleration with a media query */
+.appear_out {
+    position: absolute;
+    opacity: 0;
+    -webkit-transform: scale3d(.4, .4, .4);
+    -moz-transform: scale(.4);
+    -ms-transform: scale(.4);
+    -o-transform: scale(.4);
+    transform: scale(.4);
+}
+.appear_in {
+    opacity: 1;
+    -webkit-transform: scale3d(1, 1, 1);
+    -moz-transform: scale(1);
+    -ms-transform: scale(1);
+    -o-transform: scale(1);
+    transform: scale(1);
+}
+
+.slide_out {
+    position: absolute;
+    right: -100%;
+}
+.slide_in {
+    -webkit-transform: translate3d(-100%,0,0);
+    -moz-transform: translate(-100%,0);
+    -ms-transform: translate(-100%,0);
+    -o-transform: translate(-100%,0);
+    transform: translate(-100%,0);
+}
+
+.down_slide_out {
+    position: absolute;
+    top: -100%;
+}
+.down_slide_in {
+    -webkit-transform: translate3d(0,100%,0);
+    -moz-transform: translate(0,100%);
+    -ms-transform: translate(0,100%);
+    -o-transform: translate(0,100%);
+    transform: translate(0,100%);
+}
+
+.fade_out {
+    position: absolute;
+    opacity: 0;
+}
+.fade_in {
+    opacity: 1;
+}
+
+.fold_out {
+    position: relative;
+    height: 0;
+    overflow-y: hidden;
+}
+
+.reverse {
+
+    &.slide_out {
+        right : auto;
+        left  : -100%;
+    }
+
+    &.slide_in {
+        -webkit-transform: translate3d(100%,0,0);
+        -moz-transform: translate(100%,0);
+        -ms-transform: translate(100%,0);
+        -o-transform: translate(100%,0);
+        transform: translate(100%,0);
+    }
+}

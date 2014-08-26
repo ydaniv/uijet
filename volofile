@@ -1,0 +1,40 @@
+'use strict';
+
+module.exports = {
+    onAdd: function (d, v) {
+        /* 
+         * Do a simple move of all contents of src to root and remove src.
+         * Remove boilerplates
+         * Remove all other top level files
+         */
+
+        if ( v.exists('adapters') ) {
+            v.rm('adapters');
+            v.rm('composites');
+            v.rm('mixins');
+            v.rm('modules');
+            v.rm('widgets');
+            v.rm('styles');
+            v.rm('uijet.js');
+            v.rm('uijet.css');
+            v.rm('uijet.less');
+        }
+
+        v.mv('src/adapters', 'adapters');
+        v.mv('src/composites', 'composites');
+        v.mv('src/mixins', 'mixins');
+        v.mv('src/modules', 'modules');
+        v.mv('src/widgets', 'widgets');
+        v.mv('src/styles', 'styles');
+        v.mv('src/uijet.js', 'uijet.js');
+        v.mv('src/uijet.css', 'uijet.css');
+        v.mv('src/uijet.less', 'uijet.less');
+
+        v.rm('src');
+        v.rm('.gitignore');
+        v.rm('bower.json');
+        v.rm('volofile');
+
+        d.resolve();
+    }
+};
