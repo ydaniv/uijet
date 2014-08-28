@@ -22,12 +22,13 @@
 
   <!-- Initializer -->
   <script>
+    var page = window.location.search;
     Flatdoc.run({
-      fetcher: Flatdoc.github('ydaniv/uijet')
+      fetcher: Flatdoc.file('/docs-src/guides/' + page + '.md')
     });
   </script>
 </head>
-<body class="big-h3 no-literate" role="flatdoc">
+<body class="big-h3" role="flatdoc">
 
   <div class="header">
     <div class="left">
