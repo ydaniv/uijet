@@ -22,7 +22,7 @@
 
   <!-- Initializer -->
   <script>
-    var page = window.location.search;
+    var page = window.location.search.substring(1);
     Flatdoc.run({
       fetcher: Flatdoc.file('/uijet/docs-src/guides/' + page + '.md')
     });
