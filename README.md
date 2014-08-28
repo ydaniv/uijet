@@ -151,24 +151,6 @@ It's recommended to complement it with [normalize.css](http://necolas.github.io/
 Currently there are no bundled themes in uijet.
 Hopefully, in the future there will be.
 
-## Documentation
-
-You can generate documentation with [Grunt](http://gruntjs.com/):
-
-1. Install development dependencies:
-
-```bash
-npm install
-```
-
-2. Generate documentation and start a static server to view it with:
-
-```bash
-grunt rtfm
-```
-
-Then open `localhost:8000` in your browser.
-
 ## Quick start
 
 Grab the a boilerplate from `boilerplates` and open `index.html` in your browser.
