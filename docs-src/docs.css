@@ -1,0 +1,28 @@
+.header li.nested li {
+    float: none;
+    border: none;
+}
+
+.header li span {
+    padding: 0 15px;
+    font-size: 0.88em;
+    color: #9090aa;
+    display: block;
+    cursor: pointer;
+}
+
+.header li.nested ul {
+    display: none;
+    position: absolute;
+    z-index: 1;
+    margin: 0;
+    background-color: #f3f6fb;
+}
+
+.header li.nested:hover ul {
+    display: block;
+}
+
+.header li.nested a {
+    padding: 5px 15px;
+}
