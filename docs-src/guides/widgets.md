@@ -14,7 +14,6 @@ These are:
 * List
 * Overlay
 * Form
-* View
 
 A view (as in the V in MVC) instance in an application is an instance of a Widget.
 
