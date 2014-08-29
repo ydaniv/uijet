@@ -1,10 +1,11 @@
 # Authoring an Application with uijet
 
 Let's review the basic flow of authoring an application using uijet.
+
 In this guide we're going to use AMD module loader for the example bellow,
 also assuming there's a definition of all the paths to the dependencies
 we will use bellow, say, in another file named `main.js` (you can see such
-example i the app boilerplates in the `boilerplates` folder).
+example in the app boilerplates in the `boilerplates` folder).
 
 Every application that uses uijet needs to initialize uijet using it's `init()` method.
 
@@ -29,7 +30,7 @@ The code above will fail since we didn't add the minimal required modules for ui
 You'll have to also load the required modules, of your choice, for pubsub, Promises
 and DOM manipulation.
 
-Let's say you choose PubsubJS, When.js and Zepto:
+Let's say we choose PubsubJS, When.js and Zepto:
 
 ```javascript
 define([
@@ -44,9 +45,12 @@ define([
 });
 ```
 
+Of course, we are assuming above that we have the PubsubJS, When.js and Zepto packages
+installed in our project.
 Now we have the all the basic requirements for a uijet based app.
 
-You're now ready to declare your views and application logic.
+We're now ready to declare our views and application logic.
+Lets add a short example:
 
 ```javascript
 define([
@@ -69,7 +73,7 @@ define([
     }, {
         type: 'List',
         config: {
-            element: '#todos_list
+            element: '#todos_list'
         }
     }]);
 
@@ -79,7 +83,9 @@ define([
 ```
 
 In the example above you'll have 2 components created.
-These for a scaffold for a simple "Todo" app.
+These form a scaffold for a simple "Todo" app.
 
-You can follow a fully detailed tutorial on how we created
+## Coming soon:
+
+A fully detailed tutorial on how we created
 a Todo app for the [TodoMVC](http://todomvc.com/) project in the tutorials section.
