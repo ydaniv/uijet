@@ -63,7 +63,7 @@ define([
     uijet.declare([{
         type: 'Pane',
         config: {
-            element: '#new_todo',
+            element: '#more_todo',
             dom_events: {
                 keypress: function (e) {
                     console.log(e.target.value);
