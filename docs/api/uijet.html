@@ -97,23 +97,36 @@
 
         <span class="subtitle">Methods</span>
 
-        <li class="private static" data-name="uijet._define"><a href="uijet.html#_define">_define</a></li>
+        <li class="private static" data-name="uijet.__define"><a href="uijet.html#__define">__define</a></li>
 
-        <li class="private static" data-name="uijet._extractDependencies"><a href="uijet.html#_extractDependencies">_extractDependencies</a>
+        <li class="private static" data-name="uijet.__extractDependencies"><a href="uijet.html#__extractDependencies">__extractDependencies</a>
         </li>
 
-        <li class="private static" data-name="uijet._generate"><a href="uijet.html#_generate">_generate</a></li>
+        <li class="private static" data-name="uijet.__generate"><a href="uijet.html#__generate">__generate</a></li>
 
-        <li class="private static" data-name="uijet._start"><a href="uijet.html#_start">_start</a></li>
+        <li class="private static" data-name="uijet.__start"><a href="uijet.html#__start">__start</a></li>
+
+        <li class="private static" data-name="uijet._buildContext"><a href="uijet.html#_buildContext">_buildContext</a>
+        </li>
+
+        <li class="private static" data-name="uijet._destroyContained"><a href="uijet.html#_destroyContained">_destroyContained</a>
+        </li>
+
+        <li class="private static" data-name="uijet._position"><a href="uijet.html#_position">_position</a></li>
+
+        <li class="private static" data-name="uijet._register"><a href="uijet.html#_register">_register</a></li>
+
+        <li class="private static" data-name="uijet._sleepContained"><a href="uijet.html#_sleepContained">_sleepContained</a>
+        </li>
+
+        <li class="private static" data-name="uijet._unregister"><a href="uijet.html#_unregister">_unregister</a></li>
+
+        <li class="private static" data-name="uijet._wakeContained"><a
+                href="uijet.html#_wakeContained">_wakeContained</a></li>
 
         <li class="static" data-name="uijet.Adapter"><a href="uijet.html#Adapter">Adapter</a></li>
 
-        <li class="static" data-name="uijet.buildContext"><a href="uijet.html#buildContext">buildContext</a></li>
-
         <li class="static" data-name="uijet.declare"><a href="uijet.html#declare">declare</a></li>
-
-        <li class="static" data-name="uijet.destroyContained"><a href="uijet.html#destroyContained">destroyContained</a>
-        </li>
 
         <li class="static" data-name="uijet.Factory"><a href="uijet.html#Factory">Factory</a></li>
 
@@ -123,23 +136,13 @@
 
         <li class="static" data-name="uijet.Mixin"><a href="uijet.html#Mixin">Mixin</a></li>
 
-        <li class="static" data-name="uijet.position"><a href="uijet.html#position">position</a></li>
-
-        <li class="static" data-name="uijet.register"><a href="uijet.html#register">register</a></li>
-
         <li class="static" data-name="uijet.Resource"><a href="uijet.html#Resource">Resource</a></li>
-
-        <li class="static" data-name="uijet.sleepContained"><a href="uijet.html#sleepContained">sleepContained</a></li>
 
         <li class="static" data-name="uijet.start"><a href="uijet.html#start">start</a></li>
 
         <li class="static" data-name="uijet.startup"><a href="uijet.html#startup">startup</a></li>
 
-        <li class="static" data-name="uijet.unregister"><a href="uijet.html#unregister">unregister</a></li>
-
         <li class="static" data-name="uijet.use"><a href="uijet.html#use">use</a></li>
-
-        <li class="static" data-name="uijet.wakeContained"><a href="uijet.html#wakeContained">wakeContained</a></li>
 
         <li class="static" data-name="uijet.Widget"><a href="uijet.html#Widget">Widget</a></li>
 
@@ -2080,9 +2083,9 @@
 
 <dt class="private static">
 <div class="nameContainer">
-    <h4 class="name" id="_define">
+    <h4 class="name" id="__define">
 
-        <span class="type-signature ">private,static</span>uijet._define<span class="signature">(_name, _props, <span
+        <span class="type-signature ">private,static</span>uijet.__define<span class="signature">(_name, _props, <span
             class="optional">_deps</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
             class="type-signature returnType">{<a href="uijet.html">uijet</a>}</span>
     </h4>
@@ -2202,16 +2205,16 @@
 
 <dt class="private static">
 <div class="nameContainer">
-    <h4 class="name" id="_extractDependencies">
+    <h4 class="name" id="__extractDependencies">
 
-        <span class="type-signature ">private,static</span>uijet._extractDependencies<span class="signature">(declarations)</span><span
+        <span class="type-signature ">private,static</span>uijet.__extractDependencies<span class="signature">(declarations)</span><span
             class="glyphicon glyphicon-circle-arrow-right"></span><span
             class="type-signature returnType">{Object}</span>
     </h4>
 
 
     <div class="tag-source">
-        uijet.js, line 1662
+        uijet.js, line 1664
     </div>
 
 </div>
@@ -2279,9 +2282,9 @@
 
 <dt class="private static">
 <div class="nameContainer">
-    <h4 class="name" id="_generate">
+    <h4 class="name" id="__generate">
 
-        <span class="type-signature ">private,static</span>uijet._generate<span class="signature">(_props, <span
+        <span class="type-signature ">private,static</span>uijet.__generate<span class="signature">(_props, <span
             class="optional">_mixins</span>, <span class="optional">_widgets</span>)</span><span
             class="glyphicon glyphicon-circle-arrow-right"></span><span
             class="type-signature returnType">{function}</span>
@@ -2443,9 +2446,9 @@
 
 <dt class="private static">
 <div class="nameContainer">
-    <h4 class="name" id="_start">
+    <h4 class="name" id="__start">
 
-        <span class="type-signature ">private,static</span>uijet._start<span class="signature">(widget, <span
+        <span class="type-signature ">private,static</span>uijet.__start<span class="signature">(widget, <span
             class="optional">skip_import</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
             class="type-signature returnType">{Promise|Object}</span>
     </h4>
@@ -2541,6 +2544,640 @@
 
     <h5>Returns:</h5>
     - a promise object if not skipping import, otherwise <code>this</code>.
+    <br />
+
+
+</dd>
+
+
+<dt class="private static">
+<div class="nameContainer">
+    <h4 class="name" id="_buildContext">
+
+        <span class="type-signature ">private,static</span>uijet._buildContext<span class="signature">(route, <span
+            class="optional">args_array</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
+            class="type-signature returnType">{Object}</span>
+    </h4>
+
+
+    <div class="tag-source">
+        uijet.js, line 1929
+    </div>
+
+</div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Builds a context object from the returned arguments of a route.
+           Named parameters in <code>route</code> are indexed in the context object by name.
+           Unnamed parameters are indexed by position in <code>args_array</code>.</p>
+
+        <p>Also supports splat params using the prefix <code>'*'</code>.</p>
+    </div>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>route</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">string</span>
+
+
+            </td>
+
+
+            <td class="description last">
+
+
+                <p>The route string to analyze.</p></td>
+        </tr>
+
+
+        <tr>
+
+            <td class="name"><code>args_array</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">*</span>
+
+
+            </td>
+
+
+            <td class="description last">
+
+
+                <span class="optional">optional</span>
+
+
+                <p>The list of arguments sent to a route's callback.</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+    <dl class="details">
+
+
+    </dl>
+
+
+    <h5>Returns:</h5>
+    object generated for the route.
+    <br />
+
+
+</dd>
+
+
+<dt class="private static">
+<div class="nameContainer">
+    <h4 class="name" id="_destroyContained">
+
+        <span class="type-signature ">private,static</span>uijet._destroyContained<span
+            class="signature">(id)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
+            class="type-signature returnType">{<a href="uijet.html">uijet</a>}</span>
+    </h4>
+
+
+    <div class="tag-source">
+        uijet.js, line 1806
+    </div>
+
+</div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Destroys all the contained child widgets of widget with matching <code>id</code>.</p>
+    </div>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>id</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">string</span>
+
+
+            </td>
+
+
+            <td class="description last">
+
+                <p>id of the widget we want its children to call <code>destroy()</code>.</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+    <dl class="details">
+
+
+    </dl>
+
+
+</dd>
+
+
+<dt class="private static">
+<div class="nameContainer">
+    <h4 class="name" id="_position">
+
+        <span class="type-signature ">private,static</span>uijet._position<span class="signature">(widget, <span
+            class="optional">exclude</span>)</span>
+    </h4>
+
+
+    <div class="tag-source">
+        uijet.js, line 1835
+    </div>
+
+</div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Positions a widget.
+           Takes into account the position and size set in sibling widgets' options,
+           to create a fluid UI.</p>
+    </div>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>widget</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">Object</span>
+
+
+            </td>
+
+
+            <td class="description last">
+
+
+                <p>the widget instance to position.</p></td>
+        </tr>
+
+
+        <tr>
+
+            <td class="name"><code>exclude</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">string[]</span>
+
+
+            </td>
+
+
+            <td class="description last">
+
+
+                <span class="optional">optional</span>
+
+
+                <p>list of style property names to exclude from setting.</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+    <dl class="details">
+
+
+    </dl>
+
+
+</dd>
+
+
+<dt class="private static">
+<div class="nameContainer">
+    <h4 class="name" id="_register">
+
+        <span class="type-signature ">private,static</span>uijet._register<span class="signature">(widget)</span><span
+            class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a
+            href="uijet.html">uijet</a>}</span>
+    </h4>
+
+
+    <div class="tag-source">
+        uijet.js, line 1461
+    </div>
+
+</div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Registers a widget into the uijet sandbox.
+           uijet uses the <code>widget.id</code> to register the widget.
+           If this instance has a configured <code>container</code> in its <code>options</code> it's used as
+           the identifier of its container widget instance.
+           If not it climbs up the DOM tree looking for a <code>uijet_widget</code> class. The first
+           element's id that has this class is used as the container.
+           If none was found and it reached the <code>body</code> element then this instance will be
+           registered as a top level widget. This, for example, means that, unless configured
+           not to, once uijet starts this widget will be awaken automatically.</p>
+    </div>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>widget</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">Object</span>
+
+
+            </td>
+
+
+            <td class="description last">
+
+                <p>a widget's instance to register.</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+    <dl class="details">
+
+
+    </dl>
+
+
+</dd>
+
+
+<dt class="private static">
+<div class="nameContainer">
+    <h4 class="name" id="_sleepContained">
+
+        <span class="type-signature ">private,static</span>uijet._sleepContained<span class="signature">(id)</span><span
+            class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a
+            href="uijet.html">uijet</a>}</span>
+    </h4>
+
+
+    <div class="tag-source">
+        uijet.js, line 1790
+    </div>
+
+</div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Puts to sleep all of the contained child widgets of widget with matching <code>id</code>.</p>
+    </div>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>id</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">string</span>
+
+
+            </td>
+
+
+            <td class="description last">
+
+                <p>id of the widget we want its children to call <code>sleep()</code>.</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+    <dl class="details">
+
+
+    </dl>
+
+
+</dd>
+
+
+<dt class="private static">
+<div class="nameContainer">
+    <h4 class="name" id="_unregister">
+
+        <span class="type-signature ">private,static</span>uijet._unregister<span class="signature">(widget)</span><span
+            class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a
+            href="uijet.html">uijet</a>}</span>
+    </h4>
+
+
+    <div class="tag-source">
+        uijet.js, line 1568
+    </div>
+
+</div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Removes a widget from the uijet sandbox registry.
+           This is usually triggered by a widget when its {@see BaseWidget.destroy()} method is called.</p>
+    </div>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>widget</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">Object</span>
+
+
+            </td>
+
+
+            <td class="description last">
+
+                <p>a widget's instance to unregister.</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+    <dl class="details">
+
+
+    </dl>
+
+
+</dd>
+
+
+<dt class="private static">
+<div class="nameContainer">
+    <h4 class="name" id="_wakeContained">
+
+        <span class="type-signature ">private,static</span>uijet._wakeContained<span class="signature">(id, <span
+            class="optional">context</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
+            class="type-signature returnType">{Promise[]}</span>
+    </h4>
+
+
+    <div class="tag-source">
+        uijet.js, line 1769
+    </div>
+
+</div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Wakes all of the contained child widgets of widget with matching <code>id</code>.
+           If <code>context</code> is supplied it is passed to each child widget's <code>wake()</code>.
+           Returns an array of promises, each returned from a child's <code>wake()</code>.</p>
+    </div>
+
+
+    <table class="params">
+        <thead>
+        <tr>
+
+            <th>Name</th>
+
+
+            <th>Type</th>
+
+
+            <th class="last">Description</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+
+        <tr>
+
+            <td class="name"><code>id</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">string</span>
+
+
+            </td>
+
+
+            <td class="description last">
+
+
+                <p>id of the widget we want its children to wake.</p></td>
+        </tr>
+
+
+        <tr>
+
+            <td class="name"><code>context</code></td>
+
+
+            <td class="type">
+
+
+                <span class="param-type">Object</span>
+
+
+            </td>
+
+
+            <td class="description last">
+
+
+                <span class="optional">optional</span>
+
+
+                <p>context provided to the <code>wake()</code> call of this widget.</p></td>
+        </tr>
+
+
+        </tbody>
+    </table>
+
+
+    <dl class="details">
+
+
+    </dl>
+
+
+    <h5>Returns:</h5>
+    returned from children's <code>wake()</code> call.</li>
+    </ul>
     <br />
 
 
@@ -2661,116 +3298,6 @@
 
 <dt class="static">
 <div class="nameContainer">
-    <h4 class="name" id="buildContext">
-
-        <span class="type-signature static">static</span>uijet.buildContext<span class="signature">(route, <span
-            class="optional">args_array</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
-            class="type-signature returnType">{Object}</span>
-    </h4>
-
-
-    <div class="tag-source">
-        uijet.js, line 1922
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Builds a context object from the returned arguments of a route.
-           Named parameters in <code>route</code> are indexed in the context object by name.
-           Unnamed parameters are indexed by position in <code>args_array</code>.</p>
-
-        <p>Also supports splat params using the prefix <code>'*'</code>.</p>
-    </div>
-
-
-    <table class="params">
-        <thead>
-        <tr>
-
-            <th>Name</th>
-
-
-            <th>Type</th>
-
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-
-        <tr>
-
-            <td class="name"><code>route</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">string</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-
-                <p>The route string to analyze.</p></td>
-        </tr>
-
-
-        <tr>
-
-            <td class="name"><code>args_array</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">*</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-
-                <span class="optional">optional</span>
-
-
-                <p>The list of arguments sent to a route's callback.</p></td>
-        </tr>
-
-
-        </tbody>
-    </table>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-    <h5>Returns:</h5>
-    object generated for the route.
-    <br />
-
-
-</dd>
-
-
-<dt class="static">
-<div class="nameContainer">
     <h4 class="name" id="declare">
 
         <span class="type-signature static">static</span>uijet.declare<span class="signature">(declarations)</span><span
@@ -2780,7 +3307,7 @@
 
 
     <div class="tag-source">
-        uijet.js, line 1604
+        uijet.js, line 1606
     </div>
 
 </div>
@@ -2798,7 +3325,7 @@
            in the widgets tree (usually maps one-to-one to the DOM tree), so that
            a widget is always declared before its contained widgets are declared, and so on.</p>
 
-        <p>In some cases it's a must to declare widgets in a specific order ( see {@see uijet.position()} ).</p>
+        <p>In some cases it's a must to declare widgets in a specific order ( see {@see uijet._position()} ).</p>
 
         <p>A declaration object usually contains <code>type</code> and <code>config</code> properties.
            It may also contain a <code>factory</code> property, instead of the <code>type</code> one, if
@@ -2853,82 +3380,6 @@
             <td class="description last">
 
                 <p>a single declaration or a list of declaration objects.</p></td>
-        </tr>
-
-
-        </tbody>
-    </table>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-</dd>
-
-
-<dt class="static">
-<div class="nameContainer">
-    <h4 class="name" id="destroyContained">
-
-        <span class="type-signature static">static</span>uijet.destroyContained<span class="signature">(id)</span><span
-            class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a
-            href="uijet.html">uijet</a>}</span>
-    </h4>
-
-
-    <div class="tag-source">
-        uijet.js, line 1801
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Destroys all the contained child widgets of widget with matching <code>id</code>.</p>
-    </div>
-
-
-    <table class="params">
-        <thead>
-        <tr>
-
-            <th>Name</th>
-
-
-            <th>Type</th>
-
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-
-        <tr>
-
-            <td class="name"><code>id</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">string</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-                <p>id of the widget we want its children to call <code>destroy()</code>.</p></td>
         </tr>
 
 
@@ -3056,7 +3507,7 @@
 
 
     <div class="tag-source">
-        uijet.js, line 1705
+        uijet.js, line 1707
     </div>
 
 </div>
@@ -3389,192 +3840,6 @@
 
 <dt class="static">
 <div class="nameContainer">
-    <h4 class="name" id="position">
-
-        <span class="type-signature static">static</span>uijet.position<span class="signature">(widget, <span
-            class="optional">exclude</span>)</span>
-    </h4>
-
-
-    <div class="tag-source">
-        uijet.js, line 1829
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Positions a widget.
-           Takes into account the position and size set in sibling widgets' options,
-           to create a fluid UI.</p>
-    </div>
-
-
-    <table class="params">
-        <thead>
-        <tr>
-
-            <th>Name</th>
-
-
-            <th>Type</th>
-
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-
-        <tr>
-
-            <td class="name"><code>widget</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">Object</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-
-                <p>the widget instance to position.</p></td>
-        </tr>
-
-
-        <tr>
-
-            <td class="name"><code>exclude</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">string[]</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-
-                <span class="optional">optional</span>
-
-
-                <p>list of style property names to exclude from setting.</p></td>
-        </tr>
-
-
-        </tbody>
-    </table>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-</dd>
-
-
-<dt class="static">
-<div class="nameContainer">
-    <h4 class="name" id="register">
-
-        <span class="type-signature static">static</span>uijet.register<span class="signature">(widget)</span><span
-            class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a
-            href="uijet.html">uijet</a>}</span>
-    </h4>
-
-
-    <div class="tag-source">
-        uijet.js, line 1460
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Registers a widget into the uijet sandbox.
-           uijet uses the <code>widget.id</code> to register the widget.
-           If this instance has a configured <code>container</code> in its <code>options</code> it's used as
-           the identifier of its container widget instance.
-           If not it climbs up the DOM tree looking for a <code>uijet_widget</code> class. The first
-           element's id that has this class is used as the container.
-           If none was found and it reached the <code>body</code> element then this instance will be
-           registered as a top level widget. This, for example, means that, unless configured
-           not to, once uijet starts this widget will be awaken automatically.</p>
-    </div>
-
-
-    <table class="params">
-        <thead>
-        <tr>
-
-            <th>Name</th>
-
-
-            <th>Type</th>
-
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-
-        <tr>
-
-            <td class="name"><code>widget</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">Object</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-                <p>a widget's instance to register.</p></td>
-        </tr>
-
-
-        </tbody>
-    </table>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-</dd>
-
-
-<dt class="static">
-<div class="nameContainer">
     <h4 class="name" id="Resource">
 
         <span class="type-signature static">static</span>uijet.Resource<span class="signature">(name, <span
@@ -3716,82 +3981,6 @@
 
 <dt class="static">
 <div class="nameContainer">
-    <h4 class="name" id="sleepContained">
-
-        <span class="type-signature static">static</span>uijet.sleepContained<span class="signature">(id)</span><span
-            class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a
-            href="uijet.html">uijet</a>}</span>
-    </h4>
-
-
-    <div class="tag-source">
-        uijet.js, line 1786
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Puts to sleep all of the contained child widgets of widget with matching <code>id</code>.</p>
-    </div>
-
-
-    <table class="params">
-        <thead>
-        <tr>
-
-            <th>Name</th>
-
-
-            <th>Type</th>
-
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-
-        <tr>
-
-            <td class="name"><code>id</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">string</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-                <p>id of the widget we want its children to call <code>sleep()</code>.</p></td>
-        </tr>
-
-
-        </tbody>
-    </table>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-</dd>
-
-
-<dt class="static">
-<div class="nameContainer">
     <h4 class="name" id="start">
 
         <span class="type-signature static">static</span>uijet.start<span class="signature">(declarations, <span
@@ -3801,7 +3990,7 @@
 
 
     <div class="tag-source">
-        uijet.js, line 1630
+        uijet.js, line 1632
     </div>
 
 </div>
@@ -3944,7 +4133,7 @@
 
 
     <div class="tag-source">
-        uijet.js, line 1738
+        uijet.js, line 1740
     </div>
 
 </div>
@@ -3963,83 +4152,6 @@
                                 want to set <code>options.dont_wake = true</code> so they will be awaken by the router.
         </p>
     </div>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-</dd>
-
-
-<dt class="static">
-<div class="nameContainer">
-    <h4 class="name" id="unregister">
-
-        <span class="type-signature static">static</span>uijet.unregister<span class="signature">(widget)</span><span
-            class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a
-            href="uijet.html">uijet</a>}</span>
-    </h4>
-
-
-    <div class="tag-source">
-        uijet.js, line 1566
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Removes a widget from the uijet sandbox registry.
-           This is usually triggered by a widget when its {@see BaseWidget.destroy()} method is called.</p>
-    </div>
-
-
-    <table class="params">
-        <thead>
-        <tr>
-
-            <th>Name</th>
-
-
-            <th>Type</th>
-
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-
-        <tr>
-
-            <td class="name"><code>widget</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">Object</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-                <p>a widget's instance to unregister.</p></td>
-        </tr>
-
-
-        </tbody>
-    </table>
 
 
     <dl class="details">
@@ -4175,115 +4287,6 @@
 
 
     </dl>
-
-
-</dd>
-
-
-<dt class="static">
-<div class="nameContainer">
-    <h4 class="name" id="wakeContained">
-
-        <span class="type-signature static">static</span>uijet.wakeContained<span class="signature">(id, <span
-            class="optional">context</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
-            class="type-signature returnType">{Promise[]}</span>
-    </h4>
-
-
-    <div class="tag-source">
-        uijet.js, line 1766
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Wakes all of the contained child widgets of widget with matching <code>id</code>.
-           If <code>context</code> is supplied it is passed to each child widget's <code>wake()</code>.
-           Returns an array of promises, each returned from a child's <code>wake()</code>.</p>
-    </div>
-
-
-    <table class="params">
-        <thead>
-        <tr>
-
-            <th>Name</th>
-
-
-            <th>Type</th>
-
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-
-        <tr>
-
-            <td class="name"><code>id</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">string</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-
-                <p>id of the widget we want its children to wake.</p></td>
-        </tr>
-
-
-        <tr>
-
-            <td class="name"><code>context</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">Object</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-
-                <span class="optional">optional</span>
-
-
-                <p>context provided to the <code>wake()</code> call of this widget.</p></td>
-        </tr>
-
-
-        </tbody>
-    </table>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-    <h5>Returns:</h5>
-    returned from children's <code>wake()</code> call.</li>
-    </ul>
-    <br />
 
 
 </dd>
@@ -4427,7 +4430,7 @@
 
 <footer>
     Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha4</a> on Sun Aug 31 2014
-    10:10:41 GMT+0300 (IDT)
+    23:17:31 GMT+0300 (IDT)
 </footer>
 </div>
 </div>
