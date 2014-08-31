@@ -1,6 +1,6 @@
 /*!
  * uijet UI Framework
- * @version 0.0.60
+ * @version 0.0.61
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
@@ -25,29 +25,29 @@
             'WebKit', 'webkit', 'moz', 'o', 'ms'
         ], matches              : {} },
         OPPOSITES = {top: 'bottom', bottom: 'top', right: 'left', left: 'right'},
-    // regexp for simple string format
+        // regexp for simple string format
         SUBSTITUTE_RE = /\{([^\s\}]+)\}/g,
-    // native utilities caching
+        // native utilities caching
         objToString = Object.prototype.toString,
         arraySlice = Array.prototype.slice,
-    // sandbox's registries
+        // sandbox's registries
         mixins = {},
         adapters = {},
         declared_widgets = [],
         widgets = { __app__: { contained: []} },
         resources = {},
-    // caching pre-built predefined widgets' classes
-    // `{ proto : widget_prototype, deps : dependencies }`
+        // caching pre-built predefined widgets' classes
+        // `{ proto : widget_prototype, deps : dependencies }`
         widget_definitions = {},
-    // caching built pre-defined widgets' classes
+        // caching built pre-defined widgets' classes
         widget_classes = {},
-    // caching built and mixed-in widgets' classes
+        // caching built and mixed-in widgets' classes
         widget_mixedin_classes = {},
-    // caching widgets declarations factories
+        // caching widgets declarations factories
         widget_factories = {},
-    // constants
+        // constants
         TOP_ADAPTER_NAME = 'TopAdapter',
-    // modules paths
+        // modules paths
         import_paths = {
             widgets : 'uijet_dir/widgets/',
             adapters: 'uijet_dir/adapters/',
@@ -106,7 +106,7 @@
                        return _window.clearTimeout(requestId);
                    };
         }()),
-    // check for touch support
+        // check for touch support
         has_touch = !!(('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
         /**
          * Checks if given argument is an `Array`.
@@ -122,15 +122,18 @@
                 return objToString.call(obj) == '[object Array]';
             };
         }()),
-    // the sandbox
+        // the sandbox
         uijet;
 
     /** a simple shim of Function.bind to support Safari 5- (mostly old iOS) and Android <4 */
     if ( typeof Function.bind != 'function' ) {
         Function.prototype.bind = function (scope) {
             var _self = this,
+                // the inner copy of the initial arguments
                 args = arraySlice.call(arguments, 1);
             return function () {
+                // each call to the bound function will create a new copy
+                // of `args` and add to it its own arguments
                 return _self.apply(scope, args.concat(arraySlice.call(arguments)));
             };
         };
@@ -718,7 +721,7 @@
         }
     };
     /**
-     * Nomalizes a name of a dependency or an array names of dependencies into a standard dependencies object
+     * Normalizes a name of a dependency or an array names of dependencies into a standard dependencies object
      * with `mixins` and `widgets` keys containing `Array`s of names of mixins and widgets.
      *
      * According to the `deps` argument it behaves as follows:
@@ -1152,7 +1155,7 @@
          *
          * #### uijet options:
          *
-         * * `element`: {string|HTMLElement} the container element of the application. Defualts to `'body'`.
+         * * `element`: {string|HTMLElement} the container element of the application. Defaults to `'body'`.
          * * `app_events`: {Object} a map of names of app events to subscribe to, to their handlers.
          * * `resources`: {Object} a map of names of resources to register, to their classes, or a tuple of the class and initial state.
          * * `dont_cover`: {boolean} whether to instruct the app's container to stretch across the entire viewport. Defaults to `false`.
@@ -1165,7 +1168,7 @@
          * * `route_suffix`: {string} As above, only suffix.
          */
         init                 : function (options) {
-            // wrap the actuall initialization function
+            // wrap the actual initialization function
             var _init = function (_options) {
                 var task, q, _resources, _app_events;
                 this.options = _options || {};
@@ -1175,7 +1178,7 @@
 
                 // unless requested by the user
                 if ( !this.options.dont_cover ) {
-                    // make the app contaier cover the entire viewport
+                    // make the app container cover the entire viewport
                     this.$element.addClass('cover');
                 }
                 if ( _options ) {
@@ -1199,7 +1202,7 @@
                             // each task should be a `function` that takes a resolve and reject functions
                             if ( isFunc(task) ) {
                                 // tasks' context is bound to uijet
-                                // all tasks in queue are replaced by coresponding promises
+                                // all tasks in queue are replaced by corresponding promises
                                 this.init_queue[q] = uijet.Promise(task.bind(this));
                             }
                         }
@@ -1731,8 +1734,9 @@
          * If the `pre_startup` callback is defined it will run in the beginning.
          * It publishes the `startup` event and wakes all widgets on the root widgets tree.
          *
-         * **note**: if using your app is contained inside `View` widgets, then you probably
-         * want to set `options.dont_wake = true` so they will be awaken by the router.
+         * **note**: If you are using a router module in your application,
+         * then you probably want to set uijet's `dont_wake` option to `true`,
+         * so that the initial state is awaken by the router.
          *
          * @memberOf uijet
          * @returns {uijet}
