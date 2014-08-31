@@ -1286,27 +1286,6 @@
     <ul>
 
 
-        <li class="item" data-name="Checkbox">
-        <span class="title">
-            <a href="Checkbox.html">Checkbox</a>
-            
-        </span>
-            <ul class="members itemMembers">
-
-            </ul>
-            <ul class="typedefs itemMembers">
-
-            </ul>
-            <ul class="methods itemMembers">
-
-                <span class="subtitle">Methods</span>
-
-            </ul>
-            <ul class="events itemMembers">
-
-            </ul>
-        </li>
-
         <li class="item" data-name="DateList">
         <span class="title">
             <a href="DateList.html">DateList</a>
@@ -2478,264 +2457,6 @@
 
 <dt class="">
 <div class="nameContainer">
-    <h4 class="name" id="check">
-
-        check<span class="signature">(<span class="optional">state</span>)</span><span
-            class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a
-            href="Checkbox.html">Checkbox</a>}</span>
-    </h4>
-
-
-    <div class="tag-source">
-        composites/Checkbox.js, line 72
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Sets the instance's checked property and also the <code>&lt;input&gt;</code>'s
-            <code>checked</code> property to the given <code>state</code> argument if it's a boolean.
-           Otherwise toggles it.</p>
-    </div>
-
-
-    <table class="params">
-        <thead>
-        <tr>
-
-            <th>Name</th>
-
-
-            <th>Type</th>
-
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-
-        <tr>
-
-            <td class="name"><code>state</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">boolean</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-
-                <span class="optional">optional</span>
-
-
-                <p>the new checked state to set.</p></td>
-        </tr>
-
-
-        </tbody>
-    </table>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-</dd>
-
-
-<dt class="">
-<div class="nameContainer">
-    <h4 class="name" id="click">
-
-        click<span class="signature">(event)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
-            class="type-signature returnType">{<a href="Checkbox.html">Checkbox</a>}</span>
-    </h4>
-
-
-    <div class="tag-source">
-        composites/Checkbox.js, line 114
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Toggles the <code>checked</code> state of the instance and propagates the click
-           event.</p>
-        <h4 id="signals-">Signals:</h4>
-        <ul>
-            <li><code>pre_click</code>: triggered at the beginning, passing the click event object and the current
-                <code>checked</code> state as arguments. If <code>false</code> is returned the call to {@see
-                                      Checkbox.check}
-                                      and events publishing are skipped.
-            </li>
-        </ul>
-        <h4 id="app-events-">App events:</h4>
-        <ul>
-            <li><code>&lt;this.id&gt;.clicked</code>: passes its context under <code>context</code>, its new <code>checked</code>
-                                                    state and the
-                <code>event</code> object in the data argument.
-            </li>
-            <li><code>app.clicked</code>: notifies the rest of the app that a click occurred, passing the click
-                                        event object as argument.
-            </li>
-        </ul>
-    </div>
-
-
-    <table class="params">
-        <thead>
-        <tr>
-
-            <th>Name</th>
-
-
-            <th>Type</th>
-
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-
-        <tr>
-
-            <td class="name"><code>event</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">Object</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-                <p>the click event object.</p></td>
-        </tr>
-
-
-        </tbody>
-    </table>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-</dd>
-
-
-<dt class="">
-<div class="nameContainer">
-    <h4 class="name" id="disable">
-
-        disable<span class="signature">(<span class="optional">state</span>)</span><span
-            class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a
-            href="Checkbox.html">Checkbox</a>}</span>
-    </h4>
-
-
-    <div class="tag-source">
-        composites/Checkbox.js, line 87
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Sets the instance's disabled property and also the <code>&lt;input&gt;</code>'s
-            <code>disabled</code> property to the given <code>state</code> argument if it's a boolean.
-           Otherwise toggles it.</p>
-    </div>
-
-
-    <table class="params">
-        <thead>
-        <tr>
-
-            <th>Name</th>
-
-
-            <th>Type</th>
-
-
-            <th class="last">Description</th>
-        </tr>
-        </thead>
-
-        <tbody>
-
-
-        <tr>
-
-            <td class="name"><code>state</code></td>
-
-
-            <td class="type">
-
-
-                <span class="param-type">boolean</span>
-
-
-            </td>
-
-
-            <td class="description last">
-
-
-                <span class="optional">optional</span>
-
-
-                <p>the new disabled state to set.</p></td>
-        </tr>
-
-
-        </tbody>
-    </table>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-</dd>
-
-
-<dt class="">
-<div class="nameContainer">
     <h4 class="name" id="init">
 
         init<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
@@ -2822,44 +2543,6 @@
     <h4 class="name" id="initContained">
 
         initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
-            class="type-signature returnType">{<a href="Dialog.html">Dialog</a>}</span>
-    </h4>
-
-
-    <div class="tag-source">
-        composites/Dialog.js, line 37
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Translate the <code>buttons</code> option into a part of the <code>components</code> option.</p>
-        <h4 id="related-options-">Related options:</h4>
-        <ul>
-            <li><code>buttons</code>: array of config objects for Button components to create.</li>
-        </ul>
-    </div>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-</dd>
-
-
-<dt class="">
-<div class="nameContainer">
-    <h4 class="name" id="initContained">
-
-        initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
             class="type-signature returnType">{<a href="Datepicker.html">Datepicker</a>}</span>
     </h4>
 
@@ -2894,6 +2577,47 @@
             </li>
             <li><code>max_date</code>: max possible date for selection.</li>
             <li><code>min_date</code>: min possible date for selection.</li>
+        </ul>
+    </div>
+
+
+    <dl class="details">
+
+
+    </dl>
+
+
+</dd>
+
+
+<dt class="">
+<div class="nameContainer">
+    <h4 class="name" id="initContained">
+
+        initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
+            class="type-signature returnType">{<a href="Select.html">Select</a>}</span>
+    </h4>
+
+
+    <div class="tag-source">
+        composites/Select.js, line 78
+    </div>
+
+</div>
+
+
+</dt>
+<dd>
+
+
+    <div class="description">
+        <p>Constructs a {@see SelectMenu} instance.</p>
+        <h4 id="related-options-">Related options:</h4>
+        <ul>
+            <li><code>menu</code>: the SelectMenu declaration's config to be used for this instance.</li>
+            <li><code>content</code>: an element or a selector for an element to be used as element
+                                    containing the selected item's content.
+            </li>
         </ul>
     </div>
 
@@ -2999,12 +2723,12 @@
     <h4 class="name" id="initContained">
 
         initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
-            class="type-signature returnType">{<a href="Select.html">Select</a>}</span>
+            class="type-signature returnType">{<a href="Dialog.html">Dialog</a>}</span>
     </h4>
 
 
     <div class="tag-source">
-        composites/Select.js, line 78
+        composites/Dialog.js, line 37
     </div>
 
 </div>
@@ -3015,13 +2739,10 @@
 
 
     <div class="description">
-        <p>Constructs a {@see SelectMenu} instance.</p>
+        <p>Translate the <code>buttons</code> option into a part of the <code>components</code> option.</p>
         <h4 id="related-options-">Related options:</h4>
         <ul>
-            <li><code>menu</code>: the SelectMenu declaration's config to be used for this instance.</li>
-            <li><code>content</code>: an element or a selector for an element to be used as element
-                                    containing the selected item's content.
-            </li>
+            <li><code>buttons</code>: array of config objects for Button components to create.</li>
         </ul>
     </div>
 
@@ -3091,60 +2812,6 @@
 
     <div class="description">
         <p>Changes state to next year.</p>
-    </div>
-
-
-    <dl class="details">
-
-
-    </dl>
-
-
-</dd>
-
-
-<dt class="">
-<div class="nameContainer">
-    <h4 class="name" id="prepareElement">
-
-        prepareElement<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span
-            class="type-signature returnType">{<a href="Checkbox.html">Checkbox</a>}</span>
-    </h4>
-
-
-    <div class="tag-source">
-        composites/Checkbox.js, line 40
-    </div>
-
-</div>
-
-
-</dt>
-<dd>
-
-
-    <div class="description">
-        <p>Creates the shadow DOM checkbox <code>&lt;input&gt;</code> element.</p>
-        <h4 id="related-options-">Related options:</h4>
-        <ul>
-            <li><code>checkbox</code>: configuration object for setting up the <code>&lt;input&gt;</code> element.
-                <ul>
-                    <li><code>checked</code>: if <code>true</code> the <code>&lt;input&gt;</code> will be initialized as
-                                            checked.
-                    </li>
-                    <li><code>disabled</code>: if <code>true</code> the <code>&lt;input&gt;</code> will be initialized
-                                             as disabled.
-                    </li>
-                    <li><code>value</code>: sets the initial <code>&lt;input&gt;</code>'s value.</li>
-                    <li><code>name</code>: sets the <code>&lt;input&gt;</code>'s <code>name</code> attribute for
-                                         serialization.
-                    </li>
-                    <li><code>attributes</code>: an object for setting all other attirbutes of the <code>
-                        &lt;input&gt;</code> element.
-                    </li>
-                </ul>
-            </li>
-        </ul>
     </div>
 
 
@@ -3976,8 +3643,8 @@
 
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha4</a> on Sat Aug 30 2014
-    11:17:28 GMT+0300 (IDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha4</a> on Sun Aug 31 2014
+    10:10:39 GMT+0300 (IDT)
 </footer>
 </div>
 </div>
