@@ -907,16 +907,16 @@
      * @namespace uijet
      */
     uijet = {
-        route_prefix        : '',
-        route_suffix        : '',
-        init_queue          : [],
+        route_prefix         : '',
+        route_suffix         : '',
+        init_queue           : [],
         /**
          * Detected browser features
          *
          * @member {Object} uijet.support
          * @namespace
          */
-        support             : {
+        support              : {
             /**
              * Whether this platform supports touch.
              *
@@ -989,7 +989,7 @@
          * @param {Object} [context] - a context object to bind the mixed-in properties to
          * @returns {uijet}
          */
-        use                 : function (props, host, context) {
+        use                  : function (props, host, context) {
             // get the host object or use `uijet`
             var _host = host || this;
             // if `context` is an `Object`
@@ -1014,10 +1014,10 @@
          * @param {string|Array|Object} [deps] - dependencies for this widget.
          * @returns {uijet}
          */
-        Widget              : function (type, props, deps) {
+        Widget               : function (type, props, deps) {
             var _deps = normalizeDeps(deps);
             // Cache the widget's definition for JIT creation
-            this._define(type, props, _deps);
+            this.__define(type, props, _deps);
             // create and cache the class
             // if we have dependencies
             if ( _deps && !this.initialized ) {
@@ -1028,21 +1028,21 @@
                         // make sure they're all loaded
                         this.importModules(_deps,
                             function () {
-                                widget_classes[type] = this._generate(props, _deps.mixins, _deps.widgets);
+                                widget_classes[type] = this.__generate(props, _deps.mixins, _deps.widgets);
                                 resolve();
                             }.bind(this)
                         );
                     });
                     // setting a placeholder for this widget definition so that uijet
-                    // will not get confused and try to load it from elsewhere, e.g. in `_extractDependencies()`
+                    // will not get confused and try to load it from elsewhere, e.g. in `__extractDependencies()`
                     widget_classes[type] = true;
                 }
                 else {
-                    widget_classes[type] = this._generate(props, _deps.mixins, _deps.widgets);
+                    widget_classes[type] = this.__generate(props, _deps.mixins, _deps.widgets);
                 }
             }
             else {
-                widget_classes[type] = this._generate(props);
+                widget_classes[type] = this.__generate(props);
             }
             return this;
         },
@@ -1054,7 +1054,7 @@
          * @param {Object} [props] - properties defined by this mixin
          * @returns {uijet|Object}
          */
-        Mixin               : function (name, props) {
+        Mixin                : function (name, props) {
             if ( arguments.length === 1 ) {
                 if ( name in mixins ) {
                     return mixins[name];
@@ -1075,7 +1075,7 @@
          * @param {Object} [props] - properties of the new adapter.
          * @returns {uijet|Object}
          */
-        Adapter             : function (name, props) {
+        Adapter              : function (name, props) {
             if ( arguments.length === 1 ) {
                 if ( typeof name == 'string' && name in adapters ) {
                     return adapters[name];
@@ -1099,7 +1099,7 @@
          * @param {Object} declaration - a viable object for {@see uijet.declare()}.
          * @returns {uijet}
          */
-        Factory             : function (name, declaration) {
+        Factory              : function (name, declaration) {
             widget_factories[name] = function (config) {
                 // create a copy of the original declaration
                 var copy = { type: declaration.type };
@@ -1127,7 +1127,7 @@
          * @param {boolean|Object|Array} [initial] - initial data for the generated instance or `true` to reset the registry of `name` to be instance `resource`.
          * @returns {uijet|Object}
          */
-        Resource            : function (name, resource, initial) {
+        Resource             : function (name, resource, initial) {
             if ( arguments.length === 1 ) {
                 if ( name in resources ) {
                     return resources[name];
@@ -1164,7 +1164,7 @@
          * * `route_prefix`: {string} optional prefix for routes to be used when creating those automatically from widget's IDs.
          * * `route_suffix`: {string} As above, only suffix.
          */
-        init                : function (options) {
+        init                 : function (options) {
             // wrap the actuall initialization function
             var _init = function (_options) {
                 var task, q, _resources, _app_events;
@@ -1264,7 +1264,7 @@
             }
             // import all the modules we need (Mixins, Widgets, Adapters, 3rd party...)  
             // and initialization will start when done
-            return this.importModules(this._extractDependencies(declared_widgets), _init.bind(this, options));
+            return this.importModules(this.__extractDependencies(declared_widgets), _init.bind(this, options));
         },
         /**
          * Caches a definition of a widget in uijet.
@@ -1276,7 +1276,7 @@
          * @returns {uijet}
          * @private
          */
-        _define             : function (_name, _props, _deps) {
+        __define             : function (_name, _props, _deps) {
             widget_definitions[_name] = {
                 proto: Create(_props),
                 deps : _deps
@@ -1296,7 +1296,7 @@
          * @throws {Error} - missing widget/mixin dependency.
          * @private
          */
-        _generate           : function (_props, _mixins, _widgets) {
+        __generate           : function (_props, _mixins, _widgets) {
             // create the base class
             var _class = this.BaseWidget,
                 _mixins_copy = toArray(_mixins),
@@ -1361,7 +1361,7 @@
          * @returns {Promise|Object} promise|this - a promise object if not skipping import, otherwise `this`.
          * @private
          */
-        _start              : function (widget, skip_import) {
+        __start              : function (widget, skip_import) {
             var that = this,
                 _factory = widget.factory,
                 _config = widget.config,
@@ -1378,10 +1378,10 @@
                 return this.Promise(function (resolve, reject) {
                     // do import
                     this.importModules(
-                        this._extractDependencies([widget]),
+                        this.__extractDependencies([widget]),
                         // the import's callback
                         function () {
-                            that._start(widget, true);
+                            that.__start(widget, true);
                             return resolve();
                         }
                     );
@@ -1413,7 +1413,7 @@
                     }
                     else {
                         // create a new class from the joined definitions
-                        _c = this._generate(_d.proto, _mixins, _widgets);
+                        _c = this.__generate(_d.proto, _mixins, _widgets);
                         // and cache it
                         widget_mixedin_classes[mixedin_type] = _c;
                     }
@@ -1456,8 +1456,9 @@
          * @memberOf uijet
          * @param {Object} widget - a widget's instance to register.
          * @returns {uijet}
+         * @private
          */
-        register            : function (widget) {
+        _register            : function (widget) {
             // get the parent element
             var _parent = null,
             // create the registry object
@@ -1562,8 +1563,9 @@
          * @memberOf uijet
          * @param {Object} widget - a widget's instance to unregister.
          * @returns {uijet}
+         * @private
          */
-        unregister          : function (widget) {
+        _unregister          : function (widget) {
             var _id = widget.id, registration, _parent_contained;
             if ( _id in widgets ) {
                 registration = widgets[_id];
@@ -1585,7 +1587,7 @@
          * in the widgets tree (usually maps one-to-one to the DOM tree), so that
          * a widget is always declared before its contained widgets are declared, and so on.
          *
-         * In some cases it's a must to declare widgets in a specific order ( see {@see uijet.position()} ).
+         * In some cases it's a must to declare widgets in a specific order ( see {@see uijet._position()} ).
          *
          * A declaration object usually contains `type` and `config` properties.
          * It may also contain a `factory` property, instead of the `type` one, if
@@ -1601,7 +1603,7 @@
          * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
          * @returns {uijet}
          */
-        declare             : function (declarations) {
+        declare              : function (declarations) {
             if ( isObj(declarations) ) {
                 declared_widgets.push(declarations);
             }
@@ -1627,12 +1629,12 @@
          * @returns {Promise|Object} promise|this - a promise object if not skipping import, otherwise `this`.
          * @throws {Error} - if `declarations` is neither an `Array` nor an `Object`.
          */
-        start               : function (declarations, skip_import) {
+        start                : function (declarations, skip_import) {
             var i, dfrd_starts, _c;
             // if `declarations` is an `Object`
             if ( isObj(declarations) ) {
                 // do the starting
-                return this._start(declarations, skip_import);
+                return this.__start(declarations, skip_import);
             }
             // if it's an `Array`
             else if ( isArr(declarations) ) {
@@ -1641,7 +1643,7 @@
                 // loop over the widget declarations in it
                 while ( _c = declarations[i] ) {
                     // and start every one of them
-                    dfrd_starts[i] = this._start(_c, skip_import);
+                    dfrd_starts[i] = this.__start(_c, skip_import);
                     i += 1;
                 }
                 // return a promise of all `declarations` started
@@ -1659,7 +1661,7 @@
          * @returns {{widgets: string[], mixins: string[], adapters: string[]}}
          * @private
          */
-        _extractDependencies: function (declarations) {
+        __extractDependencies: function (declarations) {
             var deps = {
                     widgets : [],
                     mixins  : [],
@@ -1702,7 +1704,7 @@
         //TODO: fix AMD check, currently depends on RequireJS.
         //TODO: refactor to be a separate module.
         //TODO: allow registration of custom paths.
-        importModules       : function (modules, callback, error) {
+        importModules        : function (modules, callback, error) {
             var imports = [], m, l;
             // if using an AMD loader
             if ( typeof _window.require == 'function' ) {
@@ -1735,7 +1737,7 @@
          * @memberOf uijet
          * @returns {uijet}
          */
-        startup             : function () {
+        startup              : function () {
             var pre_startup = this.options.pre_startup;
             // call `pre_startup`
             isFunc(pre_startup) && pre_startup();
@@ -1748,7 +1750,7 @@
 
             if ( !this.options.dont_wake ) {
                 // ☼ good morning sunshine ☼
-                this.wakeContained('__app__');
+                this._wakeContained('__app__');
             }
 
             return this;
@@ -1762,8 +1764,9 @@
          * @param {string} id - id of the widget we want its children to wake.
          * @param {Object} [context] - context provided to the `wake()` call of this widget.
          * @returns {Promise[]} - promises returned from children's `wake()` call.
+         * @private
          */
-        wakeContained       : function (id, context) {
+        _wakeContained       : function (id, context) {
             var _contained = widgets[id].contained,
                 promises = [],
                 _widget,
@@ -1782,8 +1785,9 @@
          * @memberOf uijet
          * @param {string} id - id of the widget we want its children to call `sleep()`.
          * @returns {uijet}
+         * @private
          */
-        sleepContained      : function (id) {
+        _sleepContained      : function (id) {
             var _contained = widgets[id].contained,
                 l = _contained.length;
             while ( l-- ) {
@@ -1797,8 +1801,9 @@
          * @memberOf uijet
          * @param {string} id - id of the widget we want its children to call `destroy()`.
          * @returns {uijet}
+         * @private
          */
-        destroyContained    : function (id) {
+        _destroyContained    : function (id) {
             var args = arraySlice.call(arguments, 1),
                 _contained, l, _w;
             // find `id`
@@ -1825,8 +1830,9 @@
          * @memberOf uijet
          * @param {Object} widget - the widget instance to position.
          * @param {string[]} [exclude] - list of style property names to exclude from setting.
+         * @private
          */
-        position            : function (widget, exclude) {
+        _position            : function (widget, exclude) {
             var container_id = widgets[widget.id].container,
                 siblings = container_id ? widgets[container_id].contained || [] : [], sibling,
                 position = {position: 'absolute', top: 0, bottom: 0, right: 0, left: 0},
@@ -1918,8 +1924,9 @@
          * @param {string} route - The route string to analyze.
          * @param {*} [args_array] - The list of arguments sent to a route's callback.
          * @returns {Object} Context object generated for the route.
+         * @private
          */
-        buildContext        : function (route, args_array) {
+        _buildContext        : function (route, args_array) {
             var context = {},
             // matches anything that contains ':' followed by a name
                 named_arg_re = /.*:([-\w]+)/,

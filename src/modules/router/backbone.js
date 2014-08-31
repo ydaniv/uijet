@@ -58,7 +58,7 @@
                 }
 
                 Router.route(route, name, function () {
-                    var context = uijet.buildContext(route, arguments);
+                    var context = uijet._buildContext(route, arguments);
                     callback.call(widget, context);
                 });
 
