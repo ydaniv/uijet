@@ -1166,6 +1166,10 @@
          * * `widgets`: {object[]} optional list of widget declarations.
          * * `route_prefix`: {string} optional prefix for routes to be used when creating those automatically from widget's IDs.
          * * `route_suffix`: {string} As above, only suffix.
+         *
+         * **Note**: The uijet app container element's `visibility` is initially set to `hidden`.
+         * If you set `dont_start` to `true` you'll have eventually invoke `uijet.startup()` yourself or
+         * set `uijet.$element[0].style.visibility` to `visible`.
          */
         init                 : function (options) {
             // wrap the actual initialization function
