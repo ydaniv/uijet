@@ -2078,7 +2078,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 1282
+            uijet.js, line 1286
         </div>
         
     </div>
@@ -2262,7 +2262,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 1667
+            uijet.js, line 1671
         </div>
         
     </div>
@@ -2384,7 +2384,7 @@ standard widget instance declarations ( see {@see uijet.declare()} ).</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1302
+            uijet.js, line 1306
         </div>
         
     </div>
@@ -2609,7 +2609,7 @@ and registered with <code>uijet</code>.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1367
+            uijet.js, line 1371
         </div>
         
     </div>
@@ -2769,7 +2769,7 @@ and registered with <code>uijet</code>.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1933
+            uijet.js, line 1937
         </div>
         
     </div>
@@ -2932,7 +2932,7 @@ object generated for the route.
     
         
         <div class="tag-source">
-            uijet.js, line 1810
+            uijet.js, line 1814
         </div>
         
     </div>
@@ -3053,7 +3053,7 @@ object generated for the route.
     
         
         <div class="tag-source">
-            uijet.js, line 1839
+            uijet.js, line 1843
         </div>
         
     </div>
@@ -3206,7 +3206,7 @@ to create a fluid UI.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1464
+            uijet.js, line 1468
         </div>
         
     </div>
@@ -3335,7 +3335,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1794
+            uijet.js, line 1798
         </div>
         
     </div>
@@ -3456,7 +3456,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1571
+            uijet.js, line 1575
         </div>
         
     </div>
@@ -3578,7 +3578,7 @@ This is usually triggered by a widget when its {@see BaseWidget.destroy()} metho
     
         
         <div class="tag-source">
-            uijet.js, line 1773
+            uijet.js, line 1777
         </div>
         
     </div>
@@ -3905,7 +3905,7 @@ If <code>props</code> is omitted and <code>name</code> is a:</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1609
+            uijet.js, line 1613
         </div>
         
     </div>
@@ -4189,7 +4189,7 @@ This declaration can be re-used to prevent repetition of common properties.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1710
+            uijet.js, line 1714
         </div>
         
     </div>
@@ -4377,7 +4377,7 @@ Returns either the result of calling <code>callback</code> or simply <code>uijet
     
         
         <div class="tag-source">
-            uijet.js, line 1170
+            uijet.js, line 1174
         </div>
         
     </div>
@@ -4501,11 +4501,14 @@ id="uijet-options-">uijet options:</h4>
 <li><code>dont_start</code>: {boolean} whether to call <code>uijet.startup()</code> and kick-start the UI. Defaults to <code>false</code>.</li>
 <li><code>dont_wake</code>: {boolean} whether to call <code>wake()</code> on all top level widgets. Defaults to <code>false</code>.</li>
 <li><code>pre_startup</code>: {function} optional hook for running logic before uijet starts up.</li>
-<li><code>animation_type</code>: {string} default type of animation to be used across the app. Defaults to <code>'slide'</code> (what else, Rufus?).</li>
+<li><code>transition</code>: {string} default type of transition to be used across the app. Defaults to <code>'fade'</code>.</li>
 <li><code>widgets</code>: {object[]} optional list of widget declarations.</li>
 <li><code>route_prefix</code>: {string} optional prefix for routes to be used when creating those automatically from widget's IDs.</li>
 <li><code>route_suffix</code>: {string} As above, only suffix.</li>
 </ul>
+<strong>Note</strong>: The uijet app container element's <code>visibility</code> is initially set to <code>hidden</code>.
+If you set <code>dont_start</code> to <code>true</code> you'll have eventually invoke <code>uijet.startup()</code> yourself or
+set <code>uijet.$element[0].style.visibility</code> to <code>visible</code>.
 <br />
 
     
@@ -4878,7 +4881,7 @@ instantiating a Backbone.js resource.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1635
+            uijet.js, line 1639
         </div>
         
     </div>
@@ -5075,7 +5078,7 @@ and want to optimize this call a bit.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1744
+            uijet.js, line 1748
         </div>
         
     </div>
@@ -5541,7 +5544,7 @@ This class can later be instantiated in the UI or re-used as a dependency.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha4</a> on Thu Sep 04 2014 09:44:00 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha4</a> on Thu Sep 04 2014 09:45:27 GMT+0300 (IDT)
         </footer>
     </div>
 </div>
