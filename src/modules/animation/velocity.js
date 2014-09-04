@@ -23,14 +23,14 @@
 
     uijet.use({
         options: {
-            animation_type: { opacity: [1, 0] }
+            transition: { opacity: [1, 0] }
         },
         /**
          * Transitions a widget's element into or out of view.
          * 
          * #### Related options:
-         * 
-         * * `animation_type`: the animation configuration to perform. Defaults to `uijet.options.animation_type` which defaults to `{ opacity: [1, 0] }`.
+         *
+         * * `transition`: the transition configuration to perform. Defaults to `uijet.options.transition` which defaults to `{ opacity: [1, 0] }` (fade).
          *
          * @method module:animation/velocity#transit
          * @param {Widget} widget - the widget instance to transition.
@@ -40,7 +40,7 @@
          */
         //TODO: implement support for Sequences as transitions: http://julian.com/research/velocity/#sequences
         transit             : function (widget, direction, callback) {
-            var transit_type = widget.options.animation_type || this.options.animation_type,
+            var transit_type = widget.options.transition || this.options.transition,
                 $el = (widget.$wrapper || widget.$element),
                 is_direction_in;
 

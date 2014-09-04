@@ -387,7 +387,7 @@
         destroy         : function () {
             this.notify(true, 'pre_destroy');
             // perform a recursive destruction down the widget tree
-            this._destroyContained.apply(this, arguments);
+            this.destroyContained.apply(this, arguments);
             // unsubscribe to app events
             this.app_events && this.unsubscribe(this.app_events);
             // unregister from the uijet sandbox
@@ -408,7 +408,7 @@
         destroyContained: function () {
             var args = utils.toArray(arguments);
             args.unshift(this.id);
-            uijet.destroyContained.apply(uijet, args);
+            uijet._destroyContained.apply(uijet, args);
             return this;
         },
         /**

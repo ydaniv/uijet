@@ -54,8 +54,8 @@
          * * `pre_prepareelement`: triggered at the beginning of this method.
          * 
          * #### Related options:
-         * 
-         * * `animation_type`: the type of animation to use for the transition.
+         *
+         * * `transition`: the type of animation to use for the transition. Defaults to `uijet.options.transition`.
          * * `dont_promote`: whether to prevent promotion of this element to its own layer, aka hardware acceleration.
          *
          * @methodOf animation/uijet-transit.Transitioned
@@ -63,8 +63,8 @@
          */
         prepareElement  : function () {
             this.notify(true, 'pre_prepareelement');
-            // initially set the `<animation_type>_out` `class`
-            var class_name = (this.options.animation_type || uijet.options.animation_type) + '_out';
+            // initially set the `<transition>_out` `class`
+            var class_name = (this.options.transition || uijet.options.transition) + '_out';
             // if not disabled, promote this element to it's own layer which enables hardware acceleration
             if ( ! this.options.dont_promote ) {
                 class_name += ' promoted';
@@ -117,8 +117,8 @@
          * @private
          */
         _wrap           : function () {
-            // cache the  `<animation_type>_out` `class`
-            var class_name = (this.options.animation_type || uijet.options.animation_type) + '_out';
+            // cache the  `<transition>_out` `class`
+            var class_name = (this.options.transition || uijet.options.transition) + '_out';
             if ( ! this.options.dont_promote ) {
                 class_name += ' promoted';
             }
@@ -170,8 +170,8 @@
          * Transitions a widget's element into or out of view.
          * 
          * #### Related options:
-         * 
-         * * `animation_type`: type of animation to use. Defaults to `uijet.options.animation_type` which defaults to `fade`.
+         *
+         * * `transition`: type of animation to use for the transition. Defaults to `uijet.options.transition` which defaults to `fade`.
          *
          * @method module:animation/uijet-transit#transit
          * @param {Widget} widget - the widget instance to transition.
@@ -180,7 +180,7 @@
          * @returns {uijet}
          */
         transit             : function (widget, direction, callback) {
-            var transit_type = widget.options.animation_type || this.options.animation_type,
+            var transit_type = widget.options.transition || this.options.transition,
                 $el = (widget.$wrapper || widget.$element),
                 class_name = transit_type + '_in',
                 transitioned_class = 'transitioned',
