@@ -1,6 +1,6 @@
 /*!
  * uijet UI Framework
- * @version 0.0.61
+ * @version 0.0.62
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
@@ -1162,10 +1162,14 @@
          * * `dont_start`: {boolean} whether to call `uijet.startup()` and kick-start the UI. Defaults to `false`.
          * * `dont_wake`: {boolean} whether to call `wake()` on all top level widgets. Defaults to `false`.
          * * `pre_startup`: {function} optional hook for running logic before uijet starts up.
-         * * `animation_type`: {string} default type of animation to be used across the app. Defaults to `'slide'` (what else, Rufus?).
+         * * `transition`: {string} default type of transition to be used across the app. Defaults to `'fade'`.
          * * `widgets`: {object[]} optional list of widget declarations.
          * * `route_prefix`: {string} optional prefix for routes to be used when creating those automatically from widget's IDs.
          * * `route_suffix`: {string} As above, only suffix.
+         *
+         * **Note**: The uijet app container element's `visibility` is initially set to `hidden`.
+         * If you set `dont_start` to `true` you'll have eventually invoke `uijet.startup()` yourself or
+         * set `uijet.$element[0].style.visibility` to `visible`.
          */
         init                 : function (options) {
             // wrap the actual initialization function
@@ -1193,7 +1197,7 @@
                     this.options.routed = isFunc(this.setRoute);
 
                     // set default animation type
-                    this.options.animation_type = _options.animation_type || 'slide';
+                    this.options.transition = _options.transition || 'fade';
 
                     // check the init queue for deferred tasks
                     if ( q = this.init_queue.length ) {
