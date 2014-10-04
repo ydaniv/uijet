@@ -79,7 +79,6 @@
              * @param {boolean} [is_silent] - if `true` just triggers the handler. Otherwise sets the given `route`
              * in the browser's addressbar.
              * @returns {uijet}
-             * @see {@link http://backbonejs.org/docs/backbone.html#section-195|Backbone.History#loadUrl}
              */
             runRoute        : function (route, is_silent) {
                 is_silent ? _router.dispatch('on', route) : _router.setRoute(route);
