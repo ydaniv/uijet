@@ -32,6 +32,65 @@ uijet performs 3 main roles:
 * Glues all your favorite libraries with a consistent API which makes them easily swappable.
 * Maintainable and scalable UI made of declarative, reusable, decoupled components. 
 
+## Installing
+
+* Download the source or install via [Bower](http://bower.io/):
+
+```
+> bower install uijet
+```
+
+__(recommended)__ If you're using an AMD module loader like [RequireJS](http://requirejs.org/) or [curl.js](https://github.com/cujojs/curl),
+Great!
+
+* Just define the path `uijet_dir` to be the path to where your uijet's `src` folder is located.
+* Then `require()` `uijet.js` and the rest from there. 
+
+If you're NOT using an AMD module loader:
+
+* Include the `uijet.js` script in your page.
+    * If you're just starting with uijet, include the rest of the scripts under `src`.
+    * If you know what you're doing, just grab what you need after it.
+
+* __(recommended)__ Include the `uijet.css` in your page.
+
+## Quick start
+
+Checkout the application boilerplates in the `boilerplates` folder for a quick overview.
+
+## Dependencies
+
+uijet has no direct/hard dependencies, however:
+
+ * It requires you (at least) install the tools you choose to fill the 3 roles listed bellow under __Required dependencies__.
+ * It favors the use of an AMD module loader, like [RequireJS](http://requirejs.org/) or [curl.js](https://github.com/cujojs/curl).
+
+The list of available module adapters is currently short, but you can easily create your own.
+If you have created your own, do share! We'll be happy to hear about it.
+
+### Required dependencies
+
+For uijet to run you must include an adapter in your app from each of the following Modules:
+
+ * pubsub
+ * promises
+ * dom
+
+All the rest are completely up to you.
+
+### Mandatory Modules' APIs
+
+Although the dependency may be indirect, uijet does enforce a strict API that each Module adapter 
+must adhere to.
+This requirement is a must for the top 3 Modules mentioned above, and a few other Mixins and Composites, 
+which rely on other Modules.
+The API enforcing is also what makes a Module swappable at any given point without any impact 
+on the underlying framework. In some cases even no impact at all, whatsoever, on your application.
+
+*Example*: a dom Module adapter must be consistent with [jQuery](http://api.jquery.com/)'s API, so you
+can choose either that, or [Zepto](http://zeptojs.com/), 
+or with a little effort even [Bonzo](https://github.com/ded/bonzo) and [Bean](https://github.com/fat/bean).
+
 ## Concepts
 
 ### Modules
@@ -151,43 +210,9 @@ It's recommended to complement it with [normalize.css](http://necolas.github.io/
 Currently there are no bundled themes in uijet.
 Hopefully, in the future there will be.
 
-## Quick start
-
-Grab the a boilerplate from `boilerplates` and open `index.html` in your browser.
-
-## Dependencies
-
-uijet has no direct dependencies, however:
-
- * It favors the use of an AMD module loader, like [RequireJS](http://requirejs.org/) or [curl.js](https://github.com/cujojs/curl).
- * The list of available module adapters is currently short, but you can easily create your own.
-
-### Required dependencies
-
-For uijet to run you must include an adapter in your app from each of the following Modules:
-
- * pubsub
- * promises
- * dom
-
-All the rest are completely up to you.
-
-### Mandatory Modules' APIs
-
-Although the dependency may be indirect, uijet does enforce a strict API that each Module adapter 
-must adhere to.
-This requirement is a must for the top 3 Modules mentioned above, and a few other Mixins and Composites, 
-which rely on other Modules.
-The API enforcing is also what makes a Module swappable at any given point without any impact 
-on the underlying framework. In some cases even no impact at all, whatsoever, on your application.
-
-*Example*: a dom Module adapter must be consistent with [jQuery](http://api.jquery.com/)'s API, so you
-can choose either that, or [Zepto](http://zeptojs.com/), 
-or with a little effort even [Bonzo](https://github.com/ded/bonzo) and [Bean](https://github.com/fat/bean).
-
 ## Author
 
-Yehonatan Daniv
+Yehonatan Daniv [@ydaniv](https://github.com/ydaniv/)
 
 ## Special thanks
 
