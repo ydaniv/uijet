@@ -47,12 +47,6 @@
         widget_factories = {},
         // constants
         TOP_ADAPTER_NAME = 'TopAdapter',
-        // modules paths
-        import_paths = {
-            widgets : 'uijet_dir/widgets/',
-            adapters: 'uijet_dir/adapters/',
-            mixins  : 'uijet_dir/mixins/'
-        },
         /**
          * Utility for deferring a function by adding it to the process queue.
          *
@@ -1025,20 +1019,26 @@
             // if we have dependencies
             if ( _deps && !this.initialized ) {
                 if ( missingDependency(_deps) ) {
-                    // defer the widget class definition till we have promises module loaded
-                    // plus its dependencies are loaded
-                    this.init_queue.push(function (resolve) {
-                        // make sure they're all loaded
-                        this.importModules(_deps,
-                            function () {
-                                widget_classes[type] = this.__generate(props, _deps.mixins, _deps.widgets);
-                                resolve();
-                            }.bind(this)
-                        );
-                    });
-                    // setting a placeholder for this widget definition so that uijet
-                    // will not get confused and try to load it from elsewhere, e.g. in `__extractDependencies()`
-                    widget_classes[type] = true;
+                    if ( isFunc(this.importModules) ) {
+                        // defer the widget class definition till we have promises module loaded
+                        // plus its dependencies are loaded
+                        this.init_queue.push(function (resolve) {
+                            // make sure they're all loaded
+                            this.importModules(_deps,
+                                function () {
+                                    widget_classes[type] = this.__generate(props, _deps.mixins, _deps.widgets);
+                                    resolve();
+                                }.bind(this)
+                            );
+                        });
+                        // setting a placeholder for this widget definition so that uijet
+                        // will not get confused and try to load it from elsewhere, e.g. in `__extractDependencies()`
+                        widget_classes[type] = true;
+                    }
+                    else {
+                        throw new Error('There is no loader module used' +
+                                        ' and following dependencies are missing: ' + JSON.stringify(deps));
+                    }
                 }
                 else {
                     widget_classes[type] = this.__generate(props, _deps.mixins, _deps.widgets);
@@ -1269,9 +1269,12 @@
                 // add these to the declared ones
                 this.declare(options.widgets);
             }
-            // import all the modules we need (Mixins, Widgets, Adapters, 3rd party...)  
+            // if using a loader module then import all the modules we need (Mixins, Widgets, Adapters, 3rd party...)
             // and initialization will start when done
-            return this.importModules(this.__extractDependencies(declared_widgets), _init.bind(this, options));
+            // otherwise start uijet
+            return isFunc(this.importModules) ?
+                   this.importModules(this.__extractDependencies(declared_widgets), _init.bind(this, options)) :
+                   _init.call(this, options);
         },
         /**
          * Caches a definition of a widget in uijet.
@@ -1381,7 +1384,7 @@
             _type = widget.type;
             _config = widget.config;
             // if falsy then import dependencies first and then do the starting
-            if ( !skip_import ) {
+            if ( isFunc(this.importModules) && !skip_import ) {
                 return this.Promise(function (resolve, reject) {
                     // do import
                     this.importModules(
@@ -1695,43 +1698,6 @@
                 }
             }
             return deps;
-        },
-        /**
-         * Imports all missing modules
-         * If there's nothing to load or AMD isn't in use it returns the call to `callback` OR `uijet`.
-         * Returns either the result of calling `callback` or simply `uijet`.
-         *
-         * @memberOf uijet
-         * @param {Object} modules - a map of module paths to list of module/file names to load.
-         * @param {function} [callback] - a callback to run once the modules are loaded.
-         * @param {function} [error] - an error callback to run if loading failed.
-         * @returns {*}
-         */
-        //TODO: refactor to be library agnostic.
-        //TODO: fix AMD check, currently depends on RequireJS.
-        //TODO: refactor to be a separate module.
-        //TODO: allow registration of custom paths.
-        importModules        : function (modules, callback, error) {
-            var imports = [], m, l;
-            // if using an AMD loader
-            if ( typeof _window.require == 'function' ) {
-                // create list of modules to import with paths prepended
-                for ( m in modules ) {
-                    if ( m in import_paths ) {
-                        for ( l = modules[m].length; l--; ) {
-                            imports.push(import_paths[m] + modules[m][l]);
-                        }
-                    }
-                }
-                // if there's anything to import
-                if ( imports.length ) {
-                    // import it
-                    return _window.require(imports, callback, error);
-                }
-            }
-            // if nothing to import or not using AMD
-            // then fire `callback` and return it or simply `uijet`
-            return callback ? callback() : this;
         },
         /**
          * Starts up uijet.
