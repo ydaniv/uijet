@@ -129,8 +129,6 @@
         
             <li class="static" data-name="uijet.Factory"><a href="uijet.html#Factory">Factory</a></li>
         
-            <li class="static" data-name="uijet.importModules"><a href="uijet.html#importModules">importModules</a></li>
-        
             <li class="static" data-name="uijet.init"><a href="uijet.html#init">init</a></li>
         
             <li class="static" data-name="uijet.Mixin"><a href="uijet.html#Mixin">Mixin</a></li>
@@ -334,6 +332,33 @@
                             <ul>
                                 
 
+    <li class="item" data-name="module:binding/rivets">
+        <span class="title">
+            <a href="rivets.html">binding/rivets</a>
+            
+        </span>
+        <ul class="members itemMembers">
+        
+        </ul>
+        <ul class="typedefs itemMembers">
+        
+        </ul>
+        <ul class="methods itemMembers">
+        
+        <span class="subtitle">Methods</span>
+        
+            <li class="" data-name="module:binding/rivets#bindData"><a href="rivets.html#bindData">bindData</a></li>
+        
+            <li class="" data-name="module:binding/rivets#destroy"><a href="rivets.html#destroy">destroy</a></li>
+        
+            <li class="" data-name="module:binding/rivets#register"><a href="rivets.html#register">register</a></li>
+        
+        </ul>
+        <ul class="events itemMembers">
+        
+        </ul>
+    </li>
+
     <li class="item" data-name="module:binding/rivets-backbone">
         <span class="title">
             <a href="rivets-backbone.html">binding/rivets-backbone</a>
@@ -352,8 +377,6 @@
             <li class="" data-name="module:binding/rivets-backbone#bindData"><a href="rivets-backbone.html#bindData">bindData</a></li>
         
             <li class="" data-name="module:binding/rivets-backbone#destroy"><a href="rivets-backbone.html#destroy">destroy</a></li>
-        
-            <li class="" data-name="module:binding/rivets-backbone#register"><a href="rivets-backbone.html#register">register</a></li>
         
         </ul>
         <ul class="events itemMembers">
@@ -570,6 +593,38 @@
         
         </ul>
         <ul class="methods itemMembers">
+        
+        </ul>
+        <ul class="events itemMembers">
+        
+        </ul>
+    </li>
+
+
+                            </ul>
+                        </li>
+                        
+                        <li class="item item-subcategory" data-name="Loader">
+                            <span class="subcategory">Loader</span>
+                            <ul>
+                                
+
+    <li class="item" data-name="module:loader/requirejs">
+        <span class="title">
+            <a href="requirejs.html">loader/requirejs</a>
+            
+        </span>
+        <ul class="members itemMembers">
+        
+        </ul>
+        <ul class="typedefs itemMembers">
+        
+        </ul>
+        <ul class="methods itemMembers">
+        
+        <span class="subtitle">Methods</span>
+        
+            <li class="" data-name="module:loader/requirejs#importModules"><a href="requirejs.html#importModules">importModules</a></li>
         
         </ul>
         <ul class="events itemMembers">
@@ -2201,10 +2256,12 @@
     <div class="description">
         <p>Delegates <code>change</code> event from value changes of child field elements
 to an app event publishing.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>change_exclude</code>: list of <code>name</code>s, or a function that returns it, of fields to exclude from <code>change</code> event delegation. </li>
 </ul>
-<h4>App Events:</h4><ul>
+<h4 id="app-events-">App Events:</h4>
+<ul>
 <li><code>&lt;this.id&gt;_&lt;name&gt;.changed</code>: published when the field with name <code>name</code> fires <code>change</code> event.
 Takes <code>Object</code> with <code>event</code> obejct and <code>value</code>.</li>
 </ul>
@@ -2463,7 +2520,8 @@ form data.</li>
         <p>Completes the waking sequence by activating and showing
 the instance.
 This is a the fulfilled handler of <code>wake()</code>.</p>
-<h4>Signals:</h4><ul>
+<h4 id="signals-">Signals:</h4>
+<ul>
 <li><code>post_wake</code>: triggered at the end of a successful wake, takes <code>wake()</code>'s <code>context</code> param as argument.</li>
 </ul>
     </div>
@@ -2681,7 +2739,8 @@ result of calling <code>appear()</code>, which could be a <code>Promise</code>.<
         <p>Removes all elements created by rendering the widget,
 e.g. results from calling <a href="BaseWidget.html#render"><code>BaseWidget#render</code></a>, meaning all that's <em>not</em> in
 <code>$original_children</code>, set by <a href="BaseWidget.html#_saveOriginal"><code>BaseWidget#_saveOriginal</code></a> on <a href="BaseWidget.html#init"><code>BaseWidget#init</code></a>.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>extend_rendered</code>: set to <code>true</code> if you wish to keep the content with every render.</li>
 </ul>
     </div>
@@ -2767,7 +2826,8 @@ This is a the rejected handler of <code>wake()</code>.</p>
 <code>wake()</code>, and another attempt will be made.
 If not, <code>sleep()</code> is called and the <code>reason</code> is returned in a subsequent
 rejected <code>Promise</code>, and the widgets branch will continue to fold back.</p>
-<h4>Signals:</h4><ul>
+<h4 id="signals-">Signals:</h4>
+<ul>
 <li><code>wake_failed</code>: triggered at the beginning, takes all arguments of the rejected <a href="BaseWidget.html#wakeContained"><code>BaseWidget#wakeContained</code></a>,
 or <code>render()</code> call.</li>
 </ul>
@@ -3086,7 +3146,8 @@ generated id.</li>
     
     <div class="description">
         <p>Gets the size of a widget's element, taking its child elements into account.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>horizontal</code>: controls size calculation - height of a single child element and width of all children
 when <code>true</code>, or vise versa if falsy.</li>
 </ul>
@@ -3156,7 +3217,7 @@ when <code>true</code>, or vise versa if falsy.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 676
+            uijet.js, line 670
         </div>
         
     </div>
@@ -3391,7 +3452,8 @@ should not be touched when rendering the contents of the widget.</p>
         <p>Toggles the element's <code>visibility</code>, depending on the <code>cloak</code> param.
 Used for hiding the widget from view while it is asleep.</p>
 <p>If <code>cloak</code> is truthy it's set to <code>hidden</code>, otherwise to <code>visible</code>.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>cloak</code>: only if truthy will this method affect the element.</li>
 </ul>
     </div>
@@ -3524,7 +3586,8 @@ Used for hiding the widget from view while it is asleep.</p>
     
     <div class="description">
         <p>Utility for wrapping the widget's element in a container element.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>dont_wrap</code>: skips wrapping and sets <code>$wrapper</code> to <code>$element</code>.</li>
 <li><code>wrapper_class</code>: extra class names to be set on the container element.</li>
 <li><code>wrapper_tag</code>: a name of a tag to use for the container element. Defaults to <code>div</code>.</li>
@@ -3607,7 +3670,8 @@ Used for hiding the widget from view while it is asleep.</p>
     <div class="description">
         <p>Triggers <code>focus</code> event on the first input, ones the instance
 appears, unless <code>dont_focus</code> option is set to <code>true</code>.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>dont_focus</code>: tells the instance not to focus its first input on appearing.</li>
 </ul>
     </div>
@@ -3926,7 +3990,8 @@ or were later attached using <a href="BaseWidget.html#bind"><code>BaseWidget#bin
     <div class="description">
         <p>Finds all child elements that match the <code>error_selector</code> option,
 or <code>.error</code> as default, and empties them.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>error_selector</code>: query selector for finding elements containing error messages and emptying them.</li>
 </ul>
     </div>
@@ -4009,7 +4074,8 @@ or <code>.error</code> as default, and empties them.</p>
         <p>Cleans up all related DOM, memory and events related to
 this instance.
 A <em>lifecycle method</em>, destroys the instance and all its contained widgets.</p>
-<h4>Signals:</h4><ul>
+<h4 id="signals-">Signals:</h4>
+<ul>
 <li><code>pre_destroy</code>: triggered at the beginning.</li>
 </ul>
     </div>
@@ -4168,7 +4234,8 @@ A <em>lifecycle method</em>, destroys the instance and all its contained widgets
     
     <div class="description">
         <p>Makes the instance's element disappear from the UI.</p>
-<h4>Signals:</h4><ul>
+<h4 id="signals-">Signals:</h4>
+<ul>
 <li><code>post_disappear</code>: triggered at the end.</li>
 </ul>
     </div>
@@ -4463,7 +4530,7 @@ value of the <code>key</code> or the <code>context</code> object.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 570
+            uijet.js, line 564
         </div>
         
     </div>
@@ -4602,10 +4669,12 @@ value of the <code>key</code> or the <code>context</code> object.</li>
 before awaking/rendering.</p>
 <p><code>init()</code> is invoked by uijet when it is <code>init()</code>ed itself
 or when you <code>start()</code> a widget ad-hoc.</p>
-<h4>Signals:</h4><ul>
+<h4 id="signals-">Signals:</h4>
+<ul>
 <li><code>post_init</code>: triggered at the end of this method.</li>
 </ul>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>bind_on_wake</code>: unless <code>true</code> all <code>dom_events</code> will be bound to the <code>this.$element</code> at the
 end of this method and before <code>post_init</code> signal is triggered.</li>
 </ul>
@@ -4734,7 +4803,8 @@ end of this method and before <code>post_init</code> signal is triggered.</li>
         <p>Initializes contained widget instances.</p>
 <p>If the <code>container</code> option of the contained widgets is not
 set, it will be automatically set to the <code>id</code> of this widget.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>components</code>: list of contained components to init.</li>
 </ul>
     </div>
@@ -4803,7 +4873,7 @@ set, it will be automatically set to the <code>id</code> of this widget.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 508
+            uijet.js, line 502
         </div>
         
     </div>
@@ -4949,7 +5019,7 @@ set, it will be automatically set to the <code>id</code> of this widget.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 547
+            uijet.js, line 541
         </div>
         
     </div>
@@ -5297,7 +5367,8 @@ using CSS, unless dynamic run-time dimensions calculation is required.</p>
     
     <div class="description">
         <p>Initializes the instance's element.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>type_class</code>: classes that define the type of the widget's component and are set on the elements <code>class</code> attribute.</li>
 <li><code>extra_class</code>: space separated class names to be added to the element's <code>class</code> attribute.</li>
 <li><code>position</code>: <code>string|Object</code> to be passed to <a href="BaseWidget.html#position"><code>BaseWidget#position</code></a>.</li>
@@ -5369,7 +5440,7 @@ using CSS, unless dynamic run-time dimensions calculation is required.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 654
+            uijet.js, line 648
         </div>
         
     </div>
@@ -5607,7 +5678,7 @@ element, unless the <code>submit_handled</code> option of <code>uijet</code> is 
     
         
         <div class="tag-source">
-            uijet.js, line 595
+            uijet.js, line 589
         </div>
         
     </div>
@@ -5887,7 +5958,8 @@ removed element if <code>reinsert</code> is <code>true</code>, otherwise <code>t
     
     <div class="description">
         <p>Placeholder for rendering logic.</p>
-<h4>Signals:</h4><ul>
+<h4 id="signals-">Signals:</h4>
+<ul>
 <li><code>pre_render</code>: triggered at the beginning.</li>
 </ul>
     </div>
@@ -5971,7 +6043,8 @@ removed element if <code>reinsert</code> is <code>true</code>, otherwise <code>t
 <code>target</code> can be an <code>HTMLElement</code> or a query selector to be found
 inside the instance's element.
 It can also be a function that returns a wrapped element.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>click_event</code>: space separated event types to use for triggering selection. Defaults to <code>uijet.support.click_events.full</code>.</li>
 </ul>
     </div>
@@ -6260,7 +6333,8 @@ Either using a map of properties or key and a value.</p>
     
     <div class="description">
         <p>Sets <code>this.$element</code>.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>element</code>: the element to use as either query selector, element object, wrapped element, or a function returning one of the above.</li>
 </ul>
     </div>
@@ -6394,7 +6468,8 @@ Either using a map of properties or key and a value.</p>
         <p>Sets <code>this.id</code>.</p>
 <p>First attempts to check <code>options</code>, then falls back to the element's <code>id</code> attribute,
 then to calling <a href="BaseWidget.html#_generateId"><code>BaseWidget#_generateId</code></a>.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>id</code>: the id to use.</li>
 </ul>
     </div>
@@ -6475,7 +6550,8 @@ then to calling <a href="BaseWidget.html#_generateId"><code>BaseWidget#_generate
     
     <div class="description">
         <p>Perform initialization tasks based on <code>this.options</code>.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>signals</code>: <a href="BaseWidget.html#listen"><code>BaseWidget#listen</code></a>s to each of the specified events.</li>
 <li><code>dom_events</code>: prepares all specified DOM events for <a href="BaseWidget.html#bind"><code>BaseWidget#bind</code></a>ing.</li>
 <li><code>app_events</code>: <a href="BaseWidget.html#subscribe"><code>BaseWidget#subscribe</code></a>s to each of the specified events.</li>
@@ -6687,10 +6763,12 @@ A <em>lifecycle method</em>, hides the widget and removes all
 DOM events from it.
 Every contained widget will also be stopped and this
 will continue trickling down recursively.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>destroy_on_sleep</code>: if <code>true</code> this widget will self destruct when put to sleep.</li>
 </ul>
-<h4>Signals:</h4><ul>
+<h4 id="signals-">Signals:</h4>
+<ul>
 <li><code>pre_sleep</code>: triggered at the beginning of this instance is awake.</li>
 <li><code>post_sleep</code>: triggered at the end of this instance is awake.</li>
 <li><code>bind_on_wake</code>: if <code>true</code> all <code>dom_events</code> will be unbound from the <code>this.$element</code> on every sleep.</li>
@@ -7072,7 +7150,7 @@ the result of <code>uijet.utils#getStyle</code> or <code>this</code>.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 618
+            uijet.js, line 612
         </div>
         
     </div>
@@ -7496,7 +7574,7 @@ instance's <code>config</code> or were later attached using <a href="BaseWidget.
     
         
         <div class="tag-source">
-            uijet.js, line 521
+            uijet.js, line 515
         </div>
         
     </div>
@@ -7705,7 +7783,7 @@ If no <code>topic</code> is given then removes all handlers.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 635
+            uijet.js, line 629
         </div>
         
     </div>
@@ -7883,14 +7961,16 @@ a recursive action that wakes the whole widgets branch downwards.</p>
 <p>Takes an optional <code>context</code> parameter that will be passed to
 <a href="BaseWidget.html#setContext"><code>BaseWidget#setContext</code></a> if it is an <code>Object</code>, to <code>pre_wake</code> and
 <code>post_wake</code> signals and to <a href="BaseWidget.html#wakeContained"><code>BaseWidget#wakeContained</code></a>.</p>
-<h4>Signals:</h4><ul>
+<h4 id="signals-">Signals:</h4>
+<ul>
 <li><code>pre_wake</code>: triggered before waking of contained widgets, takes <code>wake()</code>'s <code>context</code> param as argument.
 If it returns <code>false</code> the instance will not call <a href="BaseWidget.html#render"><code>BaseWidget#render</code></a>.</li>
 <li><code>post_wake</code>: triggered at the end of a successful wake, takes <code>wake()</code>'s <code>context</code> param as argument.</li>
 <li><code>wake_failed</code>: triggered at the end of a failed wake, takes all arguments of the rejected <a href="BaseWidget.html#wakeContained"><code>BaseWidget#wakeContained</code></a>,
 or <code>render()</code> call. If it returns a truthy value <code>wake()</code> will be invoked again, otherwise <code>sleep()</code>.</li>
 </ul>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>sync</code>: when <code>true</code> a successful starting sequence will only begin once all promises returned by <code>wake()</code> calls
 of all child components are resolved. Otherwise, will start immediately.</li>
 <li><code>bind_on_wake</code>: if <code>true</code> all <code>dom_events</code> will be bound to the <code>this.$element</code> on every wake.</li>
@@ -8013,7 +8093,7 @@ when all contained widgets successfully wake or rejected in case of error.</li>
             
                 <span class="inherited"><a href="BaseWidget.html#wakeContained">inherited</a></span>
             
-            wakeContained<span class="signature">(<span class="optional">context</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array.&lt;Promise>}</span>
+            wakeContained<span class="signature">(<span class="optional">context</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise[]}</span>
         </h4>
     
         
@@ -8154,7 +8234,7 @@ calls of the contained widgets.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Thu Sep 04 2014 19:42:11 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha4</a> on Fri Nov 07 2014 23:57:12 GMT+0200 (IST)
         </footer>
     </div>
 </div>

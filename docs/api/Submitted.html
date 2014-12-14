@@ -129,8 +129,6 @@
         
             <li class="static" data-name="uijet.Factory"><a href="uijet.html#Factory">Factory</a></li>
         
-            <li class="static" data-name="uijet.importModules"><a href="uijet.html#importModules">importModules</a></li>
-        
             <li class="static" data-name="uijet.init"><a href="uijet.html#init">init</a></li>
         
             <li class="static" data-name="uijet.Mixin"><a href="uijet.html#Mixin">Mixin</a></li>
@@ -334,6 +332,33 @@
                             <ul>
                                 
 
+    <li class="item" data-name="module:binding/rivets">
+        <span class="title">
+            <a href="rivets.html">binding/rivets</a>
+            
+        </span>
+        <ul class="members itemMembers">
+        
+        </ul>
+        <ul class="typedefs itemMembers">
+        
+        </ul>
+        <ul class="methods itemMembers">
+        
+        <span class="subtitle">Methods</span>
+        
+            <li class="" data-name="module:binding/rivets#bindData"><a href="rivets.html#bindData">bindData</a></li>
+        
+            <li class="" data-name="module:binding/rivets#destroy"><a href="rivets.html#destroy">destroy</a></li>
+        
+            <li class="" data-name="module:binding/rivets#register"><a href="rivets.html#register">register</a></li>
+        
+        </ul>
+        <ul class="events itemMembers">
+        
+        </ul>
+    </li>
+
     <li class="item" data-name="module:binding/rivets-backbone">
         <span class="title">
             <a href="rivets-backbone.html">binding/rivets-backbone</a>
@@ -352,8 +377,6 @@
             <li class="" data-name="module:binding/rivets-backbone#bindData"><a href="rivets-backbone.html#bindData">bindData</a></li>
         
             <li class="" data-name="module:binding/rivets-backbone#destroy"><a href="rivets-backbone.html#destroy">destroy</a></li>
-        
-            <li class="" data-name="module:binding/rivets-backbone#register"><a href="rivets-backbone.html#register">register</a></li>
         
         </ul>
         <ul class="events itemMembers">
@@ -570,6 +593,38 @@
         
         </ul>
         <ul class="methods itemMembers">
+        
+        </ul>
+        <ul class="events itemMembers">
+        
+        </ul>
+    </li>
+
+
+                            </ul>
+                        </li>
+                        
+                        <li class="item item-subcategory" data-name="Loader">
+                            <span class="subcategory">Loader</span>
+                            <ul>
+                                
+
+    <li class="item" data-name="module:loader/requirejs">
+        <span class="title">
+            <a href="requirejs.html">loader/requirejs</a>
+            
+        </span>
+        <ul class="members itemMembers">
+        
+        </ul>
+        <ul class="typedefs itemMembers">
+        
+        </ul>
+        <ul class="methods itemMembers">
+        
+        <span class="subtitle">Methods</span>
+        
+            <li class="" data-name="module:loader/requirejs#importModules"><a href="requirejs.html#importModules">importModules</a></li>
         
         </ul>
         <ul class="events itemMembers">
@@ -2080,7 +2135,8 @@
     <div class="description">
         <p>Serializes the instance's state and returns the data.
 This is just a stub that needs to be implemented and set to the <code>serializer</code> option.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>serializer</code>: a function that will serialize the state and will be used instead of this stub.</li>
 </ul>
     </div>
@@ -2218,7 +2274,8 @@ data.</li>
         <p>Gets the URI to use for submitting the request or routing to.
 Takes an optional context to use for parsing the URI, defaults to
 the <code>context</code> of the instance.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>submit_url</code>: a URI to submit the data to. This can be a <code>string</code>, an <code>Object</code> in the
 form of <code>{ path: String, method: String}</code> ({@see uijet.utils#parseRestUrl}), a template to format or
 <code>function</code> returning one of the above.</li>
@@ -2357,7 +2414,8 @@ REST URI to use for request/route.</li>
     <div class="description">
         <p>Sets <a href="Submitted.html#getSerialized"><code>Submitted#getSerialized</code></a> with the <code>serializer</code> option.
 This function will serialize the instance.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>serializer</code>: <code>function</code> that serializes the instance and returns the data.</li>
 </ul>
     </div>
@@ -2438,7 +2496,8 @@ This function will serialize the instance.</p>
         <p>Submits the element's serialized data.
 The data is first validated and then either published as a route,
 or sent as a request to a remote URI.</p>
-<h4>Signals:</h4><ul>
+<h4 id="signals-">Signals:</h4>
+<ul>
 <li><code>pre_submit</code>: triggered after validation passed. Optionally may return a context object passed on as an
 argument to <a href="Submitted.html#getSubmitUrl"><code>Submitted#getSubmitUrl</code></a>.</li>
 <li><code>post_submit_data</code>: triggered in the success handler for the (XHR) submission request.
@@ -2448,13 +2507,15 @@ Takes the arguments of the fail handler.</li>
 <li><code>not_valid</code>: triggered after validation failed. Takes the failure object of failing field(s) and message(s)
 and the the data submitted for validation.</li>
 </ul>
-<h4>App events:</h4><ul>
+<h4 id="app-events-">App events:</h4>
+<ul>
 <li><code>&lt;this.id&gt;.submitted</code>: published if there's no <code>submit_url</code> or if <code>route_submit</code> is <code>true</code> and
 router module is not loaded. Takes the serialized data.</li>
 <li><code>&lt;this.id&gt;.post_submit_data</code>: published at the end of a successful response of a submission via request.
 Takes the response object.</li>
 </ul>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>route_submit</code>: if <code>true</code> attempts to submit the serialized data via routing, if a router module is loaded.
 If not it will fallback to publishing an event named <code>&lt;this.id&gt;.submitted</code> with the serialized data.</li>
 <li><code>submit_xhr_config</code>: a config object to override config of the XHR sent on submission.</li>
@@ -2592,7 +2653,8 @@ form of <code>{ path: String, method: String}</code> ({@see uijet.utils#parseRes
         <p>Validates the raw data coming from <a href="Submitted.html#getSerialized"><code>Submitted#getSerialized</code></a>.
 Every function should return a <code>string</code> of error message in case of failure, otherwise
 it's considered valid.</p>
-<h4>Related options:</h4><ul>
+<h4 id="related-options-">Related options:</h4>
+<ul>
 <li><code>validators</code>: map of field names to validation functions. Each function should return an
 error message string in case of validation error, otherwise it is considered passed.</li>
 </ul>
@@ -2716,7 +2778,7 @@ rejected the handler will be sent a object mapping failed field names to error m
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Thu Sep 04 2014 19:42:12 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha4</a> on Fri Nov 07 2014 23:57:13 GMT+0200 (IST)
         </footer>
     </div>
 </div>

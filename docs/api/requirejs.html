@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Module: promises/es6</title>
+    <title>Module: loader/requirejs</title>
     
     
     
@@ -2037,7 +2037,7 @@
             <label>Private: <input type="checkbox" name="private"/></label>
             <label>Inner: <input type="checkbox" name="inner"/></label>
         </div>
-        <h1 class="page-title" data-longname="module:promises/es6" data-filename="es6.html">Module: promises/es6</h1>
+        <h1 class="page-title" data-longname="module:loader/requirejs" data-filename="requirejs.html">Module: loader/requirejs</h1>
         
 
 
@@ -2046,7 +2046,7 @@
     
 <header>
     <h2>
-    promises/es6
+    loader/requirejs
     </h2>
     
 </header>  
@@ -2057,7 +2057,7 @@
     
     
         
-            <div class="description"><p>ES6-Promise promises module.</p></div>
+            <div class="description"><p>RequireJS loader module.</p></div>
         
         
         
@@ -2084,7 +2084,7 @@
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise</a></li>
+            <li><a href="http://requirejs.org/">http://requirejs.org/</a></li>
         </ul>
     </dd>
     
@@ -2122,14 +2122,14 @@
             
 <dt class="">
     <div class="nameContainer">
-        <h4 class="name" id="defer">
+        <h4 class="name" id="importModules">
             
-            defer<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+            importModules<span class="signature">(modules, <span class="optional">callback</span>, <span class="optional">error</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{*}</span>
         </h4>
     
         
         <div class="tag-source">
-            modules/promises/es6.js, line 31
+            modules/loader/requirejs.js, line 20
         </div>
         
     </div>
@@ -2140,94 +2140,9 @@
     
     
     <div class="description">
-        <p>Constructs a deferred object.</p>
-<p>This object will have the following methods:</p>
-<ul>
-<li><code>resolve</code>: resolves the contained Promise.</li>
-<li><code>reject</code>: rejects the contained Promise.</li>
-<li><code>promise</code>: returns the contained Promise object of this deferred.</li>
-</ul>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-<h5>Returns:</h5>
-deferred object.</li>
-</ul>
-<br />
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="isPromise">
-            
-            isPromise<span class="signature">(obj)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{boolean}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            modules/promises/es6.js, line 92
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Whether the given <code>obj</code> argument is a Promise like object (thenable).</p>
+        <p>Imports all missing modules
+If there's nothing to load or AMD isn't in use it returns the call to <code>callback</code> OR <code>uijet</code>.
+Returns either the result of calling <code>callback</code> or simply <code>uijet</code>.</p>
     </div>
     
 
@@ -2258,13 +2173,13 @@ deferred object.</li>
 	
         <tr>
             
-                <td class="name"><code>obj</code></td>
+                <td class="name"><code>modules</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">*</span>
+<span class="param-type">Object</span>
 
 
             
@@ -2274,88 +2189,77 @@ deferred object.</li>
             
             <td class="description last">
                 
-                <p>argument to check.</p></td>
+                    
+                    
+                        
+                    
+                
+                <p>a map of module paths to list of module/file names to load.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>callback</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>a callback to run once the modules are loaded.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>error</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>an error callback to run if loading failed.</p></td>
         </tr>
 	
 	
 	</tbody>
 </table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="Promise">
-            
-            Promise<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            modules/promises/es6.js, line 21
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Constructs a promise object.</p>
-    </div>
-    
-
-    
-    
-    
-    
     
     
     
@@ -2382,624 +2286,9 @@ deferred object.</li>
     <dt class="tag-see">See:</dt>
     <dd class="tag-see">
         <ul>
-            <li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise</a></li>
+            <li><a href="http://requirejs.org/docs/api.html#jsfiles">http://requirejs.org/docs/api.html#jsfiles</a></li>
         </ul>
     </dd>
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-<h5>Returns:</h5>
-Promise object.</li>
-</ul>
-<br />
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="race">
-            
-            race<span class="signature">(promises)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            modules/promises/es6.js, line 82
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Returns a promise that resolves or rejects
-as soon as one of the promises in the iterable
-resolves or rejects, with the value or reason from that promise.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>promises</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Promise[]</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>array of Promises.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="reject">
-            
-            reject<span class="signature">(reason)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            modules/promises/es6.js, line 74
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Returns a Promise object that is rejected with the given reason.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>reason</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Error</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>the reason for rejecting the Promise.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="reject">
-            
-            reject<span class="signature">(reason)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            modules/promises/rsvp.js, line 75
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Returns a Promise object that is rejected with the given reason.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>reason</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Error</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>the reason for rejecting the Promise.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="when">
-            
-            when<span class="signature">(value)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            modules/promises/es6.js, line 65
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Converts any given argument into a Promise.
-If that argument is a Promise it returns it.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>value</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">*</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>value or promise to convert into a thenable.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="whenAll">
-            
-            whenAll<span class="signature">(promises)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            modules/promises/es6.js, line 55
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Returns a Promise that is resolved once all
-Promises in the <code>promises</code> list are resolved,
-or rejected if one of those is rejected.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>promises</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>array of Promises and/or values.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     

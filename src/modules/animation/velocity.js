@@ -38,7 +38,6 @@
          * @param {function} [callback] - callback to invoke at end of transition.
          * @returns {uijet}
          */
-        //TODO: implement support for Sequences as transitions: http://julian.com/research/velocity/#sequences
         transit             : function (widget, direction, callback) {
             var transit_type = widget.options.transition || this.options.transition,
                 $el = (widget.$wrapper || widget.$element),
