@@ -13,26 +13,6 @@
     }
 }(this, function (uijet, rivets) {
 
-    var base_publish = rivets.adapters['.'].publish,
-        base_subscribe = rivets.adapters['.'].subscribe,
-        UIJET_VIEWS_ATTR = '__uijet_views__';
-
-    rivets.adapters['.'].subscribe = function (obj, keypath, callback) {
-        var result = base_subscribe.apply(this, arguments);
-        console.log(obj, keypath, callback);
-        return result
-    };
-    rivets.adapters['.'].publish = function (obj, keypath, value) {
-        var result = base_publish.apply(this, arguments),
-            views = obj[UIJET_VIEWS_ATTR],
-            i = 0,
-            view;
-        for ( ; view = views[i]; i++ ) {
-            view.notify(keypath, value);
-        }
-        return result;
-    };
-
     /**
      * Rivets binding module.
      *
@@ -137,10 +117,8 @@
                     if ( typeof resource == 'string' ) {
                         // add it to observables under its name 
                         observables[resource] = this.resource || uijet.Resource(resource);
-//                        this._observeResource(observables[resource]);
                     }
                     else {
-//                        this._observeResource(resource);
                         // implicitly skip
                         // we're probably handling observation in a higher level, i.e. "each-/repeat-" binding
                         return this;
@@ -162,7 +140,6 @@
                         // use that name to fetch a resource
                         observables[k] = observable = uijet.Resource(observable);
                     }
-//                    this._observeResource(observable);
                 }
 
                 if ( add_self ) {
@@ -185,32 +162,6 @@
                     if ( bindings.hasOwnProperty(keypath) ) {
                         this.listen(keypath, bindings[keypath]);
                     }
-                }
-            }
-            return this;
-        },
-        _observeResource: function (resource) {
-            var views;
-
-            resource = resource || this.resource;
-
-            if ( ! (views = resource[UIJET_VIEWS_ATTR]) ) {
-                views = resource[UIJET_VIEWS_ATTR] = [];
-            }
-            if ( !~views.indexOf(this) ) {
-                views.push(this);
-            }
-            return this;
-        },
-        _unobserveResource: function (resource) {
-            var views, index;
-
-            resource = resource || this.resource;
-
-            if ( views = resource[UIJET_VIEWS_ATTR] ) {
-                index = views.indexOf(this);
-                if ( ~ index ) {
-                    views.splice(index, 1);
                 }
             }
             return this;
