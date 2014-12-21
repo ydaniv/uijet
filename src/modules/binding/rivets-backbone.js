@@ -4,12 +4,12 @@
             'uijet_dir/uijet',
             'rivets',
             'uijet_dir/modules/data/backbone'
-        ], function (uijet, rivets) {
-            return factory(uijet, rivets);
+        ], function (uijet, rivets, Backbone) {
+            return factory(uijet, rivets, Backbone);
         });
     }
     else {
-        factory(uijet, root.rivets);
+        factory(uijet, root.rivets, root.Backbone);
     }
 }(this, function (uijet, rivets, Backbone) {
 
