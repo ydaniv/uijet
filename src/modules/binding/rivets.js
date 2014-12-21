@@ -26,39 +26,18 @@
     uijet.utils.extendProto(uijet.BaseWidget.prototype, {
         /**
          * Triggers data binding on `init()`.
-         * 
+         *
          * #### Related options:
-         * 
+         *
          * * `dont_bind`: if `true` prevents from `bindData()` to be invoked here during `init()` stage.
          * If this instance is `Templated` then `bindData()` is never called here.
-         * 
+         *
          * @method module:binding/rivets#register
          * @returns {Widget} this
          */
         register: function () {
-            var resource, resource_name;
             this._super.apply(this, arguments);
 
-            if ( resource = this.options.resource ) {
-                if ( typeof resource == 'string' ) {
-                    this.resource = uijet.Resource(resource);
-    
-                    if ( ! resource_name ) {
-                        resource_name = resource;
-                    }
-                }
-                else {
-                    this.resource = resource;
-    
-                    if ( ! resource_name ) {
-                        resource_name = this.id + '_data';
-                    }
-                }
-
-                this._resource_name = resource_name;
-
-                this.bindDataEvents();
-            }
 
             if ( ! this.options.dont_bind && ! this.templated ) {
                 this.bindData();
@@ -68,7 +47,7 @@
         },
         /**
          * Unbinds the data from the view
-         * 
+         *
          * @see {@link http://www.rivetsjs.com/docs/#getting-started}
          * @method module:binding/rivets#destroy
          * @returns {Widget} this
@@ -84,9 +63,9 @@
         },
         /**
          * Binds the data to the view.
-         * 
+         *
          * The bound view is cached on the instance in `this.rv_view`.
-         * 
+         *
          * #### Related options:
          * * `observe`: map, or a function returning one, of model names to use in bindings to the objects they observe.
          * If a value in that map is a `string` it is used to fetch a registered resource.
@@ -95,7 +74,7 @@
          * * `bind_options`: config object passed to {@link http://www.rivetsjs.com/docs/#getting-started-creating-views|Rivets.bind()}.
          * * `observe_self`: if `true` then the instance itself (`this`) will be observed under `this.id` as a namespace.
          * * `observe_context`: if `true` then the instance's context will be observed under `this.id` as a namespace.
-         * 
+         *
          * @see {@link http://www.rivetsjs.com/docs/}
          * @method module:binding/rivets#bindData
          * @returns {Widget} this
@@ -115,7 +94,7 @@
                 if ( resource ) {
                     // if resource is a name in resources registry
                     if ( typeof resource == 'string' ) {
-                        // add it to observables under its name 
+                        // add it to observables under its name
                         observables[resource] = this.resource || uijet.Resource(resource);
                     }
                     else {
