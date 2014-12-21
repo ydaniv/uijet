@@ -378,6 +378,8 @@
         
             <li class="" data-name="module:binding/rivets-backbone#destroy"><a href="rivets-backbone.html#destroy">destroy</a></li>
         
+            <li class="" data-name="module:binding/rivets-backbone#register"><a href="rivets-backbone.html#register">register</a></li>
+        
         </ul>
         <ul class="events itemMembers">
         
@@ -1105,8 +1107,6 @@
         
             <li class="" data-name="BaseWidget#prepareElement"><a href="BaseWidget.html#prepareElement">prepareElement</a></li>
         
-            <li class="" data-name="BaseWidget#register"><a href="BaseWidget.html#register">register</a></li>
-        
             <li class="" data-name="BaseWidget#remove"><a href="BaseWidget.html#remove">remove</a></li>
         
             <li class="" data-name="BaseWidget#render"><a href="BaseWidget.html#render">render</a></li>
@@ -1132,8 +1132,6 @@
             <li class="" data-name="BaseWidget#unbind"><a href="BaseWidget.html#unbind">unbind</a></li>
         
             <li class="" data-name="BaseWidget#unbindAll"><a href="BaseWidget.html#unbindAll">unbindAll</a></li>
-        
-            <li class="" data-name="BaseWidget#unregister"><a href="BaseWidget.html#unregister">unregister</a></li>
         
             <li class="" data-name="BaseWidget#wake"><a href="BaseWidget.html#wake">wake</a></li>
         
@@ -2169,7 +2167,7 @@
     
         
         <div class="tag-source">
-            widgets/Base.js, line 893
+            widgets/Base.js, line 864
         </div>
         
     </div>
@@ -2309,7 +2307,7 @@ result of calling <code>appear()</code>, which could be a <code>Promise</code>.<
     
         
         <div class="tag-source">
-            widgets/Base.js, line 1007
+            widgets/Base.js, line 978
         </div>
         
     </div>
@@ -2387,7 +2385,7 @@ result of calling <code>appear()</code>, which could be a <code>Promise</code>.<
     
         
         <div class="tag-source">
-            widgets/Base.js, line 1113
+            widgets/Base.js, line 1084
         </div>
         
     </div>
@@ -2470,7 +2468,7 @@ e.g. results from calling <a href="BaseWidget.html#render"><code>BaseWidget#rend
     
         
         <div class="tag-source">
-            widgets/Base.js, line 932
+            widgets/Base.js, line 903
         </div>
         
     </div>
@@ -2630,7 +2628,7 @@ result of another call to <code>wake()</code> or a rejected <code>Promise</code>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 1136
+            widgets/Base.js, line 1107
         </div>
         
     </div>
@@ -2711,7 +2709,7 @@ lifecycle stage - e.g. <code>pre_render</code>, to be triggerable again call thi
     
         
         <div class="tag-source">
-            widgets/Base.js, line 954
+            widgets/Base.js, line 925
         </div>
         
     </div>
@@ -2794,7 +2792,7 @@ generated id.</li>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 1032
+            widgets/Base.js, line 1003
         </div>
         
     </div>
@@ -2876,7 +2874,7 @@ when <code>true</code>, or vise versa if falsy.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 670
+            uijet.js, line 742
         </div>
         
     </div>
@@ -3017,7 +3015,7 @@ parsed handler.</li>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 1095
+            widgets/Base.js, line 1066
         </div>
         
     </div>
@@ -3097,7 +3095,7 @@ should not be touched when rendering the contents of the widget.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 1078
+            widgets/Base.js, line 1049
         </div>
         
     </div>
@@ -3232,7 +3230,7 @@ Used for hiding the widget from view while it is asleep.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 976
+            widgets/Base.js, line 947
         </div>
         
     </div>
@@ -3392,7 +3390,7 @@ Used for hiding the widget from view while it is asleep.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 636
+            widgets/Base.js, line 607
         </div>
         
     </div>
@@ -3552,7 +3550,7 @@ or as a default a topic that will be published as an
     
         
         <div class="tag-source">
-            widgets/Base.js, line 694
+            widgets/Base.js, line 665
         </div>
         
     </div>
@@ -3631,7 +3629,7 @@ or were later attached using <a href="BaseWidget.html#bind"><code>BaseWidget#bin
     
         
         <div class="tag-source">
-            widgets/Base.js, line 387
+            widgets/Base.js, line 358
         </div>
         
     </div>
@@ -3714,7 +3712,7 @@ A <em>lifecycle method</em>, destroys the instance and all its contained widgets
     
         
         <div class="tag-source">
-            widgets/Base.js, line 408
+            widgets/Base.js, line 379
         </div>
         
     </div>
@@ -4010,7 +4008,7 @@ html string.</li>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 215
+            widgets/Base.js, line 186
         </div>
         
     </div>
@@ -4146,7 +4144,7 @@ value of the <code>key</code> or the <code>context</code> object.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 564
+            uijet.js, line 599
         </div>
         
     </div>
@@ -4473,7 +4471,7 @@ set, it will be automatically set to the <code>id</code> of this widget.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 502
+            uijet.js, line 537
         </div>
         
     </div>
@@ -4619,7 +4617,7 @@ set, it will be automatically set to the <code>id</code> of this widget.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 541
+            uijet.js, line 576
         </div>
         
     </div>
@@ -4818,7 +4816,7 @@ result of the triggered handler or <code>undefined</code>.</li>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 487
+            widgets/Base.js, line 458
         </div>
         
     </div>
@@ -4955,7 +4953,7 @@ using CSS, unless dynamic run-time dimensions calculation is required.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 428
+            widgets/Base.js, line 399
         </div>
         
     </div>
@@ -5039,7 +5037,7 @@ using CSS, unless dynamic run-time dimensions calculation is required.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 648
+            uijet.js, line 683
         </div>
         
     </div>
@@ -5190,86 +5188,6 @@ If <code>data</code> is supplied it is handed over to the handler as an argument
             
 <dt class="inherited ">
     <div class="nameContainer inherited">
-        <h4 class="name" id="register">
-            
-                <span class="inherited"><a href="BaseWidget.html#register">inherited</a></span>
-            
-            register<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Widget}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            widgets/Base.js, line 187
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Registers the widget into uijet's sandbox.</p>
-<p><strong>note</strong>: It is recommended to call <code>this._super()</code> first thing
-when overriding this method, to make sure the widget is in the sandbox.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="inherited ">
-    <div class="nameContainer inherited">
         <h4 class="name" id="releaseSignal">
             
                 <span class="inherited"><a href="uijet.Base.html#releaseSignal">inherited</a></span>
@@ -5279,7 +5197,7 @@ when overriding this method, to make sure the widget is in the sandbox.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 589
+            uijet.js, line 624
         </div>
         
     </div>
@@ -5409,7 +5327,7 @@ result of signal handler's call.</li>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 874
+            widgets/Base.js, line 845
         </div>
         
     </div>
@@ -5626,7 +5544,7 @@ removed element if <code>reinsert</code> is <code>true</code>, otherwise <code>t
     
         
         <div class="tag-source">
-            widgets/Base.js, line 745
+            widgets/Base.js, line 716
         </div>
         
     </div>
@@ -5761,7 +5679,7 @@ It can also be a function that returns a wrapped element.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 228
+            widgets/Base.js, line 199
         </div>
         
     </div>
@@ -5918,7 +5836,7 @@ Either using a map of properties or key and a value.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 855
+            widgets/Base.js, line 826
         </div>
         
     </div>
@@ -6050,7 +5968,7 @@ Either using a map of properties or key and a value.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 835
+            widgets/Base.js, line 806
         </div>
         
     </div>
@@ -6133,7 +6051,7 @@ then to calling <a href="BaseWidget.html#_generateId"><code>BaseWidget#_generate
     
         
         <div class="tag-source">
-            widgets/Base.js, line 786
+            widgets/Base.js, line 757
         </div>
         
     </div>
@@ -6217,7 +6135,7 @@ then to calling <a href="BaseWidget.html#_generateId"><code>BaseWidget#_generate
     
         
         <div class="tag-source">
-            widgets/Base.js, line 761
+            widgets/Base.js, line 732
         </div>
         
     </div>
@@ -6341,7 +6259,7 @@ declaration.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 341
+            widgets/Base.js, line 312
         </div>
         
     </div>
@@ -6483,7 +6401,7 @@ will continue trickling down recursively.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 370
+            widgets/Base.js, line 341
         </div>
         
     </div>
@@ -6561,7 +6479,7 @@ will continue trickling down recursively.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 459
+            widgets/Base.js, line 430
         </div>
         
     </div>
@@ -6742,7 +6660,7 @@ the result of <code>uijet.utils#getStyle</code> or <code>this</code>.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 612
+            uijet.js, line 647
         </div>
         
     </div>
@@ -6896,7 +6814,7 @@ handler will be passed to that method/signal handler.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 671
+            widgets/Base.js, line 642
         </div>
         
     </div>
@@ -7087,7 +7005,7 @@ the second argument should be the <code>handler</code>.</p>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 718
+            widgets/Base.js, line 689
         </div>
         
     </div>
@@ -7166,7 +7084,7 @@ instance's <code>config</code> or were later attached using <a href="BaseWidget.
     
         
         <div class="tag-source">
-            uijet.js, line 515
+            uijet.js, line 550
         </div>
         
     </div>
@@ -7288,84 +7206,6 @@ If no <code>topic</code> is given then removes all handlers.</p>
             
 <dt class="inherited ">
     <div class="nameContainer inherited">
-        <h4 class="name" id="unregister">
-            
-                <span class="inherited"><a href="BaseWidget.html#unregister">inherited</a></span>
-            
-            unregister<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Widget}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            widgets/Base.js, line 201
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Unregisters the widget from uijet's sandbox.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="inherited ">
-    <div class="nameContainer inherited">
         <h4 class="name" id="unsubscribe">
             
                 <span class="inherited"><a href="uijet.Base.html#unsubscribe">inherited</a></span>
@@ -7375,7 +7215,7 @@ If no <code>topic</code> is given then removes all handlers.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 629
+            uijet.js, line 664
         </div>
         
     </div>
@@ -7534,7 +7374,7 @@ If <code>handler</code> is not supplied then the handler that is currently regis
     
         
         <div class="tag-source">
-            widgets/Base.js, line 261
+            widgets/Base.js, line 232
         </div>
         
     </div>
@@ -7688,7 +7528,7 @@ when all contained widgets successfully wake or rejected in case of error.</li>
     
         
         <div class="tag-source">
-            widgets/Base.js, line 316
+            widgets/Base.js, line 287
         </div>
         
     </div>
@@ -7824,7 +7664,7 @@ calls of the contained widgets.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sat Dec 20 2014 10:33:30 GMT+0200 (IST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Dec 21 2014 12:38:18 GMT+0200 (IST)
         </footer>
     </div>
 </div>
