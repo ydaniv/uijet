@@ -502,7 +502,7 @@
          * * `resource_name`: a key to use when referencing the model's attributes form the `context` object.
          * Defaults to the `resource` option if it's a `string`, otherwise to `'<this.id>_data'`.
          *
-         * @methodOf uijet.Base
+         * @method uijet.Base#register
          * @returns {uijet.Base}
          */
         register        : function () {
@@ -517,7 +517,7 @@
         /**
          * Unregisters the widget from uijet's sandbox.
          *
-         * @methodOf uijet.Base
+         * @method uijet.Base#unregister
          * @returns {uijet.Base}
          */
         unregister      : function () {
@@ -694,7 +694,7 @@
          * Defaults to the `resource` option if it's a `string`, otherwise to `'<this.id>_data'`.
          *
          * @private
-         * @methodOf uijet.Base
+         * @method uijet.Base#_setResource
          * @returns {uijet.Base}
          */
         _setResource : function () {
