@@ -56,8 +56,6 @@
             if ( this.rv_view ) {
                 this.rv_view.unbind();
             }
-            //TODO: remove this view from all observed resources
-//            this._unobserveResource();
 
             return this._super.apply(this, arguments);
         },
@@ -128,20 +126,6 @@
 
                 // bind and hold on to the bound view
                 this.rv_view = rivets.bind(this.$wrapper || this.$element, observables, this.options.bind_options);
-            }
-            return this;
-        },
-        bindDataEvents  : function () {
-            var bindings = 'data_events' in this.options ?
-                    this.options.data_events : uijet.options.data_events,
-                keypath;
-
-            if ( bindings ) {
-                for ( keypath in bindings ) {
-                    if ( bindings.hasOwnProperty(keypath) ) {
-                        this.listen(keypath, bindings[keypath]);
-                    }
-                }
             }
             return this;
         }
