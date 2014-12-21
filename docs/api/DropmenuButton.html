@@ -62,6 +62,8 @@
         
             <li class="private" data-name="uijet.Base#_parseHandler"><a href="uijet.Base.html#_parseHandler">_parseHandler</a></li>
         
+            <li class="private" data-name="uijet.Base#_setResource"><a href="uijet.Base.html#_setResource">_setResource</a></li>
+        
             <li class="" data-name="uijet.Base#holdSignal"><a href="uijet.Base.html#holdSignal">holdSignal</a></li>
         
             <li class="" data-name="uijet.Base#listen"><a href="uijet.Base.html#listen">listen</a></li>
@@ -70,11 +72,15 @@
         
             <li class="" data-name="uijet.Base#publish"><a href="uijet.Base.html#publish">publish</a></li>
         
+            <li class="" data-name="uijet.Base#register"><a href="uijet.Base.html#register">register</a></li>
+        
             <li class="" data-name="uijet.Base#releaseSignal"><a href="uijet.Base.html#releaseSignal">releaseSignal</a></li>
         
             <li class="" data-name="uijet.Base#subscribe"><a href="uijet.Base.html#subscribe">subscribe</a></li>
         
             <li class="" data-name="uijet.Base#unlisten"><a href="uijet.Base.html#unlisten">unlisten</a></li>
+        
+            <li class="" data-name="uijet.Base#unregister"><a href="uijet.Base.html#unregister">unregister</a></li>
         
             <li class="" data-name="uijet.Base#unsubscribe"><a href="uijet.Base.html#unsubscribe">unsubscribe</a></li>
         
@@ -3215,6 +3221,89 @@ Used for hiding the widget from view while it is asleep.</p>
             
 <dt class="inherited private">
     <div class="nameContainer inherited">
+        <h4 class="name" id="_setResource">
+            
+                <span class="inherited"><a href="uijet.Base.html#_setResource">inherited</a></span>
+            
+            <span class="type-signature ">private</span>_setResource<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="uijet.Base.html">uijet.Base</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            uijet.js, line 687
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Assigns the resource to <code>this.resource</code>.</p>
+<h4>Related options:</h4><ul>
+<li><code>resource</code>: a name of a registered resource or an object to use as a resource.</li>
+<li><code>resource_name</code>: a key to use when referencing the model's attributes form the <code>context</code> object.
+Defaults to the <code>resource</code> option if it's a <code>string</code>, otherwise to <code>'&lt;this.id&gt;_data'</code>.</li>
+</ul>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="inherited private">
+    <div class="nameContainer inherited">
         <h4 class="name" id="_wrap">
             
                 <span class="inherited"><a href="BaseWidget.html#_wrap">inherited</a></span>
@@ -5616,6 +5705,91 @@ If <code>data</code> is supplied it is handed over to the handler as an argument
             
 <dt class="inherited ">
     <div class="nameContainer inherited">
+        <h4 class="name" id="register">
+            
+                <span class="inherited"><a href="uijet.Base.html#register">inherited</a></span>
+            
+            register<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="uijet.Base.html">uijet.Base</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            uijet.js, line 493
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Registers the widget into uijet's sandbox and sets the instance's resource.</p>
+<p><strong>note</strong>: It is recommended to call <code>this._super()</code> first thing
+when overriding this method, to make sure the widget is in the sandbox.</p>
+<h4>Related options:</h4><ul>
+<li><code>resource</code>: a name of a registered resource or an object to use as a resource.</li>
+<li><code>resource_name</code>: a key to use when referencing the model's attributes form the <code>context</code> object.
+Defaults to the <code>resource</code> option if it's a <code>string</code>, otherwise to <code>'&lt;this.id&gt;_data'</code>.</li>
+</ul>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="inherited ">
+    <div class="nameContainer inherited">
         <h4 class="name" id="releaseSignal">
             
                 <span class="inherited"><a href="uijet.Base.html#releaseSignal">inherited</a></span>
@@ -7577,6 +7751,84 @@ If no <code>topic</code> is given then removes all handlers.</p>
             
 <dt class="inherited ">
     <div class="nameContainer inherited">
+        <h4 class="name" id="unregister">
+            
+                <span class="inherited"><a href="uijet.Base.html#unregister">inherited</a></span>
+            
+            unregister<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="uijet.Base.html">uijet.Base</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            uijet.js, line 517
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Unregisters the widget from uijet's sandbox.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="inherited ">
+    <div class="nameContainer inherited">
         <h4 class="name" id="unsubscribe">
             
                 <span class="inherited"><a href="uijet.Base.html#unsubscribe">inherited</a></span>
@@ -8035,7 +8287,7 @@ calls of the contained widgets.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Dec 21 2014 12:38:17 GMT+0200 (IST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Dec 21 2014 12:47:16 GMT+0200 (IST)
         </footer>
     </div>
 </div>

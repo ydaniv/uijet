@@ -62,6 +62,8 @@
         
             <li class="private" data-name="uijet.Base#_parseHandler"><a href="uijet.Base.html#_parseHandler">_parseHandler</a></li>
         
+            <li class="private" data-name="uijet.Base#_setResource"><a href="uijet.Base.html#_setResource">_setResource</a></li>
+        
             <li class="" data-name="uijet.Base#holdSignal"><a href="uijet.Base.html#holdSignal">holdSignal</a></li>
         
             <li class="" data-name="uijet.Base#listen"><a href="uijet.Base.html#listen">listen</a></li>
@@ -70,11 +72,15 @@
         
             <li class="" data-name="uijet.Base#publish"><a href="uijet.Base.html#publish">publish</a></li>
         
+            <li class="" data-name="uijet.Base#register"><a href="uijet.Base.html#register">register</a></li>
+        
             <li class="" data-name="uijet.Base#releaseSignal"><a href="uijet.Base.html#releaseSignal">releaseSignal</a></li>
         
             <li class="" data-name="uijet.Base#subscribe"><a href="uijet.Base.html#subscribe">subscribe</a></li>
         
             <li class="" data-name="uijet.Base#unlisten"><a href="uijet.Base.html#unlisten">unlisten</a></li>
+        
+            <li class="" data-name="uijet.Base#unregister"><a href="uijet.Base.html#unregister">unregister</a></li>
         
             <li class="" data-name="uijet.Base#unsubscribe"><a href="uijet.Base.html#unsubscribe">unsubscribe</a></li>
         
@@ -2847,170 +2853,6 @@ Adds the <code>current</code> class to the top container element, while calling
     <div class="nameContainer">
         <h4 class="name" id="initContained">
             
-            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Slider.html">Slider</a>}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            composites/Slider.js, line 45
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Initializes options, starts the Slider's handle Button and
-slides it to its initial position.</p>
-<h4>Related options:</h4><ul>
-<li><code>handle</code>: the config object of the handle Button widget.</li>
-<li><code>initial</code>: initial value to set the slider to.</li>
-<li><code>vertical</code>: whether this is a vertical slider.</li>
-<li><code>min</code>: minimal value for the slider.</li>
-<li><code>max</code>: maximal value for the slider.</li>
-<li><code>step</code>: interval value of each step between min to max.</li>
-</ul>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="initContained">
-            
-            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Dialog.html">Dialog</a>}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            composites/Dialog.js, line 37
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Translate the <code>buttons</code> option into a part of the <code>components</code> option.</p>
-<h4>Related options:</h4><ul>
-<li><code>buttons</code>: array of config objects for Button components to create.</li>
-</ul>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="initContained">
-            
             initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="DropmenuButton.html">DropmenuButton</a>}</span>
         </h4>
     
@@ -3184,6 +3026,172 @@ that contains cuurent date.</li>
     <div class="nameContainer">
         <h4 class="name" id="initContained">
             
+            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Modal.html">Modal</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            composites/Modal.js, line 40
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Creates an {@see Overlay} instance for the underlay.
+Also translates the <code>buttons</code> option into a part of the <code>components</code> option.</p>
+<h4>Related options:</h4><ul>
+<li><code>underlay</code>: config object for the Overlay used as the modal's underlay.</li>
+<li><code>buttons</code>: array of config objects for Button components to create.</li>
+</ul>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="">
+    <div class="nameContainer">
+        <h4 class="name" id="initContained">
+            
+            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Slider.html">Slider</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            composites/Slider.js, line 45
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Initializes options, starts the Slider's handle Button and
+slides it to its initial position.</p>
+<h4>Related options:</h4><ul>
+<li><code>handle</code>: the config object of the handle Button widget.</li>
+<li><code>initial</code>: initial value to set the slider to.</li>
+<li><code>vertical</code>: whether this is a vertical slider.</li>
+<li><code>min</code>: minimal value for the slider.</li>
+<li><code>max</code>: maximal value for the slider.</li>
+<li><code>step</code>: interval value of each step between min to max.</li>
+</ul>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="">
+    <div class="nameContainer">
+        <h4 class="name" id="initContained">
+            
             initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Select.html">Select</a>}</span>
         </h4>
     
@@ -3265,12 +3273,12 @@ containing the selected item's content.</li>
     <div class="nameContainer">
         <h4 class="name" id="initContained">
             
-            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Modal.html">Modal</a>}</span>
+            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Dialog.html">Dialog</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            composites/Modal.js, line 40
+            composites/Dialog.js, line 37
         </div>
         
     </div>
@@ -3281,10 +3289,8 @@ containing the selected item's content.</li>
     
     
     <div class="description">
-        <p>Creates an {@see Overlay} instance for the underlay.
-Also translates the <code>buttons</code> option into a part of the <code>components</code> option.</p>
+        <p>Translate the <code>buttons</code> option into a part of the <code>components</code> option.</p>
 <h4>Related options:</h4><ul>
-<li><code>underlay</code>: config object for the Overlay used as the modal's underlay.</li>
 <li><code>buttons</code>: array of config objects for Button components to create.</li>
 </ul>
     </div>
@@ -4304,6 +4310,141 @@ this instance awakes.</li>
     <div class="nameContainer">
         <h4 class="name" id="setSelected">
             
+            setSelected<span class="signature">(<span class="optional">toggle</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            composites/Select.js, line 143
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Triggers selection in the menu component and in turn
+updates the text in the content element.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>toggle</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type">Array.&lt;HTMLElement></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>a new item element to set as the selected one, or <code>true</code> to toggle it if already cached.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="">
+    <div class="nameContainer">
+        <h4 class="name" id="setSelected">
+            
             setSelected<span class="signature">(<span class="optional">toggle</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="SelectMenu.html">SelectMenu</a>}</span>
         </h4>
     
@@ -4389,141 +4530,6 @@ to set as the selected one, or <code>true</code> to toggle it if already cached.
 be an object with <code>toggle</code> and <code>resolve</code>, usually if invoked by the parent's {@see Select#select}.
 In that case <code>toggle</code> will be the original <code>toggle</code> argument and <code>resolve</code> will be a resolver
 for the selection promise.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="setSelected">
-            
-            setSelected<span class="signature">(<span class="optional">toggle</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            composites/Select.js, line 143
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Triggers selection in the menu component and in turn
-updates the text in the content element.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>toggle</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-|
-
-<span class="param-type">HTMLElement</span>
-|
-
-<span class="param-type">Array.&lt;HTMLElement></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                <p>a new item element to set as the selected one, or <code>true</code> to toggle it if already cached.</p></td>
         </tr>
 	
 	
@@ -4927,7 +4933,7 @@ the handle's position.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Dec 21 2014 12:38:17 GMT+0200 (IST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Dec 21 2014 12:47:15 GMT+0200 (IST)
         </footer>
     </div>
 </div>
