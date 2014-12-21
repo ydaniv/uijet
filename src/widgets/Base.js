@@ -175,35 +175,6 @@
             return this;
         },
         /**
-         * Registers the widget into uijet's sandbox.
-         *
-         * **note**: It is recommended to call `this._super()` first thing
-         * when overriding this method, to make sure the widget is in the sandbox.
-         *
-         * @memberOf BaseWidget
-         * @instance
-         * @returns {Widget}
-         */
-        register        : function () {
-            if ( !this.registered ) {
-                uijet._register(this);
-                this.registered = true;
-            }
-            return this;
-        },
-        /**
-         * Unregisters the widget from uijet's sandbox.
-         *
-         * @memberOf BaseWidget
-         * @instance
-         * @returns {Widget}
-         */
-        unregister      : function () {
-            uijet._unregister(this);
-            this.registered = false;
-            return this;
-        },
-        /**
          * Gets the `context` object of the instance or the value
          * of a specific property.
          *

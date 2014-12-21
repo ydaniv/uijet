@@ -3,7 +3,7 @@
         define([
             'uijet_dir/uijet',
             'rivets',
-            'uijet_dir/modules/binding/rivets'
+            'uijet_dir/modules/data/backbone'
         ], function (uijet, rivets) {
             return factory(uijet, rivets);
         });
@@ -11,7 +11,7 @@
     else {
         factory(uijet, root.rivets);
     }
-}(this, function (uijet, rivets) {
+}(this, function (uijet, rivets, Backbone) {
 
     var _views_cache = {};
 
