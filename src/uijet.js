@@ -491,6 +491,41 @@
     Base.prototype = {
         constructor  : Base,
         /**
+         * Registers the widget into uijet's sandbox and sets the instance's resource.
+         *
+         * **note**: It is recommended to call `this._super()` first thing
+         * when overriding this method, to make sure the widget is in the sandbox.
+         *
+         * #### Related options:
+         *
+         * * `resource`: a name of a registered resource or an object to use as a resource.
+         * * `resource_name`: a key to use when referencing the model's attributes form the `context` object.
+         * Defaults to the `resource` option if it's a `string`, otherwise to `'<this.id>_data'`.
+         *
+         * @methodOf uijet.Base
+         * @returns {uijet.Base}
+         */
+        register        : function () {
+            if ( !this.registered ) {
+                uijet._register(this);
+                this.registered = true;
+
+                this._setResource();
+            }
+            return this;
+        },
+        /**
+         * Unregisters the widget from uijet's sandbox.
+         *
+         * @methodOf uijet.Base
+         * @returns {uijet.Base}
+         */
+        unregister      : function () {
+            uijet._unregister(this);
+            this.registered = false;
+            return this;
+        },
+        /**
          * Registers a handler for the given type.
          *
          * @memberOf uijet.Base
@@ -647,6 +682,43 @@
          */
         publish      : function (topic, data) {
             uijet.publish(this.id + '.' + topic, data);
+            return this;
+        },
+        /**
+         * Assigns the resource to `this.resource`.
+         *
+         * #### Related options:
+         *
+         * * `resource`: a name of a registered resource or an object to use as a resource.
+         * * `resource_name`: a key to use when referencing the model's attributes form the `context` object.
+         * Defaults to the `resource` option if it's a `string`, otherwise to `'<this.id>_data'`.
+         *
+         * @private
+         * @methodOf uijet.Base
+         * @returns {uijet.Base}
+         */
+        _setResource : function () {
+            var resource_name = this.options.resource_name,
+                resource;
+
+            if ( resource = this.options.resource ) {
+                if ( typeof resource == 'string' ) {
+                    this.resource = uijet.Resource(resource);
+
+                    if ( ! resource_name ) {
+                        resource_name = resource;
+                    }
+                }
+                else {
+                    this.resource = resource;
+
+                    if ( ! resource_name ) {
+                        resource_name = this.id + '_data';
+                    }
+                }
+
+                this._resource_name = resource_name;
+            }
             return this;
         },
         /**
