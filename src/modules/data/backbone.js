@@ -40,44 +40,15 @@
      */
     uijet.utils.extendProto(uijet.BaseWidget.prototype, {
         /**
-         * Assigns the resource to `this.resource` and enhances {@link BaseWidget#getContext}
-         * to integrate with `Backbone.Model` and `Backbone.Collection`.
-         * 
-         * Binds the data events.
-         * 
-         * #### Related options:
-         * 
-         * * `resource_name`: a key to use when referencing the model's attributes form the `context` object.
-         * Defaults to the `resource` option if it's a `string`, otherwise to `'<this.id>_data'`.
-         * 
+         * Binds `data_events` of the resource to the instance.
+         *
          * @method module:data/backbone.Resourced#register
          * @returns {Widget} this
          */
         register        : function () {
-            var resource_name = this.options.resource_name,
-                resource;
-            this._super.call(this);
+            this._super.apply(this, arguments);
 
-            if ( resource = this.options.resource ) {
-                if ( typeof resource == 'string' ) {
-                    this.resource = uijet.Resource(resource);
-    
-                    if ( ! resource_name ) {
-                        resource_name = resource;
-                    }
-                }
-                else {
-                    this.resource = resource;
-    
-                    if ( ! resource_name ) {
-                        resource_name = this.id + '_data';
-                    }
-                }
-
-                this._resource_name = resource_name;
-
-                this.bindDataEvents();
-            }
+            this.bindDataEvents();
 
             return this;
         },
@@ -264,19 +235,19 @@
         },
         /**
          * If this resource is a `Model` also handles
-         * destroying it, or simply removing it from containing
-         * collection.
+         * removing it from containing collection, or
+         * destroying it if asked to.
          * 
          * @see {@link http://backbonejs.org/#Model-destroy}
          * @method module:data/backbone.Resourced#destroy
-         * @param {boolean} [remove_only] - if `true` will not invoke the resource's destroy method.
+         * @param {boolean} [destroy_resource] - if `true` will also invoke the resource's destroy method.
          * @returns {Widget} this
          */
-        destroy         : function (remove_only) {
+        destroy         : function (destroy_resource) {
             if ( this.resource instanceof Backbone.Model ) {
                 var collection;
 
-                if ( ! remove_only ) {
+                if ( destroy_resource ) {
                     // by default also delegates to the resource's destroy method
                     this.resource.destroy();
                 }
