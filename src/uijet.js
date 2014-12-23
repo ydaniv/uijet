@@ -1802,6 +1802,28 @@
             return this;
         },
         /**
+         * Publishes an app event with a passed deferred object containing `resolve` and `reject` methods,
+         * and optionally `data`, and returns the promise that's affected by resolution of this deferred.
+         *
+         * This method is a mix of pub/sub and Promises that allows decoupled transfer of control from
+         * one component to another.
+         *
+         * @see {@link https://gist.github.com/ydaniv/da5c55c41a5bffa897b1}
+         * @memberOf uijet
+         * @param {string} topic - a topic to publish.
+         * @param {*} [data] - optional data to send with the published event.
+         * @returns {Promise} - a promise that can be either resolved or rejected by a subscriber to `topic`.
+         */
+        shall                : function (topic, data) {
+            return this.Promise(function (resolve, reject) {
+                uijet.publish(topic, {
+                    resolve: resolve,
+                    reject: reject,
+                    data: data
+                });
+            });
+        },
+        /**
          * Wakes all of the contained child widgets of widget with matching `id`.
          * If `context` is supplied it is passed to each child widget's `wake()`.
          * Returns an array of promises, each returned from a child's `wake()`.
