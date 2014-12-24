@@ -1320,13 +1320,23 @@
                         .then(function () {
                             // build and init declared widgets
                             // notice that here all modules are already loaded so this will run through
-                            this.start(declared_widgets, true);
-
+                            return this.start(declared_widgets, true);
+                        }.bind(this), function (e) {
+                            if ( console ) {
+                                console.error(e.message);
+                                console.log(e.stack);
+                            }
+                        })
+                        .then(function () {
                             //when all declared widgets are initialized, set `uijet.initialized` to `true`
                             this.initialized = true;
                             // kick-start the GUI - unless ordered not to
                             _options.dont_start || this.startup();
-                        }.bind(this));
+                        }.bind(this), function (e) {
+                            if ( console ) {
+                                console.error(e.stack);
+                            }
+                        });
                 }
                 // no options given
                 else {
@@ -1440,7 +1450,7 @@
          * @memberOf uijet
          * @param {Object} widget - a widget declaration.
          * @param {boolean} [skip_import] - whether to skip module import. Defaults to falsy.
-         * @returns {Promise|Object} promise|this - a promise object if not skipping import, otherwise `this`.
+         * @returns {Promise[]|Promise} - a Promise object or an array of Promises.
          * @private
          */
         __start              : function (widget, skip_import) {
@@ -1520,9 +1530,8 @@
                     extendProto(_w, adapters[TOP_ADAPTER_NAME]);
                 }
                 // init the instance
-                _w.init(_config);
+                return _w.init(_config);
             }
-            return this;
         },
         /**
          * Registers a widget into the uijet sandbox.

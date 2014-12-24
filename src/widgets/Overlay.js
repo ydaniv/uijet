@@ -32,13 +32,14 @@
          * @memberOf Overlay
          * @instance
          * @param {Object} options - passed to `_super()`.
-         * @returns {Overlay}
+         * @returns {Promise[]|Overlay}
          */
         init     : function (options) {
             // complete `render` on `init`
-            this._super(options).render()
+            var result = this._super(options);
+            this.render()
                 ._finally();
-            return this;
+            return result;
         },
         /**
          * Paints the container and makes sure its hidden.
