@@ -141,6 +141,8 @@
         
             <li class="static" data-name="uijet.Resource"><a href="uijet.html#Resource">Resource</a></li>
         
+            <li class="static" data-name="uijet.shall"><a href="uijet.html#shall">shall</a></li>
+        
             <li class="static" data-name="uijet.start"><a href="uijet.html#start">start</a></li>
         
             <li class="static" data-name="uijet.startup"><a href="uijet.html#startup">startup</a></li>
@@ -385,6 +387,8 @@
             <li class="" data-name="module:binding/rivets-backbone#destroy"><a href="rivets-backbone.html#destroy">destroy</a></li>
         
             <li class="" data-name="module:binding/rivets-backbone#register"><a href="rivets-backbone.html#register">register</a></li>
+        
+            <li class="inner" data-name="module:binding/rivets-backbone~setOptions"><a href="rivets-backbone.html#setOptions">setOptions</a></li>
         
         </ul>
         <ul class="events itemMembers">
@@ -2137,7 +2141,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 1361
+            uijet.js, line 1371
         </div>
         
     </div>
@@ -2321,7 +2325,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 1746
+            uijet.js, line 1755
         </div>
         
     </div>
@@ -2443,7 +2447,7 @@ standard widget instance declarations ( see {@see uijet.declare()} ).</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1381
+            uijet.js, line 1391
         </div>
         
     </div>
@@ -2663,12 +2667,12 @@ and registered with <code>uijet</code>.</p>
     <div class="nameContainer">
         <h4 class="name" id="__start">
             
-            <span class="type-signature ">private,static</span>uijet.__start<span class="signature">(widget, <span class="optional">skip_import</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise|Object}</span>
+            <span class="type-signature ">private,static</span>uijet.__start<span class="signature">(widget, <span class="optional">skip_import</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array.&lt;Promise>|Promise}</span>
         </h4>
     
         
         <div class="tag-source">
-            uijet.js, line 1446
+            uijet.js, line 1456
         </div>
         
     </div>
@@ -2809,7 +2813,8 @@ and registered with <code>uijet</code>.</p>
 
 
 <h5>Returns:</h5>
-- a promise object if not skipping import, otherwise <code>this</code>.
+Promise object or an array of Promises.</li>
+</ul>
 <br />
 
     
@@ -2828,7 +2833,7 @@ and registered with <code>uijet</code>.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1975
+            uijet.js, line 2006
         </div>
         
     </div>
@@ -2991,7 +2996,7 @@ object generated for the route.
     
         
         <div class="tag-source">
-            uijet.js, line 1852
+            uijet.js, line 1883
         </div>
         
     </div>
@@ -3112,7 +3117,7 @@ object generated for the route.
     
         
         <div class="tag-source">
-            uijet.js, line 1881
+            uijet.js, line 1912
         </div>
         
     </div>
@@ -3265,7 +3270,7 @@ to create a fluid UI.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1543
+            uijet.js, line 1552
         </div>
         
     </div>
@@ -3394,7 +3399,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1836
+            uijet.js, line 1867
         </div>
         
     </div>
@@ -3515,7 +3520,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1650
+            uijet.js, line 1659
         </div>
         
     </div>
@@ -3637,7 +3642,7 @@ This is usually triggered by a widget when its {@see BaseWidget.destroy()} metho
     
         
         <div class="tag-source">
-            uijet.js, line 1815
+            uijet.js, line 1846
         </div>
         
     </div>
@@ -3964,7 +3969,7 @@ If <code>props</code> is omitted and <code>name</code> is a:</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1688
+            uijet.js, line 1697
         </div>
         
     </div>
@@ -4744,6 +4749,177 @@ instantiating a Backbone.js resource.</p>
             
 <dt class="static">
     <div class="nameContainer">
+        <h4 class="name" id="shall">
+            
+            <span class="type-signature static">static</span>uijet.shall<span class="signature">(topic, <span class="optional">data</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            uijet.js, line 1826
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Publishes an app event with a passed deferred object containing <code>resolve</code> and <code>reject</code> methods,
+and optionally <code>data</code>, and returns the promise that's affected by resolution of this deferred.</p>
+<p>This method is a mix of pub/sub and Promises that allows decoupled transfer of control from
+one component to another.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>topic</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                    
+                        
+                    
+                
+                <p>a topic to publish.</p></td>
+        </tr>
+	
+	
+	
+        <tr>
+            
+                <td class="name"><code>data</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">*</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>optional data to send with the published event.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://gist.github.com/ydaniv/da5c55c41a5bffa897b1">https://gist.github.com/ydaniv/da5c55c41a5bffa897b1</a></li>
+        </ul>
+    </dd>
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+<h5>Returns:</h5>
+promise that can be either resolved or rejected by a subscriber to <code>topic</code>.</li>
+</ul>
+<br />
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="static">
+    <div class="nameContainer">
         <h4 class="name" id="start">
             
             <span class="type-signature static">static</span>uijet.start<span class="signature">(declarations, <span class="optional">skip_import</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise|Object}</span>
@@ -4751,7 +4927,7 @@ instantiating a Backbone.js resource.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1714
+            uijet.js, line 1723
         </div>
         
     </div>
@@ -4948,7 +5124,7 @@ and want to optimize this call a bit.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1786
+            uijet.js, line 1795
         </div>
         
     </div>
@@ -5414,7 +5590,7 @@ This class can later be instantiated in the UI or re-used as a dependency.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Dec 21 2014 12:47:17 GMT+0200 (IST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Wed Dec 24 2014 11:34:50 GMT+0200 (IST)
         </footer>
     </div>
 </div>
