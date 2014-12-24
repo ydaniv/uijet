@@ -65,23 +65,28 @@
          * TODO: document this
          */
         consoleOrRethrow = (function () {
-            function rethrow () {
+            function rethrow (e) {
                 throw e.stack || e;
             }
-            if ( uijet.debug ) {
-                if ( console ) {
-                    return function (e) {
+            if ( console ) {
+                return function (e) {
+                    if ( uijet.debug ) {
                         console.error(e.stack || e);
-                    };
-                }
-                else {
-                    return function rethrowAsync (e) {
-                        async(rethrow);
-                    };
-                }
+                    }
+                    else {
+                        rethrow(e);
+                    }
+                };
             }
             else {
-                return rethrow;
+                return function (e) {
+                    if ( uijet.debug ) {
+                        async(rethrow);
+                    }
+                    else {
+                        rethrow(e);
+                    }
+                };
             }
         }()),
         /**
