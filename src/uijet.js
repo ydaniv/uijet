@@ -1565,10 +1565,7 @@
             if ( _id in widgets ) {
                 // if there's an instance
                 if ( widgets[_id].self ) {
-                    // destroy!
-                    widgets[_id].self.destroy();
-                    // since desrtoy just unregistered this widget
-                    widgets[_id] = _current;
+                    throw new Error('Got a duplicate widget for id: ' + _id);
                 }
                 else {
                     // set reference to the widget's instance
