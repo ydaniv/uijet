@@ -1,13 +1,13 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet'], function (uijet) {
-            return factory(uijet);
+            return factory(root, uijet);
         });
     }
     else {
-        factory(root.uijet);
+        factory(root, root.uijet);
     }
-}(this, function (uijet) {
+}(this, function (root, uijet) {
     /**
      * ES6-Promise promises module.
      *
@@ -61,7 +61,9 @@
          * @param {Array} promises - array of Promises and/or values.
          * @returns {Promise}
          */
-        whenAll  : root.Promise.all,
+        whenAll  : function (promises) {
+            return root.Promise.all(promises);
+        },
         /**
          * Converts any given argument into a Promise.
          * If that argument is a Promise it returns it.
@@ -70,7 +72,9 @@
          * @param {*} value - value or promise to convert into a thenable.
          * @returns {Promise}
          */
-        when     : root.Promise.resolve,
+        when     : function (value) {
+            return root.Promise.resolve(value);
+        },
         /**
          * Returns a Promise object that is rejected with the given reason.
          *
@@ -78,7 +82,9 @@
          * @param {Error} reason - the reason for rejecting the Promise.
          * @returns {Promise}
          */
-        reject   : root.Promise.reject,
+        reject   : function (reason) {
+            return root.Promise.reject(reason);
+        },
         /**
          * Returns a promise that resolves or rejects
          * as soon as one of the promises in the iterable
@@ -88,7 +94,9 @@
          * @param {Promise[]} promises - array of Promises.
          * @returns {Promise}
          */
-        race     : root.Promise.race,
+        race     : function (promises) {
+            return root.Promise.race(promises);
+        },
         /**
          * Whether the given `obj` argument is a Promise like object (thenable).
          *
