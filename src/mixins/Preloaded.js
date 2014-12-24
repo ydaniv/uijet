@@ -31,7 +31,7 @@
          * 
          * @memberOf Preloaded
          * @instance
-         * @returns {Preloaded}
+         * @returns {Promise[]|Preloaded}
          */
         init        : function () {
             if ( ! this.options.dont_preload ) {

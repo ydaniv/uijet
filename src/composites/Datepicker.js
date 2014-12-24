@@ -148,19 +148,19 @@
          * * `min_date`: min possible date for selection. Usually set by the container Datepicker.
          *
          * @methodOf DateList
-         * @returns {DateList}
+         * @returns {Promise[]|DateList}
          */
         init         : function () {
             var now = new Date(),
                 container_id = this.container,
-                min_date;
+                min_date, result;
 
             this.month = now.getMonth();
             this.year = now.getFullYear();
 
             this.holdSignal('post_init');
             // do init
-            this._super.apply(this, arguments);
+            result = this._super.apply(this, arguments);
 
             // subscribe to the next/prev clicks
             this.subscribe(container_id + '_next.clicked', function () {
@@ -199,7 +199,7 @@
 
             this.releaseSignal('post_init');
 
-            return this;
+            return result;
         },
         /**
          * Renders the date list.

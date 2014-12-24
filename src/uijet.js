@@ -1,6 +1,6 @@
 /*!
  * uijet UI Framework
- * @version 0.0.63
+ * @version 0.0.65
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
@@ -1320,13 +1320,23 @@
                         .then(function () {
                             // build and init declared widgets
                             // notice that here all modules are already loaded so this will run through
-                            this.start(declared_widgets, true);
-
+                            return this.start(declared_widgets, true);
+                        }.bind(this), function (e) {
+                            if ( console ) {
+                                console.error(e.message);
+                                console.log(e.stack);
+                            }
+                        })
+                        .then(function () {
                             //when all declared widgets are initialized, set `uijet.initialized` to `true`
                             this.initialized = true;
                             // kick-start the GUI - unless ordered not to
                             _options.dont_start || this.startup();
-                        }.bind(this));
+                        }.bind(this), function (e) {
+                            if ( console ) {
+                                console.error(e.stack);
+                            }
+                        });
                 }
                 // no options given
                 else {
@@ -1440,7 +1450,7 @@
          * @memberOf uijet
          * @param {Object} widget - a widget declaration.
          * @param {boolean} [skip_import] - whether to skip module import. Defaults to falsy.
-         * @returns {Promise|Object} promise|this - a promise object if not skipping import, otherwise `this`.
+         * @returns {Promise[]|Promise} - a Promise object or an array of Promises.
          * @private
          */
         __start              : function (widget, skip_import) {
@@ -1520,9 +1530,8 @@
                     extendProto(_w, adapters[TOP_ADAPTER_NAME]);
                 }
                 // init the instance
-                _w.init(_config);
+                return _w.init(_config);
             }
-            return this;
         },
         /**
          * Registers a widget into the uijet sandbox.
@@ -1800,6 +1809,28 @@
             }
 
             return this;
+        },
+        /**
+         * Publishes an app event with a passed deferred object containing `resolve` and `reject` methods,
+         * and optionally `data`, and returns the promise that's affected by resolution of this deferred.
+         *
+         * This method is a mix of pub/sub and Promises that allows decoupled transfer of control from
+         * one component to another.
+         *
+         * @see {@link https://gist.github.com/ydaniv/da5c55c41a5bffa897b1}
+         * @memberOf uijet
+         * @param {string} topic - a topic to publish.
+         * @param {*} [data] - optional data to send with the published event.
+         * @returns {Promise} - a promise that can be either resolved or rejected by a subscriber to `topic`.
+         */
+        shall                : function (topic, data) {
+            return this.Promise(function (resolve, reject) {
+                uijet.publish(topic, {
+                    resolve: resolve,
+                    reject: reject,
+                    data: data
+                });
+            });
         },
         /**
          * Wakes all of the contained child widgets of widget with matching `id`.

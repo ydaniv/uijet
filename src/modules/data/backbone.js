@@ -42,13 +42,20 @@
         /**
          * Binds `data_events` of the resource to the instance.
          *
+         * #### Related options:
+         *
+         * * `dont_bind_data_events`: used internally to delay auto-binding of `data_events`
+         * to allow binding those later manually. Normally you should not touch this option.
+         *
          * @method module:data/backbone.Resourced#register
          * @returns {Widget} this
          */
         register        : function () {
             this._super.apply(this, arguments);
 
-            this.bindDataEvents();
+            if ( ! this.options.dont_bind_data_events ) {
+                this.bindDataEvents();
+            }
 
             return this;
         },

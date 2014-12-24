@@ -115,7 +115,7 @@
          * @memberOf BaseWidget
          * @instance
          * @param {Object} options - config object for the widget.
-         * @returns {Widget}
+         * @returns {Promise[]|Widget}
          */
         init            : function (options) {
             // ready...
@@ -132,11 +132,13 @@
                 // register to sandbox
                 .register()
                 // wrapping, styling, positioning, etc.
-                .prepareElement()
-                // init contained components
-                .initContained()
-                // cache reference to initial markup that was coded into the element by user
-                ._saveOriginal();
+                .prepareElement();
+
+            // init contained components
+            var contained_starts = this.initContained();
+
+            // cache reference to initial markup that was coded into the element by user
+            this._saveOriginal();
 
             if ( !this.options.bind_on_wake ) {
                 // bind DOM events
@@ -145,10 +147,12 @@
 
             this.notify(true, 'post_init');
 
-            return this;
+            return contained_starts || this;
         },
         /**
          * Initializes contained widget instances.
+         * Returns an array of Promises or `undefined` if the
+         * `components` option is not set.
          *
          * If the `container` option of the contained widgets is not
          * set, it will be automatically set to the `id` of this widget.
@@ -159,7 +163,7 @@
          *
          * @memberOf BaseWidget
          * @instance
-         * @returns {Widget}
+         * @returns {Promise[]|undefined}
          */
         initContained   : function () {
             var container_id = this.id,
@@ -170,9 +174,8 @@
                         child.config.container = container_id;
                     }
                 });
-                uijet.start(contained);
+                return uijet.start(contained);
             }
-            return this;
         },
         /**
          * Gets the `context` object of the instance or the value
@@ -827,6 +830,9 @@
             if ( element || !this.$element ) {
                 element = element || utils.returnOf(this.options.element, this);
                 this.$element = utils.toElement(element);
+                if ( ! this.$element.length ) {
+                    throw new Error('No element created or found for: ' + this.options.element);
+                }
             }
             return this;
         },

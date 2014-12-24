@@ -46,11 +46,11 @@
          * 
          * @memberOf Templated
          * @instance
-         * @returns {Templated}
+         * @returns {Promise[]|Templated}
          */
         init            : function () {
             this.holdSignal('post_init');
-            this._super.apply(this, arguments);
+            var result = this._super.apply(this, arguments);
 
             this.template_url = uijet.options.templates_path + (this.options.template_name || this.id) + '.' + uijet.options.templates_extension;
 
@@ -58,7 +58,7 @@
                 this._fetchTemplate();
             }
             this.releaseSignal('post_init');
-            return this;
+            return result;
         },
         /**
          * Renders the template.

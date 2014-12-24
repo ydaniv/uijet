@@ -68,10 +68,10 @@
          * 
          * @memberOf Dragged
          * @instance
-         * @returns {Dragged}
+         * @returns {Promise[]|Dragged}
          */
         init                : function () {
-            this._super.apply(this, arguments);
+            var result = this._super.apply(this, arguments);
 
             var cached_styles = ['width', 'height'],
                 use_translate = uijet.support.transform && ! this.options.dont_translate,
@@ -89,7 +89,7 @@
                 cached_styles.push('top', 'left');
             }
             this._cached_drag_styles = cached_styles;
-            return this;
+            return result;
         },
         /**
          * Binds the drag handler, unless the `dont_auto_drag`

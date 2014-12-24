@@ -70,6 +70,19 @@
 
     uijet.utils.extendProto(uijet.BaseWidget.prototype, {
         /**
+         * Sets the `dont_bind_data_events` option to `true` to ensure binding of Rivets views
+         * happens before binding of data events.
+         *
+         * @returns {uijet.BaseWidget}
+         */
+        setOptions: function () {
+            this._super.apply(this, arguments);
+
+            this.options.dont_bind_data_events = true;
+
+            return this;
+        },
+        /**
          * Triggers data binding on `init()`.
          * 
          * #### Related options:
@@ -134,6 +147,7 @@
                     observables[this.options.resource] = this.resource || uijet.Resource(this.options.resource);
                 }
                 else {
+                    this.bindDataEvents();
                     // implicitly skip
                     // we're probably handling observation in a higher level, i.e. "each-/repeat-" binding
                     return this;
@@ -157,6 +171,9 @@
                 this.rv_view = rivets.bind(this.$wrapper || this.$element, observables, this.options.bind_options);
                 _views_cache[this.id] = this.rv_view;
             }
+
+            this.bindDataEvents();
+
             return this;
         }
     });
