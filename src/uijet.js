@@ -61,6 +61,29 @@
                 function (f) {
                     _window.setTimeout(f, 0);
                 },
+        /*
+         * TODO: document this
+         */
+        consoleOrRethrow = (function () {
+            function rethrow () {
+                throw e.stack || e;
+            }
+            if ( uijet.debug ) {
+                if ( console ) {
+                    return function (e) {
+                        console.error(e.stack || e);
+                    };
+                }
+                else {
+                    return function rethrowAsync (e) {
+                        async(rethrow);
+                    };
+                }
+            }
+            else {
+                return rethrow;
+            }
+        }()),
         /**
          * Searches for a prefixed name of `name` inside `obj`.
          *
@@ -976,6 +999,7 @@
      * @namespace uijet
      */
     uijet = {
+        debug                : true,
         route_prefix         : '',
         route_suffix         : '',
         init_queue           : [],
@@ -1258,6 +1282,9 @@
                     this.$element.addClass('cover');
                 }
                 if ( _options ) {
+                    if ( _options.debug ) {
+                        uijet.debug = _options.debug;
+                    }
                     if ( _options.route_prefix ) {
                         this.route_prefix = _options.route_prefix;
                     }
@@ -1321,22 +1348,13 @@
                             // build and init declared widgets
                             // notice that here all modules are already loaded so this will run through
                             return this.start(declared_widgets, true);
-                        }.bind(this), function (e) {
-                            if ( console ) {
-                                console.error(e.message);
-                                console.log(e.stack);
-                            }
-                        })
+                        }.bind(this), consoleOrRethrow)
                         .then(function () {
                             //when all declared widgets are initialized, set `uijet.initialized` to `true`
                             this.initialized = true;
                             // kick-start the GUI - unless ordered not to
                             _options.dont_start || this.startup();
-                        }.bind(this), function (e) {
-                            if ( console ) {
-                                console.error(e.stack);
-                            }
-                        });
+                        }.bind(this), consoleOrRethrow);
                 }
                 // no options given
                 else {
@@ -2044,6 +2062,7 @@
      */
     uijet.utils = {
         async           : async,
+        consoleOrRethrow: consoleOrRethrow,
         extend          : extend,
         extendProto     : extendProto,
         extendProxy     : extendProxy,
