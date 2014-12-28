@@ -1,4 +1,4 @@
-(function (factory) {
+(function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define([
             'uijet_dir/uijet',
@@ -8,9 +8,9 @@
             return factory(uijet);
         });
     } else {
-        factory(uijet);
+        factory(root.uijet);
     }
-}(function (uijet) {
+}(this, function (uijet) {
 
     /**
      * SelectMenu composite class.
@@ -78,8 +78,7 @@
         initContained: function () {
             this._wrap();
 
-            var menu_id = this.id + '_menu',
-                has_element = this.options.menu && this.options.menu.element,
+            var has_element = this.options.menu && this.options.menu.element,
                 menu_mixins = this.options.menu.mixins,
                 $el = this.$wrapper,
                 menu_app_events = {
@@ -92,7 +91,8 @@
                         }
                     }
                 },
-                putMixin = uijet.utils.putMixin;
+                putMixin = uijet.utils.putMixin,
+                menu_config;
 
             // cache the content element
             this.$content = uijet.utils.toElement(this.options.content) || uijet.$('<span>').prependTo(this.$element);
@@ -101,20 +101,22 @@
             menu_app_events[this.id + '.clicked'] = 'toggle';
             menu_app_events[this.id + '._set_selected'] = 'setSelected+';
 
-            // move the menu declaration into list of components to be declared 
+            // move the menu declaration into list of components to be declared
+            menu_config = uijet.utils.extend(true, {
+                element     : has_element || uijet.$('<ul>', {
+                    id  : this.id + '_menu'
+                }).appendTo($el),
+                mixins      : putMixin(putMixin(menu_mixins, 'Toggled'), 'Floated'),
+                app_events  : menu_app_events
+            }, this.options.menu || {});
+
             this.options.components.unshift({
                 type    : 'SelectMenu',
-                config  : uijet.utils.extend(true, {
-                    element     : has_element || uijet.$('<ul>', {
-                        id  : menu_id
-                    }).appendTo($el),
-                    mixins      : putMixin(putMixin(menu_mixins, 'Toggled'), 'Floated'),
-                    app_events  : menu_app_events
-                }, this.options.menu || {})
+                config  : menu_config
             });
 
             // subscribe the Select to selection event of the menu component
-            this.subscribe(menu_id + '.selected', this.select);
+            this.subscribe(menu_config.id + '.selected', this.select);
 
             return this._super.apply(this, arguments);
         },
