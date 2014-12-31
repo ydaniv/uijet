@@ -1247,12 +1247,16 @@
         },
         /**
          * Initializes and starts the uijet sandbox and all the declared widgets.
-         * This also triggers the import and injection of all required modules
-         * that haven't been loaded yet.
+         * This also triggers the injection of all required modules.
+         * Returns a promise for the initialization and waking process of the entire app,
+         * unless disabled by the `dont_wake`/`dont_start` options.
+         *
+         * It's possible to catch any exception thrown from that process by setting a rejection
+         * handler on the returned process.
          *
          * @memberOf uijet
          * @param {Object} [options] - configuration object for `uijet`.
-         * @returns {uijet}
+         * @returns {Promise}
          *
          * #### uijet options:
          *
@@ -1339,7 +1343,7 @@
                         }
                     }
 
-                    // subscribe to all evets
+                    // subscribe to all events
                     if ( _app_events = _options.app_events ) {
                         var e;
                         for ( e in _app_events ) {
@@ -1348,7 +1352,7 @@
                     }
 
                     // after all tasks resolve
-                    this.whenAll(this.init_queue)
+                    return this.whenAll(this.init_queue)
                         .then(function () {
                             // build and init declared widgets
                             // notice that here all modules are already loaded so this will run through
@@ -1358,16 +1362,15 @@
                             //when all declared widgets are initialized, set `uijet.initialized` to `true`
                             this.initialized = true;
                             // kick-start the GUI - unless ordered not to
-                            _options.dont_start || this.startup();
+                            return _options.dont_start || this.startup();
                         }.bind(this), consoleOrRethrow);
                 }
                 // no options given
                 else {
                     this.initialized = true;
                     // kick-start
-                    this.startup();
+                    return this.startup();
                 }
-                return this;
             };
             // if we have widgets defined
             if ( options && isArr(options.widgets) ) {
@@ -1504,7 +1507,7 @@
             }
             // skip import
             else {
-                // do start  
+                // do start
                 // if we have mixins configured to mix
                 if ( _mixins = toArray(_config.mixins) ) {
                     // get the stored widget class
@@ -1634,7 +1637,7 @@
             while ( _parent && _parent !== _body ) {
                 // if we hit a `uijet_widget`
                 if ( ~_parent.className.indexOf('uijet_widget') ) {
-                    // get its `id`.  
+                    // get its `id`.
                     // important to get the attribute and not do `element.id`, since it might break
                     // when the element is a `<form>` and has an `<input name=id>`.
                     _parent_id = _parent.getAttribute('id');
@@ -1802,15 +1805,15 @@
         },
         /**
          * Starts up uijet.
+         * Publishes the `startup` event and wakes all widgets at the root of the widgets tree.
          * If the `pre_startup` callback is defined it will run in the beginning.
-         * It publishes the `startup` event and wakes all widgets on the root widgets tree.
          *
          * **note**: If you are using a router module in your application,
-         * then you probably want to set uijet's `dont_wake` option to `true`,
-         * so that the initial state is awaken by the router.
+         * then you may want to set uijet's `dont_wake` option to `true`,
+         * so that the initial view is awaken by the router.
          *
          * @memberOf uijet
-         * @returns {uijet}
+         * @returns {Promise}
          */
         startup              : function () {
             var pre_startup = this.options.pre_startup;
@@ -1825,10 +1828,10 @@
 
             if ( !this.options.dont_wake ) {
                 // ☼ good morning sunshine ☼
-                this._wakeContained('__app__');
+                return uijet.whenAll(this._wakeContained('__app__'));
             }
 
-            return this;
+            return uijet.when(this);
         },
         /**
          * Publishes an app event with a passed deferred object containing `resolve` and `reject` methods,
@@ -1920,6 +1923,29 @@
             return this;
         },
         /**
+         * Sets properties on the contained components of `widget`.
+         * This effect will continue to propagate recursively.
+         *
+         * @memberOf uijet
+         * @param widget - a widget instance which contained components will be retreived.
+         * @param {Object} [context] - a map of properties to send to contained widgets to set on their `context`.
+         * Defaults to the result of `widget.getContext()`.
+         * @returns {uijet}
+         * @private
+         */
+        _trickle             : function (widget, context) {
+            var ctx = context || widget.getContext(),
+                _contained = widgets[widget.id].contained,
+                l = _contained.length,
+                _w;
+            while ( l-- ) {
+                _w = widgets[_contained[l]].self;
+                _w.setContext(ctx)
+                  .trickle(ctx);
+            }
+            return this;
+        },
+        /**
          * Positions a widget.
          * Takes into account the position and size set in sibling widgets' options,
          * to create a fluid UI.
@@ -1966,7 +1992,7 @@
                         if ( !~exclude.indexOf(p) ) {
                             // if we already processed this property
                             if ( p in processed ) {
-                                // if it's using same units AND size of property of this widget is smaller then it's sibling's 
+                                // if it's using same units AND size of property of this widget is smaller then it's sibling's
                                 if ( processed[p].unit === processed_position[p].unit &&
                                      processed[p].size < processed_position[p].size ) {
                                     // set the size to the sibling's size
@@ -1999,7 +2025,7 @@
             }
             // if we found something to set
             if ( set_style ) {
-                // make sure we allow the widget to be fluid 
+                // make sure we allow the widget to be fluid
                 if ( 'left' in position || 'right' in position ) {
                     position.width = 'auto';
                 }
@@ -2130,7 +2156,7 @@
             }
             return array;
         },
-        // wrap these objects since they point to native objects which is forbidden  
+        // wrap these objects since they point to native objects which is forbidden
         requestAnimFrame: function (f) {
             return requestAnimFrame(f);
         },

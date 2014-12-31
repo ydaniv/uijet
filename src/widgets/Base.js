@@ -203,6 +203,20 @@
             return this._setContext(ctx, value);
         },
         /**
+         * Sets properties on the contained components of this widget.
+         * This effect will continue to propagate recursively.
+         * 
+         * @memberOf BaseWidget
+         * @instance
+         * @param {object} [context] - a map of properties to send to contained widgets to set on their `context`.
+         * Defaults to the result of `this.getContext()`.
+         * @returns {Widget}
+         */
+        trickle         : function (context) {
+            uijet._trickle(this, context);
+            return this;
+        },
+        /**
          * Starts up the widget.
          * A *lifecycle method*, renders the widget, attaches all
          * DOM events to it and brings it into view.
