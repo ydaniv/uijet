@@ -92,6 +92,7 @@
                     }
                 },
                 putMixin = uijet.utils.putMixin,
+                menu_id = this.id + '_menu',
                 menu_config;
 
             // cache the content element
@@ -104,7 +105,7 @@
             // move the menu declaration into list of components to be declared
             menu_config = uijet.utils.extend(true, {
                 element     : has_element || uijet.$('<ul>', {
-                    id  : this.id + '_menu'
+                    id  : menu_id
                 }).appendTo($el),
                 mixins      : putMixin(putMixin(menu_mixins, 'Toggled'), 'Floated'),
                 app_events  : menu_app_events
@@ -115,8 +116,14 @@
                 config  : menu_config
             });
 
+            if ( ! menu_config.id ) {
+                if ( typeof has_element == 'string' && has_element.indexOf('#') === 0 ) {
+                    menu_config.id = has_element.slice(1);
+                }
+            }
+
             // subscribe the Select to selection event of the menu component
-            this.subscribe(menu_config.id + '.selected', this.select);
+            this.subscribe((menu_config.id || menu_id) + '.selected', this.select);
 
             return this._super.apply(this, arguments);
         },
