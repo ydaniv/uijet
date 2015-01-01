@@ -128,18 +128,18 @@
             return this._super.apply(this, arguments);
         },
         /**
-         * Updates the content element and triggers `post_select`.
+         * Updates the content element.
          *
          * @methodOf Select
          * @param {HTMLElement[]} $selected - the wrapped selected item.
-         * @returns {*} - the results of notifying `post_select`.
+         * @returns {Select}
          * @private
          */
         _setSelected : function ($selected) {
             if ( $selected && $selected.length ) {
                 this.$content.text($selected.text());
             }
-            return this.notify('post_select', $selected);
+            return this;
         },
         /**
          * Triggers selection in the menu component and in turn
@@ -180,8 +180,11 @@
          */
         select       : function ($selected) {
             if ( this.notify('pre_select', $selected) !== false ) {
-                this.setSelected($selected).then(function (publish) {
-                    publish !== false && this.publish('selected', $selected);
+                this.setSelected($selected).then(function () {
+                    var publish = this.notify('post_select', $selected);
+                    if ( publish !== false ) {
+                        this.publish('selected', $selected);
+                    }
                 }.bind(this));
             }
             return this;
