@@ -1052,13 +1052,19 @@
             return size;
         },
         /**
-         * Toggles the element's `visibility`, depending on the `cloak` param.
+         * Toggles the element's `visibility`, depending on the `cloak` argument.
+         * If the `hide` option is truthy it will toggle the `hide` class instead,
+         * based on the `cloak` argument.
+         *
          * Used for hiding the widget from view while it is asleep.
          *
-         * If `cloak` is truthy it's set to `hidden`, otherwise to `visible`.
+         * If `cloak` is truthy the element will be hidden and otherwise shown.
+         * The `hide` class is located in the uijet's stylesheets in `layout.less`.
          *
          * #### Related options:
-         * * `cloak`: only if truthy will this method affect the element.
+         *
+         * * `hide`: if truthy this method will toggle the `hide` class.
+         * * `cloak`: if truthy, and `hide` option is falsy, this method will toggle the `visibility` style attribute of this element.
          *
          * @memberOf BaseWidget
          * @instance
@@ -1067,7 +1073,10 @@
          * @private
          */
         _setCloak       : function (cloak) {
-            if ( this.options.cloak ) {
+            if ( this.options.hide ) {
+                (this.$wrapper || this.$element).toggleClass('hide', !!cloak);
+            }
+            else if ( this.options.cloak ) {
                 (this.$wrapper || this.$element)[0].style.visibility = cloak ? 'hidden' : 'visible';
             }
             return this;
