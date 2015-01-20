@@ -156,33 +156,54 @@
          * 
          * This only takes care of the instance's state, without performing
          * other side effects.
-         * 
+         *
+         * ### Related options:
+         *
+         * * `multiselect`: whether to allow multi selection of items.
+         *
          * @memberOf List
          * @instance
          * @param {boolean|HTMLElement|HTMLElement[]} [toggle] - a new item element to set as the selected one, or `true` to toggle it if already cached. 
          * @returns {List}
          */
         setSelected     : function (toggle) {
-            var $old = this.$selected;
+            var $old = this.$selected,
+                multiselect = this.options.multiselect,
+                $current;
 
             if ( toggle && toggle[0] && toggle[0].nodeType ) {
-                this.$selected = toggle;
-                toggle = true;
+                if ( multiselect && this.$selected ) {
+                    this.$selected.add(toggle);
+                    $current = toggle;
+                    toggle = void 0;
+                }
+                else {
+                    this.$selected = $current = toggle;
+                    toggle = true;
+                }
             }
             else if ( toggle && toggle.nodeType === 1 ) {
                 //TODO: check if uijet.$() can be replaced here with this.$element.find().
-                this.$selected = uijet.$(toggle);
-                toggle = true;
+                if ( multiselect && this.$selected ) {
+                    this.$selected.add(toggle);
+                    $current = uijet.$(toggle);
+                    toggle = void 0;
+                }
+                else {
+                    this.$selected = $current = uijet.$(toggle);
+                    toggle = true;
+                }
             }
             else {
                 toggle = !!toggle;
+                $current = this.$selected;
             }
 
             if ( this.$selected && this.$selected.parent().length ) {
-                if ( toggle ) {
+                if ( toggle && ! multiselect ) {
                     $old && $old.removeClass('selected');
                 }
-                this.$selected.toggleClass('selected', toggle);
+                (multiselect ? $current : this.$selected).toggleClass('selected', toggle);
             }
             return this;
         },
