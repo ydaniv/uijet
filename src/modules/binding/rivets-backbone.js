@@ -139,23 +139,18 @@
                 k, observable;
 
             // if observe option is not set but we have a resource option set
-            if ( ! observable ) {
-
-                observables = {};
-
-                // resource option is set
-                if ( resource ) {
-                    // if resource is a name in resources registry
-                    if ( typeof resource == 'string' ) {
-                        // add it to observables under its name
-                        observables[resource] = this.resource || uijet.Resource(resource);
-                    }
-                    else {
-                        this.bindDataEvents();
-                        // implicitly skip
-                        // we're probably handling observation in a higher level, i.e. "each-" binding
-                        return this;
-                    }
+            if ( ! observables && resource ) {
+                // if resource is a name in resources registry
+                if ( typeof resource == 'string' ) {
+                    observables = {};
+                    // add it to observables under its name
+                    observables[resource] = this.resource || uijet.Resource(resource);
+                }
+                else {
+                    this.bindDataEvents();
+                    // implicitly skip
+                    // we're probably handling observation in a higher level, i.e. "each-" binding
+                    return this;
                 }
             }
 
