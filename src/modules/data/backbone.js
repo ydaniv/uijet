@@ -256,14 +256,14 @@
          */
         destroy         : function () {
             if ( this.resource instanceof Backbone.Model ) {
-                var collection;
+                var collection = this.resource.collection;
 
                 if ( this.options.destroy_resource ) {
                     // by default also delegates to the resource's destroy method
                     this.resource.destroy();
                 }
                 // otherwise, if part of a colletction
-                else if ( collection = this.resource.collection && ! this.options.dont_remove_resource ) {
+                else if ( collection && ! this.options.dont_remove_resource ) {
                     // just remove from it from its collection
                     collection.remove(this.resource);
                 }
