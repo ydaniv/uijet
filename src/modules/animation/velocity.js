@@ -87,4 +87,6 @@
             return Velocity.animate($el[0], props, options, easing);
         }
     }, uijet);
+
+    return Velocity;
 }));
