@@ -4,13 +4,13 @@
             'uijet_dir/uijet',
             'velocity',
             'uijet_dir/mixins/Transitioned'
-        ], function (uijet) {
-            return factory(uijet);
+        ], function (uijet, Velocity) {
+            return factory(uijet, Velocity);
         });
     } else {
-        factory(uijet);
+        factory(root.uijet, root.Velocity || root.$ && root.$.Velocity);
     }
-}(this, function (uijet) {
+}(this, function (uijet, Velocity) {
 
     /**
      * Velocity.js animation module.
@@ -23,7 +23,7 @@
 
     uijet.use({
         options: {
-            transition: { opacity: [1, 0] }
+            transition: [{ opacity: [1, 0] }]
         },
         /**
          * Transitions a widget's element into or out of view.
@@ -41,7 +41,7 @@
         transit             : function (widget, direction, callback) {
             var transit_type = widget.options.transition || this.options.transition,
                 $el = (widget.$wrapper || widget.$element),
-                is_direction_in;
+                is_direction_in, result;
 
             direction = direction || 'in';
             is_direction_in = direction == 'in';
@@ -56,8 +56,8 @@
                     if ( callback && uijet.utils.isObj(transit_type[1]) ) {
                         // add callback as the complete function
                         transit_type[1].complete = callback;
-                    } 
-                    $el.velocity.apply($el, transit_type);
+                    }
+                    result = Velocity.animate.apply(Velocity, [$el[0]].concat(transit_type));
                 }
                 else if ( uijet.utils.isObj(transit_type) ) {
                     // if there's a callback to run and there's an options object
@@ -65,14 +65,14 @@
                         // add callback as the complete function
                         transit_type.options.complete = callback;
                     }
-                    $el.velocity(transit_type.properties, transit_type.options, transit_type.easing);
+                    result = Velocity.animate($el[0], transit_type.properties, transit_type.options, transit_type.easing);
                 }
             }
             else {
-                $el.velocity('reverse', (callback && { complete : callback }));
+                result = Velocity.animate($el[0], 'reverse', (callback && { complete : callback }));
             }
 
-            return this;
+            return result;
         },
         /**
          * Animates an elements' properties.
@@ -84,7 +84,7 @@
          * @param {string|Array} [easing] - easing function name or array of values for generating an easing function.
          */
         animate             : function ($el, props, options, easing) {
-            $el.velocity(props, options, easing);
+            return Velocity.animate($el[0], props, options, easing);
         }
     }, uijet);
 }));
