@@ -168,7 +168,7 @@
         initContained   : function () {
             var container_id = this.id,
                 contained;
-            if ( contained = this.options.components ) {
+            if ( contained = utils.returnOf(this.options.components, this) ) {
                 contained.forEach(function (child) {
                     if ( !child.config.container ) {
                         child.config.container = container_id;
@@ -958,6 +958,7 @@
          * * `wrapper_class`: extra class names to be set on the container element.
          * * `wrapper_tag`: a name of a tag to use for the container element. Defaults to `div`.
          * * `cloak`: if this instance is cloaked, hiding is transferred to the container.
+         * * `hide`: if this instance is hidden, hiding is transferred to the container.
          *
          * @memberOf BaseWidget
          * @instance
@@ -979,9 +980,14 @@
                         id     : this.id + '_wrapper'
                     })).parent();
 
-                    if ( this.options.cloak ) {
+                    if ( this.options.cloak || this.options.hide ) {
                         this._setCloak(true);
-                        this.$element[0].style.removeProperty('visibility');
+                        if ( this.options.hide ) {
+                            this.$element.removeClass('hide');
+                        }
+                        else {
+                            this.$element[0].style.removeProperty('visibility');
+                        }
                     }
                 }
             }
