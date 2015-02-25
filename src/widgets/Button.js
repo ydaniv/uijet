@@ -54,8 +54,12 @@
         /**
          * A handler for a selection event (e.g. `click`).
          * 
+         * #### Related options:
+         *
+         * * `prevent_default`: if `true` the event's default action will be prevented.
+         *
          * #### Signals:
-         * 
+         *
          * * `pre_click`: if not disabled triggered before publishing events. If it returns `false`
          * events will not be published. 
          * 
@@ -86,7 +90,7 @@
                 }
             }
             if ( event ) {
-                event.preventDefault();
+                this.options.prevent_default && event.preventDefault();
                 event.stopPropagation();
             }
             return this;
