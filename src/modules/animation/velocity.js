@@ -41,7 +41,7 @@
         transit             : function (widget, direction, callback) {
             var transit_type = widget.options.transition || this.options.transition,
                 $el = (widget.$wrapper || widget.$element),
-                is_direction_in, result;
+                is_direction_in, result, options;
 
             direction = direction || 'in';
             is_direction_in = direction == 'in';
@@ -69,7 +69,11 @@
                 }
             }
             else {
-                result = Velocity.animate($el[0], 'reverse', (callback && { complete : callback }));
+                options = widget.options.transition_reverse || {};
+                if ( callback ) {
+                    options.complete = callback;
+                }
+                result = Velocity.animate($el[0], 'reverse', options);
             }
 
             return result;
