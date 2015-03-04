@@ -913,9 +913,10 @@
      *
      * @memberOf uijet.utils
      * @param {string} prop - an un-prefixed name of a style property.
+     * @param {boolean} as_css_text - if `true` will return the property prefixed properly to be used as CSS text directly in a style declaration.
      * @returns {string|null} prefixed - the matching name of this property for the current user-agent.
      */
-    function getStyleProperty (prop) {
+    function getStyleProperty (prop, as_css_text) {
         var style = _window.document.body.style,
             cases = BROWSER_PREFIX.style,
             prefix, camelized, i = 0;
@@ -924,7 +925,7 @@
             return prop;
         }
         // check cache
-        if ( prop in BROWSER_PREFIX.matches ) {
+        if ( ! as_css_text && prop in BROWSER_PREFIX.matches ) {
             // return the cached property name
             return BROWSER_PREFIX.matches[prop];
         }
@@ -934,18 +935,26 @@
             // try cached prefix
             if ( prefix = BROWSER_PREFIX.prefix ) {
                 if ( (prefix + camelized) in style ) {
-                    // cache result
-                    BROWSER_PREFIX.matches[prop] = prefix + camelized;
-                    return prefix + camelized;
+                    if ( as_css_text) {
+                        return '-' + prefix.toLowerCase() + '-' + prop;
+                    }
+                    else {
+                        // cache result
+                        BROWSER_PREFIX.matches[prop] = prefix + camelized;
+                        return prefix + camelized;
+                    }
                 }
             }
-            else {
-                // executed once until a match is found
-                // try all prefixes
-                while ( prefix = cases[i++] ) {
-                    if ( (prefix + camelized) in style ) {
-                        // cache the prefix that worked
-                        BROWSER_PREFIX.prefix = prefix;
+
+            // try all prefixes
+            while ( prefix = cases[i++] ) {
+                if ( (prefix + camelized) in style ) {
+                    // cache the prefix that worked
+                    BROWSER_PREFIX.prefix = prefix;
+                    if ( as_css_text) {
+                        return '-' + prefix.toLowerCase() + '-' + prop;
+                    }
+                    else {
                         // cache the result
                         BROWSER_PREFIX.matches[prop] = prefix + camelized;
                         return prefix + camelized;
