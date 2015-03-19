@@ -39,7 +39,7 @@
          * @returns {uijet}
          */
         transit             : function (widget, direction, callback) {
-            var transit_type = widget.options.transition || this.options.transition,
+            var transit_type = uijet.utils.returnOf(widget.options.transition, widget, direction) || this.options.transition,
                 $el = (widget.$wrapper || widget.$element),
                 is_direction_in, result, options;
 
