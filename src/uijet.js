@@ -1890,7 +1890,7 @@
                 l = _contained.length;
             while ( l-- ) {
                 _widget = widgets[_contained[l]].self;
-                if ( _widget && !returnOf(_widget.options.dont_wake, _widget) ) {
+                if ( _widget && !returnOf(_widget.options.dont_wake, _widget, context) ) {
                     promises.unshift(_widget.wake(context));
                 }
             }
