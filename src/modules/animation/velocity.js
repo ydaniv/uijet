@@ -12,6 +12,25 @@
     }
 }(this, function (uijet, Velocity) {
 
+    function _parseTransitionConfig (config, callback) {
+        if ( uijet.utils.isArr(config) ) {
+            // if there's a callback to run and there's an options object
+            if ( callback && uijet.utils.isObj(config[1]) ) {
+                // add callback as the complete function
+                config[1].complete = callback;
+            }
+            return config;
+        }
+        else if ( uijet.utils.isObj(config) ) {
+            // if there's a callback to run and there's an options object
+            if ( callback && config.options ) {
+                // add callback as the complete function
+                config.options.complete = callback;
+            }
+            return [config.properties, config.options, config.easing];
+        }
+    }
+
     /**
      * Velocity.js animation module.
      * 
@@ -31,6 +50,7 @@
          * #### Related options:
          *
          * * `transition`: the transition configuration to perform. Defaults to `uijet.options.transition` which defaults to `{ opacity: [1, 0] }` (fade).
+         * * `transition_reverse`: the reverse transition configuration to perform. Defaults to `'reverse'` which reverses the `in` transition.
          *
          * @method module:animation/velocity#transit
          * @param {Widget} widget - the widget instance to transition.
@@ -39,9 +59,8 @@
          * @returns {uijet}
          */
         transit             : function (widget, direction, callback) {
-            var transit_type = uijet.utils.returnOf(widget.options.transition, widget, direction) || this.options.transition,
-                $el = (widget.$wrapper || widget.$element),
-                is_direction_in, result, options;
+            var $el = (widget.$wrapper || widget.$element),
+                transit_type, is_direction_in, result, options;
 
             direction = direction || 'in';
             is_direction_in = direction == 'in';
@@ -51,29 +70,12 @@
             }
 
             if ( is_direction_in ) {
-                if ( uijet.utils.isArr(transit_type) ) {
-                    // if there's a callback to run and there's an options object 
-                    if ( callback && uijet.utils.isObj(transit_type[1]) ) {
-                        // add callback as the complete function
-                        transit_type[1].complete = callback;
-                    }
-                    result = Velocity.animate.apply(Velocity, [$el[0]].concat(transit_type));
-                }
-                else if ( uijet.utils.isObj(transit_type) ) {
-                    // if there's a callback to run and there's an options object
-                    if ( callback && transit_type.options ) {
-                        // add callback as the complete function
-                        transit_type.options.complete = callback;
-                    }
-                    result = Velocity.animate($el[0], transit_type.properties, transit_type.options, transit_type.easing);
-                }
+                transit_type = uijet.utils.returnOf(widget.options.transition, widget) || this.options.transition;
+                result = Velocity.animate.apply(Velocity, [$el[0]].concat(_parseTransitionConfig(transit_type)));
             }
             else {
-                options = widget.options.transition_reverse || {};
-                if ( callback ) {
-                    options.complete = callback;
-                }
-                result = Velocity.animate($el[0], 'reverse', options);
+                transit_type = uijet.utils.returnOf(widget.options.transition_reverse, widget) || ['reverse'];
+                result = Velocity.animate.apply(Velocity, [$el[0]].concat(_parseTransitionConfig(transit_type)));
             }
 
             return result;
