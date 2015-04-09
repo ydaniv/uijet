@@ -185,15 +185,19 @@
                 class_name = transit_type + '_in',
                 transitioned_class = 'transitioned',
                 // cache the handler since we might need to call it explicitly
-                transitionendHandler = function (e) {
-                    if ( uijet.back_navigation === false ) {
-                        $el.removeClass('transitioned reverse');
-                        delete uijet.back_navigation;
-                    } else {
-                        $el.removeClass(transitioned_class);
+                transitionendHandler,
+                promise = uijet.Promise(function (resolve) {
+                    transitionendHandler = function () {
+                        if ( uijet.back_navigation === false ) {
+                            $el.removeClass('transitioned reverse');
+                            delete uijet.back_navigation;
+                        } else {
+                            $el.removeClass(transitioned_class);
+                        }
+                        callback && callback.call(widget);
+                        resolve(widget);
                     }
-                    callback && callback.call(widget);
-                },
+                }),
                 trans_end_event = uijet.support.transitionend,
                 is_direction_in, has_class_name;
 
@@ -227,7 +231,7 @@
                     });
                 }
             }
-            return this;
+            return promise;
         },
         /**
          * Animates an elements' properties.
