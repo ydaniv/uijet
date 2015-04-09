@@ -125,6 +125,8 @@
         
             <li class="private static" data-name="uijet._sleepContained"><a href="uijet.html#_sleepContained">_sleepContained</a></li>
         
+            <li class="private static" data-name="uijet._trickle"><a href="uijet.html#_trickle">_trickle</a></li>
+        
             <li class="private static" data-name="uijet._unregister"><a href="uijet.html#_unregister">_unregister</a></li>
         
             <li class="private static" data-name="uijet._wakeContained"><a href="uijet.html#_wakeContained">_wakeContained</a></li>
@@ -1077,17 +1079,11 @@
         
             <li class="private" data-name="BaseWidget#_center"><a href="BaseWidget.html#_center">_center</a></li>
         
-            <li class="private" data-name="BaseWidget#_clearRendered"><a href="BaseWidget.html#_clearRendered">_clearRendered</a></li>
-        
             <li class="private" data-name="BaseWidget#_deactivate"><a href="BaseWidget.html#_deactivate">_deactivate</a></li>
         
             <li class="private" data-name="BaseWidget#_finally"><a href="BaseWidget.html#_finally">_finally</a></li>
         
             <li class="private" data-name="BaseWidget#_generateId"><a href="BaseWidget.html#_generateId">_generateId</a></li>
-        
-            <li class="private" data-name="BaseWidget#_getSize"><a href="BaseWidget.html#_getSize">_getSize</a></li>
-        
-            <li class="private" data-name="BaseWidget#_saveOriginal"><a href="BaseWidget.html#_saveOriginal">_saveOriginal</a></li>
         
             <li class="private" data-name="BaseWidget#_setCloak"><a href="BaseWidget.html#_setCloak">_setCloak</a></li>
         
@@ -1138,6 +1134,8 @@
             <li class="" data-name="BaseWidget#sleepContained"><a href="BaseWidget.html#sleepContained">sleepContained</a></li>
         
             <li class="" data-name="BaseWidget#style"><a href="BaseWidget.html#style">style</a></li>
+        
+            <li class="" data-name="BaseWidget#trickle"><a href="BaseWidget.html#trickle">trickle</a></li>
         
             <li class="" data-name="BaseWidget#unbind"><a href="BaseWidget.html#unbind">unbind</a></li>
         
@@ -1234,8 +1232,6 @@
         
         <span class="subtitle">Methods</span>
         
-            <li class="private" data-name="List#_clearRendered"><a href="List.html#_clearRendered">_clearRendered</a></li>
-        
             <li class="" data-name="List#click"><a href="List.html#click">click</a></li>
         
             <li class="" data-name="List#getTransfer"><a href="List.html#getTransfer">getTransfer</a></li>
@@ -1243,6 +1239,8 @@
             <li class="" data-name="List#init"><a href="List.html#init">init</a></li>
         
             <li class="" data-name="List#prepareElement"><a href="List.html#prepareElement">prepareElement</a></li>
+        
+            <li class="private" data-name="List#render"><a href="List.html#render">render</a></li>
         
             <li class="" data-name="List#select"><a href="List.html#select">select</a></li>
         
@@ -1884,7 +1882,7 @@
         
         <span class="subtitle">Methods</span>
         
-            <li class="private" data-name="Scrolled#_clearRendered"><a href="Scrolled.html#_clearRendered">_clearRendered</a></li>
+            <li class="private" data-name="Scrolled#_getSize"><a href="Scrolled.html#_getSize">_getSize</a></li>
         
             <li class="private" data-name="Scrolled#_prepareScrolledSize"><a href="Scrolled.html#_prepareScrolledSize">_prepareScrolledSize</a></li>
         
@@ -1956,7 +1954,11 @@
         
         <span class="subtitle">Methods</span>
         
+            <li class="private" data-name="Templated#_clearRendered"><a href="Templated.html#_clearRendered">_clearRendered</a></li>
+        
             <li class="" data-name="Templated#_fetchTemplate"><a href="Templated.html#_fetchTemplate">_fetchTemplate</a></li>
+        
+            <li class="private" data-name="Templated#_saveOriginal"><a href="Templated.html#_saveOriginal">_saveOriginal</a></li>
         
             <li class="" data-name="Templated#deferLoadables"><a href="Templated.html#deferLoadables">deferLoadables</a></li>
         
@@ -2078,7 +2080,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 448
+            uijet.js, line 476
         </div>
         
     </div>
@@ -2168,7 +2170,7 @@ Defines events and signals APIs plus some OO extensions.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 742
+            uijet.js, line 770
         </div>
         
     </div>
@@ -2307,7 +2309,7 @@ parsed handler.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 687
+            uijet.js, line 715
         </div>
         
     </div>
@@ -2388,7 +2390,7 @@ Defaults to the <code>resource</code> option if it's a <code>string</code>, othe
     
         
         <div class="tag-source">
-            uijet.js, line 599
+            uijet.js, line 627
         </div>
         
     </div>
@@ -2509,7 +2511,7 @@ Defaults to the <code>resource</code> option if it's a <code>string</code>, othe
     
         
         <div class="tag-source">
-            uijet.js, line 537
+            uijet.js, line 565
         </div>
         
     </div>
@@ -2653,7 +2655,7 @@ Defaults to the <code>resource</code> option if it's a <code>string</code>, othe
     
         
         <div class="tag-source">
-            uijet.js, line 576
+            uijet.js, line 604
         </div>
         
     </div>
@@ -2850,7 +2852,7 @@ result of the triggered handler or <code>undefined</code>.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 683
+            uijet.js, line 711
         </div>
         
     </div>
@@ -3008,7 +3010,7 @@ If <code>data</code> is supplied it is handed over to the handler as an argument
     
         
         <div class="tag-source">
-            uijet.js, line 493
+            uijet.js, line 521
         </div>
         
     </div>
@@ -3091,7 +3093,7 @@ Defaults to the <code>resource</code> option if it's a <code>string</code>, othe
     
         
         <div class="tag-source">
-            uijet.js, line 624
+            uijet.js, line 652
         </div>
         
     </div>
@@ -3219,7 +3221,7 @@ result of signal handler's call.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 647
+            uijet.js, line 675
         </div>
         
     </div>
@@ -3371,7 +3373,7 @@ handler will be passed to that method/signal handler.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 550
+            uijet.js, line 578
         </div>
         
     </div>
@@ -3500,7 +3502,7 @@ If no <code>topic</code> is given then removes all handlers.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 517
+            uijet.js, line 545
         </div>
         
     </div>
@@ -3576,7 +3578,7 @@ If no <code>topic</code> is given then removes all handlers.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 664
+            uijet.js, line 692
         </div>
         
     </div>
@@ -3739,7 +3741,7 @@ If <code>handler</code> is not supplied then the handler that is currently regis
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Wed Dec 24 2014 11:34:50 GMT+0200 (IST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Thu Apr 09 2015 13:00:46 GMT+0300 (IDT)
         </footer>
     </div>
 </div>

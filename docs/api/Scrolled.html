@@ -125,6 +125,8 @@
         
             <li class="private static" data-name="uijet._sleepContained"><a href="uijet.html#_sleepContained">_sleepContained</a></li>
         
+            <li class="private static" data-name="uijet._trickle"><a href="uijet.html#_trickle">_trickle</a></li>
+        
             <li class="private static" data-name="uijet._unregister"><a href="uijet.html#_unregister">_unregister</a></li>
         
             <li class="private static" data-name="uijet._wakeContained"><a href="uijet.html#_wakeContained">_wakeContained</a></li>
@@ -1077,17 +1079,11 @@
         
             <li class="private" data-name="BaseWidget#_center"><a href="BaseWidget.html#_center">_center</a></li>
         
-            <li class="private" data-name="BaseWidget#_clearRendered"><a href="BaseWidget.html#_clearRendered">_clearRendered</a></li>
-        
             <li class="private" data-name="BaseWidget#_deactivate"><a href="BaseWidget.html#_deactivate">_deactivate</a></li>
         
             <li class="private" data-name="BaseWidget#_finally"><a href="BaseWidget.html#_finally">_finally</a></li>
         
             <li class="private" data-name="BaseWidget#_generateId"><a href="BaseWidget.html#_generateId">_generateId</a></li>
-        
-            <li class="private" data-name="BaseWidget#_getSize"><a href="BaseWidget.html#_getSize">_getSize</a></li>
-        
-            <li class="private" data-name="BaseWidget#_saveOriginal"><a href="BaseWidget.html#_saveOriginal">_saveOriginal</a></li>
         
             <li class="private" data-name="BaseWidget#_setCloak"><a href="BaseWidget.html#_setCloak">_setCloak</a></li>
         
@@ -1138,6 +1134,8 @@
             <li class="" data-name="BaseWidget#sleepContained"><a href="BaseWidget.html#sleepContained">sleepContained</a></li>
         
             <li class="" data-name="BaseWidget#style"><a href="BaseWidget.html#style">style</a></li>
+        
+            <li class="" data-name="BaseWidget#trickle"><a href="BaseWidget.html#trickle">trickle</a></li>
         
             <li class="" data-name="BaseWidget#unbind"><a href="BaseWidget.html#unbind">unbind</a></li>
         
@@ -1234,8 +1232,6 @@
         
         <span class="subtitle">Methods</span>
         
-            <li class="private" data-name="List#_clearRendered"><a href="List.html#_clearRendered">_clearRendered</a></li>
-        
             <li class="" data-name="List#click"><a href="List.html#click">click</a></li>
         
             <li class="" data-name="List#getTransfer"><a href="List.html#getTransfer">getTransfer</a></li>
@@ -1243,6 +1239,8 @@
             <li class="" data-name="List#init"><a href="List.html#init">init</a></li>
         
             <li class="" data-name="List#prepareElement"><a href="List.html#prepareElement">prepareElement</a></li>
+        
+            <li class="private" data-name="List#render"><a href="List.html#render">render</a></li>
         
             <li class="" data-name="List#select"><a href="List.html#select">select</a></li>
         
@@ -1884,7 +1882,7 @@
         
         <span class="subtitle">Methods</span>
         
-            <li class="private" data-name="Scrolled#_clearRendered"><a href="Scrolled.html#_clearRendered">_clearRendered</a></li>
+            <li class="private" data-name="Scrolled#_getSize"><a href="Scrolled.html#_getSize">_getSize</a></li>
         
             <li class="private" data-name="Scrolled#_prepareScrolledSize"><a href="Scrolled.html#_prepareScrolledSize">_prepareScrolledSize</a></li>
         
@@ -1956,7 +1954,11 @@
         
         <span class="subtitle">Methods</span>
         
+            <li class="private" data-name="Templated#_clearRendered"><a href="Templated.html#_clearRendered">_clearRendered</a></li>
+        
             <li class="" data-name="Templated#_fetchTemplate"><a href="Templated.html#_fetchTemplate">_fetchTemplate</a></li>
+        
+            <li class="private" data-name="Templated#_saveOriginal"><a href="Templated.html#_saveOriginal">_saveOriginal</a></li>
         
             <li class="" data-name="Templated#deferLoadables"><a href="Templated.html#deferLoadables">deferLoadables</a></li>
         
@@ -2123,14 +2125,14 @@
             
 <dt class="private">
     <div class="nameContainer">
-        <h4 class="name" id="_clearRendered">
+        <h4 class="name" id="_getSize">
             
-            <span class="type-signature ">private</span>_clearRendered<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Scrolled.html">Scrolled</a>}</span>
+            <span class="type-signature ">private</span>_getSize<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
         </h4>
     
         
         <div class="tag-source">
-            mixins/Scrolled.js, line 143
+            mixins/Scrolled.js, line 148
         </div>
         
     </div>
@@ -2141,7 +2143,11 @@
     
     
     <div class="description">
-        <p>Destroys the scroller.</p>
+        <p>Gets the size of a widget's element, taking its child elements into account.</p>
+<h4>Related options:</h4><ul>
+<li><code>horizontal</code>: controls size calculation - height of a single child element and width of all children
+when <code>true</code>, or vise versa if falsy.</li>
+</ul>
     </div>
     
 
@@ -2206,7 +2212,7 @@
     
         
         <div class="tag-source">
-            mixins/Scrolled.js, line 162
+            mixins/Scrolled.js, line 189
         </div>
         
     </div>
@@ -2286,7 +2292,7 @@
     
         
         <div class="tag-source">
-            mixins/Scrolled.js, line 183
+            mixins/Scrolled.js, line 210
         </div>
         
     </div>
@@ -3120,7 +3126,7 @@ A stub noop to be implemented by a scrolling library adapter.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Wed Dec 24 2014 11:34:50 GMT+0200 (IST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Thu Apr 09 2015 13:00:46 GMT+0300 (IDT)
         </footer>
     </div>
 </div>
