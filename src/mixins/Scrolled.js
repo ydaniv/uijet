@@ -1,12 +1,12 @@
-(function (factory) {
+(function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet'], function (uijet) {
-            return factory(uijet);
+            return factory(root, uijet);
         });
     } else {
-        factory(uijet);
+        factory(root, uijet);
     }
-}(function (uijet) {
+}(this, function (uijet) {
 
     /**
      * Scrolled mixin class.
@@ -133,18 +133,45 @@
             return this;
         },
         /**
-         * Destroys the scroller.
-         * 
+         * Gets the size of a widget's element, taking its child elements into account.
+         *
+         * #### Related options:
+         *
+         * * `horizontal`: controls size calculation - height of a single child element and width of all children
+         * when `true`, or vise versa if falsy.
+         *
          * @memberOf Scrolled
          * @instance
-         * @returns {Scrolled}
+         * @returns {{width: number, height: number}}
          * @private
          */
-        _clearRendered      : function () {
-            // destroy the scroll
-            this.has_content && this.unscroll();
-            this._super();
-            return this;
+        _getSize        : function () {
+            var $children = this.$element.children(),
+                last_child = $children.get(-1),
+                size = { width: 0, height: 0 },
+                // since the default overflow of content is downward just get the last child's position + height
+                total_height = last_child && (last_child.offsetTop + last_child.offsetHeight) || 0,
+                total_width = 0;
+            if ( this.options.horizontal ) {
+                // since HTML is finite horizontally we *have* to count all children
+                $children.each(function (i, child) {
+                    // get the computed style object
+                    var style = root.getComputedStyle(child, null);
+                    // add the total width of each child + left & right margin
+                    total_width += child.offsetWidth + (+style.marginLeft.slice(0, -2)) +
+                                   (+style.marginRight.slice(0, -2));
+                });
+                size.width = total_width;
+                // height is by default the total height of the first child
+                $children.length && (size.height = $children[0].offsetHeight);
+            }
+            else {
+                // it's a vertical widget
+                // width is by default the total width of the first child
+                $children.length && (size.width = $children[0].offsetWidth);
+                size.height = total_height;
+            }
+            return size;
         },
         /**
          * Ensures `this.$element` wraps around its content.

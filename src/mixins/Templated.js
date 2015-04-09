@@ -57,6 +57,10 @@
             if ( ! this.options.dont_auto_fetch_template ) {
                 this._fetchTemplate();
             }
+
+            // cache reference to initial markup that was coded into the element by user
+            this._saveOriginal();
+
             this.releaseSignal('post_init');
             return result;
         },
@@ -249,6 +253,46 @@
                 });
             }
             // like a fulfilled promise
+            return this;
+        },
+        /**
+         * Saves reference to all child elements prior to any rendering.
+         *
+         * This is done on {@link Templated#init} and used to keep elements that
+         * should not be touched when rendering the contents of the widget.
+         *
+         * @memberOf Templated
+         * @instance
+         * @returns {Templated}
+         * @private
+         */
+        _saveOriginal   : function () {
+            !this.$original_children && (this.$original_children = this.$element.children());
+            return this;
+        },
+        /**
+         * Removes all elements created by rendering the widget,
+         * e.g. results from calling {@link Templated#render}, meaning all that's *NOT* in
+         * `$original_children`, set by {@link Templated#_saveOriginal} on {@link Templated#init}.
+         *
+         * #### Related options:
+         *
+         * * `extend_rendered`: set to `true` if you wish to keep the content with every render.
+         *
+         * @memberOf Templated
+         * @instance
+         * @returns {Templated}
+         * @private
+         */
+        _clearRendered  : function () {
+            if ( this.bound ) {
+                this.unbindAll();
+            }
+            if ( !this.options.extend_rendered ) {
+                // remove all children that were added with .render()
+                this.$element.children().not(this.$original_children).remove();
+                this.has_content = false;
+            }
             return this;
         }
     });
