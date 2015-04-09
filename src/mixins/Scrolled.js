@@ -6,7 +6,7 @@
     } else {
         factory(root, uijet);
     }
-}(this, function (uijet) {
+}(this, function (root, uijet) {
 
     /**
      * Scrolled mixin class.
