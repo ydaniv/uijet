@@ -244,26 +244,31 @@
          * If this resource is a `Model` also handles
          * removing it from containing collection, or
          * destroying it if asked to.
-         * 
+         *
+         * #### Related options:
+         *
+         * * `destroy_resource`: Tells the widget to call `destroy()` on its resource. Defaults to `false`.
+         * * `dont_remove_resource`: Tells the widget NOT `remove()` its resource from its related collection. Defaults to `false`.
+         *
          * @see {@link http://backbonejs.org/#Model-destroy}
          * @method module:data/backbone.Resourced#destroy
-         * @param {boolean} [destroy_resource] - if `true` will also invoke the resource's destroy method.
          * @returns {Widget} this
          */
-        destroy         : function (destroy_resource) {
+        destroy         : function () {
             if ( this.resource instanceof Backbone.Model ) {
-                var collection;
+                var collection = this.resource.collection;
 
-                if ( destroy_resource ) {
+                if ( this.options.destroy_resource ) {
                     // by default also delegates to the resource's destroy method
                     this.resource.destroy();
                 }
                 // otherwise, if part of a colletction
-                else if ( collection = this.resource.collection ) {
+                else if ( collection && ! this.options.dont_remove_resource ) {
                     // just remove from it from its collection
                     collection.remove(this.resource);
                 }
             }
+            this.stopListening();
 
             var res = this._super.apply(this, arguments);
 

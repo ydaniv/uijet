@@ -137,9 +137,6 @@
             // init contained components
             var contained_starts = this.initContained();
 
-            // cache reference to initial markup that was coded into the element by user
-            this._saveOriginal();
-
             if ( !this.options.bind_on_wake ) {
                 // bind DOM events
                 this.bindAll();
@@ -168,7 +165,7 @@
         initContained   : function () {
             var container_id = this.id,
                 contained;
-            if ( contained = this.options.components ) {
+            if ( contained = utils.returnOf(this.options.components, this) ) {
                 contained.forEach(function (child) {
                     if ( !child.config.container ) {
                         child.config.container = container_id;
@@ -201,6 +198,20 @@
          */
         setContext      : function (ctx, value) {
             return this._setContext(ctx, value);
+        },
+        /**
+         * Sets properties on the contained components of this widget.
+         * This effect will continue to propagate recursively.
+         * 
+         * @memberOf BaseWidget
+         * @instance
+         * @param {object} [context] - a map of properties to send to contained widgets to set on their `context`.
+         * Defaults to the result of `this.getContext()`.
+         * @returns {Widget}
+         */
+        trickle         : function (context) {
+            uijet._trickle(this, context);
+            return this;
         },
         /**
          * Starts up the widget.
@@ -944,6 +955,7 @@
          * * `wrapper_class`: extra class names to be set on the container element.
          * * `wrapper_tag`: a name of a tag to use for the container element. Defaults to `div`.
          * * `cloak`: if this instance is cloaked, hiding is transferred to the container.
+         * * `hide`: if this instance is hidden, hiding is transferred to the container.
          *
          * @memberOf BaseWidget
          * @instance
@@ -965,9 +977,14 @@
                         id     : this.id + '_wrapper'
                     })).parent();
 
-                    if ( this.options.cloak ) {
+                    if ( this.options.cloak || this.options.hide ) {
                         this._setCloak(true);
-                        this.$element[0].style.removeProperty('visibility');
+                        if ( this.options.hide ) {
+                            this.$element.removeClass('hide');
+                        }
+                        else {
+                            this.$element[0].style.removeProperty('visibility');
+                        }
                     }
                 }
             }
@@ -994,57 +1011,19 @@
             return this;
         },
         /**
-         * Gets the size of a widget's element, taking its child elements into account.
+         * Toggles the element's `visibility`, depending on the `cloak` argument.
+         * If the `hide` option is truthy it will toggle the `hide` class instead,
+         * based on the `cloak` argument.
          *
-         * #### Related options:
-         *
-         * * `horizontal`: controls size calculation - height of a single child element and width of all children
-         * when `true`, or vise versa if falsy.
-         *
-         * @memberOf BaseWidget
-         * @instance
-         * @returns {{width: number, height: number}}
-         * @private
-         */
-        _getSize        : function () {
-            var $children = this.$element.children(),
-            // cache `window` in this scope
-                __window = _window,
-                last_child = $children.get(-1),
-                size = { width: 0, height: 0 },
-            // since the default overflow of content is downward just get the last child's position + height
-                total_height = last_child && (last_child.offsetTop + last_child.offsetHeight) || 0,
-                total_width = 0,
-                l = $children.length;
-            if ( this.options.horizontal ) {
-                // since HTML is finite horizontally we *have* to count all children
-                $children.each(function (i, child) {
-                    // get the computed style object
-                    var style = __window.getComputedStyle(child, null);
-                    // add the total width of each child + left & right margin
-                    total_width += child.offsetWidth + (+style.marginLeft.slice(0, -2)) +
-                                   (+style.marginRight.slice(0, -2));
-                });
-                size.width = total_width;
-                // height is by default the total height of the first child
-                $children.length && (size.height = $children[0].offsetHeight);
-            }
-            else {
-                // it's a vertical widget  
-                // width is by default the total width of the first child
-                $children.length && (size.width = $children[0].offsetWidth);
-                size.height = total_height;
-            }
-            return size;
-        },
-        /**
-         * Toggles the element's `visibility`, depending on the `cloak` param.
          * Used for hiding the widget from view while it is asleep.
          *
-         * If `cloak` is truthy it's set to `hidden`, otherwise to `visible`.
+         * If `cloak` is truthy the element will be hidden and otherwise shown.
+         * The `hide` class is located in the uijet's stylesheets in `layout.less`.
          *
          * #### Related options:
-         * * `cloak`: only if truthy will this method affect the element.
+         *
+         * * `hide`: if truthy this method will toggle the `hide` class.
+         * * `cloak`: if truthy, and `hide` option is falsy, this method will toggle the `visibility` style attribute of this element.
          *
          * @memberOf BaseWidget
          * @instance
@@ -1053,48 +1032,11 @@
          * @private
          */
         _setCloak       : function (cloak) {
-            if ( this.options.cloak ) {
+            if ( this.options.hide ) {
+                (this.$wrapper || this.$element).toggleClass('hide', !!cloak);
+            }
+            else if ( this.options.cloak ) {
                 (this.$wrapper || this.$element)[0].style.visibility = cloak ? 'hidden' : 'visible';
-            }
-            return this;
-        },
-        /**
-         * Saves reference to all child elements prior to any rendering.
-         *
-         * This is done on {@link BaseWidget#init} and used to keep elements that
-         * should not be touched when rendering the contents of the widget.
-         *
-         * @memberOf BaseWidget
-         * @instance
-         * @returns {Widget}
-         * @private
-         */
-        _saveOriginal   : function () {
-            !this.$original_children && (this.$original_children = this.$element.children());
-            return this;
-        },
-        /**
-         * Removes all elements created by rendering the widget,
-         * e.g. results from calling {@link BaseWidget#render}, meaning all that's *not* in
-         * `$original_children`, set by {@link BaseWidget#_saveOriginal} on {@link BaseWidget#init}.
-         *
-         * #### Related options:
-         *
-         * * `extend_rendered`: set to `true` if you wish to keep the content with every render.
-         *
-         * @memberOf BaseWidget
-         * @instance
-         * @returns {Widget}
-         * @private
-         */
-        _clearRendered  : function () {
-            if ( this.bound ) {
-                this.unbindAll();
-            }
-            if ( !this.options.extend_rendered ) {
-                // remove all children that were added with .render()
-                this.$element.children().not(this.$original_children).remove();
-                this.has_content = false;
             }
             return this;
         },

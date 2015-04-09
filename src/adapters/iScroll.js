@@ -33,9 +33,8 @@
          * @returns {Widget} this
          */
         scroll: function () {
-            var iS_ops = {
-                bounce  : false
-            };
+            var iS_ops = {};
+
             if ( this.iScroll ) {
                 this.iScroll.refresh();
             }
@@ -45,7 +44,7 @@
                     iS_ops.vScroll = false;
                     iS_ops.vScrollbar = false;
                 }
-                this.iScroll = new iScroll(this.$wrapper[0], uijet.utils.extend(iS_ops, this.options.iscroll_options || {}));
+                this.iScroll = new IScroll(this.$wrapper[0], uijet.utils.extend(iS_ops, this.options.iscroll_options || {}));
             }
             this.scroll_on = true;
             return this;

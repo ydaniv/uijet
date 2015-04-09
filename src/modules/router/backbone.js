@@ -30,6 +30,10 @@
             /**
              * Registers a route to be handled by a given `Routed` `widget` instance.
              *
+             * #### Related options:
+             *
+             * * `route_name`: Will be used for the `route` and `route:name` events triggered by the router and history. Defaults to the `widget.id`.
+             *
              * @method module:router/backbone#setRoute
              * @param {Object} widget - the widget instance that will intercept this route.
              * @param {string} [route] - the route to register to. Defaults to calling `widget.getRoute()`.
@@ -39,17 +43,16 @@
              * @see {@link http://backbonejs.org/#Router|Backbone.Router#route}
              */
             setRoute    : function (widget, route, callback) {
-                var name;
+                var name = widget.options.route_name || widget.id;
                 route = route || widget.getRoute();
 
                 if ( typeof callback == 'string' ) {
-                    name = callback;
 
                     if ( callback in widget )
                         callback =  widget[callback];
 
                     else if ( callback in Router )
-                        return Router.route(route, name), this;
+                        return Router.route(route, name, callback), this;
 
                 }
 

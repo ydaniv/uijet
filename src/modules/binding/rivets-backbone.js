@@ -123,8 +123,9 @@
          * 
          * #### Related options:
          * * `observe`: map, or a function returning one, of model names to use in bindings to the objects they observe.
+         * It's also possible to set it to a `string` which will be used as a reference for the instance's `context`.
          * If a value in that map is a `string` it is used to fetch a registered resource.
-         * For every list of existing observables the widget's instance is added under the key of `this.id`.
+         * If that value is `'this'` or a `boolean` it will be mapped to the instance's `context`.
          * * `resource`: if it's a `string` it will be added to view's observables.
          * * `bind_options`: config object passed to {@link http://www.rivetsjs.com/docs/#getting-started-creating-views|Rivets.bind()}.
          * 
@@ -134,38 +135,50 @@
          */
         bindData: function () {
             var observables = uijet.utils.returnOf(this.options.observe, this),
+                resource = this.options.resource,
                 k, observable;
 
             // if observe option is not set but we have a resource option set
-            if ( ! observables && this.options.resource ) {
-
-                observables = {};
-
+            if ( ! observables && resource ) {
                 // if resource is a name in resources registry
-                if ( typeof this.options.resource == 'string' ) {
-                    // add it to observables under its name 
-                    observables[this.options.resource] = this.resource || uijet.Resource(this.options.resource);
+                if ( typeof resource == 'string' ) {
+                    observables = {};
+                    // add it to observables under its name
+                    observables[resource] = this.resource || uijet.Resource(resource);
                 }
                 else {
                     this.bindDataEvents();
                     // implicitly skip
-                    // we're probably handling observation in a higher level, i.e. "each-/repeat-" binding
+                    // we're probably handling observation in a higher level, i.e. "each-" binding
                     return this;
                 }
             }
 
             // if we have observables
             if ( observables ) {
-                for ( k in observables ) {
-                    observable = observables[k];
-                    // if we have an observable that maps to a name
-                    if ( typeof observable == 'string' ) {
-                        // use that name to fetch a resource
-                        observables[k] = uijet.Resource(observable);
+                if ( uijet.utils.isObj(observables) ) {
+                    for ( k in observables ) {
+                        observable = observables[k];
+                        // if we have an observable that maps to a name
+                        if ( typeof observable == 'string' ) {
+                            if ( observable === 'this' ) {
+                                observables[k] = this.getContext();
+                            }
+                            else {
+                                // use that name to fetch a resource
+                                observables[k] = uijet.Resource(observable);
+                            }
+                        }
+                        else if ( typeof observable == 'boolean' ) {
+                            observables[k] = this.getContext();
+                        }
                     }
                 }
-                // finally add the instance under its id to observables, to use it a bit like a ViewModel
-                observables[this.id] = this;
+                else if ( typeof observables == 'string' ) {
+                    k = observables;
+                    observables = {};
+                    observables[k] = this.getContext();
+                }
 
                 // bind and hold on to the bound view
                 this.rv_view = rivets.bind(this.$wrapper || this.$element, observables, this.options.bind_options);

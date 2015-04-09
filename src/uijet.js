@@ -1,6 +1,6 @@
 /*!
  * uijet UI Framework
- * @version 0.0.65
+ * @version 0.0.67
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
@@ -61,6 +61,34 @@
                 function (f) {
                     _window.setTimeout(f, 0);
                 },
+        /*
+         * TODO: document this
+         */
+        consoleOrRethrow = (function () {
+            function rethrow (e) {
+                throw e.stack || e;
+            }
+            if ( console ) {
+                return function (e) {
+                    if ( uijet.debug ) {
+                        console.error(e.stack || e);
+                    }
+                    else {
+                        rethrow(e);
+                    }
+                };
+            }
+            else {
+                return function (e) {
+                    if ( uijet.debug ) {
+                        async(rethrow);
+                    }
+                    else {
+                        rethrow(e);
+                    }
+                };
+            }
+        }()),
         /**
          * Searches for a prefixed name of `name` inside `obj`.
          *
@@ -885,9 +913,10 @@
      *
      * @memberOf uijet.utils
      * @param {string} prop - an un-prefixed name of a style property.
+     * @param {boolean} as_css_text - if `true` will return the property prefixed properly to be used as CSS text directly in a style declaration.
      * @returns {string|null} prefixed - the matching name of this property for the current user-agent.
      */
-    function getStyleProperty (prop) {
+    function getStyleProperty (prop, as_css_text) {
         var style = _window.document.body.style,
             cases = BROWSER_PREFIX.style,
             prefix, camelized, i = 0;
@@ -896,7 +925,7 @@
             return prop;
         }
         // check cache
-        if ( prop in BROWSER_PREFIX.matches ) {
+        if ( ! as_css_text && prop in BROWSER_PREFIX.matches ) {
             // return the cached property name
             return BROWSER_PREFIX.matches[prop];
         }
@@ -906,18 +935,26 @@
             // try cached prefix
             if ( prefix = BROWSER_PREFIX.prefix ) {
                 if ( (prefix + camelized) in style ) {
-                    // cache result
-                    BROWSER_PREFIX.matches[prop] = prefix + camelized;
-                    return prefix + camelized;
+                    if ( as_css_text) {
+                        return '-' + prefix.toLowerCase() + '-' + prop;
+                    }
+                    else {
+                        // cache result
+                        BROWSER_PREFIX.matches[prop] = prefix + camelized;
+                        return prefix + camelized;
+                    }
                 }
             }
-            else {
-                // executed once until a match is found
-                // try all prefixes
-                while ( prefix = cases[i++] ) {
-                    if ( (prefix + camelized) in style ) {
-                        // cache the prefix that worked
-                        BROWSER_PREFIX.prefix = prefix;
+
+            // try all prefixes
+            while ( prefix = cases[i++] ) {
+                if ( (prefix + camelized) in style ) {
+                    // cache the prefix that worked
+                    BROWSER_PREFIX.prefix = prefix;
+                    if ( as_css_text) {
+                        return '-' + prefix.toLowerCase() + '-' + prop;
+                    }
+                    else {
                         // cache the result
                         BROWSER_PREFIX.matches[prop] = prefix + camelized;
                         return prefix + camelized;
@@ -976,6 +1013,7 @@
      * @namespace uijet
      */
     uijet = {
+        debug                : true,
         route_prefix         : '',
         route_suffix         : '',
         init_queue           : [],
@@ -1218,12 +1256,16 @@
         },
         /**
          * Initializes and starts the uijet sandbox and all the declared widgets.
-         * This also triggers the import and injection of all required modules
-         * that haven't been loaded yet.
+         * This also triggers the injection of all required modules.
+         * Returns a promise for the initialization and waking process of the entire app,
+         * unless disabled by the `dont_wake`/`dont_start` options.
+         *
+         * It's possible to catch any exception thrown from that process by setting a rejection
+         * handler on the returned process.
          *
          * @memberOf uijet
          * @param {Object} [options] - configuration object for `uijet`.
-         * @returns {uijet}
+         * @returns {Promise}
          *
          * #### uijet options:
          *
@@ -1258,6 +1300,9 @@
                     this.$element.addClass('cover');
                 }
                 if ( _options ) {
+                    if ( _options.debug ) {
+                        uijet.debug = _options.debug;
+                    }
                     if ( _options.route_prefix ) {
                         this.route_prefix = _options.route_prefix;
                     }
@@ -1307,7 +1352,7 @@
                         }
                     }
 
-                    // subscribe to all evets
+                    // subscribe to all events
                     if ( _app_events = _options.app_events ) {
                         var e;
                         for ( e in _app_events ) {
@@ -1316,35 +1361,25 @@
                     }
 
                     // after all tasks resolve
-                    this.whenAll(this.init_queue)
+                    return this.whenAll(this.init_queue)
                         .then(function () {
                             // build and init declared widgets
                             // notice that here all modules are already loaded so this will run through
                             return this.start(declared_widgets, true);
-                        }.bind(this), function (e) {
-                            if ( console ) {
-                                console.error(e.message);
-                                console.log(e.stack);
-                            }
-                        })
+                        }.bind(this), consoleOrRethrow)
                         .then(function () {
                             //when all declared widgets are initialized, set `uijet.initialized` to `true`
                             this.initialized = true;
                             // kick-start the GUI - unless ordered not to
-                            _options.dont_start || this.startup();
-                        }.bind(this), function (e) {
-                            if ( console ) {
-                                console.error(e.stack);
-                            }
-                        });
+                            return _options.dont_start || this.startup();
+                        }.bind(this), consoleOrRethrow);
                 }
                 // no options given
                 else {
                     this.initialized = true;
                     // kick-start
-                    this.startup();
+                    return this.startup();
                 }
-                return this;
             };
             // if we have widgets defined
             if ( options && isArr(options.widgets) ) {
@@ -1481,7 +1516,7 @@
             }
             // skip import
             else {
-                // do start  
+                // do start
                 // if we have mixins configured to mix
                 if ( _mixins = toArray(_config.mixins) ) {
                     // get the stored widget class
@@ -1565,10 +1600,15 @@
             if ( _id in widgets ) {
                 // if there's an instance
                 if ( widgets[_id].self ) {
-                    // destroy!
-                    widgets[_id].self.destroy();
-                    // since desrtoy just unregistered this widget
-                    widgets[_id] = _current;
+                    if ( widgets[_id].self.options.destroy_duplicate ) {
+                        // destroy!
+                        widgets[_id].self.destroy();
+                        // since desrtoy just unregistered this widget
+                        widgets[_id] = _current;
+                    }
+                    else {
+                        throw new Error('Got a duplicate widget for id: ' + _id);
+                    }
                 }
                 else {
                     // set reference to the widget's instance
@@ -1614,7 +1654,7 @@
             while ( _parent && _parent !== _body ) {
                 // if we hit a `uijet_widget`
                 if ( ~_parent.className.indexOf('uijet_widget') ) {
-                    // get its `id`.  
+                    // get its `id`.
                     // important to get the attribute and not do `element.id`, since it might break
                     // when the element is a `<form>` and has an `<input name=id>`.
                     _parent_id = _parent.getAttribute('id');
@@ -1782,15 +1822,15 @@
         },
         /**
          * Starts up uijet.
+         * Publishes the `startup` event and wakes all widgets at the root of the widgets tree.
          * If the `pre_startup` callback is defined it will run in the beginning.
-         * It publishes the `startup` event and wakes all widgets on the root widgets tree.
          *
          * **note**: If you are using a router module in your application,
-         * then you probably want to set uijet's `dont_wake` option to `true`,
-         * so that the initial state is awaken by the router.
+         * then you may want to set uijet's `dont_wake` option to `true`,
+         * so that the initial view is awaken by the router.
          *
          * @memberOf uijet
-         * @returns {uijet}
+         * @returns {Promise}
          */
         startup              : function () {
             var pre_startup = this.options.pre_startup;
@@ -1805,10 +1845,10 @@
 
             if ( !this.options.dont_wake ) {
                 // ☼ good morning sunshine ☼
-                this._wakeContained('__app__');
+                return uijet.whenAll(this._wakeContained('__app__'));
             }
 
-            return this;
+            return uijet.when(this);
         },
         /**
          * Publishes an app event with a passed deferred object containing `resolve` and `reject` methods,
@@ -1850,7 +1890,7 @@
                 l = _contained.length;
             while ( l-- ) {
                 _widget = widgets[_contained[l]].self;
-                if ( _widget && !returnOf(_widget.options.dont_wake, _widget) ) {
+                if ( _widget && !returnOf(_widget.options.dont_wake, _widget, context) ) {
                     promises.unshift(_widget.wake(context));
                 }
             }
@@ -1896,6 +1936,29 @@
                         _w.destroy.apply(_w, args);
                     }
                 }
+            }
+            return this;
+        },
+        /**
+         * Sets properties on the contained components of `widget`.
+         * This effect will continue to propagate recursively.
+         *
+         * @memberOf uijet
+         * @param widget - a widget instance which contained components will be retreived.
+         * @param {Object} [context] - a map of properties to send to contained widgets to set on their `context`.
+         * Defaults to the result of `widget.getContext()`.
+         * @returns {uijet}
+         * @private
+         */
+        _trickle             : function (widget, context) {
+            var ctx = context || widget.getContext(),
+                _contained = widgets[widget.id].contained,
+                l = _contained.length,
+                _w;
+            while ( l-- ) {
+                _w = widgets[_contained[l]].self;
+                _w.setContext(ctx)
+                  .trickle(ctx);
             }
             return this;
         },
@@ -1946,7 +2009,7 @@
                         if ( !~exclude.indexOf(p) ) {
                             // if we already processed this property
                             if ( p in processed ) {
-                                // if it's using same units AND size of property of this widget is smaller then it's sibling's 
+                                // if it's using same units AND size of property of this widget is smaller then it's sibling's
                                 if ( processed[p].unit === processed_position[p].unit &&
                                      processed[p].size < processed_position[p].size ) {
                                     // set the size to the sibling's size
@@ -1979,7 +2042,7 @@
             }
             // if we found something to set
             if ( set_style ) {
-                // make sure we allow the widget to be fluid 
+                // make sure we allow the widget to be fluid
                 if ( 'left' in position || 'right' in position ) {
                     position.width = 'auto';
                 }
@@ -2047,6 +2110,7 @@
      */
     uijet.utils = {
         async           : async,
+        consoleOrRethrow: consoleOrRethrow,
         extend          : extend,
         extendProto     : extendProto,
         extendProxy     : extendProxy,
@@ -2109,7 +2173,7 @@
             }
             return array;
         },
-        // wrap these objects since they point to native objects which is forbidden  
+        // wrap these objects since they point to native objects which is forbidden
         requestAnimFrame: function (f) {
             return requestAnimFrame(f);
         },

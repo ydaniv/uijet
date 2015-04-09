@@ -66,12 +66,11 @@
          *
          * #### Related options:
          * * `observe`: map, or a function returning one, of model names to use in bindings to the objects they observe.
+         * It's also possible to set it to a `string` which will be used as a reference for the instance's `context`.
          * If a value in that map is a `string` it is used to fetch a registered resource.
-         * For every list of existing observables the widget's instance is added under the key of `this.id`.
+         * If that value is `'this'` or a `boolean` it will be mapped to the instance's `context`.
          * * `resource`: if it's a `string` it will be added to view's observables.
          * * `bind_options`: config object passed to {@link http://www.rivetsjs.com/docs/#getting-started-creating-views|Rivets.bind()}.
-         * * `observe_self`: if `true` then the instance itself (`this`) will be observed under `this.id` as a namespace.
-         * * `observe_context`: if `true` then the instance's context will be observed under `this.id` as a namespace.
          *
          * @see {@link http://www.rivetsjs.com/docs/}
          * @method module:binding/rivets#bindData
@@ -79,49 +78,48 @@
          */
         bindData: function () {
             var observables = uijet.utils.returnOf(this.options.observe, this),
-                add_self = this.options.observe_self,
                 resource = this.options.resource,
                 k, observable;
 
-            // if observe option is not set
-            if ( ! observables ) {
-
-                observables = {};
-
-                // resource IS option set
-                if ( resource ) {
-                    // if resource is a name in resources registry
-                    if ( typeof resource == 'string' ) {
-                        // add it to observables under its name
-                        observables[resource] = this.resource || uijet.Resource(resource);
-                    }
-                    else {
-                        // implicitly skip
-                        // we're probably handling observation in a higher level, i.e. "each-/repeat-" binding
-                        return this;
-                    }
+            // if observe option is not set but we have a resource option set
+            if ( ! observables && resource ) {
+                // if resource is a name in resources registry
+                if ( typeof resource == 'string' ) {
+                    observables = {};
+                    // add it to observables under its name
+                    observables[resource] = this.resource || uijet.Resource(resource);
                 }
-            }
-
-            if ( this.options.observe_context ) {
-                observables[this.id] = this.getContext();
-                add_self = false;
+                else {
+                    // implicitly skip
+                    // we're probably handling observation in a higher level, i.e. "each-" binding
+                    return this;
+                }
             }
 
             // if we have observables
             if ( observables ) {
-                for ( k in observables ) {
-                    observable = observables[k];
-                    // if we have an observable that maps to a name
-                    if ( typeof observable == 'string' ) {
-                        // use that name to fetch a resource
-                        observables[k] = observable = uijet.Resource(observable);
+                if ( uijet.utils.isObj(observables) ) {
+                    for ( k in observables ) {
+                        observable = observables[k];
+                        // if we have an observable that maps to a name
+                        if ( typeof observable == 'string' ) {
+                            if ( observable === 'this' ) {
+                                observables[k] = this.getContext();
+                            }
+                            else {
+                                // use that name to fetch a resource
+                                observables[k] = uijet.Resource(observable);
+                            }
+                        }
+                        else if ( typeof observable == 'boolean' ) {
+                            observables[k] = this.getContext();
+                        }
                     }
                 }
-
-                if ( add_self ) {
-                    // finally add the instance under its id to observables, to use it a bit like a ViewModel
-                    observables[this.id] = this;
+                else if ( typeof observables == 'string' ) {
+                    k = observables;
+                    observables = {};
+                    observables[k] = this.getContext();
                 }
 
                 // bind and hold on to the bound view
