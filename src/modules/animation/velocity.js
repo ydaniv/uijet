@@ -12,22 +12,39 @@
     }
 }(this, function (uijet, Velocity) {
 
-    function _parseTransitionConfig (config, callback) {
+    var CALLBACK_PROP_NAMES = ['complete', 'begin'];
+
+    function _bindCallbacks (options, widget) {
+        CALLBACK_PROP_NAMES.forEach(function (name) {
+            if ( uijet.utils.isFunc(options[name]) ) {
+                options[name] = options[name].bind(widget);
+            }
+        });
+    }
+
+    function _parseTransitionConfig (config, widget) {
         if ( uijet.utils.isArr(config) ) {
-            // if there's a callback to run and there's an options object
-            if ( callback && uijet.utils.isObj(config[1]) ) {
-                // add callback as the complete function
-                config[1].complete = callback;
+            // bind the complete callback if it exists
+            if ( uijet.utils.isObj(config[1]) ) {
+                _bindCallbacks(config[1], widget);
+            }
+            // bind the complete callback if it is passed directly as a third argument
+            if ( uijet.utils.isFunc(config[2]) ) {
+                config[2] = config[2].bind(widget);
+            }
+            // bind the complete callback if it is passed directly as a fourth argument
+            if ( uijet.utils.isFunc(config[3]) ) {
+                config[3] = config[3].bind(widget);
             }
             return config;
         }
         else if ( uijet.utils.isObj(config) ) {
             // if there's a callback to run and there's an options object
-            if ( callback && config.options ) {
+            if ( config.options || config.o ) {
                 // add callback as the complete function
-                config.options.complete = callback;
+                _bindCallbacks(config.options || config.o, widget);
             }
-            return [config.properties, config.options, config.easing];
+            return [config.properties || config.p, config.options || config.o, config.easing || config.e];
         }
     }
 
@@ -55,27 +72,22 @@
          * @method module:animation/velocity#transit
          * @param {Widget} widget - the widget instance to transition.
          * @param {string} [direction] - direction of transition - `'in'` or `'out'`. Defaults to `'in'`.
-         * @param {function} [callback] - callback to invoke at end of transition.
-         * @returns {uijet}
+         * @returns {Promise} - promise object returned by the `Velocity.animate()` call.
          */
-        transit             : function (widget, direction, callback) {
+        transit             : function (widget, direction) {
             var $el = (widget.$wrapper || widget.$element),
-                transit_type, is_direction_in, result, options;
+                transit_type, is_direction_in, result;
 
             direction = direction || 'in';
             is_direction_in = direction == 'in';
 
-            if ( callback ) {
-                callback = callback.bind(widget);
-            }
-
             if ( is_direction_in ) {
                 transit_type = uijet.utils.returnOf(widget.options.transition, widget) || this.options.transition;
-                result = Velocity.animate.apply(Velocity, [$el[0]].concat(_parseTransitionConfig(transit_type)));
+                result = Velocity.animate.apply(Velocity, [$el[0]].concat(_parseTransitionConfig(transit_type, widget)));
             }
             else {
                 transit_type = uijet.utils.returnOf(widget.options.transition_reverse, widget) || ['reverse'];
-                result = Velocity.animate.apply(Velocity, [$el[0]].concat(_parseTransitionConfig(transit_type)));
+                result = Velocity.animate.apply(Velocity, [$el[0]].concat(_parseTransitionConfig(transit_type, widget)));
             }
 
             return result;
@@ -88,6 +100,7 @@
          * @param {string|Object} props - valid CSS text to set on the element's style, or a map of style properties.
          * @param {Object|number} [options] - config object or duration in milliseconds.
          * @param {string|Array} [easing] - easing function name or array of values for generating an easing function.
+         * @returns {Promise} - promise object returned by the `Velocity.animate()` call.
          */
         animate             : function ($el, props, options, easing) {
             return Velocity.animate($el[0], props, options, easing);
