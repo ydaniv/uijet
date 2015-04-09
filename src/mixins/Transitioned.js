@@ -91,14 +91,11 @@
          * @returns {Promise} - the transition promise.
          */
         transit         : function (direction) {
-            this.transit_promise = uijet.Promise(function (resolve) {
-                // do transition
-                uijet.transit(this, direction, function () {
-                    // get this widget off the top
-                    (this.$wrapper || this.$element).removeClass('z_top');
-                    resolve();
-                    this.notify(true, 'post_transit', direction);
-                });
+            this.transit_promise = uijet.transit(this, direction).then(function (value) {
+                // get this widget off the top
+                (this.$wrapper || this.$element).removeClass('z_top');
+                this.notify(true, 'post_transit', direction);
+                return value;
             }.bind(this));
 
             return this.transit_promise;
