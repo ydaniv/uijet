@@ -42,20 +42,32 @@
          * 
          * #### Related options:
          * 
+         * * `template`: used for setting the template string directly when using a module loader to fetch templates.
+         * * `template_name`: if `template` is not set, this option will be used as the filename of the template to load. Defaults to `this.id`.
+         *    Used together with `uijet.options.templates_path` as prefix and `uijet.options.templates_extension` as suffix to create the path to the template.
          * * `dont_auto_fetch_template`: if `true` will not load the template file on `init()`.
-         * 
+         *
          * @memberOf Templated
          * @instance
          * @returns {Promise[]|Templated}
          */
         init            : function () {
+            var template_str;
+
             this.holdSignal('post_init');
             var result = this._super.apply(this, arguments);
 
-            this.template_url = uijet.options.templates_path + (this.options.template_name || this.id) + '.' + uijet.options.templates_extension;
+            //TODO: add support for setting partials' strings directly to options
+            if ( template_str = this.options.template ) {
+                this.template = uijet.compile(template_str);
+                this.has_template = true;
+            }
+            else {
+                this.template_url = uijet.options.templates_path + (this.options.template_name || this.id) + '.' + uijet.options.templates_extension;
 
-            if ( ! this.options.dont_auto_fetch_template ) {
-                this._fetchTemplate();
+                if ( ! this.options.dont_auto_fetch_template ) {
+                    this._fetchTemplate();
+                }
             }
 
             // cache reference to initial markup that was coded into the element by user
@@ -116,7 +128,8 @@
                     // generated HTML before.
                     if ( this.options.insert_before ) {
                         uijet.$(_html).insertBefore(this.options.insert_before);
-                    } else {
+                    }
+                    else {
                         // just append the HTML at the end
                         this.$element.append(_html);
                     }
