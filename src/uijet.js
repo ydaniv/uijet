@@ -1845,7 +1845,7 @@
 
             if ( !this.options.dont_wake ) {
                 // ☼ good morning sunshine ☼
-                return uijet.whenAll(this._wakeContained('__app__'));
+                return uijet.whenAll(this._wakeContained(widgets.__app__));
             }
 
             return uijet.when(this);
@@ -1878,13 +1878,13 @@
          * Returns an array of promises, each returned from a child's `wake()`.
          *
          * @memberOf uijet
-         * @param {string} id - id of the widget we want its children to wake.
+         * @param {Object} widget - the widget instance we want its children to wake.
          * @param {Object} [context] - context provided to the `wake()` call of this widget.
          * @returns {Promise[]} - promises returned from children's `wake()` call.
          * @private
          */
-        _wakeContained       : function (id, context) {
-            var _contained = widgets[id].contained,
+        _wakeContained       : function (widget, context) {
+            var _contained = widgets[widget.id].contained,
                 promises = [],
                 _widget,
                 l = _contained.length;
@@ -1900,12 +1900,12 @@
          * Puts to sleep all of the contained child widgets of widget with matching `id`.
          *
          * @memberOf uijet
-         * @param {string} id - id of the widget we want its children to call `sleep()`.
+         * @param {Object} widget - the widget instance we want its children to call `sleep()`.
          * @returns {uijet}
          * @private
          */
-        _sleepContained      : function (id) {
-            var _contained = widgets[id].contained,
+        _sleepContained      : function (widget) {
+            var _contained = widgets[widget.id].contained,
                 l = _contained.length;
             while ( l-- ) {
                 widgets[_contained[l]].self.sleep(true);
@@ -1916,17 +1916,17 @@
          * Destroys all the contained child widgets of widget with matching `id`.
          *
          * @memberOf uijet
-         * @param {string} id - id of the widget we want its children to call `destroy()`.
+         * @param {Object} widget - the widget instance we want its children to call `destroy()`.
          * @returns {uijet}
          * @private
          */
-        _destroyContained    : function (id) {
+        _destroyContained    : function (widget) {
             var args = arraySlice.call(arguments, 1),
                 _contained, l, _w;
             // find `id`
-            if ( id in widgets ) {
+            if ( widget.id in widgets ) {
                 // get the ids of its contained child widgets
-                _contained = widgets[id].contained;
+                _contained = widgets[widget.id].contained;
                 l = _contained.length;
                 while ( l-- ) {
                     // seek
