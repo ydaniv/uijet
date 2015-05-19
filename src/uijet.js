@@ -373,6 +373,43 @@
     }
 
     /**
+     * Shallow (or deep) copy `Object`s (`Array`s are shallow copied).
+     * If first argument is `true` then does a deep copy.
+     * First (or second if first is a `Boolean`) argument is the source object to copy from.
+     *
+     * @memberOf uijet.utils
+     * @param {Object|boolean} source - the source object to copy or `true` for deep copying.
+     * @returns {Object} - the copy object of `source`.
+     */
+    function copy (source) {
+        var target = {},
+            is_deep, s;
+
+        if ( typeof source == 'boolean' ) {
+            is_deep = source;
+            source = arguments[1];
+        }
+
+        for ( s in source ) {
+            if ( isObj(source[s]) ) {
+                target[s] = copy(is_deep, source[s]);
+            }
+            else if ( isArr(source[s]) ) {
+                target[s] = source[s].map(function mapper (item) {
+                    return isObj(item) ? copy(is_deep, item) :
+                           isArr(item) ? item.map(mapper) :
+                           item;
+                });
+            }
+            else {
+                target[s] = source[s];
+            }
+        }
+
+        return target;
+    }
+
+    /**
      * Deep copy (prototype) objects (Arrays are shallow copied), {@see extend}.
      * If a property of same name exists in both source and target then if that property is:
      *
@@ -1205,7 +1242,7 @@
          * Defines a lazy factory of a widget declaration.
          * This declaration can be re-used to prevent repetition of common properties.
          *
-         * **note**: the config of this declaration is copied to every generated instance so make sure you don't leak references.
+         * It's possible to nest factories by using a `factory` in the `declaration` instead of `type`.
          *
          * @memberOf uijet
          * @param {string} name - identifier for this widget factory.
@@ -1215,12 +1252,24 @@
         Factory              : function (name, declaration) {
             widget_factories[name] = function (config) {
                 // create a copy of the original declaration
-                var copy = { type: declaration.type };
                 // make sure the original `config` object is copied
-                copy.config = extend({}, declaration.config);
+                var declaration_copy;
+                if ( declaration.type ) {
+                    declaration_copy = {
+                        type  : declaration.type,
+                        config: copy(true, declaration.config)
+                    };
+                }
+                else {
+                    var copy_of_dec_factory = widget_factories[declaration.factory](declaration.config);
+                    declaration_copy = {
+                        type  : copy_of_dec_factory.type,
+                        config: copy(true, copy_of_dec_factory.config)
+                    };
+                }
                 // mix in additional configurations
-                config && extend(true, copy.config, config);
-                return copy;
+                config && extend(true, declaration_copy.config, config);
+                return declaration_copy;
             };
             return this;
         },
@@ -2112,6 +2161,7 @@
         async           : async,
         consoleOrRethrow: consoleOrRethrow,
         extend          : extend,
+        copy            : copy,
         extendProto     : extendProto,
         extendProxy     : extendProxy,
         Create          : Create,
