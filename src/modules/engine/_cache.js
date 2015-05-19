@@ -17,6 +17,7 @@
                 return template;
             }
             else {
+                //TODO: replace with loading templates via module loaders
                 return uijet.xhr(template_url).then(function (response) {
                     return uijet.templates[template_url] = uijet.compile(response);
                 });

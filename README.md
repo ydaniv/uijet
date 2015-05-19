@@ -8,27 +8,29 @@ Killer UI for web apps.
 
 uijet lets you create awesome, cross-platform applications and keeps your code maintainable.
 
-uijet creates another layer of abstraction allowing you to focus 
-on flow of your application's logic while you generate code of the highest quality.
+uijet helps you manage flow and state which are the main pain points of single-page applications.
+It provides the tools for gluing together libraries of your choice, separating concerns,
+decoupling components and composing them back together.
 
 ### Main emphasis
 
-* Event-driven.
-* Decouple everything.
-* Reuse everything. Especially external libraries.
 * Code quality and maintainability.
+* DRY.
+* Decouple everything.
+* Event-driven.
 * Complete portability of same codebase across different platforms.
 * High performance and solid memory management.
-* Scalable architecture.
 * Reusable components.
+* Scalable architecture.
 * Declarative code, in JS (not just markup!)
 
 ## Srsly now, what's it all about
 
 uijet allows you to create UI from a rapid prototype to a full-blown-large-scale application.
+
 uijet performs 3 main roles:
 
-* IoC container for your application, and injects dependencies into your app and UI components.
+* IoC container for your application that injects dependencies into your app and UI components.
 * Glues all your favorite libraries with a consistent API which makes them easily swappable.
 * Maintainable and scalable UI made of declarative, reusable, decoupled components. 
 
@@ -44,7 +46,7 @@ __(recommended)__ If you're using an AMD module loader like [RequireJS](http://r
 Great!
 
 * Just define the path `uijet_dir` to be the path to where your uijet's `src` folder is located.
-* Then `require()` `uijet.js` and the rest from there. 
+* Then `require()` `uijet.js` and the rest from there.
 
 If you're NOT using an AMD module loader:
 
@@ -80,11 +82,11 @@ All the rest are completely up to you.
 
 ### Mandatory Modules' APIs
 
-Although the dependency may be indirect, uijet does enforce a strict API that each Module adapter 
+Although the dependency may be indirect, uijet does enforce a strict API that each Module adapter
 must adhere to.
-This requirement is a must for the top 3 Modules mentioned above, and a few other Mixins and Composites, 
+This requirement is a must for the top 3 Modules mentioned above, and a few other Mixins and Composites
 which rely on other Modules.
-The API enforcing is also what makes a Module swappable at any given point without any impact 
+The API enforcing is also what makes a Module swappable at any given point without any impact
 on the underlying framework. In some cases even no impact at all, whatsoever, on your application.
 
 *Example*: a dom Module adapter must be consistent with [jQuery](http://api.jquery.com/)'s API, so you
@@ -95,10 +97,10 @@ or with a little effort even [Bonzo](https://github.com/ded/bonzo) and [Bean](ht
 
 ### Modules
 
-uijet embraces the principle of doing 1 thing (or at most 2) and doing it right.
+uijet embraces the principle of doing 1 thing and doing it right.
 
-That's why it leaves the implementation of all the main parts of the application up 
-to external libraries, of your choice, and glues them together into a coherent interface 
+That's why it leaves the implementation of all the main parts of the application up
+to external libraries, of your choice, and glues them together into a coherent interface
 which allows them to be abstracted and easily swappable.
 
 #### uijet.use
@@ -108,7 +110,7 @@ The entry point of adding a module into uijet.
 ### Widgets
 
 These are the most basic building blocks for creating any type of UI component.
-uijet gives you the tools for both extending them and composing them together to form 
+uijet gives you the tools for both extending them and composing them together to form
 the components we all know and love.
 
 #### uijet.Widget
@@ -132,30 +134,33 @@ uijet's sandbox.
 
 ### Composites
 
-More comprehensive components which extends the basic, generic widgets and mixes them 
+More comprehensive components which extends the basic, generic widgets and mixes them
 into a single component.
 
-This is usually done by providing `uijet.Wiget()` the third parameter which defines 
+This is usually done by providing `uijet.Wiget()` the third parameter which defines
 dependencies for this component class.
 
 *Examples*: Datepicker, Slider, Teaser, Modal, etc.
 
 ### Mixins & Adapters
 
-Maintainability is all about deconstructing your code into small pieces 
+Maintainability is all about deconstructing your code into small pieces
 which perform a single main task, and then mixing them together.
 
-Mixins are specifically for encapsulating behaviors for components, and 
+Mixins are specifically for encapsulating behaviors for components, and
 then enhance components with these behaviors as desired.
 
 *Examples*: Toggled, Templated, Transitioned, etc.
-
-Adapters are usually for adding missing behavior by acting as a mediator 
-to external libraries which implement that code, and abstract those libraries 
+ 
+Adapters are usually for adding missing behavior by acting as a mediator
+to external libraries which implement that code, and abstract those libraries
 with a consistent API.
 
-*Example*: if you want a List component to be scrolled using a JS based plugin, 
-targeted for mouse wheel when used on desktop, and then with a different library, 
+In short, the main difference between Mixins and Adapters is that Mixins are only
+aware of uijet, while Adapters my require and be aware of 3rd party API's.
+
+*Example*: if you want a List component to be scrolled using a JS based plugin,
+targeted for mouse wheel when used on desktop, and then with a different library,
 targeted for touch gestures when used on handheld devices.
 
 #### uijet.Mixin
@@ -171,14 +176,14 @@ Adapters' properties are always copied to the instance object (the top of the pr
 ### Events & Signals
 
 uijet component instances do not return a handle you can imperatively execute methods with, hence
-the only way you can perform actions on components or achieve inter component communication is via
+the only way you can perform actions on components or achieve inter-component communication is via
 registering handlers to events.
 
 All handlers are always bound to the instance, so inside them you can use `this` as a handle to the instance.
 
 #### Signals
 
-Events triggered during a widget's lifecycle and provide an inner component API.
+Events triggered during a widget's lifecycle and provide an inner-component API.
 
 Signals usually take the form of an AOP like handlers, e.g. `pre_methodname`, `post_methodname`.
 

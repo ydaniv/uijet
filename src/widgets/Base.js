@@ -299,7 +299,7 @@
          * @returns {Promise[]}
          */
         wakeContained   : function (context) {
-            return uijet._wakeContained(this.id, context);
+            return uijet._wakeContained(this, context);
         },
         /**
          * Stops a started widget.
@@ -353,7 +353,7 @@
          * @returns {Widget}
          */
         sleepContained  : function () {
-            uijet._sleepContained(this.id);
+            uijet._sleepContained(this);
             return this;
         },
         /**
@@ -392,7 +392,7 @@
          */
         destroyContained: function () {
             var args = utils.toArray(arguments);
-            args.unshift(this.id);
+            args.unshift(this);
             uijet._destroyContained.apply(uijet, args);
             return this;
         },

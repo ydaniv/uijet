@@ -122,6 +122,7 @@
          * The bound view is cached on the instance in `this.rv_view`.
          * 
          * #### Related options:
+         *
          * * `observe`: map, or a function returning one, of model names to use in bindings to the objects they observe.
          * It's also possible to set it to a `string` which will be used as a reference for the instance's `context`.
          * If a value in that map is a `string` it is used to fetch a registered resource.

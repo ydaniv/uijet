@@ -1,12 +1,13 @@
-(function (factory) {
+(function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet', 'jqscroll'], function (uijet) {
-            return factory(uijet);
+            return factory(root, uijet);
         });
     } else {
-        factory(uijet);
+        factory(root, root.uijet);
     }
-}(function (uijet) {
+}(this, function (root, uijet) {
+    'use strict';
 
     /**
      * jqScroll adapter class for the Scrolled mixin.
@@ -31,13 +32,14 @@
          * @returns {Widget} this
          */
         scroll  : function () {
-            var jqS_ops = this.options.jqscroll_options || {};
+            var jqS_ops = this.options.jqscroll_options || {},
+                scroller;
             if ( this.options.horizontal && ! this.options.grid_layout ) {
                 jqS_ops.horizontal = true;
                 jqS_ops.vertical = false;
             }
-            this._wrap().$wrapper.scroller(jqS_ops);
-            this.scroll_on = true;
+            scroller = this._wrap().$wrapper.scroller(jqS_ops).data('scroller');
+            this.scroll_on = !! scroller;
             return this;
         },
         /**
