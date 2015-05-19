@@ -217,6 +217,8 @@
         
             <li class="static" data-name="uijet.utils.contains"><a href="uijet.utils.html#contains">contains</a></li>
         
+            <li class="static" data-name="uijet.utils.copy"><a href="uijet.utils.html#copy">copy</a></li>
+        
             <li class="static" data-name="uijet.utils.Create"><a href="uijet.utils.html#Create">Create</a></li>
         
             <li class="static" data-name="uijet.utils.extend"><a href="uijet.utils.html#extend">extend</a></li>
@@ -685,6 +687,25 @@
             <li class="" data-name="module:promises/es6#when"><a href="es6.html#when">when</a></li>
         
             <li class="" data-name="module:promises/es6#whenAll"><a href="es6.html#whenAll">whenAll</a></li>
+        
+        </ul>
+        <ul class="events itemMembers">
+        
+        </ul>
+    </li>
+
+    <li class="item" data-name="module:promises/es6-polyfill">
+        <span class="title">
+            <a href="es6-polyfill.html">promises/es6-polyfill</a>
+            
+        </span>
+        <ul class="members itemMembers">
+        
+        </ul>
+        <ul class="typedefs itemMembers">
+        
+        </ul>
+        <ul class="methods itemMembers">
         
         </ul>
         <ul class="events itemMembers">
@@ -2244,7 +2265,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 976
+            uijet.js, line 1013
         </div>
         
     </div>
@@ -2385,6 +2406,137 @@
             
 <dt class="static">
     <div class="nameContainer">
+        <h4 class="name" id="copy">
+            
+            <span class="type-signature static">static</span>uijet.utils.copy<span class="signature">(source)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            uijet.js, line 384
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Shallow (or deep) copy <code>Object</code>s (<code>Array</code>s are shallow copied).
+If first argument is <code>true</code> then does a deep copy.
+First (or second if first is a <code>Boolean</code>) argument is the source object to copy from.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>source</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                <p>the source object to copy or <code>true</code> for deep copying.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+<h5>Returns:</h5>
+copy object of <code>source</code>.</li>
+</ul>
+<br />
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="static">
+    <div class="nameContainer">
         <h4 class="name" id="Create">
             
             <span class="type-signature static">static</span>uijet.utils.Create<span class="signature">(proto, <span class="optional">_extends</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{function}</span>
@@ -2392,7 +2544,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 885
+            uijet.js, line 922
         </div>
         
     </div>
@@ -2731,7 +2883,7 @@ target object.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 392
+            uijet.js, line 429
         </div>
         
     </div>
@@ -2903,7 +3055,7 @@ target object.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 429
+            uijet.js, line 466
         </div>
         
     </div>
@@ -3257,7 +3409,7 @@ replacement is done based on order.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 992
+            uijet.js, line 1029
         </div>
         
     </div>
@@ -3784,7 +3936,7 @@ read-only style object of that element or the value[s] of that property[ies].</l
     
         
         <div class="tag-source">
-            uijet.js, line 919
+            uijet.js, line 956
         </div>
         
     </div>
@@ -4474,7 +4626,7 @@ and <code>path</code> for making a proper RESTful request.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 2146
+            uijet.js, line 2196
         </div>
         
     </div>
@@ -5101,7 +5253,7 @@ wrapped object or simply <code>obj</code>.</li>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Thu Apr 09 2015 16:30:35 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Tue May 19 2015 10:48:23 GMT+0300 (IDT)
         </footer>
     </div>
 </div>

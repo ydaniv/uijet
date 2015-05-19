@@ -217,6 +217,8 @@
         
             <li class="static" data-name="uijet.utils.contains"><a href="uijet.utils.html#contains">contains</a></li>
         
+            <li class="static" data-name="uijet.utils.copy"><a href="uijet.utils.html#copy">copy</a></li>
+        
             <li class="static" data-name="uijet.utils.Create"><a href="uijet.utils.html#Create">Create</a></li>
         
             <li class="static" data-name="uijet.utils.extend"><a href="uijet.utils.html#extend">extend</a></li>
@@ -685,6 +687,25 @@
             <li class="" data-name="module:promises/es6#when"><a href="es6.html#when">when</a></li>
         
             <li class="" data-name="module:promises/es6#whenAll"><a href="es6.html#whenAll">whenAll</a></li>
+        
+        </ul>
+        <ul class="events itemMembers">
+        
+        </ul>
+    </li>
+
+    <li class="item" data-name="module:promises/es6-polyfill">
+        <span class="title">
+            <a href="es6-polyfill.html">promises/es6-polyfill</a>
+            
+        </span>
+        <ul class="members itemMembers">
+        
+        </ul>
+        <ul class="typedefs itemMembers">
+        
+        </ul>
+        <ul class="methods itemMembers">
         
         </ul>
         <ul class="events itemMembers">
@@ -2068,6 +2089,184 @@
 
 
 
+    <section>
+        <article class="readme"><h1>uijet</h1><h2>Killer UI for web apps.</h2><p><strong>Note:</strong> Every module documented here is supported. All others are considered pending for addition/removal.</p>
+<h3>Config Options Reference</h3><ul>
+<li>All <code>boolean</code>'s default to a falsy value (<code>undefined</code>).</li>
+<li>All <code>function</code>'s are invoked in the context of the instance. Meaning <code>this</code> is always the instance.</li>
+</ul>
+<h4>BaseWidget:</h4><ul>
+<li><code>element</code> - <code>string|Element|Element[]|function</code>: the DOM element to tie this instance to as either a selector, an element, a wrapped element, or a function returning one of the above.</li>
+<li><code>id</code> - <code>string|function</code>: the id of this instance, either as a string or a function that returns one. Defaults to the element's id, otherwise, one is automatically generated.</li>
+<li><code>container</code> - <code>string</code>: the id of the widget containing this instance. Defaults to traversing the DOM and finding the first parent with a <code>uijet_widget</code> class. If reached the <code>body</code> tag it will be a top-level widget.</li>
+<li><code>dont_wake</code> - <code>boolean|function</code>: if <code>true</code> this instance will not be awaken automatically when its container widget awakes. The <code>function</code> is passed the <code>context</code> object as argument.</li>
+<li><code>cloak</code> - <code>boolean</code>: if <code>true</code> this instance element's <code>visibility</code> will be set to <code>hidden</code> whenever its <code>disappear()</code> method (and of course <code>sleep()</code>) is called.</li>
+<li><code>hide</code> - <code>boolean</code>: if <code>true</code> this instance's element will receive the <code>hide</code> class - setting its <code>display</code> to <code>none</code> whenever its <code>disappear()</code> method (and of course <code>sleep()</code>) is called. This takes precedence over <code>cloak</code>.</li>
+<li><code>bind_on_wake</code> - <code>boolean</code>: if <code>true</code> <code>dom_events</code> will be bound on every <code>wake()</code> and unbound on every <code>sleep()</code>. Otherwise they will be bound once on <code>init()</code>.</li>
+<li><code>components</code> - <code>Array|function</code>: list of widget declarations to instantiate as child components of the instance.</li>
+<li><code>type_class</code> - <code>string|Array</code>: list of class names to use on the instance's element and wrapper which define its type. Usually defined in the widget class definition.</li>
+<li><code>extra_class</code> - <code>string</code>: extra classes to set on the instance element.</li>
+<li><code>dont_wrap</code> - <code>boolean</code>: if <code>true</code> the instance element will never be wrapped in another element (wrapper) in cases where this is usually performed. In such case <code>this.$wrapper</code> is set to <code>this.$element</code>.</li>
+<li><code>wrapper_tag</code> - <code>string</code>: the tag name of the element to use for wrapping. Defaults to <code>'div'</code>.</li>
+<li><code>wrapper_class</code> - <code>string</code>: extra classes to set on the wrapper element.</li>
+<li><code>position</code> - <code>string|Object|function</code>: used to position the instance. Usually handy for rapid prototyping, otherwise use plain CSS.</li>
+<li><code>style</code> - <code>Object|function</code>: used for styling the instance's wrapper element. Usually handy for rapid prototyping or setting dynamic styles, otherwise use plain CSS.</li>
+<li><code>signals</code> - <code>Object</code>: a map of signal names to handlers. A handler can either be a <code>function</code> or a <code>string</code>.</li>
+<li><code>app_events</code> - <code>Object</code>: a map of event names to handlers. A handler can either be a <code>function</code> or a <code>string</code>.</li>
+<li><code>dom_events</code> - <code>Object</code>: a map of DOM event names - and optionally a delegate target separated by a space - to handlers. A handler can either be a <code>function</code> or a <code>string</code>.</li>
+<li><code>wake_on_startup</code> - <code>boolean</code>: if <code>true</code> the instance's <code>wake()</code> method is bound to the <code>startup</code> event triggered when uijet initializes.</li>
+<li><code>sync</code> - <code>boolean</code>: when <code>true</code> a successful starting sequence will only begin once all promises returned by <code>wake()</code> calls of all child components are resolved. Otherwise, will start immediately.</li>
+<li><code>destroy_on_sleep</code> - <code>boolean</code>: if <code>true</code> the instance's <code>destroy()</code> method is called when its <code>sleep()</code> method is called.</li>
+<li><code>click_event</code> - <code>string</code>: the event type to use for binding <code>click()</code> and <code>select()</code> methods.</li>
+</ul>
+<h4>Button:</h4><ul>
+<li><code>prevent_default</code> - <code>boolean</code>: If <code>true</code> <code>preventDefault()</code> of the <code>click</code> event will be called.</li>
+<li><code>disabled</code> - <code>boolean</code>: If <code>true</code> this instance will be initially disabled.</li>
+</ul>
+<h4>Overlay:</h4><ul>
+<li><code>darken</code> - <code>boolean</code>: If <code>true</code> the <code>darken</code> class will be added to the instance element. In <code>uijet.css</code> this will add a black semi-transparent background color to the element.</li>
+</ul>
+<h4>List:</h4><ul>
+<li><code>horizontal</code> - <code>boolean</code>: Setting this to <code>true</code> will affect layout and behavior of this element and its children to match a horizontal list.</li>
+<li><code>initial</code> - <code>string|Element|Element[]</code>: Initial child of the instance element to <code>select()</code> after initialization.</li>
+<li><code>item_selector</code>: Specifies a selector for item elements. Defaults to <code>'li'</code>.</li>
+<li><code>click_target</code>: Specifies a selector for the <code>click</code> event target inside the item element. <code>click()</code>s will only be delegated from it and to the containing item element.</li>
+<li><code>multiselect</code>: If <code>true</code> the instance will behave as a multiselect.</li>
+<li><code>align</code>: Adds an extra class to the instance element prefixed by <code>'align_'</code>, for controlling items alignment.</li>
+</ul>
+<h4>Form:</h4><ul>
+<li><code>change_exclude</code>: List of <code>name</code>s, or a function that returns it, of fields to exclude from <code>change</code> event delegation.</li>
+<li><code>dont_focus</code>: If <code>true</code> disables default behavior of focusing the first <code>input</code> since <code>.focus()</code> is broken on some platforms.</li>
+<li><code>error_selector</code>: Query selector for finding elements containing error messages and emptying them. Defaults to <code>.error</code>.</li>
+</ul>
+<h4>Data modules:</h4><ul>
+<li><code>resource</code> - <code>string|Object</code>: Sets the instance's <code>resource</code> to the given object. If a <code>string</code> is used uijet will lazily set it to a registered resource with the same name on instance initialization.</li>
+<li><code>resource_name</code> - <code>string</code>: A key to use when referencing the model's attributes form the <code>context</code> object. Defaults to the <code>resource</code> option if it's a <code>string</code>, otherwise to <code>'&lt;this.id&gt;_data'</code>.</li>
+<li><code>dont_merge_resource</code> - <code>boolean</code>: Whether to merge the model's attributes to the <code>context</code> object or just reference it from there using <code>resource_name</code>.</li>
+<li><code>data_events</code> - <code>Object</code>: a map of event names to handlers. A handler can either be a <code>function</code> or a <code>string</code>, depending on the specific module.</li>
+<li><code>dont_bind_data_events</code> - <code>boolean</code>: If <code>true</code> the component will not bind its <code>data_events</code>, which by default is done on initialization.</li>
+</ul>
+<h4>Data/Backbone module</h4><ul>
+<li><code>destroy_resource</code> - <code>boolean</code>: If <code>true</code>, when <code>destroy()</code>ing the component it will also call <code>destroy()</code> in its <code>resource</code>.</li>
+<li><code>dont_remove_resource</code> - <code>boolean</code>: Unless <code>true</code>, if the component's <code>resource</code> is a <code>Model</code> in a <code>Collection</code> it will be removed once the component is <code>destroy()</code>ed.</li>
+<li><code>sorting</code> - <code>Object</code>: Map of predefined <code>comparator</code> functions/strings that can be used to sort the resource.</li>
+</ul>
+<h4>Binding modules:</h4><ul>
+<li><code>observe</code> - <code>Object|string</code>: Map of object names in the templates to resources or names of resources registered with uijet. If the a value is either <code>'this'</code> or <code>true</code> it will be mapped to the instance's <code>context</code>. If a <code>string</code> is used then the <code>context</code> will be mapped to that name in the template.</li>
+</ul>
+<h4>Binding/Rivets and Binding/Rivets-Backbone modules:</h4><ul>
+<li><code>bind_options</code> - <code>Object</code>: </li>
+<li><code>dont_bind</code> - <code>boolean</code>: </li>
+</ul>
+<h4>Animation modules:</h4><ul>
+<li><code>transition</code> - <code>Object|string</code>: Depending on the specific module used, this option represents a directive for the transition animation to use.</li>
+</ul>
+<h4>Animation/Velocity module:</h4><ul>
+<li><code>transition_reverse</code> - <code>Object|string</code>: Depending on the specific module used, this option represents a directive for the <em>reverse</em> (i.e. when the instance is <code>disappear()</code>ing) transition animation to use.</li>
+</ul>
+<h4>Animation/uijet-transit module:</h4><ul>
+<li><code>dont_promote</code> - <code>boolean</code>: For advanced usage. If <code>true</code> makes sure that this component's element (or wrapper) is not promoted into its own layer (usually used for hardware acceleration).</li>
+</ul>
+<h4>Engine modules:</h4><ul>
+<li><code>template</code> - <code>string</code>: .</li>
+</ul>
+<h4>Router/Backbone module:</h4><ul>
+<li><code>route_name</code> - <code>string</code>: </li>
+</ul>
+<h4>Search modules:</h4><ul>
+<li><code>search</code>: </li>
+</ul>
+<h4>Deferred:</h4><ul>
+<li><code>promise</code>: </li>
+</ul>
+<h4>Dragged:</h4><ul>
+<li><code>dont_translate</code>: </li>
+<li><code>keep_position</code>: </li>
+<li><code>dont_auto_drag</code>: </li>
+<li><code>drag_axis</code>: </li>
+<li><code>drag_delay</code>: </li>
+<li><code>drag_clone</code>: </li>
+<li><code>drag_parent</code>: </li>
+<li><code>drag_once</code>: </li>
+<li><code>drag_contain</code>: </li>
+<li><code>drag_element</code>: </li>
+</ul>
+<h4>Floated:</h4><ul>
+<li><code>float_position</code>: </li>
+</ul>
+<h4>Layered:</h4><ul>
+<li><code>keep_layer_awake</code>: </li>
+<li><code>state</code>: </li>
+</ul>
+<h4>Preloaded:</h4><ul>
+<li><code>assets</code>: </li>
+<li><code>dont_preload</code>: </li>
+<li><code>preload_img_el</code>: </li>
+</ul>
+<h4>Routed:</h4><ul>
+<li><code>route</code>: </li>
+<li><code>alias_routes</code>: </li>
+</ul>
+<h4>Scrolled:</h4><ul>
+<li><code>grid_layout</code>: </li>
+</ul>
+<h4>Submitted:</h4><ul>
+<li><code>serializer</code>: </li>
+<li><code>validators</code>: </li>
+<li><code>submit_url</code>: </li>
+<li><code>route_submit</code>: </li>
+<li><code>submit_xhr_config</code>: </li>
+</ul>
+<h4>Templated:</h4><ul>
+<li><code>template_name</code>: </li>
+<li><code>partials</code>: </li>
+<li><code>partials_dir</code>: </li>
+<li><code>dont_auto_fetch_template</code>: </li>
+<li><code>insert_before</code>: </li>
+<li><code>defer_images</code>:</li>
+</ul>
+<h4>Dialog:</h4><ul>
+<li><code>buttons</code>: </li>
+</ul>
+<h4>Modal:</h4><ul>
+<li><code>buttons</code>: </li>
+<li><code>underlay</code>: </li>
+</ul>
+<h4>DropmenuButton:</h4><ul>
+<li><code>menu</code>: </li>
+<li><code>arrow</code>: </li>
+<li><code>dont_close</code>: </li>
+</ul>
+<h4>Select:</h4><ul>
+<li><code>menu</code>: </li>
+<li><code>content</code>: </li>
+</ul>
+<h4>Slider:</h4><ul>
+<li><code>min</code>: </li>
+<li><code>max</code>: </li>
+<li><code>step</code>: </li>
+<li><code>handle</code>: </li>
+<li><code>vertical</code>: </li>
+<li><code>initial</code>: </li>
+</ul>
+<h4>Datepicker:</h4><ul>
+<li><code>min_date</code>: </li>
+<li><code>max_date</code>: </li>
+</ul>
+<h3>iScroll:</h3><ul>
+<li><code>iscroll_options</code>:</li>
+</ul>
+<h3>jqScroll:</h3><ul>
+<li><code>jqscroll_options</code>: </li>
+</ul>
+<h3>jqScrollWheel:</h3><ul>
+<li><code>jqscroll_options</code>: </li>
+</ul>
+<h3>Spin:</h3><ul>
+<li><code>spinner_options</code>: </li>
+</ul></article>
+    </section>
+
 
 
 
@@ -2076,7 +2275,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Thu Apr 09 2015 16:30:33 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Tue May 19 2015 10:48:20 GMT+0300 (IDT)
         </footer>
     </div>
 </div>

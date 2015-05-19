@@ -217,6 +217,8 @@
         
             <li class="static" data-name="uijet.utils.contains"><a href="uijet.utils.html#contains">contains</a></li>
         
+            <li class="static" data-name="uijet.utils.copy"><a href="uijet.utils.html#copy">copy</a></li>
+        
             <li class="static" data-name="uijet.utils.Create"><a href="uijet.utils.html#Create">Create</a></li>
         
             <li class="static" data-name="uijet.utils.extend"><a href="uijet.utils.html#extend">extend</a></li>
@@ -685,6 +687,25 @@
             <li class="" data-name="module:promises/es6#when"><a href="es6.html#when">when</a></li>
         
             <li class="" data-name="module:promises/es6#whenAll"><a href="es6.html#whenAll">whenAll</a></li>
+        
+        </ul>
+        <ul class="events itemMembers">
+        
+        </ul>
+    </li>
+
+    <li class="item" data-name="module:promises/es6-polyfill">
+        <span class="title">
+            <a href="es6-polyfill.html">promises/es6-polyfill</a>
+            
+        </span>
+        <ul class="members itemMembers">
+        
+        </ul>
+        <ul class="typedefs itemMembers">
+        
+        </ul>
+        <ul class="methods itemMembers">
         
         </ul>
         <ul class="events itemMembers">
@@ -2143,7 +2164,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 1406
+            uijet.js, line 1455
         </div>
         
     </div>
@@ -2327,7 +2348,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 1795
+            uijet.js, line 1844
         </div>
         
     </div>
@@ -2449,7 +2470,7 @@ standard widget instance declarations ( see {@see uijet.declare()} ).</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1426
+            uijet.js, line 1475
         </div>
         
     </div>
@@ -2674,7 +2695,7 @@ and registered with <code>uijet</code>.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1491
+            uijet.js, line 1540
         </div>
         
     </div>
@@ -2835,7 +2856,7 @@ Promise object or an array of Promises.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 2069
+            uijet.js, line 2118
         </div>
         
     </div>
@@ -2993,12 +3014,12 @@ object generated for the route.
     <div class="nameContainer">
         <h4 class="name" id="_destroyContained">
             
-            <span class="type-signature ">private,static</span>uijet._destroyContained<span class="signature">(id)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="uijet.html">uijet</a>}</span>
+            <span class="type-signature ">private,static</span>uijet._destroyContained<span class="signature">(widget)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="uijet.html">uijet</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            uijet.js, line 1923
+            uijet.js, line 1972
         </div>
         
     </div>
@@ -3040,13 +3061,13 @@ object generated for the route.
 	
         <tr>
             
-                <td class="name"><code>id</code></td>
+                <td class="name"><code>widget</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Object</span>
 
 
             
@@ -3056,7 +3077,7 @@ object generated for the route.
             
             <td class="description last">
                 
-                <p>id of the widget we want its children to call <code>destroy()</code>.</p></td>
+                <p>the widget instance we want its children to call <code>destroy()</code>.</p></td>
         </tr>
 	
 	
@@ -3119,7 +3140,7 @@ object generated for the route.
     
         
         <div class="tag-source">
-            uijet.js, line 1975
+            uijet.js, line 2024
         </div>
         
     </div>
@@ -3272,7 +3293,7 @@ to create a fluid UI.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1587
+            uijet.js, line 1636
         </div>
         
     </div>
@@ -3396,12 +3417,12 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     <div class="nameContainer">
         <h4 class="name" id="_sleepContained">
             
-            <span class="type-signature ">private,static</span>uijet._sleepContained<span class="signature">(id)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="uijet.html">uijet</a>}</span>
+            <span class="type-signature ">private,static</span>uijet._sleepContained<span class="signature">(widget)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="uijet.html">uijet</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            uijet.js, line 1907
+            uijet.js, line 1956
         </div>
         
     </div>
@@ -3443,13 +3464,13 @@ not to, once uijet starts this widget will be awaken automatically.</p>
 	
         <tr>
             
-                <td class="name"><code>id</code></td>
+                <td class="name"><code>widget</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Object</span>
 
 
             
@@ -3459,7 +3480,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
             
             <td class="description last">
                 
-                <p>id of the widget we want its children to call <code>sleep()</code>.</p></td>
+                <p>the widget instance we want its children to call <code>sleep()</code>.</p></td>
         </tr>
 	
 	
@@ -3522,7 +3543,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1953
+            uijet.js, line 2002
         </div>
         
     </div>
@@ -3675,7 +3696,7 @@ Defaults to the result of <code>widget.getContext()</code>.</p></td>
     
         
         <div class="tag-source">
-            uijet.js, line 1699
+            uijet.js, line 1748
         </div>
         
     </div>
@@ -3792,12 +3813,12 @@ This is usually triggered by a widget when its {@see BaseWidget.destroy()} metho
     <div class="nameContainer">
         <h4 class="name" id="_wakeContained">
             
-            <span class="type-signature ">private,static</span>uijet._wakeContained<span class="signature">(id, <span class="optional">context</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array.&lt;Promise>}</span>
+            <span class="type-signature ">private,static</span>uijet._wakeContained<span class="signature">(widget, <span class="optional">context</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array.&lt;Promise>}</span>
         </h4>
     
         
         <div class="tag-source">
-            uijet.js, line 1886
+            uijet.js, line 1935
         </div>
         
     </div>
@@ -3841,13 +3862,13 @@ Returns an array of promises, each returned from a child's <code>wake()</code>.<
 	
         <tr>
             
-                <td class="name"><code>id</code></td>
+                <td class="name"><code>widget</code></td>
             
             
             <td class="type">
             
                 
-<span class="param-type">string</span>
+<span class="param-type">Object</span>
 
 
             
@@ -3862,7 +3883,7 @@ Returns an array of promises, each returned from a child's <code>wake()</code>.<
                         
                     
                 
-                <p>id of the widget we want its children to wake.</p></td>
+                <p>the widget instance we want its children to wake.</p></td>
         </tr>
 	
 	
@@ -3960,7 +3981,7 @@ returned from children's <code>wake()</code> call.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 1191
+            uijet.js, line 1228
         </div>
         
     </div>
@@ -4124,7 +4145,7 @@ If <code>props</code> is omitted and <code>name</code> is a:</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1737
+            uijet.js, line 1786
         </div>
         
     </div>
@@ -4262,7 +4283,7 @@ this is an instance that's using a pre-declared widget factory.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1215
+            uijet.js, line 1252
         </div>
         
     </div>
@@ -4275,7 +4296,7 @@ this is an instance that's using a pre-declared widget factory.</p>
     <div class="description">
         <p>Defines a lazy factory of a widget declaration.
 This declaration can be re-used to prevent repetition of common properties.</p>
-<p><strong>note</strong>: the config of this declaration is copied to every generated instance so make sure you don't leak references.</p>
+<p>It's possible to nest factories by using a <code>factory</code> in the <code>declaration</code> instead of <code>type</code>.</p>
     </div>
     
 
@@ -4408,7 +4429,7 @@ This declaration can be re-used to prevent repetition of common properties.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1288
+            uijet.js, line 1337
         </div>
         
     </div>
@@ -4560,7 +4581,7 @@ set <code>uijet.$element[0].style.visibility</code> to <code>visible</code>.
     
         
         <div class="tag-source">
-            uijet.js, line 1170
+            uijet.js, line 1207
         </div>
         
     </div>
@@ -4716,7 +4737,7 @@ set <code>uijet.$element[0].style.visibility</code> to <code>visible</code>.
     
         
         <div class="tag-source">
-            uijet.js, line 1243
+            uijet.js, line 1292
         </div>
         
     </div>
@@ -4914,7 +4935,7 @@ instantiating a Backbone.js resource.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1866
+            uijet.js, line 1915
         </div>
         
     </div>
@@ -5085,7 +5106,7 @@ promise that can be either resolved or rejected by a subscriber to <code>topic</
     
         
         <div class="tag-source">
-            uijet.js, line 1763
+            uijet.js, line 1812
         </div>
         
     </div>
@@ -5282,7 +5303,7 @@ and want to optimize this call a bit.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1835
+            uijet.js, line 1884
         </div>
         
     </div>
@@ -5363,7 +5384,7 @@ so that the initial view is awaken by the router.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1099
+            uijet.js, line 1136
         </div>
         
     </div>
@@ -5551,7 +5572,7 @@ If <code>context</code> is supplied then uses it to bind all the properties of <
     
         
         <div class="tag-source">
-            uijet.js, line 1124
+            uijet.js, line 1161
         </div>
         
     </div>
@@ -5748,7 +5769,7 @@ This class can later be instantiated in the UI or re-used as a dependency.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Thu Apr 09 2015 16:30:35 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Tue May 19 2015 10:48:23 GMT+0300 (IDT)
         </footer>
     </div>
 </div>
