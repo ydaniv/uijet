@@ -34,7 +34,7 @@
         mixins = {},
         adapters = {},
         declared_widgets = [],
-        widgets = { __app__: { contained: []} },
+        widgets = { __app__: { contained: [], id: '__app__' } },
         resources = {},
         // caching pre-built predefined widgets' classes
         // `{ proto : widget_prototype, deps : dependencies }`
