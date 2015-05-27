@@ -69,6 +69,7 @@
          * #### Related options:
          *
          * * `menu`: the SelectMenu declaration's config to be used for this instance.
+         * * `menu_type`: the menu component's Widget type. Defaults to `'SelectMenu'`.
          * * `content`: an element or a selector for an element to be used as element
          * containing the selected item's content.
          *
@@ -112,7 +113,7 @@
             }, this.options.menu || {});
 
             this.options.components.unshift({
-                type    : 'SelectMenu',
+                type    : this.options.menu_type || 'SelectMenu',
                 config  : menu_config
             });
 

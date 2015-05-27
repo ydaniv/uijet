@@ -33,6 +33,7 @@
          * #### Related options:
          *
          * * `handle`: the config object of the handle Button widget.
+         * * `handle_type`: the handle Button component's Widget type. Defaults to `'Button'`.
          * * `initial`: initial value to set the slider to.
          * * `vertical`: whether this is a vertical slider.
          * * `min`: minimal value for the slider.
@@ -80,7 +81,8 @@
                     if ( e.target === this.$element[0] ) {
                         var event_pos = uijet.support.touch ? e.originalEvent.touches[0] : e,
                             //TODO: replace getting offset with a simpler cache-based method that reduces reflow caused by checking offset
-                            position = event_pos[vertical ? 'pageY' : 'pageX'] - uijet.utils.getOffsetOf(e.target, document.documentElement)[vertical ? 'y' : 'x'],
+                            position = event_pos[vertical ? 'pageY' : 'pageX'] -
+                                       uijet.utils.getOffsetOf(e.target, document.documentElement)[vertical ? 'y' : 'x'],
                             value = this._positionToValue(position - this._handle_size / 2);
                         this.slide(value);
                     }
@@ -89,7 +91,7 @@
 
             // add the handle Button to components
             options.components.unshift({
-                type    : 'Button',
+                type    : options.handle_type || 'Button',
                 config  : uijet.utils.extend(true, {
                     type_class      : ['uijet_button', 'uijet_slider_handle'],
                     style           : {

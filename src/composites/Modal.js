@@ -32,6 +32,7 @@
          * #### Related options:
          *
          * * `underlay`: config object for the Overlay used as the modal's underlay.
+         * * `underlay_type`: the modal's underlay Overlay component's Widget type. Defaults to `'Overlay'`.
          * * `buttons`: array of config objects for Button components to create.
          *
          * @methodOf Modal

@@ -41,8 +41,11 @@
          * #### Related options:
          *
          * * `datelist`: config objects for the DateList component to create.
+         * * `datelist_type`: the menu component's Widget type. Defaults to `'DateList'`.
          * * `next`: config objects for the next Button component to create.
+         * * `next_type`: the next arrow Button component's Widget type. Defaults to `'Button'`.
          * * `prev`: config objects for the prev Button component to create.
+         * * `prev_type`: the prev arrow Button component's Widget type. Defaults to `'Button'`.
          * * `current_date`: element or selector for the element which will serve as the heading
          * that contains cuurent date.
          * * `max_date`: max possible date for selection.
@@ -110,15 +113,15 @@
             });
 
             // add the dates List to components
-            components.push({ type: 'DateList', config: datelist_config });
+            components.push({ type: datepicker_ops.datelist_type || 'DateList', config: datelist_config });
 
             // add the next/prev Buttons to components
-            components.push({ type: 'Button', config: uijet.utils.extend(true, {
+            components.push({ type: datepicker_ops.next_type || 'Button', config: uijet.utils.extend(true, {
                 element  : $next,
                 id       : id + '_next',
                 container: id
             }, datepiker_ops.next || {}) });
-            components.push({ type: 'Button', config: uijet.utils.extend(true, {
+            components.push({ type: datepicker_ops.prev_type || 'Button', config: uijet.utils.extend(true, {
                 element  : $prev,
                 id       : id + '_prev',
                 container: id

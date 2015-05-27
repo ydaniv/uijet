@@ -171,16 +171,20 @@ __Note:__ Every module documented here is supported. All others are considered p
 
 * `buttons`: 
 * `underlay`: 
+* `underlay_type`: 
 
 #### DropmenuButton:
 
 * `menu`: 
+* `menu_type`: 
 * `arrow`: 
+* `arrow_type`: 
 * `dont_close`: 
 
 #### Select:
 
 * `menu`: 
+* `menu_type`: 
 * `content`: 
 
 #### Slider:
@@ -189,13 +193,21 @@ __Note:__ Every module documented here is supported. All others are considered p
 * `max`: 
 * `step`: 
 * `handle`: 
+* `handle_type`: 
 * `vertical`: 
 * `initial`: 
 
 #### Datepicker:
 
+* `datelist`: 
+* `datelist_type`: 
+* `next`: 
+* `next_type`: 
+* `prev`: 
+* `prev_type`: 
 * `min_date`: 
 * `max_date`: 
+* `current_date`: 
 
 ### iScroll:
 
