@@ -2,17 +2,15 @@
     // set the BaseWidget class with the returned constructor function
     if ( typeof define === 'function' && define.amd ) {
         define(['uijet_dir/uijet'], function (uijet) {
-            return (uijet.BaseWidget = factory(uijet, root));
+            return (uijet.BaseWidget = factory(uijet));
         });
     }
     else {
-        root.uijet.BaseWidget = factory(root.uijet, root);
+        root.uijet.BaseWidget = factory(root.uijet);
     }
-}(this, function (uijet, _window) {
+}(this, function (uijet) {
 
-    var Object = _window.Object,
-    // cache the utilities namespace
-        utils = uijet.utils,
+    var utils = uijet.utils,
         /**
          * Constructor for the base widget class.
          *
@@ -200,7 +198,7 @@
         /**
          * Sets properties on the contained components of this widget.
          * This effect will continue to propagate recursively.
-         * 
+         *
          * @memberOf BaseWidget
          * @instance
          * @param {object} [context] - a map of properties to send to contained widgets to set on their `context`.
