@@ -713,28 +713,6 @@
             return this;
         },
         /**
-         * Triggers selection (e.g. `click` event) on the given `target`.
-         * `target` can be an `HTMLElement` or a query selector to be found
-         * inside the instance's element.
-         * It can also be a function that returns a wrapped element.
-         *
-         * #### Related options:
-         *
-         * * `click_event`: space separated event types to use for triggering selection. Defaults to {@link uijet.support.click_events.full}.
-         *
-         * @memberOf BaseWidget
-         * @instance
-         * @param {function|string|HTMLElement} target - the target element to find or a function returning one.
-         * @returns {Widget}
-         */
-        select          : function (target) {
-            var event_type = this.options.click_event,
-                $el;
-            $el = utils.isFunc(target) ? target.call(this) : this.$element.find(target);
-            utils.isFunc($el.trigger) && $el.trigger(event_type || uijet.support.click_events.full);
-            return this;
-        },
-        /**
          * Sets `this.options` based on class's defaults and instance's
          * declaration.
          *
