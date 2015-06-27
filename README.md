@@ -157,7 +157,7 @@ to external libraries which implement that code, and abstract those libraries
 with a consistent API.
 
 In short, the main difference between Mixins and Adapters is that Mixins are only
-aware of uijet, while Adapters my require and be aware of 3rd party API's.
+aware of uijet, while Adapters may require and be aware of 3rd party API's.
 
 *Example*: if you want a List component to be scrolled using a JS based plugin,
 targeted for mouse wheel when used on desktop, and then with a different library,
