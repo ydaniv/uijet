@@ -1,6 +1,10 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'director'], function (uijet) {
+        define([
+            'uijet_dir/uijet',
+            'director',
+            'uijet_dir/modules/router/_build-context'
+        ], function (uijet) {
             return factory(uijet, root);
         });
     } else {
