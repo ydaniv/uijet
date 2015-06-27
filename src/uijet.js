@@ -24,7 +24,6 @@
         BROWSER_PREFIX = { style: ['webkit', 'Moz', 'O', 'ms'], prop: [
             'WebKit', 'webkit', 'moz', 'o', 'ms'
         ], matches              : {} },
-        OPPOSITES = {top: 'bottom', bottom: 'top', right: 'left', left: 'right'},
         // regexp for simple string format
         SUBSTITUTE_RE = /\{([^\s\}]+)\}/g,
         // native utilities caching
@@ -2010,97 +2009,6 @@
                   .trickle(ctx);
             }
             return this;
-        },
-        /**
-         * Positions a widget.
-         * Takes into account the position and size set in sibling widgets' options,
-         * to create a fluid UI.
-         *
-         * @memberOf uijet
-         * @param {Object} widget - the widget instance to position.
-         * @param {string[]} [exclude] - list of style property names to exclude from setting.
-         * @private
-         */
-        _position            : function (widget, exclude) {
-            var container_id = widgets[widget.id].container,
-                siblings = container_id ? widgets[container_id].contained || [] : [], sibling,
-                position = {position: 'absolute', top: 0, bottom: 0, right: 0, left: 0},
-                processed = {},
-                set_style = false,
-                processed_position, p, len;
-            // if there's anything to exclude
-            if ( exclude && (len = exclude.length) ) {
-                while ( len-- ) {
-                    // remove it from the style properties object
-                    delete position[exclude[len]];
-                    // and its opposite side (e.g. top-bottom, right-left)
-                    delete position[OPPOSITES[exclude[len]]];
-                }
-                // and remove the `position` property
-                delete position.position;
-            }
-            else {
-                exclude = '';
-            }
-            // loop over sibling widgets
-            for ( len = siblings.length; len--; ) {
-                sibling = siblings[len];
-                // if it's this widget bail from this iteration
-                if ( sibling == widget.id ) {
-                    continue;
-                }
-                // if we have a cached processed position on a sibling widget
-                if ( processed_position = widgets[sibling].self.processed_position ) {
-                    set_style = true;
-                    // loop over position properties of the sibling
-                    for ( p in processed_position ) {
-                        // if this property is not to be excluded
-                        if ( !~exclude.indexOf(p) ) {
-                            // if we already processed this property
-                            if ( p in processed ) {
-                                // if it's using same units AND size of property of this widget is smaller then it's sibling's
-                                if ( processed[p].unit === processed_position[p].unit &&
-                                     processed[p].size < processed_position[p].size ) {
-                                    // set the size to the sibling's size
-                                    processed[p].size = processed_position[p].size;
-                                }
-                            }
-                            else {
-                                // otherwise, add it
-                                processed[p] = processed_position[p];
-                            }
-                        }
-                    }
-                }
-            }
-            // if anything to set
-            if ( set_style ) {
-                // grab all processed properties and create a map of style properties to values
-                for ( p in processed ) {
-                    position[p] = processed[p].size + processed[p].unit;
-                }
-            }
-            else {
-                // if there's something to set then make sure it's set
-                for ( p in position ) {
-                    if ( position.hasOwnProperty(p) ) {
-                        set_style = true;
-                        break;
-                    }
-                }
-            }
-            // if we found something to set
-            if ( set_style ) {
-                // make sure we allow the widget to be fluid
-                if ( 'left' in position || 'right' in position ) {
-                    position.width = 'auto';
-                }
-                if ( 'top' in position || 'bottom' in position ) {
-                    position.height = 'auto';
-                }
-                // set the styles
-                widget.style(position);
-            }
         }
     };
 

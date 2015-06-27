@@ -63,8 +63,6 @@
                 return this;
             };
         },
-        POSITION_RE = /(fluid|top|bottom|right|left):?(\d+)?([^\d\|]+)?\|?(\d+)?([\D]+)?/,
-        DIMENSIONS = {top: 'height', bottom: 'height', right: 'width', left: 'width'},
         DEFAULT_TYPE_CLASS = '_uijet_widget_',
         widget_id_index = 0,
         /**
@@ -414,134 +412,35 @@
             var classes = 'uijet_widget ' +
                           utils.toArray(this.options.type_class).join(' '),
                 el = this.$element[0],
-                style, position;
+                position;
             this.options.extra_class && (classes += ' ' + this.options.extra_class);
             this.$element.addClass(classes);
             // check if inside DOM
             if ( el.ownerDocument.body.contains(el) ) {
-                style = utils.returnOf(this.options.style, this);
                 position = utils.returnOf(this.options.position, this);
-
                 position && this.position(position);
-                style && this.style(style);
             }
             return this;
         },
         /**
-         * Gets or sets the style of the instance's top container (`this.$wrapper`).
-         * As a getter this is delegated to {@link uijet.utils#getStyle}.
-         * As a setter this is delegated to the DOM module's `css()` method.
-         *
-         * If no arguments are supplied it returns the entire computed style object of
-         * the top container of the instance's element.
-         *
-         * @memberOf BaseWidget
-         * @instance
-         * @param {string|Array|Object} [style] - an attribute name, or names to get, or a map of attributes and values to set.
-         * @param {string|number|function} [value] - a value to set for the given style attribute in `style`.
-         * @returns {string|string[]|CSSStyleDeclaration|Widget} - returns the result of {@link uijet.utils#getStyle} or `this`.
-         */
-        style           : function (style, value) {
-            if ( !arguments.length || (value === void 0 && typeof style == 'string') || utils.isArr(style) ) {
-                return utils.getStyle(this.$wrapper[0], style);
-            }
-            this._wrap()
-                .$wrapper.css(style, value);
-            return this;
-        },
-        /**
-         * Positions the instance's element with respect to its
-         * sibling widgets, according to value of `position`:
-         *
-         * * `'center'`: centers the widget.
-         * * `'fluid'`: stretches the widget according to its container and siblings.
-         * * other `string`: parses `position` and positions the widget according to its container and siblings.
-         * * `Object`: passes `position` to {@link BaseWidget#style}.
+         * Minimal version of {@link extension/position#position} that only
+         * handles the value `'center'` for the `position` option for centering
+         * an instance's element.
          *
          * This method will always attempt to {@link BaseWidget#_wrap} the instance's element.
          *
-         * While positioning widgets using this method is handy for scaffolding
-         * fluid UIs, performance wise it's best to ultimately do positioning
-         * using CSS, unless dynamic run-time dimensions calculation is required.
-         *
          * @memberOf BaseWidget
          * @instance
-         * @param {string|Object} position - directives for positioning the instance's container element.
+         * @param {string} position - directives for positioning the instance's container element.
          * @returns {Widget}
          */
         position        : function (position) {
-            var processed, style, has_fluid_side, exclude = [];
             this._wrap();
 
             if ( typeof position == 'string' ) {
                 if ( position == 'center' ) {
                     this._center();
                 }
-                else if ( position == 'fluid' ) {
-                    uijet._position(this);
-                }
-                else {
-                    processed = {};
-                    style = {};
-                    position.split(' ').forEach(function (pair) {
-                        var match = POSITION_RE.exec(pair),
-                            side = match && match[1],
-                            number, size_unit, margin_unit, has_margin;
-
-                        if ( side ) {
-                            if ( side === 'fluid' ) {
-                                has_fluid_side = true;
-                                return;
-                            }
-                            else {
-                                exclude.push(side);
-                                if ( match[3] == 'fluid' ) {
-                                    has_fluid_side = true;
-                                    return;
-                                }
-                            }
-
-                            size_unit = match[3] || 'px';
-                            margin_unit = match[5] || 'px';
-
-                            // add padding or stick to side
-                            number = +match[4];
-                            // cache the numeric part
-                            processed[side] = { size: number || 0 };
-                            // add the units part for styling
-                            number = number ?
-                                     margin_unit ?
-                                     number + margin_unit :
-                                     number :
-                                     0;
-                            has_margin = !!number;
-                            style[side] = number;
-
-                            // process width/height if found
-                            number = +match[2];
-                            if ( number ) {
-                                // if no margin or using the same unit (no need to calc)
-                                //TODO: add option to use CSS calc
-                                if ( !has_margin || margin_unit === size_unit ) {
-                                    // aggregate that dimension's length and add the unit
-                                    processed[side].size = (processed[side].size + number);
-                                    processed[side].unit = size_unit;
-                                }
-                                style[DIMENSIONS[side]] = number + (size_unit || 0);
-                            }
-                        }
-                    });
-                    // cache the parsed position for quick JIT positioning of fluid siblings
-                    this.processed_position = processed;
-                    style.position = 'absolute';
-                    // continue to next if statement passing the parsed `style` object
-                    position = style;
-                    // use `uijet._position` to position according to this widget's siblings
-                    has_fluid_side && uijet._position(this, exclude);
-                }
-            }
-            if ( utils.isObj(position) ) {
-                this.style(position);
             }
             return this;
         },
