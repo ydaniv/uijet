@@ -52,11 +52,13 @@ __Note:__ Every module documented here is supported. All others are considered p
 * `multiselect`: If `true` the instance will behave as a multiselect.
 * `align`: Adds an extra class to the instance element prefixed by `'align_'`, for controlling items alignment.
 
+<!--
 #### Form:
 
 * `change_exclude`: List of `name`s, or a function that returns it, of fields to exclude from `change` event delegation.
 * `dont_focus`: If `true` disables default behavior of focusing the first `input` since `.focus()` is broken on some platforms.
 * `error_selector`: Query selector for finding elements containing error messages and emptying them. Defaults to `.error`.
+-->
 
 #### Data modules:
 
