@@ -119,8 +119,6 @@
         
             <li class="private static" data-name="uijet._destroyContained"><a href="uijet.html#_destroyContained">_destroyContained</a></li>
         
-            <li class="private static" data-name="uijet._position"><a href="uijet.html#_position">_position</a></li>
-        
             <li class="private static" data-name="uijet._register"><a href="uijet.html#_register">_register</a></li>
         
             <li class="private static" data-name="uijet._sleepContained"><a href="uijet.html#_sleepContained">_sleepContained</a></li>
@@ -597,9 +595,9 @@
                             <ul>
                                 
 
-    <li class="item" data-name="module:extension/zepto-touch">
+    <li class="item" data-name="module:extensions/zepto-touch">
         <span class="title">
-            <a href="zepto-touch.html">extension/zepto-touch</a>
+            <a href="zepto-touch.html">extensions/zepto-touch</a>
             
         </span>
         <ul class="members itemMembers">
@@ -1138,8 +1136,6 @@
         
             <li class="" data-name="BaseWidget#render"><a href="BaseWidget.html#render">render</a></li>
         
-            <li class="" data-name="BaseWidget#select"><a href="BaseWidget.html#select">select</a></li>
-        
             <li class="" data-name="BaseWidget#setContext"><a href="BaseWidget.html#setContext">setContext</a></li>
         
             <li class="" data-name="BaseWidget#setElement"><a href="BaseWidget.html#setElement">setElement</a></li>
@@ -1153,8 +1149,6 @@
             <li class="" data-name="BaseWidget#sleep"><a href="BaseWidget.html#sleep">sleep</a></li>
         
             <li class="" data-name="BaseWidget#sleepContained"><a href="BaseWidget.html#sleepContained">sleepContained</a></li>
-        
-            <li class="" data-name="BaseWidget#style"><a href="BaseWidget.html#style">style</a></li>
         
             <li class="" data-name="BaseWidget#trickle"><a href="BaseWidget.html#trickle">trickle</a></li>
         
@@ -1828,6 +1822,25 @@
         </ul>
     </li>
 
+    <li class="item" data-name="Positioned">
+        <span class="title">
+            <a href="Positioned.html">Positioned</a>
+            
+        </span>
+        <ul class="members itemMembers">
+        
+        </ul>
+        <ul class="typedefs itemMembers">
+        
+        </ul>
+        <ul class="methods itemMembers">
+        
+        </ul>
+        <ul class="events itemMembers">
+        
+        </ul>
+    </li>
+
     <li class="item" data-name="Preloaded">
         <span class="title">
             <a href="Preloaded.html">Preloaded</a>
@@ -2155,8 +2168,8 @@
 <li><code>observe</code> - <code>Object|string</code>: Map of object names in the templates to resources or names of resources registered with uijet. If the a value is either <code>'this'</code> or <code>true</code> it will be mapped to the instance's <code>context</code>. If a <code>string</code> is used then the <code>context</code> will be mapped to that name in the template.</li>
 </ul>
 <h4>Binding/Rivets and Binding/Rivets-Backbone modules:</h4><ul>
-<li><code>bind_options</code> - <code>Object</code>: </li>
-<li><code>dont_bind</code> - <code>boolean</code>: </li>
+<li><code>bind_options</code> - <code>Object</code>: Configuration options to pass to the <code>rivets.bind()</code> call.</li>
+<li><code>dont_bind</code> - <code>boolean</code>: If <code>true</code> then <code>rivets.bind()</code> will not be called automatically on instance initialization.</li>
 </ul>
 <h4>Animation modules:</h4><ul>
 <li><code>transition</code> - <code>Object|string</code>: Depending on the specific module used, this option represents a directive for the transition animation to use.</li>
@@ -2167,103 +2180,125 @@
 <h4>Animation/uijet-transit module:</h4><ul>
 <li><code>dont_promote</code> - <code>boolean</code>: For advanced usage. If <code>true</code> makes sure that this component's element (or wrapper) is not promoted into its own layer (usually used for hardware acceleration).</li>
 </ul>
-<h4>Engine modules:</h4><ul>
-<li><code>template</code> - <code>string</code>: .</li>
+<h4>Engine/lodash and Engine/underscore modules:</h4><ul>
+<li><code>compile_options</code> - <code>Object</code>: Configuration options to pass to <code>_.template()</code>.</li>
 </ul>
 <h4>Router/Backbone module:</h4><ul>
-<li><code>route_name</code> - <code>string</code>: </li>
+<li><code>route_name</code> - <code>string</code>: Will be used for the <code>route</code> and <code>route:name</code> events triggered by the router and history. Defaults to the <code>widget.id</code>.</li>
 </ul>
 <h4>Search modules:</h4><ul>
-<li><code>search</code>: </li>
+<li><code>search</code> - <code>Object</code>: Configuration options for the <code>SearchIndex</code> instance.</li>
 </ul>
 <h4>Deferred:</h4><ul>
-<li><code>promise</code>: </li>
+<li><code>promise</code> - <code>Promise|function</code>: Promise object, or a function that returns one, that once resolved invokes <code>wake()</code>. If it's a function it takes the <code>context</code> argument as param.</li>
 </ul>
-<h4>Dragged:</h4><ul>
-<li><code>dont_translate</code>: </li>
-<li><code>keep_position</code>: </li>
-<li><code>dont_auto_drag</code>: </li>
-<li><code>drag_axis</code>: </li>
-<li><code>drag_delay</code>: </li>
-<li><code>drag_clone</code>: </li>
-<li><code>drag_parent</code>: </li>
-<li><code>drag_once</code>: </li>
-<li><code>drag_contain</code>: </li>
-<li><code>drag_element</code>: </li>
-</ul>
+<!--
+#### Dragged:
+
+* `dont_translate`: 
+* `keep_position`: 
+* `dont_auto_drag`: 
+* `drag_axis`: 
+* `drag_delay`: 
+* `drag_clone`: 
+* `drag_parent`: 
+* `drag_once`: 
+* `drag_contain`: 
+* `drag_element`:
+ -->
+
 <h4>Floated:</h4><ul>
-<li><code>float_position</code>: </li>
+<li><code>float_position</code> - <code>string|Object|function</code>: A CSS text (<code>'&lt;property&gt;: &lt;value&gt;'</code>) to set on the floated element when it appears. For multiple properties use an <code>Object</code>.</li>
 </ul>
 <h4>Layered:</h4><ul>
-<li><code>keep_layer_awake</code>: </li>
-<li><code>state</code>: </li>
+<li><code>keep_layer_awake</code> - <code>boolean</code>: If <code>true</code> this instance will not be put to <code>.sleep()</code> when its sibling is <code>.awake()</code> and instead only put to the background.</li>
 </ul>
-<h4>Preloaded:</h4><ul>
-<li><code>assets</code>: </li>
-<li><code>dont_preload</code>: </li>
-<li><code>preload_img_el</code>: </li>
-</ul>
+<!--
+#### Preloaded:
+
+* `assets`: 
+* `dont_preload`: 
+* `preload_img_el`: 
+-->
+
 <h4>Routed:</h4><ul>
-<li><code>route</code>: </li>
-<li><code>alias_routes</code>: </li>
+<li><code>route</code> - <code>string</code>: The route's path to be used for waking the instance.</li>
+<li><code>alias_routes</code> - <code>string[]</code>: List of strings of alias paths for this instance's <code>route</code>.</li>
 </ul>
 <h4>Scrolled:</h4><ul>
-<li><code>grid_layout</code>: </li>
+<li><code>horizontal</code> - <code>boolean</code>: Set to <code>true</code> if the scroll is horizontal.</li>
+<li><code>grid_layout</code> - <code>boolean</code>: When <code>true</code> will prevent stretching <code>this.$element</code> to contain its content, as done for a <code>horizontal</code> instance.</li>
 </ul>
-<h4>Submitted:</h4><ul>
-<li><code>serializer</code>: </li>
-<li><code>validators</code>: </li>
-<li><code>submit_url</code>: </li>
-<li><code>route_submit</code>: </li>
-<li><code>submit_xhr_config</code>: </li>
-</ul>
+<!--
+#### Submitted:
+
+* `serializer`: 
+* `validators`: 
+* `submit_url`: 
+* `route_submit`: 
+* `submit_xhr_config`: 
+-->
+
 <h4>Templated:</h4><ul>
-<li><code>template_name</code>: </li>
-<li><code>partials</code>: </li>
-<li><code>partials_dir</code>: </li>
-<li><code>dont_auto_fetch_template</code>: </li>
-<li><code>insert_before</code>: </li>
-<li><code>defer_images</code>:</li>
+<li><code>template</code> - <code>string</code>: A raw template string to be used as the template for the instance. Do not use this option for putting a template string in your js source code! Only as an endpoint for hooking with loaded templates.</li>
+<li><code>template_name</code> - <code>string</code>: If <code>template</code> is not set, this option will be used as the filename of the template to load. Defaults to <code>this.id&gt;</code>. Used together with <code>uijet.options.templates_path</code> as prefix and <code>uijet.options.templates_extension</code> as suffix to create the path to the template.</li>
+<li><code>partials</code> - <code>Object</code>: A map of partial names to their corresponding filename (or path). If the template and its partials are already fetched use the partials as values instead of paths.</li>
+<li><code>partials_dir</code> - <code>string</code>: A common directory for looking up partials. This will be used together with <code>partials</code> to create the paths.</li>
+<li><code>dont_auto_fetch_template</code> - <code>boolean</code>: When <code>true</code> templates will not be fetched automatically on <code>init()</code>.</li>
+<li><code>insert_before</code> - <code>HTMLElement|string</code>: An element or a query selector to insert the rendered content before. By default content is appended to the end <code>this.$element</code>'s contents.</li>
+<li><code>defer_images</code> - <code>boolean</code>: When <code>true</code> <code>this.$element</code> will be searched for images to preload and defer waking the instance after loading.</li>
 </ul>
 <h4>Dialog:</h4><ul>
-<li><code>buttons</code>: </li>
+<li><code>buttons</code> - <code>Object[]</code>: List of component declarations that will be created as children of this instance.</li>
 </ul>
 <h4>Modal:</h4><ul>
-<li><code>buttons</code>: </li>
-<li><code>underlay</code>: </li>
+<li><code>buttons</code> - <code>Object[]</code>: List of component declarations that will be created as children of this instance.</li>
+<li><code>underlay</code> - <code>Object</code>: Component declaration config overrides for the Overlay instance.</li>
+<li><code>underlay_type</code> - <code>string</code>: The widget type to use for the Overlay instance. Defaults to <code>Overlay</code>.</li>
 </ul>
 <h4>DropmenuButton:</h4><ul>
-<li><code>menu</code>: </li>
-<li><code>arrow</code>: </li>
-<li><code>dont_close</code>: </li>
+<li><code>menu</code> - <code>Object</code>: Component declaration config overrides for the menu List instance.</li>
+<li><code>menu_type</code> - <code>string</code>: The widget type to use for the menu instance. Defaults to <code>List</code>.</li>
+<li><code>arrow</code> - <code>boolean|Object</code>: Component declaration config overrides for the arrow Button instance. If set to <code>true</code> then the default component will be created. Otherwise it will not be creaed at all.</li>
+<li><code>arrow_type</code> - <code>string</code>: The widget type to use for the arrow button instance. Defaults to <code>Button</code>.</li>
+<li><code>dont_close</code> - <code>boolean</code>: If <code>true</code> the menu will not be closed once an option is selected.</li>
 </ul>
 <h4>Select:</h4><ul>
-<li><code>menu</code>: </li>
-<li><code>content</code>: </li>
+<li><code>menu</code> - <code>Object</code>: Component declaration config overrides for the menu List instance.</li>
+<li><code>menu_type</code> - <code>string</code>: The widget type to use for the menu instance. Defaults to <code>List</code>.</li>
+<li><code>content</code> - <code>string|HTMLElement|HTMLElement[]</code>: An element or selector for the content element to use. Created by uijet by default.</li>
 </ul>
 <h4>Slider:</h4><ul>
-<li><code>min</code>: </li>
-<li><code>max</code>: </li>
-<li><code>step</code>: </li>
-<li><code>handle</code>: </li>
-<li><code>vertical</code>: </li>
-<li><code>initial</code>: </li>
+<li><code>min</code> - <code>number</code>: Minimum possible value for the slider. Defaults to <code>0</code>.</li>
+<li><code>max</code> - <code>number</code>: Maximum possible value for the slider. Defaults to <code>100</code>.</li>
+<li><code>step</code> - <code>number</code>: Step to allow between possible values of the slider. Defaults to <code>1</code>.</li>
+<li><code>handle</code> - <code>Object</code>: Component declaration config overrides for the handle Button instance.</li>
+<li><code>handle_type</code> - <code>string</code>: The widget type to use for the handle button instance. Defaults to <code>Button</code>.</li>
+<li><code>vertical</code> - <code>boolean</code>: If <code>true</code> this instance will be styled and behave as a vertical slider.</li>
+<li><code>initial</code> - <code>number</code>: Initial value to use for instance. Defaults to <code>min</code> option.</li>
 </ul>
 <h4>Datepicker:</h4><ul>
-<li><code>min_date</code>: </li>
-<li><code>max_date</code>: </li>
+<li><code>datelist</code> - <code>Object</code>: Component declaration config overrides for the date-list List instance.</li>
+<li><code>datelist_type</code> - <code>string</code>: The widget type to use for the date-list instance. Defaults to <code>List</code>.</li>
+<li><code>next</code> - <code>Object</code>: Component declaration config overrides for the next Button instance.</li>
+<li><code>next_type</code> - <code>string</code>: The widget type to use for the next button instance. Defaults to <code>Button</code>.</li>
+<li><code>prev</code> - <code>Object</code>: Component declaration config overrides for the prev Button instance.</li>
+<li><code>prev_type</code> - <code>string</code>: The widget type to use for the prev button instance. Defaults to <code>Button</code>.</li>
+<li><code>min_date</code> - <code>Date|string|number</code>: Minimum possible date for selection.</li>
+<li><code>max_date</code> - <code>Date|string|number</code>: Maximum possible date for selection.</li>
+<li><code>current_date</code> - <code>string|HTMLElement|HTMLElement[]</code>: element or selector for the element which will serve as the heading that contains current date.</li>
 </ul>
 <h3>iScroll:</h3><ul>
-<li><code>iscroll_options</code>:</li>
+<li><code>iscroll_options</code> - <code>Object</code>: Configuration options for the IScroll instance constructor.</li>
 </ul>
 <h3>jqScroll:</h3><ul>
-<li><code>jqscroll_options</code>: </li>
+<li><code>jqscroll_options</code> - <code>Object</code>: Configuration options for the jqScroll instance constructor.</li>
 </ul>
 <h3>jqScrollWheel:</h3><ul>
-<li><code>jqscroll_options</code>: </li>
+<li><code>jqscroll_options</code> - <code>Object</code>: Configuration options for the jqScroll instance constructor.</li>
 </ul>
 <h3>Spin:</h3><ul>
-<li><code>spinner_options</code>: </li>
+<li><code>spinner_options</code> - <code>Object</code>: Configuration options for the spinner instance constructor.</li>
 </ul></article>
     </section>
 
@@ -2275,7 +2310,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Tue May 19 2015 10:48:20 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Aug 09 2015 01:04:06 GMT+0300 (IDT)
         </footer>
     </div>
 </div>

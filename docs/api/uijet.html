@@ -119,8 +119,6 @@
         
             <li class="private static" data-name="uijet._destroyContained"><a href="uijet.html#_destroyContained">_destroyContained</a></li>
         
-            <li class="private static" data-name="uijet._position"><a href="uijet.html#_position">_position</a></li>
-        
             <li class="private static" data-name="uijet._register"><a href="uijet.html#_register">_register</a></li>
         
             <li class="private static" data-name="uijet._sleepContained"><a href="uijet.html#_sleepContained">_sleepContained</a></li>
@@ -597,9 +595,9 @@
                             <ul>
                                 
 
-    <li class="item" data-name="module:extension/zepto-touch">
+    <li class="item" data-name="module:extensions/zepto-touch">
         <span class="title">
-            <a href="zepto-touch.html">extension/zepto-touch</a>
+            <a href="zepto-touch.html">extensions/zepto-touch</a>
             
         </span>
         <ul class="members itemMembers">
@@ -1138,8 +1136,6 @@
         
             <li class="" data-name="BaseWidget#render"><a href="BaseWidget.html#render">render</a></li>
         
-            <li class="" data-name="BaseWidget#select"><a href="BaseWidget.html#select">select</a></li>
-        
             <li class="" data-name="BaseWidget#setContext"><a href="BaseWidget.html#setContext">setContext</a></li>
         
             <li class="" data-name="BaseWidget#setElement"><a href="BaseWidget.html#setElement">setElement</a></li>
@@ -1153,8 +1149,6 @@
             <li class="" data-name="BaseWidget#sleep"><a href="BaseWidget.html#sleep">sleep</a></li>
         
             <li class="" data-name="BaseWidget#sleepContained"><a href="BaseWidget.html#sleepContained">sleepContained</a></li>
-        
-            <li class="" data-name="BaseWidget#style"><a href="BaseWidget.html#style">style</a></li>
         
             <li class="" data-name="BaseWidget#trickle"><a href="BaseWidget.html#trickle">trickle</a></li>
         
@@ -1828,6 +1822,25 @@
         </ul>
     </li>
 
+    <li class="item" data-name="Positioned">
+        <span class="title">
+            <a href="Positioned.html">Positioned</a>
+            
+        </span>
+        <ul class="members itemMembers">
+        
+        </ul>
+        <ul class="typedefs itemMembers">
+        
+        </ul>
+        <ul class="methods itemMembers">
+        
+        </ul>
+        <ul class="events itemMembers">
+        
+        </ul>
+    </li>
+
     <li class="item" data-name="Preloaded">
         <span class="title">
             <a href="Preloaded.html">Preloaded</a>
@@ -2164,7 +2177,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 1455
+            uijet.js, line 1454
         </div>
         
     </div>
@@ -2348,7 +2361,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 1844
+            uijet.js, line 1843
         </div>
         
     </div>
@@ -2470,7 +2483,7 @@ standard widget instance declarations ( see {@see uijet.declare()} ).</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1475
+            uijet.js, line 1474
         </div>
         
     </div>
@@ -2695,7 +2708,7 @@ and registered with <code>uijet</code>.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1540
+            uijet.js, line 1539
         </div>
         
     </div>
@@ -2856,7 +2869,7 @@ Promise object or an array of Promises.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 2118
+            modules/router/_build-context.js, line 27
         </div>
         
     </div>
@@ -3019,7 +3032,7 @@ object generated for the route.
     
         
         <div class="tag-source">
-            uijet.js, line 1972
+            uijet.js, line 1971
         </div>
         
     </div>
@@ -3133,159 +3146,6 @@ object generated for the route.
             
 <dt class="private static">
     <div class="nameContainer">
-        <h4 class="name" id="_position">
-            
-            <span class="type-signature ">private,static</span>uijet._position<span class="signature">(widget, <span class="optional">exclude</span>)</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            uijet.js, line 2024
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Positions a widget.
-Takes into account the position and size set in sibling widgets' options,
-to create a fluid UI.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>widget</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                <p>the widget instance to position.</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>exclude</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;string></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                <p>list of style property names to exclude from setting.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="private static">
-    <div class="nameContainer">
         <h4 class="name" id="_register">
             
             <span class="type-signature ">private,static</span>uijet._register<span class="signature">(widget)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="uijet.html">uijet</a>}</span>
@@ -3293,7 +3153,7 @@ to create a fluid UI.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1636
+            uijet.js, line 1635
         </div>
         
     </div>
@@ -3422,7 +3282,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1956
+            uijet.js, line 1955
         </div>
         
     </div>
@@ -3543,7 +3403,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 2002
+            uijet.js, line 2001
         </div>
         
     </div>
@@ -3696,7 +3556,7 @@ Defaults to the result of <code>widget.getContext()</code>.</p></td>
     
         
         <div class="tag-source">
-            uijet.js, line 1748
+            uijet.js, line 1747
         </div>
         
     </div>
@@ -3818,7 +3678,7 @@ This is usually triggered by a widget when its {@see BaseWidget.destroy()} metho
     
         
         <div class="tag-source">
-            uijet.js, line 1935
+            uijet.js, line 1934
         </div>
         
     </div>
@@ -3981,7 +3841,7 @@ returned from children's <code>wake()</code> call.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 1228
+            uijet.js, line 1227
         </div>
         
     </div>
@@ -4145,7 +4005,7 @@ If <code>props</code> is omitted and <code>name</code> is a:</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1786
+            uijet.js, line 1785
         </div>
         
     </div>
@@ -4283,7 +4143,7 @@ this is an instance that's using a pre-declared widget factory.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1252
+            uijet.js, line 1251
         </div>
         
     </div>
@@ -4429,7 +4289,7 @@ This declaration can be re-used to prevent repetition of common properties.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1337
+            uijet.js, line 1336
         </div>
         
     </div>
@@ -4581,7 +4441,7 @@ set <code>uijet.$element[0].style.visibility</code> to <code>visible</code>.
     
         
         <div class="tag-source">
-            uijet.js, line 1207
+            uijet.js, line 1206
         </div>
         
     </div>
@@ -4737,7 +4597,7 @@ set <code>uijet.$element[0].style.visibility</code> to <code>visible</code>.
     
         
         <div class="tag-source">
-            uijet.js, line 1292
+            uijet.js, line 1291
         </div>
         
     </div>
@@ -4935,7 +4795,7 @@ instantiating a Backbone.js resource.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1915
+            uijet.js, line 1914
         </div>
         
     </div>
@@ -5106,7 +4966,7 @@ promise that can be either resolved or rejected by a subscriber to <code>topic</
     
         
         <div class="tag-source">
-            uijet.js, line 1812
+            uijet.js, line 1811
         </div>
         
     </div>
@@ -5303,7 +5163,7 @@ and want to optimize this call a bit.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1884
+            uijet.js, line 1883
         </div>
         
     </div>
@@ -5384,7 +5244,7 @@ so that the initial view is awaken by the router.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1136
+            uijet.js, line 1135
         </div>
         
     </div>
@@ -5572,7 +5432,7 @@ If <code>context</code> is supplied then uses it to bind all the properties of <
     
         
         <div class="tag-source">
-            uijet.js, line 1161
+            uijet.js, line 1160
         </div>
         
     </div>
@@ -5769,7 +5629,7 @@ This class can later be instantiated in the UI or re-used as a dependency.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Tue May 19 2015 10:48:23 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Aug 09 2015 01:04:08 GMT+0300 (IDT)
         </footer>
     </div>
 </div>
