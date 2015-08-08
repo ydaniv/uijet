@@ -930,7 +930,6 @@
         _finally        : function () {
             // replace the masking `Object` with a new one
             this.signals = Object.create(this.signals_cache);
-            this.options.state = this.awake ? 'current' : 'asleep';
             return this;
         }
     };

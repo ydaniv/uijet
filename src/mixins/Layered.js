@@ -56,7 +56,7 @@
             return this;
         },
         /**
-         * Disables state of "current" of this layer.
+         * Moves this layer to the background.
          * Removes the `current` class from the top container element.
          *
          * @methodOf Layered
@@ -83,7 +83,7 @@
             return res;
         },
         /**
-         * Enables state of "current" of this layer.
+         * Moves this layer to the foreground.
          * Adds the `current` class to the top container element, while calling
          * {@link Layered#sleep} on all of its sibling widgets.
          *
@@ -123,8 +123,6 @@
                     if ( sibling_top && sibling_top.parentNode === _parent ) {
                         // if asked to keep awake
                         if ( sibling.options.keep_layer_awake ) {
-                            // just change state from current to simply awake
-                            sibling.options.state = 'awake';
                             $top.removeClass('current');
                         }
                         else {
@@ -135,7 +133,6 @@
                 }
             }
 
-            this.options.state = 'current';
             $top.addClass('current');
 
             return this;
