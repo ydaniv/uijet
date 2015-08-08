@@ -47,7 +47,7 @@
          * * `prev`: config objects for the prev Button component to create.
          * * `prev_type`: the prev arrow Button component's Widget type. Defaults to `'Button'`.
          * * `current_date`: element or selector for the element which will serve as the heading
-         * that contains cuurent date.
+         * that contains current date.
          * * `max_date`: max possible date for selection.
          * * `min_date`: min possible date for selection.
          *
