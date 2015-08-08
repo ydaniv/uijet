@@ -36,10 +36,23 @@ uijet performs 3 main roles:
 
 ## Installing
 
-* Download the source or install via [Bower](http://bower.io/):
+* Download the source
+* Or install via [npm](https://www.npmjs.com/):
+
+```
+> npm install uijet
+```
+
+* Or install via [Bower](http://bower.io/):
 
 ```
 > bower install uijet
+```
+
+* Or install via [volo](http://volojs.org/):
+
+```
+> volo add uijet
 ```
 
 __(recommended)__ If you're using an AMD module loader like [RequireJS](http://requirejs.org/) or [curl.js](https://github.com/cujojs/curl),
