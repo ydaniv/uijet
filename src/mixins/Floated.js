@@ -161,7 +161,7 @@
                 else {
                     // if `document.styleSheets` is `null`
                     bottom_style = document.createElement('style');
-                    bottom_style.innerHTML = css_text;
+                    this._addRule(bottom_style, selector, css_text);
                     document.head.appendChild(bottom_style);
                 }
                 this.float_rule_sheet = bottom_style;
