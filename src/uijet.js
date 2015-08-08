@@ -1,6 +1,6 @@
 /*!
  * uijet UI Framework
- * @version 0.0.69
+ * @version 0.0.70
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
@@ -24,7 +24,6 @@
         BROWSER_PREFIX = { style: ['webkit', 'Moz', 'O', 'ms'], prop: [
             'WebKit', 'webkit', 'moz', 'o', 'ms'
         ], matches              : {} },
-        OPPOSITES = {top: 'bottom', bottom: 'top', right: 'left', left: 'right'},
         // regexp for simple string format
         SUBSTITUTE_RE = /\{([^\s\}]+)\}/g,
         // native utilities caching
@@ -34,7 +33,7 @@
         mixins = {},
         adapters = {},
         declared_widgets = [],
-        widgets = { __app__: { contained: []} },
+        widgets = { __app__: { contained: [], id: '__app__' } },
         resources = {},
         // caching pre-built predefined widgets' classes
         // `{ proto : widget_prototype, deps : dependencies }`
@@ -2010,144 +2009,6 @@
                   .trickle(ctx);
             }
             return this;
-        },
-        /**
-         * Positions a widget.
-         * Takes into account the position and size set in sibling widgets' options,
-         * to create a fluid UI.
-         *
-         * @memberOf uijet
-         * @param {Object} widget - the widget instance to position.
-         * @param {string[]} [exclude] - list of style property names to exclude from setting.
-         * @private
-         */
-        _position            : function (widget, exclude) {
-            var container_id = widgets[widget.id].container,
-                siblings = container_id ? widgets[container_id].contained || [] : [], sibling,
-                position = {position: 'absolute', top: 0, bottom: 0, right: 0, left: 0},
-                processed = {},
-                set_style = false,
-                processed_position, p, len;
-            // if there's anything to exclude
-            if ( exclude && (len = exclude.length) ) {
-                while ( len-- ) {
-                    // remove it from the style properties object
-                    delete position[exclude[len]];
-                    // and its opposite side (e.g. top-bottom, right-left)
-                    delete position[OPPOSITES[exclude[len]]];
-                }
-                // and remove the `position` property
-                delete position.position;
-            }
-            else {
-                exclude = '';
-            }
-            // loop over sibling widgets
-            for ( len = siblings.length; len--; ) {
-                sibling = siblings[len];
-                // if it's this widget bail from this iteration
-                if ( sibling == widget.id ) {
-                    continue;
-                }
-                // if we have a cached processed position on a sibling widget
-                if ( processed_position = widgets[sibling].self.processed_position ) {
-                    set_style = true;
-                    // loop over position properties of the sibling
-                    for ( p in processed_position ) {
-                        // if this property is not to be excluded
-                        if ( !~exclude.indexOf(p) ) {
-                            // if we already processed this property
-                            if ( p in processed ) {
-                                // if it's using same units AND size of property of this widget is smaller then it's sibling's
-                                if ( processed[p].unit === processed_position[p].unit &&
-                                     processed[p].size < processed_position[p].size ) {
-                                    // set the size to the sibling's size
-                                    processed[p].size = processed_position[p].size;
-                                }
-                            }
-                            else {
-                                // otherwise, add it
-                                processed[p] = processed_position[p];
-                            }
-                        }
-                    }
-                }
-            }
-            // if anything to set
-            if ( set_style ) {
-                // grab all processed properties and create a map of style properties to values
-                for ( p in processed ) {
-                    position[p] = processed[p].size + processed[p].unit;
-                }
-            }
-            else {
-                // if there's something to set then make sure it's set
-                for ( p in position ) {
-                    if ( position.hasOwnProperty(p) ) {
-                        set_style = true;
-                        break;
-                    }
-                }
-            }
-            // if we found something to set
-            if ( set_style ) {
-                // make sure we allow the widget to be fluid
-                if ( 'left' in position || 'right' in position ) {
-                    position.width = 'auto';
-                }
-                if ( 'top' in position || 'bottom' in position ) {
-                    position.height = 'auto';
-                }
-                // set the styles
-                widget.style(position);
-            }
-        },
-        /**
-         * Builds a context object from the returned arguments of a route.
-         * Named parameters in `route` are indexed in the context object by name.
-         * Unnamed parameters are indexed by position in `args_array`.
-         *
-         * Also supports splat params using the prefix `'*'`.
-         *
-         * @memberOf uijet
-         * @param {string} route - The route string to analyze.
-         * @param {*} [args_array] - The list of arguments sent to a route's callback.
-         * @returns {Object} Context object generated for the route.
-         * @private
-         */
-        _buildContext        : function (route, args_array) {
-            var context = {},
-            // matches anything that contains ':' followed by a name
-                named_arg_re = /.*:([-\w]+)/,
-                parts = route.split('/'),
-                i = 0, n = 0,
-                part, match, splat_parts;
-
-            // make sure `args_array` is an `Array`
-            args_array = toArray(args_array) || [];
-
-            // make sure we don't stop looping because of leading '/'
-            while ( part = parts[i++], typeof part == 'string' ) {
-                // if it's a named argument
-                if ( match = part.match(named_arg_re) ) {
-                    // then add it to the context by name
-                    context[match[1]] = args_array.shift();
-                    n += 1;
-                }
-                else if ( ~part.indexOf('(') ) {
-                    // if it's unnamed then add it by its index in `args_array`
-                    context[n] = args_array.shift();
-                    n += 1;
-                }
-                else if ( part[0] == '*' ) {
-                    splat_parts = args_array.shift().split('/');
-                    while ( part = splat_parts.shift() ) {
-                        context[n] = part;
-                        n += 1;
-                    }
-                }
-            }
-            return context;
         }
     };
 

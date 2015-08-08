@@ -2,7 +2,8 @@
     if ( typeof define === 'function' && define.amd ) {
         define([
             'uijet_dir/uijet',
-            'backbone'
+            'backbone',
+            'uijet_dir/modules/router/_build-context'
         ], function (uijet, Backbone) {
             return factory(uijet, Backbone);
         });

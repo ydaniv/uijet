@@ -23,7 +23,7 @@
          * 
          * #### Related options:
          * 
-         * * `horizontal`: if `true` then then `horizontal` class is added to the element.
+         * * `horizontal`: if `true` then the `horizontal` class is added to the element.
          * 
          * @memberOf Scrolled
          * @instance

@@ -13,7 +13,7 @@
      * Loads the Zepto touch module and sets the default
      * click event to `tap`.
      * 
-     * @module extension/zepto-touch
+     * @module extensions/zepto-touch
      * @category Module
      * @sub-category Extensions
      * @see {@link http://zeptojs.com/#touch}

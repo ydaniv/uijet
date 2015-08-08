@@ -32,7 +32,9 @@
          * #### Related options:
          *
          * * `menu`: the menu component's config.
+         * * `menu_type`: the menu component's Widget type. Defaults to `'List'`.
          * * `arrow`: the arrow Button component's config.
+         * * `arrow_type`: the arrow Button component's Widget type. Defaults to `'Button'`.
          * Can also be set to `true` and the default arrow button component will be created.
          *   * `dont_close`: when `true` keeps the menu open on selection. Otherwise its `close()` method is invoked.
          *
@@ -132,13 +134,13 @@
             }
 
             // add the arrow button widget to components if needed
-            add_arrow && components.unshift({ type: 'Button', config: drop_arrow_config });
+            add_arrow && components.unshift({ type: options.arrow_type || 'Button', config: drop_arrow_config });
 
             // make sure the drop menu is Floated
             drop_menu_config.mixins = uijet.utils.putMixin(drop_menu_config.mixins, 'Floated');
 
             // create the menu widget
-            components.unshift({ type: 'List', config: drop_menu_config });
+            components.unshift({ type: options.menu_type || 'List', config: drop_menu_config });
 
             return this._super.apply(this, arguments);
         },
