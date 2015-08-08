@@ -78,8 +78,8 @@ __Note:__ Every module documented here is supported. All others are considered p
 
 #### Binding/Rivets and Binding/Rivets-Backbone modules:
 
-* `bind_options` - `Object`: 
-* `dont_bind` - `boolean`: 
+* `bind_options` - `Object`: Configuration options to pass to the `rivets.bind()` call.
+* `dont_bind` - `boolean`: If `true` then `rivets.bind()` will not be called automatically on instance initialization.
 
 #### Animation modules:
 
@@ -93,22 +93,23 @@ __Note:__ Every module documented here is supported. All others are considered p
 
 * `dont_promote` - `boolean`: For advanced usage. If `true` makes sure that this component's element (or wrapper) is not promoted into its own layer (usually used for hardware acceleration).
 
-#### Engine modules:
+#### Engine/lodash and Engine/underscore modules:
 
-* `template` - `string`: .
+* `compile_options` - `Object`: Configuration options to pass to `_.template()`.
 
 #### Router/Backbone module:
 
-* `route_name` - `string`: 
+* `route_name` - `string`: Will be used for the `route` and `route:name` events triggered by the router and history. Defaults to the `widget.id`.
 
 #### Search modules:
 
-* `search`: 
+* `search` - `Object`: Configuration options for the `SearchIndex` instance.
 
 #### Deferred:
 
-* `promise`: 
+* `promise` - `Promise|function`: Promise object, or a function that returns one, that once resolved invokes `wake()`. If it's a function it takes the `context` argument as param.
 
+<!--
 #### Dragged:
 
 * `dont_translate`: 
@@ -120,32 +121,36 @@ __Note:__ Every module documented here is supported. All others are considered p
 * `drag_parent`: 
 * `drag_once`: 
 * `drag_contain`: 
-* `drag_element`: 
+* `drag_element`:
+ -->
 
 #### Floated:
 
-* `float_position`: 
+* `float_position` - `string|Object|function`: A CSS text (`'<property>: <value>'`) to set on the floated element when it appears. For multiple properties use an `Object`.
 
 #### Layered:
 
-* `keep_layer_awake`: 
-* `state`: 
+* `keep_layer_awake` - `boolean`: If `true` this instance will not be put to `.sleep()` when its sibling is `.awake()` and instead only put to the background.
 
+<!--
 #### Preloaded:
 
 * `assets`: 
 * `dont_preload`: 
 * `preload_img_el`: 
+-->
 
 #### Routed:
 
-* `route`: 
-* `alias_routes`: 
+* `route` - `string`: The route's path to be used for waking the instance.
+* `alias_routes` - `string[]`: List of strings of alias paths for this instance's `route`.
 
 #### Scrolled:
 
-* `grid_layout`: 
+* `horizontal` - `boolean`: Set to `true` if the scroll is horizontal.
+* `grid_layout` - `boolean`: When `true` will prevent stretching `this.$element` to contain its content, as done for a `horizontal` instance.
 
+<!--
 #### Submitted:
 
 * `serializer`: 
@@ -153,74 +158,76 @@ __Note:__ Every module documented here is supported. All others are considered p
 * `submit_url`: 
 * `route_submit`: 
 * `submit_xhr_config`: 
+-->
 
 #### Templated:
 
-* `template_name`: 
-* `partials`: 
-* `partials_dir`: 
-* `dont_auto_fetch_template`: 
-* `insert_before`: 
-* `defer_images`:
+* `template` - `string`: A raw template string to be used as the template for the instance. Do not use this option for putting a template string in your js source code! Only as an endpoint for hooking with loaded templates.
+* `template_name` - `string`: If `template` is not set, this option will be used as the filename of the template to load. Defaults to `this.id>`. Used together with `uijet.options.templates_path` as prefix and `uijet.options.templates_extension` as suffix to create the path to the template.
+* `partials` - `Object`: A map of partial names to their corresponding filename (or path). If the template and its partials are already fetched use the partials as values instead of paths.
+* `partials_dir` - `string`: A common directory for looking up partials. This will be used together with `partials` to create the paths.
+* `dont_auto_fetch_template` - `boolean`: When `true` templates will not be fetched automatically on `init()`.
+* `insert_before` - `HTMLElement|string`: An element or a query selector to insert the rendered content before. By default content is appended to the end `this.$element`'s contents.
+* `defer_images` - `boolean`: When `true` `this.$element` will be searched for images to preload and defer waking the instance after loading.
 
 #### Dialog:
 
-* `buttons`: 
+* `buttons` - `Object[]`: List of component declarations that will be created as children of this instance.
 
 #### Modal:
 
-* `buttons`: 
-* `underlay`: 
-* `underlay_type`: 
+* `buttons` - `Object[]`: List of component declarations that will be created as children of this instance.
+* `underlay` - `Object`: Component declaration config overrides for the Overlay instance.
+* `underlay_type` - `string`: The widget type to use for the Overlay instance. Defaults to `Overlay`.
 
 #### DropmenuButton:
 
-* `menu`: 
-* `menu_type`: 
-* `arrow`: 
-* `arrow_type`: 
-* `dont_close`: 
+* `menu` - `Object`: Component declaration config overrides for the menu List instance.
+* `menu_type` - `string`: The widget type to use for the menu instance. Defaults to `List`.
+* `arrow` - `boolean|Object`: Component declaration config overrides for the arrow Button instance. If set to `true` then the default component will be created. Otherwise it will not be creaed at all.
+* `arrow_type` - `string`: The widget type to use for the arrow button instance. Defaults to `Button`.
+* `dont_close` - `boolean`: If `true` the menu will not be closed once an option is selected.
 
 #### Select:
 
-* `menu`: 
-* `menu_type`: 
-* `content`: 
+* `menu` - `Object`: Component declaration config overrides for the menu List instance.
+* `menu_type` - `string`: The widget type to use for the menu instance. Defaults to `List`.
+* `content` - `string|HTMLElement|HTMLElement[]`: An element or selector for the content element to use. Created by uijet by default.
 
 #### Slider:
 
-* `min`: 
-* `max`: 
-* `step`: 
-* `handle`: 
-* `handle_type`: 
-* `vertical`: 
-* `initial`: 
+* `min` - `number`: Minimum possible value for the slider. Defaults to `0`.
+* `max` - `number`: Maximum possible value for the slider. Defaults to `100`.
+* `step` - `number`: Step to allow between possible values of the slider. Defaults to `1`.
+* `handle` - `Object`: Component declaration config overrides for the handle Button instance.
+* `handle_type` - `string`: The widget type to use for the handle button instance. Defaults to `Button`.
+* `vertical` - `boolean`: If `true` this instance will be styled and behave as a vertical slider.
+* `initial` - `number`: Initial value to use for instance. Defaults to `min` option.
 
 #### Datepicker:
 
-* `datelist`: 
-* `datelist_type`: 
-* `next`: 
-* `next_type`: 
-* `prev`: 
-* `prev_type`: 
-* `min_date`: 
-* `max_date`: 
-* `current_date`: 
+* `datelist` - `Object`: Component declaration config overrides for the date-list List instance.
+* `datelist_type` - `string`: The widget type to use for the date-list instance. Defaults to `List`.
+* `next` - `Object`: Component declaration config overrides for the next Button instance.
+* `next_type` - `string`: The widget type to use for the next button instance. Defaults to `Button`.
+* `prev` - `Object`: Component declaration config overrides for the prev Button instance.
+* `prev_type` - `string`: The widget type to use for the prev button instance. Defaults to `Button`.
+* `min_date` - `Date|string|number`: Minimum possible date for selection.
+* `max_date` - `Date|string|number`: Maximum possible date for selection.
+* `current_date` - `string|HTMLElement|HTMLElement[]`: element or selector for the element which will serve as the heading that contains current date.
 
 ### iScroll:
 
-* `iscroll_options`:
+* `iscroll_options` - `Object`: Configuration options for the IScroll instance constructor.
 
 ### jqScroll:
 
-* `jqscroll_options`: 
+* `jqscroll_options` - `Object`: Configuration options for the jqScroll instance constructor.
 
 ### jqScrollWheel:
 
-* `jqscroll_options`: 
+* `jqscroll_options` - `Object`: Configuration options for the jqScroll instance constructor.
 
 ### Spin:
 
-* `spinner_options`: 
+* `spinner_options` - `Object`: Configuration options for the spinner instance constructor.
