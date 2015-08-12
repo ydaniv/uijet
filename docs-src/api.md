@@ -37,7 +37,8 @@ __Note:__ Every module documented here is supported. All others are considered p
 #### Button:
 
 * `prevent_default` - `boolean`: If `true` `preventDefault()` of the `click` event will be called.
-* `disabled` - `boolean`: If `true` this instance will be initially disabled.
+* `disabled` - `boolean|function`: If `true` this instance will be initially disabled.
+* `activated` - `boolean|function`: If `true` this instance will be initially activated.
 
 #### Overlay:
 
