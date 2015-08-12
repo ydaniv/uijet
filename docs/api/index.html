@@ -1191,8 +1191,6 @@
         
             <li class="" data-name="Button#enable"><a href="Button.html#enable">enable</a></li>
         
-            <li class="" data-name="Button#select"><a href="Button.html#select">select</a></li>
-        
             <li class="" data-name="Button#setInitOptions"><a href="Button.html#setInitOptions">setInitOptions</a></li>
         
         </ul>
@@ -1428,27 +1426,6 @@
     <li class="item" data-name="SelectMenu">
         <span class="title">
             <a href="SelectMenu.html">SelectMenu</a>
-            
-        </span>
-        <ul class="members itemMembers">
-        
-        </ul>
-        <ul class="typedefs itemMembers">
-        
-        </ul>
-        <ul class="methods itemMembers">
-        
-        <span class="subtitle">Methods</span>
-        
-        </ul>
-        <ul class="events itemMembers">
-        
-        </ul>
-    </li>
-
-    <li class="item" data-name="Slider">
-        <span class="title">
-            <a href="Slider.html">Slider</a>
             
         </span>
         <ul class="members itemMembers">
@@ -1970,6 +1947,7 @@
         <article class="readme"><h1>uijet</h1><h2>Killer UI for web apps.</h2><p><strong>Note:</strong> Every module documented here is supported. All others are considered pending for addition/removal.</p>
 <h3>Config Options Reference</h3><ul>
 <li>All <code>boolean</code>'s default to a falsy value (<code>undefined</code>).</li>
+<li>All options that allow a <code>function</code> value mean that it is possible to set a function that will return the real value to be set - in other words, lazily-computed options.</li>
 <li>All <code>function</code>'s are invoked in the context of the instance. Meaning <code>this</code> is always the instance.</li>
 </ul>
 <h4>BaseWidget:</h4><ul>
@@ -1980,14 +1958,12 @@
 <li><code>cloak</code> - <code>boolean</code>: if <code>true</code> this instance element's <code>visibility</code> will be set to <code>hidden</code> whenever its <code>disappear()</code> method (and of course <code>sleep()</code>) is called.</li>
 <li><code>hide</code> - <code>boolean</code>: if <code>true</code> this instance's element will receive the <code>hide</code> class - setting its <code>display</code> to <code>none</code> whenever its <code>disappear()</code> method (and of course <code>sleep()</code>) is called. This takes precedence over <code>cloak</code>.</li>
 <li><code>bind_on_wake</code> - <code>boolean</code>: if <code>true</code> <code>dom_events</code> will be bound on every <code>wake()</code> and unbound on every <code>sleep()</code>. Otherwise they will be bound once on <code>init()</code>.</li>
-<li><code>components</code> - <code>Array|function</code>: list of widget declarations to instantiate as child components of the instance.</li>
-<li><code>type_class</code> - <code>string|Array</code>: list of class names to use on the instance's element and wrapper which define its type. Usually defined in the widget class definition.</li>
+<li><code>components</code> - <code>Object[]|function</code>: list of widget declarations to instantiate as child components of the instance.</li>
+<li><code>type_class</code> - <code>string|string[]</code>: list of class names to use on the instance's element and wrapper which define its type. Usually defined in the widget class definition.</li>
 <li><code>extra_class</code> - <code>string</code>: extra classes to set on the instance element.</li>
 <li><code>dont_wrap</code> - <code>boolean</code>: if <code>true</code> the instance element will never be wrapped in another element (wrapper) in cases where this is usually performed. In such case <code>this.$wrapper</code> is set to <code>this.$element</code>.</li>
 <li><code>wrapper_tag</code> - <code>string</code>: the tag name of the element to use for wrapping. Defaults to <code>'div'</code>.</li>
 <li><code>wrapper_class</code> - <code>string</code>: extra classes to set on the wrapper element.</li>
-<li><code>position</code> - <code>string|Object|function</code>: used to position the instance. Usually handy for rapid prototyping, otherwise use plain CSS.</li>
-<li><code>style</code> - <code>Object|function</code>: used for styling the instance's wrapper element. Usually handy for rapid prototyping or setting dynamic styles, otherwise use plain CSS.</li>
 <li><code>signals</code> - <code>Object</code>: a map of signal names to handlers. A handler can either be a <code>function</code> or a <code>string</code>.</li>
 <li><code>app_events</code> - <code>Object</code>: a map of event names to handlers. A handler can either be a <code>function</code> or a <code>string</code>.</li>
 <li><code>dom_events</code> - <code>Object</code>: a map of DOM event names - and optionally a delegate target separated by a space - to handlers. A handler can either be a <code>function</code> or a <code>string</code>.</li>
@@ -1998,7 +1974,8 @@
 </ul>
 <h4>Button:</h4><ul>
 <li><code>prevent_default</code> - <code>boolean</code>: If <code>true</code> <code>preventDefault()</code> of the <code>click</code> event will be called.</li>
-<li><code>disabled</code> - <code>boolean</code>: If <code>true</code> this instance will be initially disabled.</li>
+<li><code>disabled</code> - <code>boolean|function</code>: If <code>true</code> this instance will be initially disabled.</li>
+<li><code>activated</code> - <code>boolean|function</code>: If <code>true</code> this instance will be initially activated.</li>
 </ul>
 <h4>Overlay:</h4><ul>
 <li><code>darken</code> - <code>boolean</code>: If <code>true</code> the <code>darken</code> class will be added to the instance element. In <code>uijet.css</code> this will add a black semi-transparent background color to the element.</li>
@@ -2006,10 +1983,10 @@
 <h4>List:</h4><ul>
 <li><code>horizontal</code> - <code>boolean</code>: Setting this to <code>true</code> will affect layout and behavior of this element and its children to match a horizontal list.</li>
 <li><code>initial</code> - <code>string|Element|Element[]</code>: Initial child of the instance element to <code>select()</code> after initialization.</li>
-<li><code>item_selector</code>: Specifies a selector for item elements. Defaults to <code>'li'</code>.</li>
-<li><code>click_target</code>: Specifies a selector for the <code>click</code> event target inside the item element. <code>click()</code>s will only be delegated from it and to the containing item element.</li>
-<li><code>multiselect</code>: If <code>true</code> the instance will behave as a multiselect.</li>
-<li><code>align</code>: Adds an extra class to the instance element prefixed by <code>'align_'</code>, for controlling items alignment.</li>
+<li><code>item_selector</code> - <code>string</code>: Specifies a selector for item elements. Defaults to <code>'li'</code>.</li>
+<li><code>click_target</code> - <code>string</code>: Specifies a selector for the <code>click</code> event target inside the item element. <code>click()</code>s will only be delegated from it and to the containing item element.</li>
+<li><code>multiselect</code> - <code>boolean</code>: If <code>true</code> the instance will behave as a multiselect.</li>
+<li><code>align</code> - <code>string</code>: Adds an extra class to the instance element prefixed by <code>'align_'</code>, for controlling items alignment.</li>
 </ul>
 <!--
 #### Form:
@@ -2081,6 +2058,10 @@
 <li><code>keep_layer_awake</code> - <code>boolean</code>: If <code>true</code> this instance will not be put to <code>.sleep()</code> when its sibling is <code>.awake()</code> and instead only put to the background.</li>
 </ul>
 <!--
+#### Positioned:
+
+* `position` - `string|Object|function`: used to position the instance. Usually handy for rapid prototyping, otherwise use plain CSS.
+
 #### Preloaded:
 
 * `assets`: 
@@ -2177,7 +2158,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Aug 09 2015 02:07:19 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Wed Aug 12 2015 18:11:56 GMT+0300 (IDT)
         </footer>
     </div>
 </div>
