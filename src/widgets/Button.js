@@ -26,6 +26,7 @@
          * #### Related options:
          * 
          * * `disabled`: whether this button is initially disabled.
+         * * `activated`: whether this button is initially activated.
          * * `click_event`: space separated event types to use for binding the {@link Button#click}.
          * 
          * @memberOf Button
@@ -35,20 +36,10 @@
         setInitOptions  : function () {
             this._super();
 
-            this.options.disabled && this.disable();
+            uijet.utils.returnOf(this.options.disabled, this) && this.disable();
+            uijet.utils.returnOf(this.options.activated, this) && this.activate();
 
             this.bind(this.options.click_event || uijet.support.click_events.full, this.click);
-            return this;
-        },
-        /**
-         * Wraps {@see Button#click}.
-         * 
-         * @memberOf Button
-         * @instance
-         * @returns {Button}
-         */
-        select          : function () {
-            this.click();
             return this;
         },
         /**
