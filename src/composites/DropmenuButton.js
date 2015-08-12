@@ -36,7 +36,7 @@
          * * `menu`: the menu component's config.
          * * `arrow`: the arrow Button component's config.
          * Can also be set to `true` and the default arrow button component will be created.
-         *   * `dont_close`: when `true` keeps the menu open on selection. Otherwise its `close()` method is invoked.
+         * * `dont_close`: when `true` keeps the menu open on selection. Otherwise its `close()` method is invoked.
          *
          * @methodOf DropmenuButton
          * @returns {DropmenuButton}
