@@ -7,6 +7,7 @@ __Note:__ Every module documented here is supported. All others are considered p
 ### Config Options Reference
 
 * All `boolean`'s default to a falsy value (`undefined`).
+* All options that allow a `function` value mean that it is possible to set a function that will return the real value to be set - in other words, lazily-computed options.
 * All `function`'s are invoked in the context of the instance. Meaning `this` is always the instance.
 
 #### BaseWidget:
@@ -18,14 +19,12 @@ __Note:__ Every module documented here is supported. All others are considered p
 * `cloak` - `boolean`: if `true` this instance element's `visibility` will be set to `hidden` whenever its `disappear()` method (and of course `sleep()`) is called.
 * `hide` - `boolean`: if `true` this instance's element will receive the `hide` class - setting its `display` to `none` whenever its `disappear()` method (and of course `sleep()`) is called. This takes precedence over `cloak`.
 * `bind_on_wake` - `boolean`: if `true` `dom_events` will be bound on every `wake()` and unbound on every `sleep()`. Otherwise they will be bound once on `init()`.
-* `components` - `Array|function`: list of widget declarations to instantiate as child components of the instance.
-* `type_class` - `string|Array`: list of class names to use on the instance's element and wrapper which define its type. Usually defined in the widget class definition.
+* `components` - `Object[]|function`: list of widget declarations to instantiate as child components of the instance.
+* `type_class` - `string|string[]`: list of class names to use on the instance's element and wrapper which define its type. Usually defined in the widget class definition.
 * `extra_class` - `string`: extra classes to set on the instance element.
 * `dont_wrap` - `boolean`: if `true` the instance element will never be wrapped in another element (wrapper) in cases where this is usually performed. In such case `this.$wrapper` is set to `this.$element`.
 * `wrapper_tag` - `string`: the tag name of the element to use for wrapping. Defaults to `'div'`.
 * `wrapper_class` - `string`: extra classes to set on the wrapper element.
-* `position` - `string|Object|function`: used to position the instance. Usually handy for rapid prototyping, otherwise use plain CSS.
-* `style` - `Object|function`: used for styling the instance's wrapper element. Usually handy for rapid prototyping or setting dynamic styles, otherwise use plain CSS.
 * `signals` - `Object`: a map of signal names to handlers. A handler can either be a `function` or a `string`.
 * `app_events` - `Object`: a map of event names to handlers. A handler can either be a `function` or a `string`.
 * `dom_events` - `Object`: a map of DOM event names - and optionally a delegate target separated by a space - to handlers. A handler can either be a `function` or a `string`.
@@ -37,7 +36,8 @@ __Note:__ Every module documented here is supported. All others are considered p
 #### Button:
 
 * `prevent_default` - `boolean`: If `true` `preventDefault()` of the `click` event will be called.
-* `disabled` - `boolean`: If `true` this instance will be initially disabled.
+* `disabled` - `boolean|function`: If `true` this instance will be initially disabled.
+* `activated` - `boolean|function`: If `true` this instance will be initially activated.
 
 #### Overlay:
 
@@ -47,10 +47,10 @@ __Note:__ Every module documented here is supported. All others are considered p
 
 * `horizontal` - `boolean`: Setting this to `true` will affect layout and behavior of this element and its children to match a horizontal list.
 * `initial` - `string|Element|Element[]`: Initial child of the instance element to `select()` after initialization.
-* `item_selector`: Specifies a selector for item elements. Defaults to `'li'`.
-* `click_target`: Specifies a selector for the `click` event target inside the item element. `click()`s will only be delegated from it and to the containing item element.
-* `multiselect`: If `true` the instance will behave as a multiselect.
-* `align`: Adds an extra class to the instance element prefixed by `'align_'`, for controlling items alignment.
+* `item_selector` - `string`: Specifies a selector for item elements. Defaults to `'li'`.
+* `click_target` - `string`: Specifies a selector for the `click` event target inside the item element. `click()`s will only be delegated from it and to the containing item element.
+* `multiselect` - `boolean`: If `true` the instance will behave as a multiselect.
+* `align` - `string`: Adds an extra class to the instance element prefixed by `'align_'`, for controlling items alignment.
 
 <!--
 #### Form:
@@ -135,6 +135,10 @@ __Note:__ Every module documented here is supported. All others are considered p
 * `keep_layer_awake` - `boolean`: If `true` this instance will not be put to `.sleep()` when its sibling is `.awake()` and instead only put to the background.
 
 <!--
+#### Positioned:
+
+* `position` - `string|Object|function`: used to position the instance. Usually handy for rapid prototyping, otherwise use plain CSS.
+
 #### Preloaded:
 
 * `assets`: 
