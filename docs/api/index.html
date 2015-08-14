@@ -2136,17 +2136,161 @@
 <li><code>max_date</code> - <code>Date|string|number</code>: Maximum possible date for selection.</li>
 <li><code>current_date</code> - <code>string|HTMLElement|HTMLElement[]</code>: element or selector for the element which will serve as the heading that contains current date.</li>
 </ul>
-<h3>iScroll:</h3><ul>
+<h4>iScroll:</h4><ul>
 <li><code>iscroll_options</code> - <code>Object</code>: Configuration options for the IScroll instance constructor.</li>
 </ul>
-<h3>jqScroll:</h3><ul>
+<h4>jqScroll:</h4><ul>
 <li><code>jqscroll_options</code> - <code>Object</code>: Configuration options for the jqScroll instance constructor.</li>
 </ul>
-<h3>jqScrollWheel:</h3><ul>
+<h4>jqScrollWheel:</h4><ul>
 <li><code>jqscroll_options</code> - <code>Object</code>: Configuration options for the jqScroll instance constructor.</li>
 </ul>
-<h3>Spin:</h3><ul>
+<h4>Spin:</h4><ul>
 <li><code>spinner_options</code> - <code>Object</code>: Configuration options for the spinner instance constructor.</li>
+</ul>
+<hr>
+<h3>Signals Reference</h3><ul>
+<li>If a signal is marked as <strong><em>once</em>: Yes</strong> it will be triggered only <em>ONCE</em> until the end of a lifecycle method execution.</li>
+</ul>
+<h3>BaseWidget</h3><ul>
+<li><code>post_init</code>: At end of <code>.init()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>pre_wake</code>: At beginning of <code>.wake()</code>, after the <code>context</code> is updated.<ul>
+<li><em>arguments</em>: .</li>
+<li><em>return</em>: If <code>false</code> then call to <code>.render()</code> will be skipped. Useful when all you want to do is update state.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>post_wake</code>: At end of <code>.wake()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>pre_render</code>: At beginning of <code>.render()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>pre_appear</code>: At beginning of <code>.appear()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>post_appear</code>: At end of <code>.appear()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>pre_sleep</code>: At beginning of <code>.sleep()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>post_sleep</code>: At end of <code>.sleep()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>post_disappear</code>: At end of <code>.disappear()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>pre_destroy</code>: At beginning of <code>.destroy()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+</ul>
+<h3>Button</h3><ul>
+<li><code>pre_click</code>: At beginning of <code>.click()</code>.<ul>
+<li><em>arguments</em>: The click Event object.</li>
+<li><em>return</em>: If <code>false</code> then the click will not be published.</li>
+<li><em>once</em>: No.</li>
+</ul>
+</li>
+</ul>
+<h3>List</h3><ul>
+<li><code>pre_select</code>: At beginning of <code>.click()</code>.<ul>
+<li><em>arguments</em>: <code>(selected, event)</code> - the wrapped selected HTMLElement and the click Event object.</li>
+<li><em>return</em>: If <code>false</code> then the selection will be ignored not published, and <code>post_select</code> will not be triggered.</li>
+<li><em>once</em>: No.</li>
+</ul>
+</li>
+<li><code>post_select</code>: At end of <code>.click()</code>.<ul>
+<li><em>arguments</em>: <code>(selected, event)</code> - the wrapped selected HTMLElement and the click Event object.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: No.</li>
+</ul>
+</li>
+</ul>
+<h3>Animation/uijet-transit module</h3><ul>
+<li><code>pre_prepareelement</code>: At the beginning of <code>.prepareElement()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>pre_disappear</code>: At the beginning of <code>.disappear()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+</ul>
+<h3>Templated</h3><ul>
+<li><code>pre_render</code>: At the beginning of <code>.render()</code>, <em>AFTER</em> the new HTML content is generated.<ul>
+<li><em>arguments</em>: <code>html</code> - the new HTML string that will be appended to the <code>$element</code>.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>pre_html_insert</code>: Inside <code>.render()</code> <em>AFTER</em> the new HTML content is generated and old contents has been removed from the DOM.<ul>
+<li><em>arguments</em>: <code>html</code> - the new HTML string that will be appended to the <code>$element</code>.</li>
+<li><em>return</em>: If <code>false</code> then the new content will not be add to the <code>$element</code>. Useful when custom insertion is done inside the handler itself.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+<li><code>post_render</code>: At the end of <code>.render()</code>.<ul>
+<li><em>arguments</em>: None.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+</ul>
+<h3>Transitioned</h3><ul>
+<li><code>post_transit</code>: At the end of <code>.transit()</code>, <em>AFTER</em> the transition animation is done.<ul>
+<li><em>arguments</em>: <code>direction</code> - a string representing the direction of the transition, either <code>'in'</code> or <code>'out'</code>.</li>
+<li><em>return</em>: Ignored.</li>
+<li><em>once</em>: Yes.</li>
+</ul>
+</li>
+</ul>
+<h3>Select</h3><ul>
+<li><code>pre_select</code>: At beginning of <code>.select()</code>.<ul>
+<li><em>arguments</em>: <code>(selected)</code> - the wrapped selected HTMLElement and the click Event object.</li>
+<li><em>return</em>: If <code>false</code> then the selection will be ignored not published, and <code>post_select</code> will not be triggered.</li>
+<li><em>once</em>: No.</li>
+</ul>
+</li>
+<li><code>post_select</code>: Inside <code>.select()</code>, after the selection has been rendered but before it's published.<ul>
+<li><em>arguments</em>: <code>(selected)</code> - the wrapped selected HTMLElement and the click Event object.</li>
+<li><em>return</em>: If <code>false</code> then the selection will <em>NOT</em> be published.</li>
+<li><em>once</em>: No.</li>
+</ul>
+</li>
 </ul></article>
     </section>
 
@@ -2158,7 +2302,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Wed Aug 12 2015 18:11:56 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Aug 14 2015 11:02:25 GMT+0300 (IDT)
         </footer>
     </div>
 </div>
