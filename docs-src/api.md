@@ -71,7 +71,7 @@ __Note__: Every module documented here is supported. All others are considered p
 #### Data/Backbone module
 
 * `destroy_resource` - `boolean`: If `true`, when `destroy()`ing the component it will also call `destroy()` in its `resource`.
-* `dont_remove_resource` - `boolean`: Unless `true`, if the component's `resource` is a `Model` in a `Collection` it will be removed once the component is `destroy()`ed.
+* `remove_resource` - `boolean`: If `true` and `destroy_resource` is NOT `true`, if the component's `resource` is a `Model` in a `Collection` it will be removed once the component is `destroy()`ed.
 * `sorting` - `Object`: Map of predefined `comparator` functions/strings that can be used to sort the resource.
 
 #### Binding modules:

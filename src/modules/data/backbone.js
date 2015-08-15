@@ -248,7 +248,7 @@
          * #### Related options:
          *
          * * `destroy_resource`: Tells the widget to call `destroy()` on its resource. Defaults to `false`.
-         * * `dont_remove_resource`: Tells the widget NOT `remove()` its resource from its related collection. Defaults to `false`.
+         * * `remove_resource`: Tells the widget to `remove()` its resource from its related collection. Defaults to `false`.
          *
          * @see {@link http://backbonejs.org/#Model-destroy}
          * @method module:data/backbone.Resourced#destroy
@@ -263,7 +263,7 @@
                     this.resource.destroy();
                 }
                 // otherwise, if part of a colletction
-                else if ( collection && ! this.options.dont_remove_resource ) {
+                else if ( collection && this.options.remove_resource ) {
                     // just remove from it from its collection
                     collection.remove(this.resource);
                 }
