@@ -2,9 +2,9 @@
 
 ## Killer UI for web apps.
 
-__Note:__ Every module documented here is supported. All others are considered pending for addition/removal.
+__Note__: Every module documented here is supported. All others are considered pending for addition/removal.
 
-### Config Options Reference
+### Config Option Reference
 
 * All `boolean`'s default to a falsy value (`undefined`).
 * All options that allow a `function` value mean that it is possible to set a function that will return the real value to be set - in other words, lazily-computed options.
@@ -244,7 +244,7 @@ __Note:__ Every module documented here is supported. All others are considered p
 
 * If a signal is marked as **_once_: Yes** it will be triggered only _ONCE_ until the end of a lifecycle method execution.
 
-### BaseWidget
+#### BaseWidget
 
 * `post_init`: At end of `.init()`.
     * _arguments_: None.
@@ -287,14 +287,14 @@ __Note:__ Every module documented here is supported. All others are considered p
     * _return_: Ignored.
     * _once_: Yes.
 
-### Button
+#### Button
 
 * `pre_click`: At beginning of `.click()`.
     * _arguments_: The click Event object.
     * _return_: If `false` then the click will not be published.
     * _once_: No.
 
-### List
+#### List
 
 * `pre_select`: At beginning of `.click()`.
     * _arguments_: `(selected, event)` - the wrapped selected HTMLElement and the click Event object.
@@ -305,7 +305,7 @@ __Note:__ Every module documented here is supported. All others are considered p
     * _return_: Ignored.
     * _once_: No.
 
-### Animation/uijet-transit module
+#### Animation/uijet-transit module
 
 * `pre_prepareelement`: At the beginning of `.prepareElement()`.
     * _arguments_: None.
@@ -316,7 +316,7 @@ __Note:__ Every module documented here is supported. All others are considered p
     * _return_: Ignored.
     * _once_: Yes.
 
-### Templated
+#### Templated
 
 * `pre_render`: At the beginning of `.render()`, _AFTER_ the new HTML content is generated.
     * _arguments_: `html` - the new HTML string that will be appended to the `$element`.
@@ -331,14 +331,14 @@ __Note:__ Every module documented here is supported. All others are considered p
     * _return_: Ignored.
     * _once_: Yes.
 
-### Transitioned
+#### Transitioned
 
 * `post_transit`: At the end of `.transit()`, _AFTER_ the transition animation is done.
     * _arguments_: `direction` - a string representing the direction of the transition, either `'in'` or `'out'`.
     * _return_: Ignored.
     * _once_: Yes.
 
-### Select
+#### Select
 
 * `pre_select`: At beginning of `.select()`.
     * _arguments_: `(selected)` - the wrapped selected HTMLElement and the click Event object.
@@ -348,3 +348,38 @@ __Note:__ Every module documented here is supported. All others are considered p
     * _arguments_: `(selected)` - the wrapped selected HTMLElement and the click Event object.
     * _return_: If `false` then the selection will _NOT_ be published.
     * _once_: No.
+
+---------------------------------------------------------------------------------
+
+### App Event Reference
+
+__Note__: Remember that app events are triggered and executed  async, just like a Promise is resolved and its fulfillment handler is triggered on the next task in the event loop.
+
+#### uijet
+
+* `startup`: At the end of `.startup()` which is called at the end of `.init()`.
+    * _data_: None.
+* `app.clicked`: uijet binds a `click` handler on the `uijet.$element` element. It is used internally to hide Toggled widgets.
+    * _data_: The Event object.
+
+#### Button
+
+* `<this.id>.clicked`: After the instance is clicked, at the end of the `.click()` handler.
+    * _data_: `{ event: <Event object>, context: <instance's context> }`.
+* `app.clicked`: After the instance is clicked, at the end of the `.click()` handler and after the above handler is published.
+    * _data_: The Event object.
+
+#### List
+
+* `<this.id>.selected`: After an item of the instance is clicked, at the end of the `.click()` handler.
+    * _data_: If the `pre_select` handler returns anything other then `false` it will be used as the data. If it returns `undefined` then `.getTransfer()`'s return value is used, which defaults to the wrapped selected element(s).
+
+#### Datepicker
+
+* `<this.id>.picked`: At the end of the `pre_select` signal handler on the Datelist widget instance.
+    * _data_: The current date as a `Date` object.
+
+#### Select
+
+* `<this.id>.selected`: After the instance is clicked, at the end of the `.select()` handler.
+    * _data_: The wrapped selected element(s).
