@@ -1944,8 +1944,8 @@
 
 
     <section>
-        <article class="readme"><h1>uijet</h1><h2>Killer UI for web apps.</h2><p><strong>Note:</strong> Every module documented here is supported. All others are considered pending for addition/removal.</p>
-<h3>Config Options Reference</h3><ul>
+        <article class="readme"><h1>uijet</h1><h2>Killer UI for web apps.</h2><p><strong>Note</strong>: Every module documented here is supported. All others are considered pending for addition/removal.</p>
+<h3>Config Option Reference</h3><ul>
 <li>All <code>boolean</code>'s default to a falsy value (<code>undefined</code>).</li>
 <li>All options that allow a <code>function</code> value mean that it is possible to set a function that will return the real value to be set - in other words, lazily-computed options.</li>
 <li>All <code>function</code>'s are invoked in the context of the instance. Meaning <code>this</code> is always the instance.</li>
@@ -2152,7 +2152,7 @@
 <h3>Signals Reference</h3><ul>
 <li>If a signal is marked as <strong><em>once</em>: Yes</strong> it will be triggered only <em>ONCE</em> until the end of a lifecycle method execution.</li>
 </ul>
-<h3>BaseWidget</h3><ul>
+<h4>BaseWidget</h4><ul>
 <li><code>post_init</code>: At end of <code>.init()</code>.<ul>
 <li><em>arguments</em>: None.</li>
 <li><em>return</em>: Ignored.</li>
@@ -2214,7 +2214,7 @@
 </ul>
 </li>
 </ul>
-<h3>Button</h3><ul>
+<h4>Button</h4><ul>
 <li><code>pre_click</code>: At beginning of <code>.click()</code>.<ul>
 <li><em>arguments</em>: The click Event object.</li>
 <li><em>return</em>: If <code>false</code> then the click will not be published.</li>
@@ -2222,7 +2222,7 @@
 </ul>
 </li>
 </ul>
-<h3>List</h3><ul>
+<h4>List</h4><ul>
 <li><code>pre_select</code>: At beginning of <code>.click()</code>.<ul>
 <li><em>arguments</em>: <code>(selected, event)</code> - the wrapped selected HTMLElement and the click Event object.</li>
 <li><em>return</em>: If <code>false</code> then the selection will be ignored not published, and <code>post_select</code> will not be triggered.</li>
@@ -2236,7 +2236,7 @@
 </ul>
 </li>
 </ul>
-<h3>Animation/uijet-transit module</h3><ul>
+<h4>Animation/uijet-transit module</h4><ul>
 <li><code>pre_prepareelement</code>: At the beginning of <code>.prepareElement()</code>.<ul>
 <li><em>arguments</em>: None.</li>
 <li><em>return</em>: Ignored.</li>
@@ -2250,7 +2250,7 @@
 </ul>
 </li>
 </ul>
-<h3>Templated</h3><ul>
+<h4>Templated</h4><ul>
 <li><code>pre_render</code>: At the beginning of <code>.render()</code>, <em>AFTER</em> the new HTML content is generated.<ul>
 <li><em>arguments</em>: <code>html</code> - the new HTML string that will be appended to the <code>$element</code>.</li>
 <li><em>return</em>: Ignored.</li>
@@ -2270,7 +2270,7 @@
 </ul>
 </li>
 </ul>
-<h3>Transitioned</h3><ul>
+<h4>Transitioned</h4><ul>
 <li><code>post_transit</code>: At the end of <code>.transit()</code>, <em>AFTER</em> the transition animation is done.<ul>
 <li><em>arguments</em>: <code>direction</code> - a string representing the direction of the transition, either <code>'in'</code> or <code>'out'</code>.</li>
 <li><em>return</em>: Ignored.</li>
@@ -2278,7 +2278,7 @@
 </ul>
 </li>
 </ul>
-<h3>Select</h3><ul>
+<h4>Select</h4><ul>
 <li><code>pre_select</code>: At beginning of <code>.select()</code>.<ul>
 <li><em>arguments</em>: <code>(selected)</code> - the wrapped selected HTMLElement and the click Event object.</li>
 <li><em>return</em>: If <code>false</code> then the selection will be ignored not published, and <code>post_select</code> will not be triggered.</li>
@@ -2289,6 +2289,46 @@
 <li><em>arguments</em>: <code>(selected)</code> - the wrapped selected HTMLElement and the click Event object.</li>
 <li><em>return</em>: If <code>false</code> then the selection will <em>NOT</em> be published.</li>
 <li><em>once</em>: No.</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3>App Event Reference</h3><p><strong>Note</strong>: Remember that app events are triggered and executed  async, just like a Promise is resolved and its fulfillment handler is triggered on the next task in the event loop.</p>
+<h4>uijet</h4><ul>
+<li><code>startup</code>: At the end of <code>.startup()</code> which is called at the end of <code>.init()</code>.<ul>
+<li><em>data</em>: None.</li>
+</ul>
+</li>
+<li><code>app.clicked</code>: uijet binds a <code>click</code> handler on the <code>uijet.$element</code> element. It is used internally to hide Toggled widgets.<ul>
+<li><em>data</em>: The Event object.</li>
+</ul>
+</li>
+</ul>
+<h4>Button</h4><ul>
+<li><code>&lt;this.id&gt;.clicked</code>: After the instance is clicked, at the end of the <code>.click()</code> handler.<ul>
+<li><em>data</em>: <code>{ event: &lt;Event object&gt;, context: &lt;instance's context&gt; }</code>.</li>
+</ul>
+</li>
+<li><code>app.clicked</code>: After the instance is clicked, at the end of the <code>.click()</code> handler and after the above handler is published.<ul>
+<li><em>data</em>: The Event object.</li>
+</ul>
+</li>
+</ul>
+<h4>List</h4><ul>
+<li><code>&lt;this.id&gt;.selected</code>: After an item of the instance is clicked, at the end of the <code>.click()</code> handler.<ul>
+<li><em>data</em>: If the <code>pre_select</code> handler returns anything other then <code>false</code> it will be used as the data. If it returns <code>undefined</code> then <code>.getTransfer()</code>'s return value is used, which defaults to the wrapped selected element(s).</li>
+</ul>
+</li>
+</ul>
+<h4>Datepicker</h4><ul>
+<li><code>&lt;this.id&gt;.picked</code>: At the end of the <code>pre_select</code> signal handler on the Datelist widget instance.<ul>
+<li><em>data</em>: The current date as a <code>Date</code> object.</li>
+</ul>
+</li>
+</ul>
+<h4>Select</h4><ul>
+<li><code>&lt;this.id&gt;.selected</code>: After the instance is clicked, at the end of the <code>.select()</code> handler.<ul>
+<li><em>data</em>: The wrapped selected element(s).</li>
 </ul>
 </li>
 </ul></article>
@@ -2302,7 +2342,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Aug 14 2015 11:02:25 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sat Aug 15 2015 16:40:40 GMT+0300 (IDT)
         </footer>
     </div>
 </div>
