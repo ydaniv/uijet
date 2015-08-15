@@ -2,9 +2,9 @@
 
 ## Killer UI for web apps.
 
-__Note:__ Every module documented here is supported. All others are considered pending for addition/removal.
+__Note__: Every module documented here is supported. All others are considered pending for addition/removal.
 
-### Config Options Reference
+### Config Option Reference
 
 * All `boolean`'s default to a falsy value (`undefined`).
 * All options that allow a `function` value mean that it is possible to set a function that will return the real value to be set - in other words, lazily-computed options.
@@ -222,18 +222,164 @@ __Note:__ Every module documented here is supported. All others are considered p
 * `max_date` - `Date|string|number`: Maximum possible date for selection.
 * `current_date` - `string|HTMLElement|HTMLElement[]`: element or selector for the element which will serve as the heading that contains current date.
 
-### iScroll:
+#### iScroll:
 
 * `iscroll_options` - `Object`: Configuration options for the IScroll instance constructor.
 
-### jqScroll:
+#### jqScroll:
 
 * `jqscroll_options` - `Object`: Configuration options for the jqScroll instance constructor.
 
-### jqScrollWheel:
+#### jqScrollWheel:
 
 * `jqscroll_options` - `Object`: Configuration options for the jqScroll instance constructor.
 
-### Spin:
+#### Spin:
 
 * `spinner_options` - `Object`: Configuration options for the spinner instance constructor.
+
+---------------------------------------------------------------------------------
+
+### Signals Reference
+
+* If a signal is marked as **_once_: Yes** it will be triggered only _ONCE_ until the end of a lifecycle method execution.
+
+#### BaseWidget
+
+* `post_init`: At end of `.init()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+* `pre_wake`: At beginning of `.wake()`, after the `context` is updated.
+    * _arguments_: .
+    * _return_: If `false` then call to `.render()` will be skipped. Useful when all you want to do is update state.
+    * _once_: Yes.
+* `post_wake`: At end of `.wake()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+* `pre_render`: At beginning of `.render()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+* `pre_appear`: At beginning of `.appear()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+* `post_appear`: At end of `.appear()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+* `pre_sleep`: At beginning of `.sleep()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+* `post_sleep`: At end of `.sleep()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+* `post_disappear`: At end of `.disappear()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+* `pre_destroy`: At beginning of `.destroy()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+
+#### Button
+
+* `pre_click`: At beginning of `.click()`.
+    * _arguments_: The click Event object.
+    * _return_: If `false` then the click will not be published.
+    * _once_: No.
+
+#### List
+
+* `pre_select`: At beginning of `.click()`.
+    * _arguments_: `(selected, event)` - the wrapped selected HTMLElement and the click Event object.
+    * _return_: If `false` then the selection will be ignored not published, and `post_select` will not be triggered.
+    * _once_: No.
+* `post_select`: At end of `.click()`.
+    * _arguments_: `(selected, event)` - the wrapped selected HTMLElement and the click Event object.
+    * _return_: Ignored.
+    * _once_: No.
+
+#### Animation/uijet-transit module
+
+* `pre_prepareelement`: At the beginning of `.prepareElement()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+* `pre_disappear`: At the beginning of `.disappear()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+
+#### Templated
+
+* `pre_render`: At the beginning of `.render()`, _AFTER_ the new HTML content is generated.
+    * _arguments_: `html` - the new HTML string that will be appended to the `$element`.
+    * _return_: Ignored.
+    * _once_: Yes.
+* `pre_html_insert`: Inside `.render()` _AFTER_ the new HTML content is generated and old contents has been removed from the DOM.
+    * _arguments_: `html` - the new HTML string that will be appended to the `$element`.
+    * _return_: If `false` then the new content will not be add to the `$element`. Useful when custom insertion is done inside the handler itself.
+    * _once_: Yes.
+* `post_render`: At the end of `.render()`.
+    * _arguments_: None.
+    * _return_: Ignored.
+    * _once_: Yes.
+
+#### Transitioned
+
+* `post_transit`: At the end of `.transit()`, _AFTER_ the transition animation is done.
+    * _arguments_: `direction` - a string representing the direction of the transition, either `'in'` or `'out'`.
+    * _return_: Ignored.
+    * _once_: Yes.
+
+#### Select
+
+* `pre_select`: At beginning of `.select()`.
+    * _arguments_: `(selected)` - the wrapped selected HTMLElement and the click Event object.
+    * _return_: If `false` then the selection will be ignored not published, and `post_select` will not be triggered.
+    * _once_: No.
+* `post_select`: Inside `.select()`, after the selection has been rendered but before it's published.
+    * _arguments_: `(selected)` - the wrapped selected HTMLElement and the click Event object.
+    * _return_: If `false` then the selection will _NOT_ be published.
+    * _once_: No.
+
+---------------------------------------------------------------------------------
+
+### App Event Reference
+
+__Note__: Remember that app events are triggered and executed  async, just like a Promise is resolved and its fulfillment handler is triggered on the next task in the event loop.
+
+#### uijet
+
+* `startup`: At the end of `.startup()` which is called at the end of `.init()`.
+    * _data_: None.
+* `app.clicked`: uijet binds a `click` handler on the `uijet.$element` element. It is used internally to hide Toggled widgets.
+    * _data_: The Event object.
+
+#### Button
+
+* `<this.id>.clicked`: After the instance is clicked, at the end of the `.click()` handler.
+    * _data_: `{ event: <Event object>, context: <instance's context> }`.
+* `app.clicked`: After the instance is clicked, at the end of the `.click()` handler and after the above handler is published.
+    * _data_: The Event object.
+
+#### List
+
+* `<this.id>.selected`: After an item of the instance is clicked, at the end of the `.click()` handler.
+    * _data_: If the `pre_select` handler returns anything other then `false` it will be used as the data. If it returns `undefined` then `.getTransfer()`'s return value is used, which defaults to the wrapped selected element(s).
+
+#### Datepicker
+
+* `<this.id>.picked`: At the end of the `pre_select` signal handler on the Datelist widget instance.
+    * _data_: The current date as a `Date` object.
+
+#### Select
+
+* `<this.id>.selected`: After the instance is clicked, at the end of the `.select()` handler.
+    * _data_: The wrapped selected element(s).
