@@ -111,9 +111,7 @@ We could also add a Widget dependency:
 ```javascript
 uijet.Widget('KickAssList', {
     // methods and properties for KickAssList
-}, [
-    'List'
-]);
+}, 'List');
 ```
 
 In the example above we defined a new `KickAssList` Widget that inherits from the basic `List`.
@@ -124,7 +122,7 @@ We could also add a Mixin dependency:
 uijet.Widget('KickAssList', {
     // methods and properties for KickAssList
 }, {
-    widgets: ['List'],
+    widget: 'List',
     mixins: ['Floated']
 });
 ```

@@ -64,15 +64,13 @@ __Note__: Every module documented here is supported. All others are considered p
 
 * `resource` - `string|Object`: Sets the instance's `resource` to the given object. If a `string` is used uijet will lazily set it to a registered resource with the same name on instance initialization.
 * `resource_name` - `string`: A key to use when referencing the model's attributes form the `context` object. Defaults to the `resource` option if it's a `string`, otherwise to `'<this.id>_data'`.
-* `dont_merge_resource` - `boolean`: Whether to merge the model's attributes to the `context` object or just reference it from there using `resource_name`.
 * `data_events` - `Object`: a map of event names to handlers. A handler can either be a `function` or a `string`, depending on the specific module.
 * `dont_bind_data_events` - `boolean`: If `true` the component will not bind its `data_events`, which by default is done on initialization.
 
 #### Data/Backbone module
 
 * `destroy_resource` - `boolean`: If `true`, when `destroy()`ing the component it will also call `destroy()` in its `resource`.
-* `dont_remove_resource` - `boolean`: Unless `true`, if the component's `resource` is a `Model` in a `Collection` it will be removed once the component is `destroy()`ed.
-* `sorting` - `Object`: Map of predefined `comparator` functions/strings that can be used to sort the resource.
+* `remove_resource` - `boolean`: If `true` and `destroy_resource` is NOT `true`, if the component's `resource` is a `Model` in a `Collection` it will be removed once the component is `destroy()`ed.
 
 #### Binding modules:
 
