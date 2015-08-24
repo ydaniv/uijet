@@ -21,9 +21,11 @@
     var Function = _window.Function,
         Object = _window.Object,
         Array = _window.Array,
-        BROWSER_PREFIX = { style: ['webkit', 'Moz', 'O', 'ms'], prop: [
-            'WebKit', 'webkit', 'moz', 'o', 'ms'
-        ], matches              : {} },
+        BROWSER_PREFIX = {
+            style     : ['webkit', 'Moz', 'O', 'ms'], prop: [
+                'WebKit', 'webkit', 'moz', 'o', 'ms'
+            ], matches: {}
+        },
         // regexp for simple string format
         SUBSTITUTE_RE = /\{([^\s\}]+)\}/g,
         // native utilities caching
@@ -35,14 +37,14 @@
         declared_widgets = [],
         widgets = { __app__: { contained: [], id: '__app__' } },
         resources = {},
-        // caching pre-built predefined widgets' classes
+        // caching pre-built predefined widget classes
         // `{ proto : widget_prototype, deps : dependencies }`
         widget_definitions = {},
-        // caching built pre-defined widgets' classes
+        // caching built widget classes - NOT mixed-in
         widget_classes = {},
-        // caching built and mixed-in widgets' classes
+        // caching built and mixed-in widget classes
         widget_mixedin_classes = {},
-        // caching widgets declarations factories
+        // caching widget declaration factories
         widget_factories = {},
         // constants
         TOP_ADAPTER_NAME = 'TopAdapter',
@@ -67,6 +69,7 @@
             function rethrow (e) {
                 throw e.stack || e;
             }
+
             if ( console ) {
                 return function (e) {
                     if ( uijet.debug ) {
@@ -99,7 +102,7 @@
         getPrefixed = function (name, obj) {
             var cases = BROWSER_PREFIX.prop,
                 len = cases.length, prop;
-            while ( len-- ) {
+            while ( len -- ) {
                 if ( prop = obj[cases[len] + name] ) {
                     return prop;
                 }
@@ -128,7 +131,7 @@
                    };
         }()),
         // check for touch support
-        has_touch = !!(('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
+        has_touch = ! ! (('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
         /**
          * Checks if given argument is an `Array`.
          * Uses {@see Array.isArray} by default if it exists.
@@ -140,8 +143,8 @@
          */
         isArr = (function () {
             return Array.isArray || function (obj) {
-                return objToString.call(obj) == '[object Array]';
-            };
+                    return objToString.call(obj) == '[object Array]';
+                };
         }()),
         // the sandbox
         uijet;
@@ -236,7 +239,7 @@
         var use_keys = isObj(data),
             n = 0;
         return template.replace(SUBSTITUTE_RE, function (match, key) {
-            return use_keys ? data[key] : data[n++];
+            return use_keys ? data[key] : data[n ++];
         });
     }
 
@@ -260,7 +263,7 @@
         if ( prop ) {
             if ( isArr(prop) ) {
                 res = {};
-                for ( var i = 0; p = prop[i++]; ) {
+                for ( var i = 0; p = prop[i ++]; ) {
                     res[p] = style.getPropertyValue(p);
                 }
                 return res;
@@ -569,8 +572,8 @@
          * @method uijet.Base#register
          * @returns {uijet.Base}
          */
-        register        : function () {
-            if ( !this.registered ) {
+        register     : function () {
+            if ( ! this.registered ) {
                 uijet._register(this);
                 this.registered = true;
 
@@ -584,7 +587,7 @@
          * @method uijet.Base#unregister
          * @returns {uijet.Base}
          */
-        unregister      : function () {
+        unregister   : function () {
             uijet._unregister(this);
             this.registered = false;
             return this;
@@ -612,7 +615,7 @@
          * @returns {uijet.Base}
          */
         unlisten     : function (topic) {
-            if ( !topic ) {
+            if ( ! topic ) {
                 for ( topic in this.signals_cache ) {
                     this.unlisten(topic);
                 }
@@ -726,7 +729,7 @@
          * @returns {uijet.Base}
          */
         unsubscribe  : function (topic, handler) {
-            if ( !handler && this.app_events ) {
+            if ( ! handler && this.app_events ) {
                 handler = this.app_events[topic];
                 delete this.app_events[topic];
             }
@@ -815,7 +818,7 @@
                 if ( handler[handler.length - 1] == '+' ) {
                     // use `apply` and pass arguments on invocation
                     apply_args = true;
-                    handler = handler.slice(0, -1);
+                    handler = handler.slice(0, - 1);
                 }
                 // if starts with a '-'
                 if ( handler[0] == '-' ) {
@@ -852,34 +855,38 @@
     };
     /**
      * Normalizes a name of a dependency or an array names of dependencies into a standard dependencies object
-     * with `mixins` and `widgets` keys containing `Array`s of names of mixins and widgets.
+     * with a `mixins` key mapped to an `Array` of names of Mixins and `widget` key mapped to a Widget's name.
      *
      * According to the `deps` argument it behaves as follows:
      *
-     * * `string` it's assumed to be a name of a mixin.
+     * * `string` it's assumed to be a name of a widget.
      * * `Array` it's assumed to be a list of mixin names.
-     * * `Object` it's assumed to be a standard dependencies object and its `mixins` and `widgets` keys are normalized to `Array`s.
+     * * `Object` it's assumed to be a standard dependencies object with a `mixins` key normalized to an `Array` and a `widget`.
      * * Falsy arguments yield `undefined`
      *
      * @param {*} deps - the dependencies to normalize into an `Object`.
      * @returns {Object|undefined} - a standard dependencies object.
      */
     function normalizeDeps (deps) {
-        if ( !deps ) {
+        if ( ! deps ) {
             return;
         }
-        var deps_as_obj = isObj(deps),
-            _deps = {};
+        var _deps = {};
         // if `deps` is an `Object`
-        if ( deps_as_obj ) {
-            // convert the dependecies inside it to `Array`s
+        if ( isObj(deps) ) {
+            // convert the Mixin dependecies inside it to an `Array`
             _deps.mixins = toArray(deps.mixins) || [];
-            _deps.widgets = toArray(deps.widgets) || [];
+            _deps.widget = deps.widget || void 0;
+        }
+        else if ( isArr(deps) ) {
+            // if it's an `Array` it's a list of Mixin names, just copy it
+            _deps.mixins = toArray(deps);
+            _deps.widget = void 0;
         }
         else {
-            // otherwise, it's just a list of mixins name, just copy it
-            _deps.mixins = toArray(deps);
-            _deps.widgets = [];
+            // otherwise it's a name of a Widget to inherit
+            _deps.mixins = [];
+            _deps.widget = deps;
         }
         return _deps;
     }
@@ -895,15 +902,13 @@
      */
     function missingDependency (deps) {
         var m, len;
-        for ( len = deps.mixins.length; m = deps.mixins[--len]; ) {
-            if ( !(m in mixins) ) {
+        for ( len = deps.mixins.length; m = deps.mixins[-- len]; ) {
+            if ( ! (m in mixins) ) {
                 return true;
             }
         }
-        for ( len = deps.widgets.length; m = deps.widgets[--len]; ) {
-            if ( !(m in widget_classes) ) {
-                return true;
-            }
+        if ( deps.widget && ! (deps.widget in widget_classes) ) {
+            return true;
         }
         return false;
     }
@@ -971,7 +976,7 @@
             // try cached prefix
             if ( prefix = BROWSER_PREFIX.prefix ) {
                 if ( (prefix + camelized) in style ) {
-                    if ( as_css_text) {
+                    if ( as_css_text ) {
                         return '-' + prefix.toLowerCase() + '-' + prop;
                     }
                     else {
@@ -983,11 +988,11 @@
             }
 
             // try all prefixes
-            while ( prefix = cases[i++] ) {
+            while ( prefix = cases[i ++] ) {
                 if ( (prefix + camelized) in style ) {
                     // cache the prefix that worked
                     BROWSER_PREFIX.prefix = prefix;
-                    if ( as_css_text) {
+                    if ( as_css_text ) {
                         return '-' + prefix.toLowerCase() + '-' + prop;
                     }
                     else {
@@ -1011,8 +1016,8 @@
      */
     function contains (a, b) {
         return b && (a.contains ?
-                     a != b && a.contains(b) :
-                     !!( a.compareDocumentPosition(b) & 16 ));
+                    a != b && a.contains(b) :
+                    ! ! ( a.compareDocumentPosition(b) & 16 ));
     }
 
     /**
@@ -1027,7 +1032,7 @@
      */
     function getOffsetOf (child, parent) {
         var result = { x: 0, y: 0 };
-        if ( !child || !parent || child === parent || !contains(parent, child) ) {
+        if ( ! child || ! parent || child === parent || ! contains(parent, child) ) {
             return result;
         }
         // loop up the DOM tree until offsetParent is `null`
@@ -1041,6 +1046,60 @@
         }
         while ( child = child.offsetParent );
         return result;
+    }
+
+    /*
+     * Returns a unique set from a given list of items.
+     * Used in `uijet.__generate()` for getting a unique list of Mixins.
+     *
+     * @param {Array} list - list of items to filter.
+     * @returns {Array} - the incoming list filtered to contain only unique items.
+     */
+    function _unique (list) {
+        return list.filter(function (m, i, arr) {
+            return arr.indexOf(m) === i;
+        });
+    }
+
+    /*
+     * Returns a concatenated list of all Mixin dependencies for a given normalized dependencies object.
+     *
+     * @param {{mixins: string[], widget: string}} deps - a normalized dependencies object.
+     * @returns {string[]}
+     */
+    function _mergeMixinDeps (deps) {
+        if ( ! deps || ! deps.mixins || ! deps.mixins.length ) {
+            return [];
+        }
+        if ( deps.widget ) {
+            return deps.mixins.concat(_mergeMixinDeps(widget_definitions[deps.widget]));
+        }
+        return deps.mixins;
+    }
+
+    /*
+     * Returns a constructor for a given Widget type.
+     *
+     * @param {string} type - a name of a cached widget definition.
+     * @returns {function} - the fully created widget class constructor.
+     */
+    function _generateWidgetClass (type) {
+        var definition = widget_definitions[type],
+            parent;
+
+        // if the class is cached return it
+        if ( type in widget_classes ) {
+            return widget_classes[type];
+        }
+
+        // if there's a parent class to inherit
+        if ( parent = (definition && definition.deps && definition.deps.widget) ) {
+            // get/generate the parent class, inherit it, cache and return
+            return (widget_classes[type] = Create(definition.proto, _generateWidgetClass(parent)));
+        }
+
+        // no cache and no parent, just create on top of BaseWidget, cache and return
+        return (widget_classes[type] = Create(definition.proto, uijet.BaseWidget));
     }
 
     /**
@@ -1093,19 +1152,19 @@
              *
              * @member {string} uijet.support.transform
              */
-            transform    : !!getStyleProperty('transform'),
+            transform    : ! ! getStyleProperty('transform'),
             /**
              * Whether this platform supports transitions.
              *
              * @member {string} uijet.support.transition
              */
-            transition   : !!getStyleProperty('transition'),
+            transition   : ! ! getStyleProperty('transition'),
             /**
              * Whether this platform supports 3D transforms.
              *
              * @member {boolean} uijet.support.3d
              */
-            '3d'         : !!getStyleProperty('perspective'),
+            '3d'         : ! ! getStyleProperty('perspective'),
             /**
              * Holds the name of the `trasitionend` event in this platform.
              *
@@ -1163,7 +1222,7 @@
             this.__define(type, props, _deps);
             // create and cache the class
             // if we have dependencies
-            if ( _deps && !this.initialized ) {
+            if ( _deps && ! this.initialized ) {
                 if ( missingDependency(_deps) ) {
                     if ( isFunc(this.importModules) ) {
                         // defer the widget class definition till we have promises module loaded
@@ -1172,7 +1231,7 @@
                             // make sure they're all loaded
                             this.importModules(_deps,
                                 function () {
-                                    widget_classes[type] = this.__generate(props, _deps.mixins, _deps.widgets);
+                                    this.__generate(type);
                                     resolve();
                                 }.bind(this)
                             );
@@ -1183,16 +1242,15 @@
                     }
                     else {
                         throw new Error('There is no loader module used' +
-                                        ' and following dependencies are missing: ' + JSON.stringify(deps));
+                                        ' and following dependencies are missing: ' + JSON.stringify(_deps));
                     }
-                }
-                else {
-                    widget_classes[type] = this.__generate(props, _deps.mixins, _deps.widgets);
+                    // bail out here
+                    return this;
                 }
             }
-            else {
-                widget_classes[type] = this.__generate(props);
-            }
+
+            this.__generate(type);
+
             return this;
         },
         /**
@@ -1343,7 +1401,7 @@
                 this.$element.addClass('uijet_app');
 
                 // unless requested by the user
-                if ( !this.options.dont_cover ) {
+                if ( ! this.options.dont_cover ) {
                     // make the app container cover the entire viewport
                     this.$element.addClass('cover');
                 }
@@ -1366,7 +1424,7 @@
 
                     // check the init queue for deferred tasks
                     if ( q = this.init_queue.length ) {
-                        while ( q-- ) {
+                        while ( q -- ) {
                             task = this.init_queue[q];
                             // each task should be a `function` that takes a resolve and reject functions
                             if ( isFunc(task) ) {
@@ -1447,84 +1505,91 @@
          * @memberOf uijet
          * @param {string} _name - identifier for the widget.
          * @param {Object} _props - the widget's prototype.
-         * @param {Object} [_deps] - dependencies for this widget (widgets and mixins).
+         * @param {Object} [_deps] - dependencies for this widget (widget and mixins).
          * @returns {uijet}
          * @private
          */
         __define             : function (_name, _props, _deps) {
             widget_definitions[_name] = {
-                proto: Create(_props),
-                deps : _deps
+                proto      : Create(_props),
+                deps       : _deps,
+                deps_merged: ! _deps
             };
             return this;
         },
         /**
          * Generates a widget class on top of {@see BaseWidget}.
-         * Assumes all given dependencies (mixins and widgets) are already loaded
+         * Assumes all given dependencies (mixins and widget) are already loaded
          * and registered with `uijet`.
          *
          * @memberOf uijet
-         * @param {Object} _props - this widget's prototype.
-         * @param {string|string[]} [_mixins] - mixin dependencies.
-         * @param {string|string[]} [_widgets] - widget dependencies.
+         * @param {string} type - this widget's type.
+         * @param {string[]} [extra_mixins] - extra mixins to mix into the generated widget class.
          * @returns {function} class - the generated widget class.
          * @throws {Error} - missing widget/mixin dependency.
          * @private
          */
-        __generate           : function (_props, _mixins, _widgets) {
+        __generate           : function (type, extra_mixins) {
             // create the base class
             var _class = this.BaseWidget,
-                _mixins_copy = toArray(_mixins),
-                _mixins_to_use = [],
-                _mixin, _widget, _widgets_copy, def, m;
-            // if we have widgets to build on then mix'em
-            if ( _widgets && _widgets.length ) {
-                // copy widgets dependencies
-                _widgets_copy = toArray(_widgets);
-                // loop over them
-                while ( _widget = _widgets_copy.shift() ) {
-                    // if they're defined
-                    if ( def = widget_definitions[_widget] ) {
-                        // add them to the chain
-                        // just like stacking turtles
-                        _class = Create(def.proto, _class);
-                        // check if they have dependencies
-                        if ( def.deps && def.deps.mixins ) {
-                            _mixins_to_use = toArray(def.deps.mixins);
-                        }
-                    }
-                    else {
-                        throw new Error('Missing widget dependency: ' + _widget);
-                    }
-                }
+                // get the cached definition
+                def = widget_definitions[type],
+                mixins_to_use = [],
+                _mixin, m, complete_class_cache_key;
+
+            if ( ! def ) {
+                throw new Error('No definition found for: ' + type);
             }
-            // now we add this widget to the stack
-            _class = Create(_props, _class);
-            // if we have mixins to mix then mix'em
-            if ( _mixins_copy ) {
-                // if a widget in dependencies had mixins in its dependencies
-                if ( m = _mixins_to_use.length ) {
-                    for ( ; _mixin = _mixins_to_use[--m]; ) {
-                        // add every mixin form the parents' mixins that's not in the list to its beginning
-                        if ( !~_mixins_copy.indexOf(_mixin) ) {
-                            _mixins_copy.unshift(_mixin);
-                        }
-                    }
-                }
-                // copy mixins dependencies
-                _mixins_to_use = _mixins_copy;
-            }
-            while ( m = _mixins_to_use.shift() ) {
-                // if they're defined
-                if ( _mixin = mixins[m] ) {
-                    // add them to the chain
-                    // stack those madafakas
-                    _class = Create(_mixin, _class);
+
+            // see if the cached definition contains a merged list of dependency Mixins
+            if ( def.deps ) {
+                if ( def.deps.deps_merged ) {
+                    mixins_to_use = def.deps.mixins;
                 }
                 else {
-                    throw new Error('Missing mixin dependency: ' + m);
+                    // merge Mixin dependencies
+                    def.deps.mixins = mixins_to_use = _unique(_mergeMixinDeps(def.deps));
+                    // mark it as merged
+                    def.deps.deps_merged = true;
                 }
             }
+            else {
+                mixins_to_use = [];
+            }
+
+            // check if we have ad-hoc mixins to add
+            if ( extra_mixins && extra_mixins.length ) {
+                mixins_to_use = _unique(mixins_to_use.concat(extra_mixins));
+            }
+
+            // create a cache key to store the complete prototype chain of Widgets and Mixins
+            complete_class_cache_key = type + mixins_to_use.join('');
+
+            // see if we already have a cached class with all Mixins mixed in
+            if ( complete_class_cache_key in widget_mixedin_classes ) {
+                _class = widget_mixedin_classes[complete_class_cache_key];
+            }
+            else {
+                // otherwise
+                // get the fully built Widget class for this type
+                _class = _generateWidgetClass(type);
+
+                // loop over all mixins needed to be mixed-in
+                while ( m = mixins_to_use.shift() ) {
+                    // if they're defined
+                    if ( _mixin = mixins[m] ) {
+                        // add them to the chain
+                        // stack these madafakas
+                        _class = Create(_mixin, _class);
+                    }
+                    else {
+                        throw new Error('Missing mixin dependency: ' + m);
+                    }
+                }
+                // cache the mixed-in class
+                widget_mixedin_classes[complete_class_cache_key] = _class;
+            }
+
             return _class;
         },
         /**
@@ -1540,7 +1605,7 @@
             var that = this,
                 _factory = widget.factory,
                 _config = widget.config,
-                _type, mixedin_type, _w, l, _d, _c, _mixins, _adapters, _widgets;
+                _type, _w, l, _c, _adapters;
             // if this is a  cached factory declaration
             if ( _factory && widget_factories[_factory] ) {
                 // use it to generate an instance's declaration
@@ -1549,7 +1614,7 @@
             _type = widget.type;
             _config = widget.config;
             // if falsy then import dependencies first and then do the starting
-            if ( isFunc(this.importModules) && !skip_import ) {
+            if ( isFunc(this.importModules) && ! skip_import ) {
                 return this.Promise(function (resolve, reject) {
                     // do import
                     this.importModules(
@@ -1565,45 +1630,15 @@
             // skip import
             else {
                 // do start
-                // if we have mixins configured to mix
-                if ( _mixins = toArray(_config.mixins) ) {
-                    // get the stored widget class
-                    _d = widget_definitions[_type];
-                    // concatenate the list of mixins to use
-                    if ( _d.deps ) {
-                        if ( isObj(_d.deps) ) {
-                            _widgets = _d.deps.widgets;
-                            _d.deps.mixins && (_mixins = _d.deps.mixins.concat(_mixins));
-                        }
-                        else {
-                            _mixins = _d.deps.concat(_mixins);
-                        }
-                    }
-                    // generate a cache key from this recipe
-                    mixedin_type = _type + (_widgets ? _widgets.join('') : '') + _mixins.join('');
-                    // check if it exists in cache
-                    if ( mixedin_type in widget_mixedin_classes ) {
-                        // if we have a cached dish then serve it
-                        _c = widget_mixedin_classes[mixedin_type];
-                    }
-                    else {
-                        // create a new class from the joined definitions
-                        _c = this.__generate(_d.proto, _mixins, _widgets);
-                        // and cache it
-                        widget_mixedin_classes[mixedin_type] = _c;
-                    }
-                }
-                else {
-                    // just get the stored widget class definition
-                    _c = widget_classes[_type];
-                }
-                // create a new widget instance from that class
+                // generate (or get from cache) the mixed-in class
+                _c = this.__generate(_type, _config.mixins);
+                // create a new Widget instance from that class
                 _w = new _c();
                 // if we have adapters to use
                 if ( _adapters = toArray(_config.adapters) ) {
                     l = _adapters.length;
                     // extend this instance with these adapters
-                    while ( l-- ) {
+                    while ( l -- ) {
                         extendProto(_w, adapters[_adapters[l]]);
                     }
                 }
@@ -1701,7 +1736,7 @@
             // walk the DOM tree upwards until we hit `body`
             while ( _parent && _parent !== _body ) {
                 // if we hit a `uijet_widget`
-                if ( ~_parent.className.indexOf('uijet_widget') ) {
+                if ( ~ _parent.className.indexOf('uijet_widget') ) {
                     // get its `id`.
                     // important to get the attribute and not do `element.id`, since it might break
                     // when the element is a `<form>` and has an `<input name=id>`.
@@ -1726,7 +1761,7 @@
                 _parent = _parent.parentNode;
             }
             // no container set or found
-            if ( !_current.container ) {
+            if ( ! _current.container ) {
                 // register this widget as a top level widget
                 widgets.__app__.contained.push(_id);
                 _container = '__app__';
@@ -1847,22 +1882,22 @@
                     adapters: []
                 },
                 _w, _m, _m_type, _m_list;
-            for ( var i = 0; _w = declarations[i]; i++ ) {
+            for ( var i = 0; _w = declarations[i]; i ++ ) {
                 if ( _m_type = _w.type ) {
                     // if this widget type wasn't loaded and isn't in the dependencies list then add it
-                    (widget_classes[_m_type] || ~deps.widgets.indexOf(_m_type)) || deps.widgets.push(_m_type);
+                    (widget_classes[_m_type] || ~ deps.widgets.indexOf(_m_type)) || deps.widgets.push(_m_type);
                 }
                 // check for adapters option
                 if ( _m_list = toArray(_w.config.adapters) ) {
-                    for ( var n = 0; _m = _m_list[n++]; ) {
+                    for ( var n = 0; _m = _m_list[n ++]; ) {
                         // grab each one and add it if it wasn't loaded before and not already in the list
-                        (adapters[_m] || ~deps.adapters.indexOf(_m)) || deps.adapters.push(_m);
+                        (adapters[_m] || ~ deps.adapters.indexOf(_m)) || deps.adapters.push(_m);
                     }
                 }
                 // check for mixins option and give it the same treatment like we did with adapters
                 if ( _m_list = toArray(_w.config.mixins) ) {
-                    for ( n = 0; _m = _m_list[n++]; ) {
-                        (mixins[_m] || ~deps.mixins.indexOf(_m)) || deps.mixins.push(_m);
+                    for ( n = 0; _m = _m_list[n ++]; ) {
+                        (mixins[_m] || ~ deps.mixins.indexOf(_m)) || deps.mixins.push(_m);
                     }
                 }
             }
@@ -1891,7 +1926,7 @@
             this.$element[0].style.visibility = 'visible';
             this.publish('startup');
 
-            if ( !this.options.dont_wake ) {
+            if ( ! this.options.dont_wake ) {
                 // ☼ good morning sunshine ☼
                 return uijet.whenAll(this._wakeContained(widgets.__app__));
             }
@@ -1915,8 +1950,8 @@
             return this.Promise(function (resolve, reject) {
                 uijet.publish(topic, {
                     resolve: resolve,
-                    reject: reject,
-                    data: data
+                    reject : reject,
+                    data   : data
                 });
             });
         },
@@ -1936,9 +1971,9 @@
                 promises = [],
                 _widget,
                 l = _contained.length;
-            while ( l-- ) {
+            while ( l -- ) {
                 _widget = widgets[_contained[l]].self;
-                if ( _widget && !returnOf(_widget.options.dont_wake, _widget, context) ) {
+                if ( _widget && ! returnOf(_widget.options.dont_wake, _widget, context) ) {
                     promises.unshift(_widget.wake(context));
                 }
             }
@@ -1955,7 +1990,7 @@
         _sleepContained      : function (widget) {
             var _contained = widgets[widget.id].contained,
                 l = _contained.length;
-            while ( l-- ) {
+            while ( l -- ) {
                 widgets[_contained[l]].self.sleep(true);
             }
             return this;
@@ -1976,7 +2011,7 @@
                 // get the ids of its contained child widgets
                 _contained = widgets[widget.id].contained;
                 l = _contained.length;
-                while ( l-- ) {
+                while ( l -- ) {
                     // seek
                     if ( _contained[l] in widgets ) {
                         // and destroy
@@ -2003,7 +2038,7 @@
                 _contained = widgets[widget.id].contained,
                 l = _contained.length,
                 _w;
-            while ( l-- ) {
+            while ( l -- ) {
                 _w = widgets[_contained[l]].self;
                 _w.setContext(ctx)
                   .trickle(ctx);
@@ -2056,11 +2091,11 @@
          */
         putMixin        : function putMixin (array, name, position) {
             var index;
-            if ( !array ) {
+            if ( ! array ) {
                 // no mixins, so just return `name`
                 return [name];
             }
-            else if ( !isArr(array) ) {
+            else if ( ! isArr(array) ) {
                 // `array` is probably a `string` so wrap in an `array` and do it again
                 return putMixin([array], name, position);
             }
@@ -2069,7 +2104,7 @@
                 position = typeof position == 'number' ? position : array.length;
 
                 index = array.indexOf(name);
-                if ( ~index ) {
+                if ( ~ index ) {
                     // if `name` is found in `array`
                     if ( index === position )
                     // if it's in the right position bail out

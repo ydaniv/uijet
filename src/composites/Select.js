@@ -49,7 +49,7 @@
             return this;
         }
     }, {
-        widgets : ['List']
+        widget : 'List'
     });
 
     /**
@@ -191,7 +191,7 @@
             return this;
         }
     }, {
-        widgets : ['Button']
+        widget: 'Button'
     });
 
 }));

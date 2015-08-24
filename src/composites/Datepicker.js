@@ -340,6 +340,6 @@
             return dates;
         }
     }, {
-        widgets: ['List']
+        widget: 'List'
     });
 }));
