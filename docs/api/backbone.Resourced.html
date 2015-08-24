@@ -1597,13 +1597,9 @@
         
             <li class="" data-name="module:data/backbone.Resourced#destroy"><a href="backbone.Resourced.html#destroy">destroy</a></li>
         
-            <li class="" data-name="module:data/backbone.Resourced#getContext"><a href="backbone.Resourced.html#getContext">getContext</a></li>
-        
             <li class="" data-name="module:data/backbone.Resourced#register"><a href="backbone.Resourced.html#register">register</a></li>
         
             <li class="" data-name="module:data/backbone.Resourced#setResource"><a href="backbone.Resourced.html#setResource">setResource</a></li>
-        
-            <li class="" data-name="module:data/backbone.Resourced#sort"><a href="backbone.Resourced.html#sort">sort</a></li>
         
             <li class="" data-name="module:data/backbone.Resourced#unbindDataEvents"><a href="backbone.Resourced.html#unbindDataEvents">unbindDataEvents</a></li>
         
@@ -2593,7 +2589,7 @@ generated id.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 806
+            uijet.js, line 809
         </div>
         
     </div>
@@ -2873,7 +2869,7 @@ The <code>hide</code> class is located in the uijet's stylesheets in <code>layou
     
         
         <div class="tag-source">
-            uijet.js, line 751
+            uijet.js, line 754
         </div>
         
     </div>
@@ -3361,7 +3357,7 @@ or were later attached using <a href="BaseWidget.html#bind"><code>BaseWidget#bin
     
         
         <div class="tag-source">
-            modules/data/backbone.js, line 149
+            modules/data/backbone.js, line 62
         </div>
         
     </div>
@@ -3455,7 +3451,7 @@ a single array as the <code>data</code> param. Also respects the <code>'-'</code
     
         
         <div class="tag-source">
-            modules/data/backbone.js, line 243
+            modules/data/backbone.js, line 156
         </div>
         
     </div>
@@ -3471,7 +3467,7 @@ removing it from containing collection, or
 destroying it if asked to.</p>
 <h4>Related options:</h4><ul>
 <li><code>destroy_resource</code>: Tells the widget to call <code>destroy()</code> on its resource. Defaults to <code>false</code>.</li>
-<li><code>dont_remove_resource</code>: Tells the widget NOT <code>remove()</code> its resource from its related collection. Defaults to <code>false</code>.</li>
+<li><code>remove_resource</code>: Tells the widget to <code>remove()</code> its resource from its related collection. Defaults to <code>false</code>.</li>
 </ul>
     </div>
     
@@ -3784,16 +3780,18 @@ html string.</li>
 
         
             
-<dt class="">
-    <div class="nameContainer">
+<dt class="inherited ">
+    <div class="nameContainer inherited">
         <h4 class="name" id="getContext">
             
-            getContext<span class="signature">(<span class="optional">key</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object|Array.&lt;Model>}</span>
+                <span class="inherited"><a href="BaseWidget.html#getContext">inherited</a></span>
+            
+            getContext<span class="signature">(<span class="optional">key</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{*}</span>
         </h4>
     
         
         <div class="tag-source">
-            modules/data/backbone.js, line 62
+            widgets/Base.js, line 182
         </div>
         
     </div>
@@ -3804,39 +3802,8 @@ html string.</li>
     
     
     <div class="description">
-        <p>Gets the <code>context</code> object or a specific property in it.</p>
-<p>If the instance has a resource it's more likely you'll use
-the <code>context</code> object to store filters to use for querying the
-resource and use the actual resource to store and get data.</p>
-<p>If the resource is a Collection you can use the following:</p>
-<h4>Filter options:</h4><ul>
-<li><code>where</code>: argument to delegate to <a href="http://backbonejs.org/#Collection-where">Collection.where()</a>.</li>
-<li><code>filter</code>: argument to delegate to <a href="http://backbonejs.org/#Collection-filter">Collection.filter()</a>.
-The second <code>context</code> argument will be the widget's instance. Can be used in 2 variations:</li>
-<li><ul>
-<li>as <code>function</code>: will be used as a filter function run in the instance's context.</li>
-</ul>
-</li>
-<li><ul>
-<li>as <code>string</code>: to reference a method of the collection to use for filtering.
-That will be run in the resource's context and handed the arguments given in <code>filter_args</code>.</li>
-</ul>
-</li>
-<li><code>filter_args</code>: array of arguments to use in conjunction with <code>filter</code> as a <code>string</code>.</li>
-<li><code>filtered</code>: predefined filtered list of models to use. Can be imported from another resource.</li>
-</ul>
-<p>If the resource is a Model you get 2 options:</p>
-<ul>
-<li><code>dont_merge_resource</code>=<code>true</code>: a reference to the model's attributes will be added to the <code>context</code>
-object under the key of calculated <code>resource_name</code>.</li>
-<li>otherwise: the model's attributes will be merged into the <code>context</code> object.</li>
-</ul>
-<h4>Related options:</h4><ul>
-<li><code>dont_merge_resource</code>: whether to merge the model's attributes to the <code>context</code> object or just reference
-it from there using <code>resource_name</code>.</li>
-<li><code>resource_name</code>: a key to use when referencing the model's attributes form the <code>context</code> object.
-Defaults to the <code>resource</code> option if it's a <code>string</code>, otherwise to <code>'&lt;this.id&gt;_data'</code>.</li>
-</ul>
+        <p>Gets the <code>context</code> object of the instance or the value
+of a specific property.</p>
     </div>
     
 
@@ -3890,7 +3857,7 @@ Defaults to the <code>resource</code> option if it's a <code>string</code>, othe
                         
                     
                 
-                <p>string for getting a specific property of the data <code>context</code> object.</p></td>
+                <p>a name of a property in the <code>context</code> object.</p></td>
         </tr>
 	
 	
@@ -3937,6 +3904,11 @@ Defaults to the <code>resource</code> option if it's a <code>string</code>, othe
     
 
 
+<h5>Returns:</h5>
+value of the <code>key</code> or the <code>context</code> object.</li>
+</ul>
+<br />
+
     
     
     
@@ -3955,7 +3927,7 @@ Defaults to the <code>resource</code> option if it's a <code>string</code>, othe
     
         
         <div class="tag-source">
-            uijet.js, line 663
+            uijet.js, line 666
         </div>
         
     </div>
@@ -4297,7 +4269,7 @@ set, it will be automatically set to the <code>id</code> of this widget.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 601
+            uijet.js, line 604
         </div>
         
     </div>
@@ -4443,7 +4415,7 @@ set, it will be automatically set to the <code>id</code> of this widget.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 640
+            uijet.js, line 643
         </div>
         
     </div>
@@ -4852,7 +4824,7 @@ an instance's element.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 747
+            uijet.js, line 750
         </div>
         
     </div>
@@ -5092,7 +5064,7 @@ to allow binding those later manually. Normally you should not touch this option
     
         
         <div class="tag-source">
-            uijet.js, line 688
+            uijet.js, line 691
         </div>
         
     </div>
@@ -6019,7 +5991,7 @@ declaration.</p>
     
         
         <div class="tag-source">
-            modules/data/backbone.js, line 218
+            modules/data/backbone.js, line 131
         </div>
         
     </div>
@@ -6396,138 +6368,6 @@ will continue trickling down recursively.</p>
 
         
             
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="sort">
-            
-            sort<span class="signature">(sorting)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Widget}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            modules/data/backbone.js, line 129
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Sets the resource's (Collection's) <code>comparator</code> and forces sorting
-by calling its <a href="http://backbonejs.org/#Collection-sort">sort</a> method.</p>
-<h4>Related options:</h4><ul>
-<li><code>sorting</code>: map of predefined <code>comparator</code> functions/strings that can be used to sort the resource.</li>
-</ul>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>sorting</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>a key to match a predefined sorting comparator.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="http://backbonejs.org/#Collection-comparator">http://backbonejs.org/#Collection-comparator</a></li>
-        </ul>
-    </dd>
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
 <dt class="inherited ">
     <div class="nameContainer inherited">
         <h4 class="name" id="subscribe">
@@ -6539,7 +6379,7 @@ by calling its <a href="http://backbonejs.org/#Collection-sort">sort</a> method.
     
         
         <div class="tag-source">
-            uijet.js, line 711
+            uijet.js, line 714
         </div>
         
     </div>
@@ -7093,7 +6933,7 @@ instance's <code>config</code> or were later attached using <a href="BaseWidget.
     
         
         <div class="tag-source">
-            modules/data/backbone.js, line 206
+            modules/data/backbone.js, line 119
         </div>
         
     </div>
@@ -7233,7 +7073,7 @@ instance's <code>config</code> or were later attached using <a href="BaseWidget.
     
         
         <div class="tag-source">
-            uijet.js, line 614
+            uijet.js, line 617
         </div>
         
     </div>
@@ -7364,7 +7204,7 @@ If no <code>topic</code> is given then removes all handlers.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 581
+            uijet.js, line 584
         </div>
         
     </div>
@@ -7442,7 +7282,7 @@ If no <code>topic</code> is given then removes all handlers.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 728
+            uijet.js, line 731
         </div>
         
     </div>
@@ -7891,7 +7731,7 @@ calls of the contained widgets.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sat Aug 15 2015 16:40:41 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Mon Aug 24 2015 17:06:14 GMT+0300 (IDT)
         </footer>
     </div>
 </div>
