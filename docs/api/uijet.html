@@ -655,6 +655,41 @@
                             <ul>
                                 
 
+    <li class="item" data-name="module:promises/bluebird">
+        <span class="title">
+            <a href="bluebird.html">promises/bluebird</a>
+            
+        </span>
+        <ul class="members itemMembers">
+        
+        </ul>
+        <ul class="typedefs itemMembers">
+        
+        </ul>
+        <ul class="methods itemMembers">
+        
+        <span class="subtitle">Methods</span>
+        
+            <li class="" data-name="module:promises/bluebird#defer"><a href="bluebird.html#defer">defer</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#isPromise"><a href="bluebird.html#isPromise">isPromise</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#Promise"><a href="bluebird.html#Promise">Promise</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#race"><a href="bluebird.html#race">race</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#reject"><a href="bluebird.html#reject">reject</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#when"><a href="bluebird.html#when">when</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#whenAll"><a href="bluebird.html#whenAll">whenAll</a></li>
+        
+        </ul>
+        <ul class="events itemMembers">
+        
+        </ul>
+    </li>
+
     <li class="item" data-name="module:promises/es6">
         <span class="title">
             <a href="es6.html">promises/es6</a>
@@ -2014,7 +2049,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 1512
+            uijet.js, line 1520
         </div>
         
     </div>
@@ -2198,7 +2233,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 1878
+            uijet.js, line 1886
         </div>
         
     </div>
@@ -2320,7 +2355,7 @@ standard widget instance declarations ( see {@see uijet.declare()} ).</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1532
+            uijet.js, line 1540
         </div>
         
     </div>
@@ -2509,7 +2544,7 @@ and registered with <code>uijet</code>.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1604
+            uijet.js, line 1612
         </div>
         
     </div>
@@ -2833,7 +2868,7 @@ object generated for the route.
     
         
         <div class="tag-source">
-            uijet.js, line 2006
+            uijet.js, line 2014
         </div>
         
     </div>
@@ -2954,7 +2989,7 @@ object generated for the route.
     
         
         <div class="tag-source">
-            uijet.js, line 1670
+            uijet.js, line 1678
         </div>
         
     </div>
@@ -3083,7 +3118,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1990
+            uijet.js, line 1998
         </div>
         
     </div>
@@ -3204,7 +3239,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 2036
+            uijet.js, line 2044
         </div>
         
     </div>
@@ -3357,7 +3392,7 @@ Defaults to the result of <code>widget.getContext()</code>.</p></td>
     
         
         <div class="tag-source">
-            uijet.js, line 1782
+            uijet.js, line 1790
         </div>
         
     </div>
@@ -3479,7 +3514,7 @@ This is usually triggered by a widget when its {@see BaseWidget.destroy()} metho
     
         
         <div class="tag-source">
-            uijet.js, line 1969
+            uijet.js, line 1977
         </div>
         
     </div>
@@ -3806,7 +3841,7 @@ If <code>props</code> is omitted and <code>name</code> is a:</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1820
+            uijet.js, line 1828
         </div>
         
     </div>
@@ -3944,7 +3979,7 @@ this is an instance that's using a pre-declared widget factory.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1309
+            uijet.js, line 1312
         </div>
         
     </div>
@@ -3958,6 +3993,8 @@ this is an instance that's using a pre-declared widget factory.</p>
         <p>Defines a lazy factory of a widget declaration.
 This declaration can be re-used to prevent repetition of common properties.</p>
 <p>It's possible to nest factories by using a <code>factory</code> in the <code>declaration</code> instead of <code>type</code>.</p>
+<p>It's also possible to define a dynamic lazy factory as a <code>function</code> which
+will take the <code>config</code> object as an argument and will return a qualified declaration object.</p>
     </div>
     
 
@@ -4018,6 +4055,9 @@ This declaration can be re-used to prevent repetition of common properties.</p>
             
                 
 <span class="param-type">Object</span>
+|
+
+<span class="param-type">function</span>
 
 
             
@@ -4027,7 +4067,7 @@ This declaration can be re-used to prevent repetition of common properties.</p>
             
             <td class="description last">
                 
-                <p>a viable object for {@see uijet.declare()}.</p></td>
+                <p>a viable object for {@see uijet.declare()} or a function that returns one.</p></td>
         </tr>
 	
 	
@@ -4090,7 +4130,7 @@ This declaration can be re-used to prevent repetition of common properties.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1394
+            uijet.js, line 1402
         </div>
         
     </div>
@@ -4398,7 +4438,7 @@ set <code>uijet.$element[0].style.visibility</code> to <code>visible</code>.
     
         
         <div class="tag-source">
-            uijet.js, line 1349
+            uijet.js, line 1357
         </div>
         
     </div>
@@ -4596,7 +4636,7 @@ instantiating a Backbone.js resource.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1949
+            uijet.js, line 1957
         </div>
         
     </div>
@@ -4767,7 +4807,7 @@ promise that can be either resolved or rejected by a subscriber to <code>topic</
     
         
         <div class="tag-source">
-            uijet.js, line 1846
+            uijet.js, line 1854
         </div>
         
     </div>
@@ -4964,7 +5004,7 @@ and want to optimize this call a bit.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1918
+            uijet.js, line 1926
         </div>
         
     </div>
@@ -5430,7 +5470,7 @@ This class can later be instantiated in the UI or re-used as a dependency.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Mon Aug 24 2015 17:06:15 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Aug 30 2015 13:50:20 GMT+0300 (IDT)
         </footer>
     </div>
 </div>

@@ -655,6 +655,41 @@
                             <ul>
                                 
 
+    <li class="item" data-name="module:promises/bluebird">
+        <span class="title">
+            <a href="bluebird.html">promises/bluebird</a>
+            
+        </span>
+        <ul class="members itemMembers">
+        
+        </ul>
+        <ul class="typedefs itemMembers">
+        
+        </ul>
+        <ul class="methods itemMembers">
+        
+        <span class="subtitle">Methods</span>
+        
+            <li class="" data-name="module:promises/bluebird#defer"><a href="bluebird.html#defer">defer</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#isPromise"><a href="bluebird.html#isPromise">isPromise</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#Promise"><a href="bluebird.html#Promise">Promise</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#race"><a href="bluebird.html#race">race</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#reject"><a href="bluebird.html#reject">reject</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#when"><a href="bluebird.html#when">when</a></li>
+        
+            <li class="" data-name="module:promises/bluebird#whenAll"><a href="bluebird.html#whenAll">whenAll</a></li>
+        
+        </ul>
+        <ul class="events itemMembers">
+        
+        </ul>
+    </li>
+
     <li class="item" data-name="module:promises/es6">
         <span class="title">
             <a href="es6.html">promises/es6</a>
@@ -2352,6 +2387,180 @@ Adds the <code>current</code> class to the top container element, while calling
     <div class="nameContainer">
         <h4 class="name" id="initContained">
             
+            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="DropmenuButton.html">DropmenuButton</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            composites/DropmenuButton.js, line 44
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Initializes menu component, and arrow button component if set.</p>
+<h4>Related options:</h4><ul>
+<li><code>menu</code>: the menu component's config.</li>
+<li><code>arrow</code>: the arrow Button component's config.
+Can also be set to <code>true</code> and the default arrow button component will be created.</li>
+<li><code>dont_close</code>: when <code>true</code> keeps the menu open on selection. Otherwise its <code>close()</code> method is invoked.</li>
+</ul>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="">
+    <div class="nameContainer">
+        <h4 class="name" id="initContained">
+            
+            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Datepicker.html">Datepicker</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            composites/Datepicker.js, line 57
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Translate the <code>datelist</code>, <code>next</code> and <code>prev</code> option into a part of the <code>components</code> option.</p>
+<h4>App events:</h4><ul>
+<li><code>&lt;id&gt;_datelist._update_current_date</code>: this widget registers to this event to update the
+<code>current_date</code> element's content with current selected date.</li>
+</ul>
+<h4>Related options:</h4><ul>
+<li><code>datelist</code>: config objects for the DateList component to create.</li>
+<li><code>datelist_type</code>: the menu component's Widget type. Defaults to <code>'DateList'</code>.</li>
+<li><code>next</code>: config objects for the next Button component to create.</li>
+<li><code>next_type</code>: the next arrow Button component's Widget type. Defaults to <code>'Button'</code>.</li>
+<li><code>prev</code>: config objects for the prev Button component to create.</li>
+<li><code>prev_type</code>: the prev arrow Button component's Widget type. Defaults to <code>'Button'</code>.</li>
+<li><code>current_date</code>: element or selector for the element which will serve as the heading
+that contains current date.</li>
+<li><code>max_date</code>: max possible date for selection.</li>
+<li><code>min_date</code>: min possible date for selection.</li>
+</ul>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="">
+    <div class="nameContainer">
+        <h4 class="name" id="initContained">
+            
             initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Dialog.html">Dialog</a>}</span>
         </h4>
     
@@ -2535,180 +2744,6 @@ Also translates the <code>buttons</code> option into a part of the <code>compone
 <li><code>menu_type</code>: the menu component's Widget type. Defaults to <code>'SelectMenu'</code>.</li>
 <li><code>content</code>: an element or a selector for an element to be used as element
 containing the selected item's content.</li>
-</ul>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="initContained">
-            
-            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Datepicker.html">Datepicker</a>}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            composites/Datepicker.js, line 57
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Translate the <code>datelist</code>, <code>next</code> and <code>prev</code> option into a part of the <code>components</code> option.</p>
-<h4>App events:</h4><ul>
-<li><code>&lt;id&gt;_datelist._update_current_date</code>: this widget registers to this event to update the
-<code>current_date</code> element's content with current selected date.</li>
-</ul>
-<h4>Related options:</h4><ul>
-<li><code>datelist</code>: config objects for the DateList component to create.</li>
-<li><code>datelist_type</code>: the menu component's Widget type. Defaults to <code>'DateList'</code>.</li>
-<li><code>next</code>: config objects for the next Button component to create.</li>
-<li><code>next_type</code>: the next arrow Button component's Widget type. Defaults to <code>'Button'</code>.</li>
-<li><code>prev</code>: config objects for the prev Button component to create.</li>
-<li><code>prev_type</code>: the prev arrow Button component's Widget type. Defaults to <code>'Button'</code>.</li>
-<li><code>current_date</code>: element or selector for the element which will serve as the heading
-that contains current date.</li>
-<li><code>max_date</code>: max possible date for selection.</li>
-<li><code>min_date</code>: min possible date for selection.</li>
-</ul>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="initContained">
-            
-            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="DropmenuButton.html">DropmenuButton</a>}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            composites/DropmenuButton.js, line 44
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Initializes menu component, and arrow button component if set.</p>
-<h4>Related options:</h4><ul>
-<li><code>menu</code>: the menu component's config.</li>
-<li><code>arrow</code>: the arrow Button component's config.
-Can also be set to <code>true</code> and the default arrow button component will be created.</li>
-<li><code>dont_close</code>: when <code>true</code> keeps the menu open on selection. Otherwise its <code>close()</code> method is invoked.</li>
 </ul>
     </div>
     
@@ -4455,7 +4490,7 @@ Removes the <code>current</code> class from the top container element.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Mon Aug 24 2015 17:06:13 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Aug 30 2015 13:50:18 GMT+0300 (IDT)
         </footer>
     </div>
 </div>
