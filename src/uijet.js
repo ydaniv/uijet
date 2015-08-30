@@ -1301,33 +1301,41 @@
          *
          * It's possible to nest factories by using a `factory` in the `declaration` instead of `type`.
          *
+         * It's also possible to define a dynamic lazy factory as a `function` which
+         * will take the `config` object as an argument and will return a qualified declaration object.
+         *
          * @memberOf uijet
          * @param {string} name - identifier for this widget factory.
-         * @param {Object} declaration - a viable object for {@see uijet.declare()}.
+         * @param {Object|function} declaration - a viable object for {@see uijet.declare()} or a function that returns one.
          * @returns {uijet}
          */
         Factory              : function (name, declaration) {
-            widget_factories[name] = function (config) {
-                // create a copy of the original declaration
-                // make sure the original `config` object is copied
-                var declaration_copy;
-                if ( declaration.type ) {
-                    declaration_copy = {
-                        type  : declaration.type,
-                        config: copy(true, declaration.config)
-                    };
-                }
-                else {
-                    var copy_of_dec_factory = widget_factories[declaration.factory](declaration.config);
-                    declaration_copy = {
-                        type  : copy_of_dec_factory.type,
-                        config: copy(true, copy_of_dec_factory.config)
-                    };
-                }
-                // mix in additional configurations
-                config && extend(true, declaration_copy.config, config);
-                return declaration_copy;
-            };
+            if ( isFunc(declaration) ) {
+                widget_factories[name] = declaration;
+            }
+            else {
+                widget_factories[name] = function (config) {
+                    // create a copy of the original declaration
+                    // make sure the original `config` object is copied
+                    var declaration_copy;
+                    if ( declaration.type ) {
+                        declaration_copy = {
+                            type  : declaration.type,
+                            config: copy(true, declaration.config)
+                        };
+                    }
+                    else {
+                        var copy_of_dec_factory = widget_factories[declaration.factory](declaration.config);
+                        declaration_copy = {
+                            type  : copy_of_dec_factory.type,
+                            config: copy(true, copy_of_dec_factory.config)
+                        };
+                    }
+                    // mix in additional configurations
+                    config && extend(true, declaration_copy.config, config);
+                    return declaration_copy;
+                };
+            }
             return this;
         },
         /**
