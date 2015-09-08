@@ -2,7 +2,7 @@
 
 uijet embraces the principle of doing 1 thing (or at most 2) and doing it right.
 
-That's why it leaves the implementation of all the main parts of the application up 
+That's why it leaves the implementation of all the main parts of the application framework up 
 to external libraries, of your choice, and glues them together into a coherent interface 
 which allows them to be abstracted and easily swappable.
 
@@ -15,7 +15,7 @@ Some modules hook themselves into uijet automatically, and export the 3rd party 
 for further customization.
 Others require further configuration, e.g. router modules.
 
-## Example Usage:
+### Example Usage:
 
 An example of an application loading basic modules can look as follows:
 
@@ -55,18 +55,35 @@ uijet.when(someAction()).then(...);
 
 ### Swapping modules
 
-If we would like later to use When.js for Promises, all we had to do is replace the above
+If we would like later to use native ES6 Promise for Promises, all we had to do is replace the above
 dependencies:
 
 ```javascript
 define([
     ...,
-    'uijet_dir/modules/promises/when'
-], function (uijet, $, Ebox, when) {
+    'uijet_dir/modules/promises/es6'
+], function (uijet, $, Ebox) {
 
 ```
 
 and we wouldn't have to change another line of code in our project.
+
+A more Real Life® example would be starting development with jQuery but later wishing to move to Zepto
+for better mobile support. And then, to polyfill Promise on old mobile devices swap the Promises module
+with Bluebird:
+
+
+```javascript
+define([
+    'uijet',
+    'uijet_dir/modules/dom/zepto',
+    'uijet_dir/modules/pubsub/eventbox',
+    'uijet_dir/modules/promises/bluebird'
+], function (uijet, $, Ebox) {
+
+```
+
+And no further change to our application code, whatsoever.
 
 ### Lazy modules
 
@@ -77,7 +94,7 @@ All we need to do is add it to the app's dependencies:
 define([
     ...,
     'uijet_dir/modules/router/director'
-], function (uijet, $, Ebox, when, Router) {
+], function (uijet, ..., Router) {
 
 ```
 
@@ -100,27 +117,34 @@ Router({
 The module will instantiate a Router instance and complete extending uijet to have
 routing capabilities.
 
-## modules Best Practices
+## Modules Best Practices
 
-It's best to keep modules' specific tangent to your application's code, and separated
-from it, as much as possible. This will keep that modules easily swappable and much
-more maintainable.
+It's best to keep modules' specific code tangent to your application's code, and separated
+from it, as much as possible. This will keep that module easily swappable and its related
+code much more maintainable.
+
+### Example
 
 A good example for this are models.
-Lets say we're using the Backbone `data` module, i.e. using Backbone.js' models and collection
-for data management (a.k.a the M in the MVC).
 
-You could insert your model declarations directly to your app's main file, as in:
+Lets say we're using the Backbone `data` module, i.e. using Backbone.js' Models and Collections
+for data management.
+
+You could insert your Model/Collection declarations directly to your app's main file, as in:
 
 *Bad!*
 
 `app.js`
 
 ```javascript
+
+var Todo = backbone.Mode.extend({ ... });
+
 uijet.init({
     resources: {
         Todos: backbone.Collection.extend({
-            url: '/path/to/todos'
+            url: '/path/to/todos',
+            model: Todo
         })
     }
 });
@@ -138,9 +162,11 @@ define([
     'uijet_dir/modules/data/backbone'
 ], function (backbone) {
 
-    var Todos = backbone.Collection.extend({
-        url: '/path/to/todos'
-    });
+    var Todo = backbone.Model.extend({ ... }),
+        Todos = backbone.Collection.extend({
+            url: '/path/to/todos',
+            model: Todo
+        });
 
     return {
         Todos: Todos
