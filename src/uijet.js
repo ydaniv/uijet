@@ -1402,8 +1402,9 @@
         init                 : function (options) {
             // wrap the actual initialization function
             var _init = function (_options) {
-                var task, q, _resources, _app_events;
-                this.options = _options || {};
+                var task, q, _resources, _app_events, res, args, e;
+                _options = _options || {};
+                this.options = _options;
                 // set top container
                 this.$element = this.$(this.options.element || 'body');
                 this.$element.addClass('uijet_app');
@@ -1413,87 +1414,78 @@
                     // make the app container cover the entire viewport
                     this.$element.addClass('cover');
                 }
-                if ( _options ) {
-                    if ( _options.debug ) {
-                        uijet.debug = _options.debug;
-                    }
-                    if ( _options.route_prefix ) {
-                        this.route_prefix = _options.route_prefix;
-                    }
-                    if ( _options.route_suffix ) {
-                        this.route_suffix = _options.route_suffix;
-                    }
 
-                    // check if the app is using a router
-                    this.options.routed = isFunc(this.setRoute);
+                uijet.debug = !! _options.debug;
 
-                    // set default animation type
-                    this.options.transition = _options.transition || 'fade';
-
-                    // check the init queue for deferred tasks
-                    if ( q = this.init_queue.length ) {
-                        while ( q -- ) {
-                            task = this.init_queue[q];
-                            // each task should be a `function` that takes a resolve and reject functions
-                            if ( isFunc(task) ) {
-                                // tasks' context is bound to uijet
-                                // all tasks in queue are replaced by corresponding promises
-                                this.init_queue[q] = uijet.Promise(task.bind(this));
-                            }
-                        }
-                    }
-                    // no tasks in queue
-                    else {
-                        this.init_queue = [
-                            {}
-                        ];
-                    }
-
-                    // register all resources
-                    if ( _resources = _options.resources ) {
-                        var res, args;
-                        // `resources` option is a map of resource registry name to its class
-                        for ( res in _resources ) {
-                            args = _resources[res];
-                            // a value in the `resources` option can also be an tuple of the class and initial state
-                            if ( isArr(args) ) {
-                                args.unshift(res);
-                                this.Resource.apply(this, args);
-                            }
-                            else {
-                                this.Resource(res, args);
-                            }
-                        }
-                    }
-
-                    // subscribe to all events
-                    if ( _app_events = _options.app_events ) {
-                        var e;
-                        for ( e in _app_events ) {
-                            this.subscribe(e, _app_events[e]);
-                        }
-                    }
-
-                    // after all tasks resolve
-                    return this.whenAll(this.init_queue)
-                        .then(function () {
-                            // build and init declared widgets
-                            // notice that here all modules are already loaded so this will run through
-                            return this.start(declared_widgets, true);
-                        }.bind(this), consoleOrRethrow)
-                        .then(function () {
-                            //when all declared widgets are initialized, set `uijet.initialized` to `true`
-                            this.initialized = true;
-                            // kick-start the GUI - unless ordered not to
-                            return _options.dont_start || this.startup();
-                        }.bind(this), consoleOrRethrow);
+                if ( _options.route_prefix ) {
+                    this.route_prefix = _options.route_prefix;
                 }
-                // no options given
+                if ( _options.route_suffix ) {
+                    this.route_suffix = _options.route_suffix;
+                }
+
+                // check if the app is using a router
+                this.options.routed = isFunc(this.setRoute);
+
+                // set default animation type
+                this.options.transition = _options.transition || 'fade';
+
+                // check the init queue for deferred tasks
+                if ( q = this.init_queue.length ) {
+                    while ( q -- ) {
+                        task = this.init_queue[q];
+                        // each task should be a `function` that takes a resolve and reject functions
+                        if ( isFunc(task) ) {
+                            // tasks' context is bound to uijet
+                            // all tasks in queue are replaced by corresponding promises
+                            this.init_queue[q] = uijet.Promise(task.bind(this));
+                        }
+                    }
+                }
+                // no tasks in queue
                 else {
-                    this.initialized = true;
-                    // kick-start
-                    return this.startup();
+                    this.init_queue = [
+                        {}
+                    ];
                 }
+
+                if ( _resources = _options.resources ) {
+                    // register all resources
+                    // `resources` option is a map of resource registry name to its class
+                    for ( res in _resources ) {
+                        args = _resources[res];
+                        // a value in the `resources` option can also be an tuple of the class and initial state
+                        if ( isArr(args) ) {
+                            args.unshift(res);
+                            this.Resource.apply(this, args);
+                        }
+                        else {
+                            this.Resource(res, args);
+                        }
+                    }
+                }
+
+                if ( _app_events = _options.app_events ) {
+                    // subscribe to all events
+                    for ( e in _app_events ) {
+                        this.subscribe(e, _app_events[e]);
+                    }
+                }
+
+                // after all tasks resolve
+                return this.whenAll(this.init_queue)
+                    .then(function () {
+                        // build and init declared widgets
+                        // notice that here all modules are already loaded so this will run through
+                        return this.start(declared_widgets, true);
+                    }.bind(this), consoleOrRethrow)
+                    .then(function () {
+                        //when all declared widgets are initialized, set `uijet.initialized` to `true`
+                        this.initialized = true;
+                        // kick-start the GUI - unless ordered not to
+                        return _options.dont_start || this.startup();
+                    }.bind(this), consoleOrRethrow);
+
             };
             // if we have widgets defined
             if ( options && isArr(options.widgets) ) {
