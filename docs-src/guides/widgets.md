@@ -1,7 +1,7 @@
 # Using and Creating Widgets
 
 
-Widgets are declaration of generic and reusable UI components.
+In uijet, Widgets are declarations of generic and reusable UI components.
 
 The basic __Widgets__ that come bundled with uijet are the most basic building blocks
 for creating any type of UI component. uijet gives you the tools for both extending
@@ -13,9 +13,6 @@ These are:
 * Button
 * List
 * Overlay
-* Form
-
-A view (as in the V in MVC) instance in an application is an instance of a Widget.
 
 ## Using Widgets
 
@@ -39,15 +36,15 @@ define([
 });
 ```
 
-In the above example we load `uijet` and use it to `declare()` an instance of a `List` widget.
+In the above example we load `uijet` and use it to `declare()` an instance of a `List` Widget.
 
 Once uijet starts it will automatically load the `List` Widget, create an instance of it, and bind it
 to the DOM element set in the `element` option.
 
-The actual `List` view that will be created with the `id`: `groovie_list` is *injected* with
+The actual `List` component that will be created with the `id`: `groovie_list` is *injected* with
 the `List` Widget and all its *dependencies*.
 
-Note that `uiject.declare()` *does not return an instance* of the created view, rather it
+Note that `uiject.declare()` *does not return an instance* of the created component, rather it
 *registers* it to the uijet *sandbox*.
 The only way another component can communicate with it is via events.
 
@@ -59,7 +56,6 @@ that are composed from 2 or more basic __Widgets__.
 Some of uijet's Composites are:
 
 * Modal
-* Slider
 * Select
 * Datepicker
 
@@ -92,9 +88,9 @@ define([
 
 The above example will create an instance of a Modal dialog with 2 buttons.
 
-## Creating a view in uijet
+## Creating a component in uijet
 
-Creating a view in uijet is comprised of the following steps:
+Creating a component in uijet is comprised of the following steps:
 
 ### Defining a Widget "class"
 
@@ -132,9 +128,9 @@ Now every `KickAssList` instance is automatically enhanced with the `Floated` Mi
 Note that although `Floated` here is a dependency of `KickAssList`, it is still a Mixin enhancing
 the Widget, so properties of `Floated` will override those of `KickAssList`.
 
-### Declaring a view instance:
+### Declaring a component instance:
 
-Second, declaring the Widget instance that will define the view registered into uijet:
+Second, declaring the Widget instance that will represent the component registered into uijet:
 
 ```javascript
 define([
@@ -152,11 +148,11 @@ define([
 });
 ```
 
-Here the `KickAssList` is injected as a dependency to our `kewl_list` view.
+Here the `KickAssList` is injected as a dependency to our `kewl_list` component.
 
-### Starting a view instance:
+### Starting a component instance:
 
-Under the hood uijet creates an instance of the component created from your view declaration.
+Under the hood uijet creates an instance of the component created from your component declaration.
 That declaration holds a Widget definition and the sum of all of its dependencies injected to it -
 other Widgets, Mixins, Adapters.
 
@@ -166,25 +162,38 @@ uijet then calls the `init()` method of that instance, and it's good to go.
 
 uijet is all about reusing.
 The `uijet.Widget()` lets you reuse a *class* (a __definition__) of a generic component. To reuse
-an instance (a __declaration__) you use `uijet.Factory()`, as follows:
+a blueprint of an instance (a __declaration__) you use `uijet.Factory()`, as follows:
 
 ```javascript
 uijet.Factory('TransitionedButton', {
     type: 'Button',
     config: {
-        mixin: ['Transitioned'],
+        mixins: ['Transitioned'],
         cloak: true
+    }
+});
+
+// Which is followed by the declaration:
+
+uijet.declare({
+    factory: 'TransitionedButton',
+    config : {
+        element: '#some_button'
     }
 });
 ```
 
 As you can see in the example above, `uijet.Factory()` is used similarly as `uijet.declare()`,
-only difference is it only takes a single declaration object, and requires a `name` as first
+only difference is it can only take a single declaration object (not a list of objects), and requires a `name` as first
 argument.
 
-## Ad-hoc starting a view:
+## Nesting components:
+
+You can nest components in a declarative way. There are 3 ways in uijet for declaring components
+
+## Ad-hoc starting a component:
  
-uijet also has an imperative way to declare and start a view instance, using the
+uijet also has an imperative way to declare and start a component instance, using the
 `uijet.start()` method.
 This method takes the same arguments as `uijet.declare()`, and will both declare and start
 the views declarations provided to it.
