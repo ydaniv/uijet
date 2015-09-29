@@ -94,8 +94,3 @@ uijet.Mixin('Debugged', {
     }
 });
 ```
-
-## Loading Mixins
-
-If you're using an AMD loader then uijet will load its bundled Mixins automatically.
-If you define your own Mixin make sure it's loaded before it's used.

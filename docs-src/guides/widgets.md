@@ -23,7 +23,8 @@ Example in a UI module file:
 
 ```javascript
 define([
-    'uijet'
+    'uijet_dir/uijet',
+    'uijet_dir/widgets/List',
 ], function (uijet) {
 
     uijet.declare({
@@ -38,7 +39,7 @@ define([
 
 In the above example we load `uijet` and use it to `declare()` an instance of a `List` Widget.
 
-Once uijet starts it will automatically load the `List` Widget, create an instance of it, and bind it
+Once uijet starts it will create an instance of the `List` Widget and bind it
 to the DOM element set in the `element` option.
 
 The actual `List` component that will be created with the `id`: `groovie_list` is *injected* with
@@ -59,11 +60,9 @@ Some of uijet's Composites are:
 * Select
 * Datepicker
 
-Using a bundled Composite only requires you to load it beforehand:
-
 ```javascript
 define([
-    'uijet',
+    'uijet_dir/uijet',
     'uijet_dir/composites/Modal'
 ], function (uijet) {
 
@@ -86,7 +85,7 @@ define([
 });
 ```
 
-The above example will create an instance of a Modal dialog with 2 buttons.
+The above example will create an instance of a `Modal` dialog with 2 buttons.
 
 ## Creating a component in uijet
 
@@ -97,17 +96,29 @@ Creating a component in uijet is comprised of the following steps:
 Firstly, defining a Widget class:
 
 ```javascript
-uijet.Widget('KickAssPane', {
-    // methods and properties for KickAssPane
+define([
+    'uijet_dir/uijet',
+    'uijet_dir/widgets/Base'
+], function (uijet) {
+
+    uijet.Widget('KickAssPane', {
+        // methods and properties for KickAssPane
+    });
 });
 ```
 
 We could also add a Widget dependency:
 
 ```javascript
-uijet.Widget('KickAssList', {
-    // methods and properties for KickAssList
-}, 'List');
+define([
+    'uijet_dir/uijet',
+    'uijet_dir/widgets/List'
+], function (uijet) {
+
+    uijet.Widget('KickAssList', {
+        // methods and properties for KickAssList
+    }, 'List');
+});
 ```
 
 In the example above we defined a new `KickAssList` Widget that inherits from the basic `List`.
@@ -115,11 +126,18 @@ In the example above we defined a new `KickAssList` Widget that inherits from th
 We could also add a Mixin dependency:
 
 ```javascript
-uijet.Widget('KickAssList', {
-    // methods and properties for KickAssList
-}, {
-    widget: 'List',
-    mixins: ['Floated']
+define([
+    'uijet_dir/uijet',
+    'uijet_dir/widgets/List'
+    'uijet_dir/mixins/Floated'
+], function (uijet) {
+
+    uijet.Widget('KickAssList', {
+        // methods and properties for KickAssList
+    }, {
+        widget: 'List',
+        mixins: ['Floated']
+    });
 });
 ```
 
@@ -134,7 +152,7 @@ Second, declaring the Widget instance that will represent the component register
 
 ```javascript
 define([
-    'uijet',
+    'uijet_dir/uijet',
     'custom_widgets/KickAssList'
 ], function (uijet) {
 
@@ -161,25 +179,33 @@ uijet then calls the `init()` method of that instance, and it's good to go.
 ## Using Factories
 
 uijet is all about reusing.
+
 The `uijet.Widget()` lets you reuse a *class* (a __definition__) of a generic component. To reuse
 a blueprint of an instance (a __declaration__) you use `uijet.Factory()`, as follows:
 
 ```javascript
-uijet.Factory('TransitionedButton', {
-    type: 'Button',
-    config: {
-        mixins: ['Transitioned'],
-        cloak: true
-    }
-});
+define([
+    'uijet_dir/uijet',
+    'uijet_dir/widgets/Button',
+    'uijet_dir/mixins/Transitioned'
+], function (uijet) {
 
-// Which is followed by the declaration:
+    uijet.Factory('TransitionedButton', {
+        type: 'Button',
+        config: {
+            mixins: ['Transitioned'],
+            cloak: true
+        }
+    });
 
-uijet.declare({
-    factory: 'TransitionedButton',
-    config : {
-        element: '#some_button'
-    }
+    // Which is followed by the declaration:
+
+    uijet.declare({
+        factory: 'TransitionedButton',
+        config : {
+            element: '#some_button'
+        }
+    });
 });
 ```
 
@@ -192,16 +218,10 @@ argument.
 You can nest components in a declarative way. There are 3 ways in uijet for declaring components
 
 ## Ad-hoc starting a component:
- 
-uijet also has an imperative way to declare and start a component instance, using the
-`uijet.start()` method.
-This method takes the same arguments as `uijet.declare()`, and will both declare and start
-the views declarations provided to it.
 
-Since uijet also needs to check whether there are dependencies that needs to be loaded, this
-starting process will happen asynchronously once all dependencies are loaded, or simply on
-next task of the queue of the JS engine.
- 
-If you're sure that all dependencies for the declaration(s) you've provided to `uijet.start()`
-are all already loaded you can provide it a second argument `true`, which will cause the
-starting to happen immediately and synchronously.
+*Before* uijet is initialized, all calls to `uijet.declare()` declare a component instance what will
+later be initialized after uijet does.
+
+*After* uijet is initialized, all calls to `uijet.declare()` (or its alias `uijet.start()`)
+will declare and start a component instance ad-hoc. This call will return a `Promise` object
+that will resolve once that instance and all its nested components have finished initializing.

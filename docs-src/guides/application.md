@@ -15,7 +15,7 @@ So a basic uijet-based app will start like this:
 
 ```javascript
 define([
-    'uijet'
+    'uijet_dir/uijet'
     // ... uijet module dependencies go here ...
 ], function (uijet) {
 
@@ -35,7 +35,7 @@ Let's say we choose native ES6 Promises, PubsubJS and Zepto:
 
 ```javascript
 define([
-    'uijet',
+    'uijet_dir/uijet',
     'uijet_dir/modules/pubsub/pubsubjs',
     'uijet_dir/modules/dom/zepto',
     'uijet_dir/modules/promises/es6'
@@ -57,7 +57,7 @@ Lets add a short example:
 
 ```javascript
 define([
-    'uijet',
+    'uijet_dir/uijet',
     'uijet_dir/modules/pubsub/pubsubjs',
     'uijet_dir/modules/dom/zepto',
     'uijet_dir/modules/promises/es6',

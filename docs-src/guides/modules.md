@@ -21,7 +21,7 @@ An example of an application loading basic modules can look as follows:
 
 ```javascript
 define([
-    'uijet',
+    'uijet_dir/uijet',
     'uijet_dir/modules/dom/jquery',
     'uijet_dir/modules/pubsub/eventbox',
     'uijet_dir/modules/promises/jquery'
@@ -75,7 +75,7 @@ with Bluebird:
 
 ```javascript
 define([
-    'uijet',
+    'uijet_dir/uijet',
     'uijet_dir/modules/dom/zepto',
     'uijet_dir/modules/pubsub/eventbox',
     'uijet_dir/modules/promises/bluebird'
@@ -180,7 +180,7 @@ define([
 
 ```javascript
 define([
-    'uijet',
+    'uijet_dir/uijet',
     'resources'
 ], function (uijet, resources) {
 

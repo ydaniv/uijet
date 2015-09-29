@@ -898,17 +898,17 @@
      * If any dependency is missing returns `true`, otherwise `false`.
      *
      * @param {Object} deps - normalized dependencies declaration.
-     * @returns {boolean} missing - whether there's a dependency that's not defined yet.
+     * @returns {string|boolean} missing - the name of the missing dependency that's not defined yet or `false`.
      */
     function missingDependency (deps) {
         var m, len;
         for ( len = deps.mixins.length; m = deps.mixins[-- len]; ) {
             if ( ! (m in mixins) ) {
-                return true;
+                return m;
             }
         }
         if ( deps.widget && ! (deps.widget in widget_classes) ) {
-            return true;
+            return deps.widget;
         }
         return false;
     }
@@ -1102,6 +1102,41 @@
         return (widget_classes[type] = Create(definition.proto, uijet.BaseWidget));
     }
 
+    function uijet_declare_or_start (declarations) {
+        if ( this.initialized || this.initializing ) {
+            var i, dfrd_starts, _c;
+            // if `declarations` is an `Object`
+            if ( isObj(declarations) ) {
+                // do the starting
+                return uijet.when(this.__start(declarations));
+            }
+            // if it's an `Array`
+            else if ( isArr(declarations) ) {
+                i = 0;
+                dfrd_starts = [];
+                // loop over the widget declarations in it
+                while ( _c = declarations[i] ) {
+                    // and start every one of them
+                    dfrd_starts[i] = this.__start(_c);
+                    i += 1;
+                }
+                // return a promise of all `declarations` started
+                return this.whenAll(dfrd_starts);
+            }
+            throw new Error('`widgets` must be either an Object or an Array. Instead got: ' +
+                            objToString.call(declarations));
+        }
+        else {
+            if ( isObj(declarations) ) {
+                declared_widgets.push(declarations);
+            }
+            else if ( isArr(declarations) ) {
+                declared_widgets.push.apply(declared_widgets, declarations);
+            }
+            return this;
+        }
+    }
+
     /**
      * The sandbox module.
      *
@@ -1109,6 +1144,8 @@
      */
     uijet = {
         debug                : true,
+        initializing         : false,
+        initialized          : false,
         route_prefix         : '',
         route_suffix         : '',
         init_queue           : [],
@@ -1217,35 +1254,15 @@
          * @returns {uijet}
          */
         Widget               : function (type, props, deps) {
-            var _deps = normalizeDeps(deps);
+            var _deps = normalizeDeps(deps),
+                missing;
             // Cache the widget's definition for JIT creation
             this.__define(type, props, _deps);
             // create and cache the class
             // if we have dependencies
             if ( _deps && ! this.initialized ) {
-                if ( missingDependency(_deps) ) {
-                    if ( isFunc(this.importModules) ) {
-                        // defer the widget class definition till we have promises module loaded
-                        // plus its dependencies are loaded
-                        this.init_queue.push(function (resolve) {
-                            // make sure they're all loaded
-                            this.importModules(_deps,
-                                function () {
-                                    this.__generate(type);
-                                    resolve();
-                                }.bind(this)
-                            );
-                        });
-                        // setting a placeholder for this widget definition so that uijet
-                        // will not get confused and try to load it from elsewhere, e.g. in `__extractDependencies()`
-                        widget_classes[type] = true;
-                    }
-                    else {
-                        throw new Error('There is no loader module used' +
-                                        ' and following dependencies are missing: ' + JSON.stringify(_deps));
-                    }
-                    // bail out here
-                    return this;
+                if ( missing = missingDependency(_deps) ) {
+                    throw new Error('The dependency '  + missing + ' is missing for Widget ' + type);
                 }
             }
 
@@ -1400,104 +1417,99 @@
          * set `uijet.$element[0].style.visibility` to `visible`.
          */
         init                 : function (options) {
-            // wrap the actual initialization function
-            var _init = function (_options) {
-                var task, q, _resources, _app_events, res, args, e;
-                _options = _options || {};
-                this.options = _options;
-                // set top container
-                this.$element = this.$(this.options.element || 'body');
-                this.$element.addClass('uijet_app');
+            var task, q, _resources, _app_events, res, args, e;
+                options = options || {};
 
-                // unless requested by the user
-                if ( ! this.options.dont_cover ) {
-                    // make the app container cover the entire viewport
-                    this.$element.addClass('cover');
-                }
-
-                uijet.debug = !! _options.debug;
-
-                if ( _options.route_prefix ) {
-                    this.route_prefix = _options.route_prefix;
-                }
-                if ( _options.route_suffix ) {
-                    this.route_suffix = _options.route_suffix;
-                }
-
-                // check if the app is using a router
-                this.options.routed = isFunc(this.setRoute);
-
-                // set default animation type
-                this.options.transition = _options.transition || 'fade';
-
-                // check the init queue for deferred tasks
-                if ( q = this.init_queue.length ) {
-                    while ( q -- ) {
-                        task = this.init_queue[q];
-                        // each task should be a `function` that takes a resolve and reject functions
-                        if ( isFunc(task) ) {
-                            // tasks' context is bound to uijet
-                            // all tasks in queue are replaced by corresponding promises
-                            this.init_queue[q] = uijet.Promise(task.bind(this));
-                        }
-                    }
-                }
-                // no tasks in queue
-                else {
-                    this.init_queue = [
-                        {}
-                    ];
-                }
-
-                if ( _resources = _options.resources ) {
-                    // register all resources
-                    // `resources` option is a map of resource registry name to its class
-                    for ( res in _resources ) {
-                        args = _resources[res];
-                        // a value in the `resources` option can also be an tuple of the class and initial state
-                        if ( isArr(args) ) {
-                            args.unshift(res);
-                            this.Resource.apply(this, args);
-                        }
-                        else {
-                            this.Resource(res, args);
-                        }
-                    }
-                }
-
-                if ( _app_events = _options.app_events ) {
-                    // subscribe to all events
-                    for ( e in _app_events ) {
-                        this.subscribe(e, _app_events[e]);
-                    }
-                }
-
-                // after all tasks resolve
-                return this.whenAll(this.init_queue)
-                    .then(function () {
-                        // build and init declared widgets
-                        // notice that here all modules are already loaded so this will run through
-                        return this.start(declared_widgets, true);
-                    }.bind(this), consoleOrRethrow)
-                    .then(function () {
-                        //when all declared widgets are initialized, set `uijet.initialized` to `true`
-                        this.initialized = true;
-                        // kick-start the GUI - unless ordered not to
-                        return _options.dont_start || this.startup();
-                    }.bind(this), consoleOrRethrow);
-
-            };
             // if we have widgets defined
-            if ( options && isArr(options.widgets) ) {
+            if ( isArr(options.widgets) ) {
                 // add these to the declared ones
                 this.declare(options.widgets);
             }
-            // if using a loader module then import all the modules we need (Mixins, Widgets, Adapters, 3rd party...)
-            // and initialization will start when done
-            // otherwise start uijet
-            return isFunc(this.importModules) ?
-                   this.importModules(this.__extractDependencies(declared_widgets), _init.bind(this, options)) :
-                   _init.call(this, options);
+
+            this.options = options;
+
+            // set top container
+            this.$element = this.$(this.options.element || 'body');
+            this.$element.addClass('uijet_app');
+
+            // unless requested by the user
+            if ( ! this.options.dont_cover ) {
+                // make the app container cover the entire viewport
+                this.$element.addClass('cover');
+            }
+
+            uijet.debug = !! options.debug;
+
+            if ( options.route_prefix ) {
+                this.route_prefix = options.route_prefix;
+            }
+            if ( options.route_suffix ) {
+                this.route_suffix = options.route_suffix;
+            }
+
+            // check if the app is using a router
+            this.options.routed = isFunc(this.setRoute);
+
+            // set default animation type
+            this.options.transition = options.transition || 'fade';
+
+            // check the init queue for deferred tasks
+            if ( q = this.init_queue.length ) {
+                while ( q -- ) {
+                    task = this.init_queue[q];
+                    // each task should be a `function` that takes a resolve and reject functions
+                    if ( isFunc(task) ) {
+                        // tasks' context is bound to uijet
+                        // all tasks in queue are replaced by corresponding promises
+                        this.init_queue[q] = uijet.Promise(task.bind(this));
+                    }
+                }
+            }
+            // no tasks in queue
+            else {
+                this.init_queue = [
+                    {}
+                ];
+            }
+
+            if ( _resources = options.resources ) {
+                // register all resources
+                // `resources` option is a map of resource registry name to its class
+                for ( res in _resources ) {
+                    args = _resources[res];
+                    // a value in the `resources` option can also be an tuple of the class and initial state
+                    if ( isArr(args) ) {
+                        args.unshift(res);
+                        this.Resource.apply(this, args);
+                    }
+                    else {
+                        this.Resource(res, args);
+                    }
+                }
+            }
+
+            if ( _app_events = options.app_events ) {
+                // subscribe to all events
+                for ( e in _app_events ) {
+                    this.subscribe(e, _app_events[e]);
+                }
+            }
+
+            // after all tasks resolve
+            return this.whenAll(this.init_queue)
+                .then(function () {
+                    // switch from declaring components to starting them
+                    this.initializing = true;
+                    // build and init declared widgets
+                    // notice that here all modules are already loaded so this will run through
+                    return this.start(declared_widgets, true);
+                }.bind(this), consoleOrRethrow)
+                .then(function () {
+                    //when all declared widgets are initialized, set `uijet.initialized` to `true`
+                    this.initialized = true;
+                    // kick-start the GUI - unless ordered not to
+                    return options.dont_start || this.startup();
+                }.bind(this), consoleOrRethrow);
         },
         /**
          * Caches a definition of a widget in uijet.
@@ -1597,59 +1609,37 @@
          *
          * @memberOf uijet
          * @param {Object} widget - a widget declaration.
-         * @param {boolean} [skip_import] - whether to skip module import. Defaults to falsy.
          * @returns {Promise[]|Promise} - a Promise object or an array of Promises.
          * @private
          */
-        __start              : function (widget, skip_import) {
-            var that = this,
-                _factory = widget.factory,
+        __start              : function (widget) {
+            var _factory = widget.factory,
                 _config = widget.config,
-                _type, _w, l, _c, _adapters;
+                _w, l, _c, _adapters;
             // if this is a  cached factory declaration
             if ( _factory && widget_factories[_factory] ) {
                 // use it to generate an instance's declaration
                 widget = widget_factories[_factory](_config);
             }
-            _type = widget.type;
-            _config = widget.config;
-            // if falsy then import dependencies first and then do the starting
-            if ( isFunc(this.importModules) && ! skip_import ) {
-                return this.Promise(function (resolve, reject) {
-                    // do import
-                    this.importModules(
-                        this.__extractDependencies([widget]),
-                        // the import's callback
-                        function () {
-                            that.__start(widget, true);
-                            return resolve();
-                        }
-                    );
-                }.bind(this));
-            }
-            // skip import
-            else {
-                // do start
-                // generate (or get from cache) the mixed-in class
-                _c = this.__generate(_type, _config.mixins);
-                // create a new Widget instance from that class
-                _w = new _c();
-                // if we have adapters to use
-                if ( _adapters = toArray(_config.adapters) ) {
-                    l = _adapters.length;
-                    // extend this instance with these adapters
-                    while ( l -- ) {
-                        extendProto(_w, adapters[_adapters[l]]);
-                    }
+            // generate (or get from cache) the mixed-in class
+            _c = this.__generate(widget.type, _config.mixins);
+            // create a new Widget instance from that class
+            _w = new _c();
+            // if we have adapters to use
+            if ( _adapters = toArray(_config.adapters) ) {
+                l = _adapters.length;
+                // extend this instance with these adapters
+                while ( l -- ) {
+                    extendProto(_w, adapters[_adapters[l]]);
                 }
-                // check for a top-adapter
-                if ( adapters[TOP_ADAPTER_NAME] ) {
-                    // extend this instance with the top-adapter
-                    extendProto(_w, adapters[TOP_ADAPTER_NAME]);
-                }
-                // init the instance
-                return _w.init(_config);
             }
+            // check for a top-adapter
+            if ( adapters[TOP_ADAPTER_NAME] ) {
+                // extend this instance with the top-adapter
+                extendProto(_w, adapters[TOP_ADAPTER_NAME]);
+            }
+            // init the instance
+            return _w.init(_config);
         },
         /**
          * Registers a widget into the uijet sandbox.
@@ -1795,13 +1785,16 @@
         },
         /**
          * Caches widget declarations before uijet is initialized,
-         * for lazy starting them at the end of its initialization.
+         * for lazy starting them at the end of its initialization,
+         * or if uijet IS initialized, ad-hoc constructs and initializes
+         * widget instance(s) from a given widget declaration(s).
+         *
+         * Returns a {@see Promise} that is resolved once all declared/started
+         * instances finished initializing, or gets rejected if something fails.
          *
          * It's best to declare widgets in the order of their appearance
          * in the widgets tree (usually maps one-to-one to the DOM tree), so that
          * a widget is always declared before its contained widgets are declared, and so on.
-         *
-         * In some cases it's a must to declare widgets in a specific order ( see {@see uijet._position()} ).
          *
          * A declaration object usually contains `type` and `config` properties.
          * It may also contain a `factory` property, instead of the `type` one, if
@@ -1813,96 +1806,24 @@
          *
          * **note**: For valid instance options see related module.
          *
-         * @memberOf uijet
-         * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
-         * @returns {uijet}
-         */
-        declare              : function (declarations) {
-            if ( isObj(declarations) ) {
-                declared_widgets.push(declarations);
-            }
-            else if ( isArr(declarations) ) {
-                declared_widgets.push.apply(declared_widgets, declarations);
-            }
-            return this;
-        },
-        /**
-         * Ad-hoc constructs and initializes widget instance(s) from a given widget declaration(s).
-         * For explanations on widget declarations see {@see uijet.declare()}.
-         * Returns a {@see Promise} that is resolved once all declared instances finished initializing,
-         * or gets rejected if something fails.
-         *
-         * `skip_import` is used to forcibly skip modules importing, so this method
-         * will complete synchronously, otherwise it will check for missing modules to import.
-         * Usually you should _not_ have to specify it at all, unless you know what you're doing
-         * and want to optimize this call a bit.
+         * **note**: If using the {@see Positioned} Mixin it's a must to
+         * declare widgets in a specific order ( see {@see uijet._position()} ).
          *
          * @memberOf uijet
          * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
-         * @param {boolean} [skip_import] - whether to skip module import. Defaults to falsy.
-         * @returns {Promise|Object} promise|this - a promise object if not skipping import, otherwise `this`.
+         * @returns {uijet|Promise} uijet|promise - uijet if it's not initialized yet, otherwise a promise that resolves when all started instances are initialized.
          * @throws {Error} - if `declarations` is neither an `Array` nor an `Object`.
          */
-        start                : function (declarations, skip_import) {
-            var i, dfrd_starts, _c;
-            // if `declarations` is an `Object`
-            if ( isObj(declarations) ) {
-                // do the starting
-                return this.__start(declarations, skip_import);
-            }
-            // if it's an `Array`
-            else if ( isArr(declarations) ) {
-                i = 0;
-                dfrd_starts = [];
-                // loop over the widget declarations in it
-                while ( _c = declarations[i] ) {
-                    // and start every one of them
-                    dfrd_starts[i] = this.__start(_c, skip_import);
-                    i += 1;
-                }
-                // return a promise of all `declarations` started
-                return this.whenAll(dfrd_starts);
-            }
-            throw new Error('`widgets` must be either an Object or an Array. Instead got: ' +
-                            objToString.call(declarations));
-        },
+        declare              : uijet_declare_or_start,
         /**
-         * Extracts widgets' dependency modules to be imported from a list of
-         * standard widget instance declarations ( see {@see uijet.declare()} ).
+         * An alias of {@see uijet.declare}.
          *
          * @memberOf uijet
-         * @param {Object[]} declarations - list of widget declarations to extract dependencies from.
-         * @returns {{widgets: string[], mixins: string[], adapters: string[]}}
-         * @private
+         * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
+         * @returns {uijet|Promise} uijet|promise - uijet if it's not initialized yet, otherwise a promise that resolves when all started instances are initialized.
+         * @throws {Error} - if `declarations` is neither an `Array` nor an `Object`.
          */
-        __extractDependencies: function (declarations) {
-            var deps = {
-                    widgets : [],
-                    mixins  : [],
-                    adapters: []
-                },
-                _w, _m, _m_type, _m_list;
-            for ( var i = 0; _w = declarations[i]; i ++ ) {
-                if ( _m_type = _w.type ) {
-                    // if this widget type wasn't loaded and isn't in the dependencies list then add it
-                    (widget_classes[_m_type] || ~ deps.widgets.indexOf(_m_type)) || deps.widgets.push(_m_type);
-                }
-                // check for adapters option
-                if ( _m_list = toArray(_w.config.adapters) ) {
-                    for ( var n = 0; _m = _m_list[n ++]; ) {
-                        // grab each one and add it if it wasn't loaded before and not already in the list
-                        (adapters[_m] || ~ deps.adapters.indexOf(_m)) || deps.adapters.push(_m);
-                    }
-                }
-                // check for mixins option and give it the same treatment like we did with adapters
-                if ( _m_list = toArray(_w.config.mixins) ) {
-                    for ( n = 0; _m = _m_list[n ++]; ) {
-                        (mixins[_m] || ~ deps.mixins.indexOf(_m)) || deps.mixins.push(_m);
-                    }
-                }
-            }
-            return deps;
-        },
+        start                : uijet_declare_or_start,
         /**
          * Starts up uijet.
          * Publishes the `startup` event and wakes all widgets at the root of the widgets tree.

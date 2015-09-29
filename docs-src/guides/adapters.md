@@ -38,8 +38,3 @@ uijet.Adapter('Console', {
     }
 });
 ```
-
-## Loading Adapters
-
-If you're using an AMD loader then uijet will load its bundled Adapters automatically.
-If you define your own Adapter make sure it's loaded before it's used.
