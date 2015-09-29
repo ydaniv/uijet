@@ -99,6 +99,12 @@
         </span>
         <ul class="members itemMembers">
         
+        <span class="subtitle">Members</span>
+        
+            <li class="static" data-name="uijet.declare"><a href="uijet.html#declare">declare</a></li>
+        
+            <li class="static" data-name="uijet.start"><a href="uijet.html#start">start</a></li>
+        
         </ul>
         <ul class="typedefs itemMembers">
         
@@ -108,8 +114,6 @@
         <span class="subtitle">Methods</span>
         
             <li class="private static" data-name="uijet.__define"><a href="uijet.html#__define">__define</a></li>
-        
-            <li class="private static" data-name="uijet.__extractDependencies"><a href="uijet.html#__extractDependencies">__extractDependencies</a></li>
         
             <li class="private static" data-name="uijet.__generate"><a href="uijet.html#__generate">__generate</a></li>
         
@@ -131,8 +135,6 @@
         
             <li class="static" data-name="uijet.Adapter"><a href="uijet.html#Adapter">Adapter</a></li>
         
-            <li class="static" data-name="uijet.declare"><a href="uijet.html#declare">declare</a></li>
-        
             <li class="static" data-name="uijet.Factory"><a href="uijet.html#Factory">Factory</a></li>
         
             <li class="static" data-name="uijet.init"><a href="uijet.html#init">init</a></li>
@@ -142,8 +144,6 @@
             <li class="static" data-name="uijet.Resource"><a href="uijet.html#Resource">Resource</a></li>
         
             <li class="static" data-name="uijet.shall"><a href="uijet.html#shall">shall</a></li>
-        
-            <li class="static" data-name="uijet.start"><a href="uijet.html#start">start</a></li>
         
             <li class="static" data-name="uijet.startup"><a href="uijet.html#startup">startup</a></li>
         
@@ -607,38 +607,6 @@
         
         </ul>
         <ul class="methods itemMembers">
-        
-        </ul>
-        <ul class="events itemMembers">
-        
-        </ul>
-    </li>
-
-
-                            </ul>
-                        </li>
-                        
-                        <li class="item item-subcategory" data-name="Loader">
-                            <span class="subcategory">Loader</span>
-                            <ul>
-                                
-
-    <li class="item" data-name="module:loader/requirejs">
-        <span class="title">
-            <a href="requirejs.html">loader/requirejs</a>
-            
-        </span>
-        <ul class="members itemMembers">
-        
-        </ul>
-        <ul class="typedefs itemMembers">
-        
-        </ul>
-        <ul class="methods itemMembers">
-        
-        <span class="subtitle">Methods</span>
-        
-            <li class="" data-name="module:loader/requirejs#importModules"><a href="requirejs.html#importModules">importModules</a></li>
         
         </ul>
         <ul class="events itemMembers">
@@ -3998,7 +3966,7 @@ value of the <code>key</code> or the <code>context</code> object.</li>
     <div class="nameContainer">
         <h4 class="name" id="init">
             
-            init<span class="signature">(options)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array.&lt;Promise>|Widget}</span>
+            init<span class="signature">(options)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array.&lt;Promise>|undefined}</span>
         </h4>
     
         
@@ -4014,7 +3982,7 @@ value of the <code>key</code> or the <code>context</code> object.</li>
     
     
     <div class="description">
-        <p>Initializes a widget instance.</p>
+        <p>Initializes a widget instance and returns a list</p>
 <p>A <em>lifecycle method</em>, does all the possible lifting that can be done
 before awaking/rendering.</p>
 <p><code>init()</code> is invoked by uijet when it is <code>init()</code>ed itself
@@ -4130,7 +4098,7 @@ end of this method and before <code>post_init</code> signal is triggered.</li>
     <div class="nameContainer">
         <h4 class="name" id="initContained">
             
-            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array.&lt;Promise>|undefined}</span>
+            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise|undefined}</span>
         </h4>
     
         
@@ -4147,7 +4115,7 @@ end of this method and before <code>post_init</code> signal is triggered.</li>
     
     <div class="description">
         <p>Initializes contained widget instances.
-Returns an array of Promises or <code>undefined</code> if the
+Returns a Promise or <code>undefined</code> if the
 <code>components</code> option is not set.</p>
 <p>If the <code>container</code> option of the contained widgets is not
 set, it will be automatically set to the <code>id</code> of this widget.</p>
@@ -7351,7 +7319,7 @@ calls of the contained widgets.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Aug 30 2015 13:50:18 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Tue Sep 29 2015 11:04:44 GMT+0300 (IDT)
         </footer>
     </div>
 </div>

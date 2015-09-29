@@ -99,6 +99,12 @@
         </span>
         <ul class="members itemMembers">
         
+        <span class="subtitle">Members</span>
+        
+            <li class="static" data-name="uijet.declare"><a href="uijet.html#declare">declare</a></li>
+        
+            <li class="static" data-name="uijet.start"><a href="uijet.html#start">start</a></li>
+        
         </ul>
         <ul class="typedefs itemMembers">
         
@@ -108,8 +114,6 @@
         <span class="subtitle">Methods</span>
         
             <li class="private static" data-name="uijet.__define"><a href="uijet.html#__define">__define</a></li>
-        
-            <li class="private static" data-name="uijet.__extractDependencies"><a href="uijet.html#__extractDependencies">__extractDependencies</a></li>
         
             <li class="private static" data-name="uijet.__generate"><a href="uijet.html#__generate">__generate</a></li>
         
@@ -131,8 +135,6 @@
         
             <li class="static" data-name="uijet.Adapter"><a href="uijet.html#Adapter">Adapter</a></li>
         
-            <li class="static" data-name="uijet.declare"><a href="uijet.html#declare">declare</a></li>
-        
             <li class="static" data-name="uijet.Factory"><a href="uijet.html#Factory">Factory</a></li>
         
             <li class="static" data-name="uijet.init"><a href="uijet.html#init">init</a></li>
@@ -142,8 +144,6 @@
             <li class="static" data-name="uijet.Resource"><a href="uijet.html#Resource">Resource</a></li>
         
             <li class="static" data-name="uijet.shall"><a href="uijet.html#shall">shall</a></li>
-        
-            <li class="static" data-name="uijet.start"><a href="uijet.html#start">start</a></li>
         
             <li class="static" data-name="uijet.startup"><a href="uijet.html#startup">startup</a></li>
         
@@ -607,38 +607,6 @@
         
         </ul>
         <ul class="methods itemMembers">
-        
-        </ul>
-        <ul class="events itemMembers">
-        
-        </ul>
-    </li>
-
-
-                            </ul>
-                        </li>
-                        
-                        <li class="item item-subcategory" data-name="Loader">
-                            <span class="subcategory">Loader</span>
-                            <ul>
-                                
-
-    <li class="item" data-name="module:loader/requirejs">
-        <span class="title">
-            <a href="requirejs.html">loader/requirejs</a>
-            
-        </span>
-        <ul class="members itemMembers">
-        
-        </ul>
-        <ul class="typedefs itemMembers">
-        
-        </ul>
-        <ul class="methods itemMembers">
-        
-        <span class="subtitle">Methods</span>
-        
-            <li class="" data-name="module:loader/requirejs#importModules"><a href="requirejs.html#importModules">importModules</a></li>
         
         </ul>
         <ul class="events itemMembers">
@@ -2034,6 +2002,123 @@
     
     
     
+        <h3 class="subsection-title">Members</h3>
+        
+        <dl>
+            
+<dt class="static">
+    <div class="nameContainer">
+        <h4 class="name" id="declare"><span class="type-signature static">static</span>uijet.declare<span class="type-signature type error">Error</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>Caches widget declarations before uijet is initialized,
+for lazy starting them at the end of its initialization,
+or if uijet IS initialized, ad-hoc constructs and initializes
+widget instance(s) from a given widget declaration(s).</p>
+<p>Returns a {@see Promise} that is resolved once all declared/started
+instances finished initializing, or gets rejected if something fails.</p>
+<p>It's best to declare widgets in the order of their appearance
+in the widgets tree (usually maps one-to-one to the DOM tree), so that
+a widget is always declared before its contained widgets are declared, and so on.</p>
+<p>A declaration object usually contains <code>type</code> and <code>config</code> properties.
+It may also contain a <code>factory</code> property, instead of the <code>type</code> one, if
+this is an instance that's using a pre-declared widget factory.</p>
+<ul>
+<li><code>type</code>: a <code>String</code> that identifies a widget class created using <code>uijet.Widget(type, ...)</code>.</li>
+<li><code>factory</code>: a <code>String</code> that identifies a widget factory created using <code>uijet.Factory(factory, ...)</code>.</li>
+<li><code>config</code>: an <code>Object</code> that is used as the widget's <code>options</code>.</li>
+</ul>
+<p><strong>note</strong>: For valid instance options see related module.</p>
+<p><strong>note</strong>: If using the {@see Positioned} Mixin it's a must to
+declare widgets in a specific order ( see {@see uijet._position()} ).</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+</dd>
+
+        
+            
+<dt class="static">
+    <div class="nameContainer">
+        <h4 class="name" id="start"><span class="type-signature static">static</span>uijet.start<span class="type-signature type error">Error</span> </h4>
+    </div>
+    
+    
+</dt>
+<dd>
+    
+    <div class="description">
+        <p>An alias of {@see uijet.declare}.</p>
+    </div>
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+</dd>
+
+        </dl>
+    
     
     
         <h3 class="subsection-title">Methods</h3>
@@ -2049,7 +2134,7 @@
     
         
         <div class="tag-source">
-            uijet.js, line 1520
+            uijet.js, line 1524
         </div>
         
     </div>
@@ -2226,128 +2311,6 @@
             
 <dt class="private static">
     <div class="nameContainer">
-        <h4 class="name" id="__extractDependencies">
-            
-            <span class="type-signature ">private,static</span>uijet.__extractDependencies<span class="signature">(declarations)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Object}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            uijet.js, line 1886
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Extracts widgets' dependency modules to be imported from a list of
-standard widget instance declarations ( see {@see uijet.declare()} ).</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>declarations</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;Object></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>list of widget declarations to extract dependencies from.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="private static">
-    <div class="nameContainer">
         <h4 class="name" id="__generate">
             
             <span class="type-signature ">private,static</span>uijet.__generate<span class="signature">(type, <span class="optional">extra_mixins</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{function}</span>
@@ -2355,7 +2318,7 @@ standard widget instance declarations ( see {@see uijet.declare()} ).</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1540
+            uijet.js, line 1544
         </div>
         
     </div>
@@ -2539,12 +2502,12 @@ and registered with <code>uijet</code>.</p>
     <div class="nameContainer">
         <h4 class="name" id="__start">
             
-            <span class="type-signature ">private,static</span>uijet.__start<span class="signature">(widget, <span class="optional">skip_import</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array.&lt;Promise>|Promise}</span>
+            <span class="type-signature ">private,static</span>uijet.__start<span class="signature">(widget)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Array.&lt;Promise>|Promise}</span>
         </h4>
     
         
         <div class="tag-source">
-            uijet.js, line 1612
+            uijet.js, line 1615
         </div>
         
     </div>
@@ -2602,42 +2565,7 @@ and registered with <code>uijet</code>.</p>
             
             <td class="description last">
                 
-                    
-                    
-                        
-                    
-                
                 <p>a widget declaration.</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>skip_import</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                <p>whether to skip module import. Defaults to falsy.</p></td>
         </tr>
 	
 	
@@ -2868,7 +2796,7 @@ object generated for the route.
     
         
         <div class="tag-source">
-            uijet.js, line 2014
+            uijet.js, line 1927
         </div>
         
     </div>
@@ -2989,7 +2917,7 @@ object generated for the route.
     
         
         <div class="tag-source">
-            uijet.js, line 1678
+            uijet.js, line 1660
         </div>
         
     </div>
@@ -3118,7 +3046,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1998
+            uijet.js, line 1911
         </div>
         
     </div>
@@ -3239,7 +3167,7 @@ not to, once uijet starts this widget will be awaken automatically.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 2044
+            uijet.js, line 1957
         </div>
         
     </div>
@@ -3392,7 +3320,7 @@ Defaults to the result of <code>widget.getContext()</code>.</p></td>
     
         
         <div class="tag-source">
-            uijet.js, line 1790
+            uijet.js, line 1772
         </div>
         
     </div>
@@ -3514,7 +3442,7 @@ This is usually triggered by a widget when its {@see BaseWidget.destroy()} metho
     
         
         <div class="tag-source">
-            uijet.js, line 1977
+            uijet.js, line 1890
         </div>
         
     </div>
@@ -3677,7 +3605,7 @@ returned from children's <code>wake()</code> call.</li>
     
         
         <div class="tag-source">
-            uijet.js, line 1285
+            uijet.js, line 1302
         </div>
         
     </div>
@@ -3834,144 +3762,6 @@ If <code>props</code> is omitted and <code>name</code> is a:</p>
             
 <dt class="static">
     <div class="nameContainer">
-        <h4 class="name" id="declare">
-            
-            <span class="type-signature static">static</span>uijet.declare<span class="signature">(declarations)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="uijet.html">uijet</a>}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            uijet.js, line 1828
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Caches widget declarations before uijet is initialized,
-for lazy starting them at the end of its initialization.</p>
-<p>It's best to declare widgets in the order of their appearance
-in the widgets tree (usually maps one-to-one to the DOM tree), so that
-a widget is always declared before its contained widgets are declared, and so on.</p>
-<p>In some cases it's a must to declare widgets in a specific order ( see {@see uijet._position()} ).</p>
-<p>A declaration object usually contains <code>type</code> and <code>config</code> properties.
-It may also contain a <code>factory</code> property, instead of the <code>type</code> one, if
-this is an instance that's using a pre-declared widget factory.</p>
-<ul>
-<li><code>type</code>: a <code>String</code> that identifies a widget class created using <code>uijet.Widget(type, ...)</code>.</li>
-<li><code>factory</code>: a <code>String</code> that identifies a widget factory created using <code>uijet.Factory(factory, ...)</code>.</li>
-<li><code>config</code>: an <code>Object</code> that is used as the widget's <code>options</code>.</li>
-</ul>
-<p><strong>note</strong>: For valid instance options see related module.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>declarations</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-|
-
-<span class="param-type">Array.&lt;Object></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                <p>a single declaration or a list of declaration objects.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="static">
-    <div class="nameContainer">
         <h4 class="name" id="Factory">
             
             <span class="type-signature static">static</span>uijet.Factory<span class="signature">(name, declaration)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="uijet.html">uijet</a>}</span>
@@ -3979,7 +3769,7 @@ this is an instance that's using a pre-declared widget factory.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1312
+            uijet.js, line 1329
         </div>
         
     </div>
@@ -4130,7 +3920,7 @@ will take the <code>config</code> object as an argument and will return a qualif
     
         
         <div class="tag-source">
-            uijet.js, line 1402
+            uijet.js, line 1419
         </div>
         
     </div>
@@ -4282,7 +4072,7 @@ set <code>uijet.$element[0].style.visibility</code> to <code>visible</code>.
     
         
         <div class="tag-source">
-            uijet.js, line 1264
+            uijet.js, line 1281
         </div>
         
     </div>
@@ -4438,7 +4228,7 @@ set <code>uijet.$element[0].style.visibility</code> to <code>visible</code>.
     
         
         <div class="tag-source">
-            uijet.js, line 1357
+            uijet.js, line 1374
         </div>
         
     </div>
@@ -4636,7 +4426,7 @@ instantiating a Backbone.js resource.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1957
+            uijet.js, line 1870
         </div>
         
     </div>
@@ -4800,203 +4590,6 @@ promise that can be either resolved or rejected by a subscriber to <code>topic</
             
 <dt class="static">
     <div class="nameContainer">
-        <h4 class="name" id="start">
-            
-            <span class="type-signature static">static</span>uijet.start<span class="signature">(declarations, <span class="optional">skip_import</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise|Object}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            uijet.js, line 1854
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Ad-hoc constructs and initializes widget instance(s) from a given widget declaration(s).
-For explanations on widget declarations see {@see uijet.declare()}.
-Returns a {@see Promise} that is resolved once all declared instances finished initializing,
-or gets rejected if something fails.</p>
-<p><code>skip_import</code> is used to forcibly skip modules importing, so this method
-will complete synchronously, otherwise it will check for missing modules to import.
-Usually you should <em>not</em> have to specify it at all, unless you know what you're doing
-and want to optimize this call a bit.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>declarations</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">Object</span>
-|
-
-<span class="param-type">Array.&lt;Object></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                    
-                        
-                    
-                
-                <p>a single declaration or a list of declaration objects.</p></td>
-        </tr>
-	
-	
-	
-        <tr>
-            
-                <td class="name"><code>skip_import</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                <p>whether to skip module import. Defaults to falsy.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    <h5>Throws:</h5>
-    
-            
-
-<dl>
-    <dt>
-        <div class="param-desc">
-        - if `declarations` is neither an `Array` nor an `Object`.
-        </div>
-    </dt>
-    <dt>
-        <dl>
-            <dt>
-                Type
-            </dt>
-            <dd>
-                
-<span class="param-type">Error</span>
-
-
-            </dd>
-        </dl>
-    </dt>
-</dl>
-
-
-        
-    
-    
-    
-    
-
-
-<h5>Returns:</h5>
-- a promise object if not skipping import, otherwise <code>this</code>.
-<br />
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="static">
-    <div class="nameContainer">
         <h4 class="name" id="startup">
             
             <span class="type-signature static">static</span>uijet.startup<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
@@ -5004,7 +4597,7 @@ and want to optimize this call a bit.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1926
+            uijet.js, line 1839
         </div>
         
     </div>
@@ -5085,7 +4678,7 @@ so that the initial view is awaken by the router.</p>
     
         
         <div class="tag-source">
-            uijet.js, line 1194
+            uijet.js, line 1231
         </div>
         
     </div>
@@ -5273,7 +4866,7 @@ If <code>context</code> is supplied then uses it to bind all the properties of <
     
         
         <div class="tag-source">
-            uijet.js, line 1219
+            uijet.js, line 1256
         </div>
         
     </div>
@@ -5470,7 +5063,7 @@ This class can later be instantiated in the UI or re-used as a dependency.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Sun Aug 30 2015 13:50:20 GMT+0300 (IDT)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Tue Sep 29 2015 11:04:46 GMT+0300 (IDT)
         </footer>
     </div>
 </div>
