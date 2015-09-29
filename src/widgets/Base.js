@@ -91,7 +91,7 @@
     Widget.prototype = {
         constructor     : Widget,
         /**
-         * Initializes a widget instance.
+         * Initializes a widget instance and returns a list
          *
          * A *lifecycle method*, does all the possible lifting that can be done
          * before awaking/rendering.
@@ -111,7 +111,7 @@
          * @memberOf BaseWidget
          * @instance
          * @param {Object} options - config object for the widget.
-         * @returns {Promise[]|Widget}
+         * @returns {Promise[]|undefined}
          */
         init            : function (options) {
             // ready...
@@ -140,11 +140,11 @@
 
             this.notify(true, 'post_init');
 
-            return contained_starts || this;
+            return contained_starts;
         },
         /**
          * Initializes contained widget instances.
-         * Returns an array of Promises or `undefined` if the
+         * Returns a Promise or `undefined` if the
          * `components` option is not set.
          *
          * If the `container` option of the contained widgets is not
@@ -156,7 +156,7 @@
          *
          * @memberOf BaseWidget
          * @instance
-         * @returns {Promise[]|undefined}
+         * @returns {Promise|undefined}
          */
         initContained   : function () {
             var container_id = this.id,
