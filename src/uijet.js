@@ -7,14 +7,14 @@
 ;
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(function () {
-            return factory(root);
+        define(['pubsub', 'promises', 'dom'], function (pubsub, promises, dom) {
+            return factory(root, pubsub, promises, dom);
         });
     }
     else {
         root.uijet = factory(root);
     }
-}(this, function (_window) {
+}(this, function (_window, pubsub, promises, dom) {
     /*
      * uijet's globals and some local caching of stuff from global namespace
      */
@@ -62,35 +62,6 @@
                 function (f) {
                     _window.setTimeout(f, 0);
                 },
-        /*
-         * TODO: document this
-         */
-        consoleOrRethrow = (function () {
-            function rethrow (e) {
-                throw e.stack || e;
-            }
-
-            if ( console ) {
-                return function (e) {
-                    if ( uijet.debug ) {
-                        console.error(e.stack || e);
-                    }
-                    else {
-                        rethrow(e);
-                    }
-                };
-            }
-            else {
-                return function (e) {
-                    if ( uijet.debug ) {
-                        async(rethrow);
-                    }
-                    else {
-                        rethrow(e);
-                    }
-                };
-            }
-        }()),
         /**
          * Searches for a prefixed name of `name` inside `obj`.
          *
@@ -1502,14 +1473,14 @@
                     this.initializing = true;
                     // build and init declared widgets
                     // notice that here all modules are already loaded so this will run through
-                    return this.start(declared_widgets, true);
-                }.bind(this), consoleOrRethrow)
+                    return this.start(declared_widgets);
+                }.bind(this))
                 .then(function () {
                     //when all declared widgets are initialized, set `uijet.initialized` to `true`
                     this.initialized = true;
                     // kick-start the GUI - unless ordered not to
                     return options.dont_start || this.startup();
-                }.bind(this), consoleOrRethrow);
+                }.bind(this));
         },
         /**
          * Caches a definition of a widget in uijet.
@@ -1976,7 +1947,6 @@
      */
     uijet.utils = {
         async           : async,
-        consoleOrRethrow: consoleOrRethrow,
         extend          : extend,
         copy            : copy,
         extendProto     : extendProto,
@@ -2051,6 +2021,13 @@
 
     // expose `Base`
     uijet.Base = Base;
+
+    /*
+     * Inject Pub/Sub, Promises, and DOM modules to uijet.
+     */
+    pubsub(uijet);
+    promises(uijet);
+    dom(uijet);
 
     return uijet;
 }));

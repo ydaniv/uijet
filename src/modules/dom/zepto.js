@@ -1,12 +1,12 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'zepto'], function (uijet, $) {
-            return factory(uijet, $, root);
+        define(['zepto'], function ($) {
+            return factory($, root);
         });
     } else {
-        factory(uijet, root.Zepto, root);
+        factory(root.Zepto, root);
     }
-}(this, function (uijet, $, root) {
+}(this, function ($, root) {
     $ = $ || root.Zepto;
     /**
      * Zepto dom module.
@@ -16,17 +16,18 @@
      * @sub-category DOM
      * @extends uijet
      * @see {@link http://zeptojs.com/}
-     * @exports Zepto
      */
-    uijet.use({
-        /**
-         * Reference to Zepto.
-         * 
-         * @see {@link http://zeptojs.com/}
-         * @method module:dom/zepto#$
-         */
-        $   : $
-    }, uijet);
+    return function (uijet) {
+        uijet.use({
+            /**
+             * Reference to Zepto.
+             *
+             * @see {@link http://zeptojs.com/}
+             * @method module:dom/zepto#$
+             */
+            $: $
+        }, uijet);
 
-    return $;
+        return $;
+    };
 }));
