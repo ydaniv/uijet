@@ -147,7 +147,7 @@
          */
         _getSize        : function () {
             var $children = this.$element.children(),
-                last_child = $children.get(-1),
+                last_child = $children[$children.length - 1],
                 size = { width: 0, height: 0 },
                 // since the default overflow of content is downward just get the last child's position + height
                 total_height = last_child && (last_child.offsetTop + last_child.offsetHeight) || 0,
