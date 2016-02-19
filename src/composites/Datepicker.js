@@ -18,6 +18,16 @@
         return Object.prototype.toString.call(obj) == '[object Date]';
     }
 
+    function appendTo (source, target) {
+        target[0].appendChild(source[0]);
+        return source;
+    }
+
+    function prependTo (source, target) {
+        target[0].insertBefore(source[0], target[0].firstElementChild);
+        return source;
+    }
+
     /**
      * Datepicker composite class.
      *
@@ -64,30 +74,34 @@
                 next_ops = datepiker_ops.next || {},
                 components = datepiker_ops.components,
 
-            // create all the elements we need to construct our datepicker
-            // here's our heading which states current month and year
-                $current_date = uijet.utils.toElement(datepiker_ops.current_date) || $('<h1>', {
-                    'class': 'uijet_datepicker_current_date'
-                }).appendTo($el),
+                // create all the elements we need to construct our datepicker
+                // here's our heading which states current month and year
+                $current_date = uijet.utils.toElement(datepiker_ops.current_date) ||
+                                appendTo($('<h1>', {
+                                    'class': 'uijet_datepicker_current_date'
+                                }), $el),
 
-            // this is the prev month button
-                $prev = prev_ops.element || $('<span>', {
-                    id     : id + '_prev',
-                    'class': 'uijet_datepicker_arrow uijet_datepicker_prev'
-                }).prependTo($el),
+                // this is the prev month button
+                $prev = prev_ops.element ||
+                        prependTo($('<span>', {
+                            id     : id + '_prev',
+                            'class': 'uijet_datepicker_arrow uijet_datepicker_prev'
+                        }), $el),
 
-            // and this is the next month button
-                $next = next_ops.element || $('<span>', {
-                    id     : id + '_next',
-                    'class': 'uijet_datepicker_arrow uijet_datepicker_next'
-                }).appendTo($el),
+                // and this is the next month button
+                $next = next_ops.element ||
+                        appendTo($('<span>', {
+                            id     : id + '_next',
+                            'class': 'uijet_datepicker_arrow uijet_datepicker_next'
+                        }), $el),
 
-            // and here is our list of dates
-                $datelist = datelist_ops.element || $('<ul>', {
-                    id: id + '_datelist'
-                }).appendTo($el),
+                // and here is our list of dates
+                $datelist = datelist_ops.element ||
+                            appendTo($('<ul>', {
+                                id: id + '_datelist'
+                            }), $el),
 
-            // configure our dates list widget
+                // configure our dates list widget
                 datelist_config = uijet.utils.extend(true, {
                     element  : $datelist,
                     container: id,
