@@ -164,16 +164,6 @@ __Note__: Every module documented here is supported. All others are considered p
 * `submit_xhr_config`: 
 -->
 
-#### Templated:
-
-* `template` - `string`: A raw template string to be used as the template for the instance. Do not use this option for putting a template string in your js source code! Only as an endpoint for hooking with loaded templates.
-* `template_name` - `string`: If `template` is not set, this option will be used as the filename of the template to load. Defaults to `this.id>`. Used together with `uijet.options.templates_path` as prefix and `uijet.options.templates_extension` as suffix to create the path to the template.
-* `partials` - `Object`: A map of partial names to their corresponding filename (or path). If the template and its partials are already fetched use the partials as values instead of paths.
-* `partials_dir` - `string`: A common directory for looking up partials. This will be used together with `partials` to create the paths.
-* `dont_auto_fetch_template` - `boolean`: When `true` templates will not be fetched automatically on `init()`.
-* `insert_before` - `HTMLElement|string`: An element or a query selector to insert the rendered content before. By default content is appended to the end `this.$element`'s contents.
-* `defer_images` - `boolean`: When `true` `this.$element` will be searched for images to preload and defer waking the instance after loading.
-
 #### Dialog:
 
 * `buttons` - `Object[]`: List of component declarations that will be created as children of this instance.
@@ -310,21 +300,6 @@ __Note__: Every module documented here is supported. All others are considered p
     * _return_: Ignored.
     * _once_: Yes.
 * `pre_disappear`: At the beginning of `.disappear()`.
-    * _arguments_: None.
-    * _return_: Ignored.
-    * _once_: Yes.
-
-#### Templated
-
-* `pre_render`: At the beginning of `.render()`, _AFTER_ the new HTML content is generated.
-    * _arguments_: `html` - the new HTML string that will be appended to the `$element`.
-    * _return_: Ignored.
-    * _once_: Yes.
-* `pre_html_insert`: Inside `.render()` _AFTER_ the new HTML content is generated and old contents has been removed from the DOM.
-    * _arguments_: `html` - the new HTML string that will be appended to the `$element`.
-    * _return_: If `false` then the new content will not be add to the `$element`. Useful when custom insertion is done inside the handler itself.
-    * _once_: Yes.
-* `post_render`: At the end of `.render()`.
     * _arguments_: None.
     * _return_: Ignored.
     * _once_: Yes.

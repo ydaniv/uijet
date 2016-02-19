@@ -1,13 +1,13 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'pubsubjs'], function (uijet, pubsub) {
-            return factory(uijet, pubsub);
+        define(['pubsubjs'], function (pubsub) {
+            return factory(pubsub);
         });
     }
     else {
-        factory(uijet, root.PubSub);
+        factory(root.PubSub);
     }
-}(this, function (uijet, pubsub) {
+}(this, function (pubsub) {
 
     var tokens_map = {};
 
@@ -50,61 +50,62 @@
      * @sub-category Pub/Sub
      * @extends uijet
      * @see {@link https://github.com/mroderick/PubSubJS#pubsubjs}
-     * @exports PubSub
      */
-    uijet.use({
-        /**
-         * Publish an event.
-         * 
-         * @method module:pubsub/pubsubjs#publish
-         * @see {@link https://github.com/mroderick/PubSubJS#basic-example}
-         * @param {string} topic - type of event to publish.
-         * @param {*} [data] - data to send to the registered handlers.
-         * @returns {uijet}
-         */
-        publish    : function (topic, data) {
-            pubsub.publish(topic, data);
+    return function (uijet) {
+        uijet.use({
+            /**
+             * Publish an event.
+             *
+             * @method module:pubsub/pubsubjs#publish
+             * @see {@link https://github.com/mroderick/PubSubJS#basic-example}
+             * @param {string} topic - type of event to publish.
+             * @param {*} [data] - data to send to the registered handlers.
+             * @returns {uijet}
+             */
+            publish    : function (topic, data) {
+                pubsub.publish(topic, data);
 
-            return this;
-        },
-        /**
-         * Subscribes a handler to an event of type `topic`.
-         * 
-         * @method module:pubsub/pubsubjs#subscribe
-         * @see {@link https://github.com/mroderick/PubSubJS#basic-example}
-         * @param {string} topic - type of event to publish.
-         * @param {*} [data] - data to send to the registered handlers.
-         * @returns {uijet}
-         */
-        subscribe  : function (topic, handler, context) {
-            if ( context && typeof handler == 'string' ) {
-                handler = context[handler];
+                return this;
+            },
+            /**
+             * Subscribes a handler to an event of type `topic`.
+             *
+             * @method module:pubsub/pubsubjs#subscribe
+             * @see {@link https://github.com/mroderick/PubSubJS#basic-example}
+             * @param {string} topic - type of event to publish.
+             * @param {*} [data] - data to send to the registered handlers.
+             * @returns {uijet}
+             */
+            subscribe  : function (topic, handler, context) {
+                if ( context && typeof handler == 'string' ) {
+                    handler = context[handler];
+                }
+
+                _storeTokenAndHandler(pubsub.subscribe(topic, handler));
+
+                return this;
+            },
+            /**
+             * Unsubscribe a handler from a topic, or all handlers of a topic.
+             *
+             * If handler is not supplied all handlers of type `topic` will be removed.
+             *
+             * @method module:pubsub/pubsubjs#unsubscribe
+             * @see {@link https://github.com/mroderick/PubSubJS#cancel-specific-subscripiton}
+             * @param {string} topic - type of event to publish.
+             * @param {*} [data] - data to send to the registered handlers.
+             * @returns {uijet}
+             */
+            unsubscribe: function (topic, handler) {
+                var tokens = _extractTokenList(topic, handler);
+
+                for ( var n = 0; n < tokens.length; n ++ )
+                    pubsub.unsubscribe(tokens[n]);
+
+                return this;
             }
+        }, uijet);
 
-            _storeTokenAndHandler(pubsub.subscribe(topic, handler));
-
-            return this;
-        },
-        /**
-         * Unsubscribe a handler from a topic, or all handlers of a topic.
-         * 
-         * If handler is not supplied all handlers of type `topic` will be removed.
-         * 
-         * @method module:pubsub/pubsubjs#unsubscribe
-         * @see {@link https://github.com/mroderick/PubSubJS#cancel-specific-subscripiton}
-         * @param {string} topic - type of event to publish.
-         * @param {*} [data] - data to send to the registered handlers.
-         * @returns {uijet}
-         */
-        unsubscribe: function (topic, handler) {
-            var tokens = _extractTokenList(topic, handler);
-
-            for ( var n = 0; n < tokens.length; n++ )
-                pubsub.unsubscribe(tokens[n]);
-
-            return this;
-        }
-    }, uijet);
-
-    return pubsub;
+        uijet.pubsub = pubsub;
+    };
 }));

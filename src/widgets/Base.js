@@ -818,7 +818,7 @@
             var id = utils.toArray(this.options.type_class)
                          .splice(-1, 1).toString()
                          .replace('uijet_', '') + '_' + (++widget_id_index);
-            this.$element.attr('id', id);
+            this.$element[0].setAttribute('id', id);
             return id;
         },
         /**

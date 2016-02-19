@@ -94,22 +94,32 @@
                 },
                 putMixin = uijet.utils.putMixin,
                 menu_id = this.id + '_menu',
+                $content = uijet.utils.toElement(this.options.content),
                 menu_config;
 
+            if ( ! $content ) {
+                $content = uijet.$('<span>');
+                this.$element[0].insertBefore($content[0], this.$element[0].firstElementChild);
+            }
             // cache the content element
-            this.$content = uijet.utils.toElement(this.options.content) || uijet.$('<span>').prependTo(this.$element);
+            this.$content = $content;
 
             // register the menu component to events
             menu_app_events[this.id + '.clicked'] = 'toggle';
             menu_app_events[this.id + '._set_selected'] = 'setSelected+';
 
+            if ( ! has_element ) {
+                has_element = uijet.$('<ul>', {
+                    id  : menu_id
+                });
+                $el[0].appendChild(has_element[0]);
+            }
+
             // move the menu declaration into list of components to be declared
             menu_config = uijet.utils.extend(true, {
-                element     : has_element || uijet.$('<ul>', {
-                    id  : menu_id
-                }).appendTo($el),
-                mixins      : putMixin(putMixin(menu_mixins, 'Toggled'), 'Floated'),
-                app_events  : menu_app_events
+                element   : has_element,
+                mixins    : putMixin(putMixin(menu_mixins, 'Toggled'), 'Floated'),
+                app_events: menu_app_events
             }, this.options.menu || {});
 
             this.options.components.unshift({

@@ -96,14 +96,14 @@
          * Animates an elements' properties.
          *
          * @method module:animation/velocity#animate
-         * @param {HTMLElement[]} $el - wrapped HTMLElement to animate.
+         * @param {HTMLElement[]} $elements - wrapped HTMLElement to animate or an array of Elements.
          * @param {string|Object} props - valid CSS text to set on the element's style, or a map of style properties.
          * @param {Object|number} [options] - config object or duration in milliseconds.
          * @param {string|Array} [easing] - easing function name or array of values for generating an easing function.
          * @returns {Promise} - promise object returned by the `Velocity.animate()` call.
          */
-        animate             : function ($el, props, options, easing) {
-            return Velocity.animate($el[0], props, options, easing);
+        animate             : function ($elements, props, options, easing) {
+            return Velocity.animate(Array.prototype.slice.call($elements, 0), props, options, easing);
         }
     }, uijet);
 

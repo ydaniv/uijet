@@ -144,7 +144,7 @@
          * @private
          */
         _setRule        : function (css_text) {
-            var selector = '#' + this._wrap().$wrapper.attr('id') + '.float.show',
+            var selector = '#' + this._wrap().$wrapper[0].getAttribute('id') + '.float.show',
                 bottom_style;
 
             if ( this.float_rule_sheet ) {
