@@ -1123,8 +1123,6 @@
         
             <li class="" data-name="BaseWidget#disappear"><a href="BaseWidget.html#disappear">disappear</a></li>
         
-            <li class="" data-name="BaseWidget#generate"><a href="BaseWidget.html#generate">generate</a></li>
-        
             <li class="" data-name="BaseWidget#getContext"><a href="BaseWidget.html#getContext">getContext</a></li>
         
             <li class="" data-name="BaseWidget#init"><a href="BaseWidget.html#init">init</a></li>
@@ -1813,39 +1811,6 @@
         </ul>
     </li>
 
-    <li class="item" data-name="Templated">
-        <span class="title">
-            <a href="Templated.html">Templated</a>
-            
-        </span>
-        <ul class="members itemMembers">
-        
-        </ul>
-        <ul class="typedefs itemMembers">
-        
-        </ul>
-        <ul class="methods itemMembers">
-        
-        <span class="subtitle">Methods</span>
-        
-            <li class="private" data-name="Templated#_clearRendered"><a href="Templated.html#_clearRendered">_clearRendered</a></li>
-        
-            <li class="" data-name="Templated#_fetchTemplate"><a href="Templated.html#_fetchTemplate">_fetchTemplate</a></li>
-        
-            <li class="private" data-name="Templated#_saveOriginal"><a href="Templated.html#_saveOriginal">_saveOriginal</a></li>
-        
-            <li class="" data-name="Templated#deferLoadables"><a href="Templated.html#deferLoadables">deferLoadables</a></li>
-        
-            <li class="" data-name="Templated#init"><a href="Templated.html#init">init</a></li>
-        
-            <li class="" data-name="Templated#render"><a href="Templated.html#render">render</a></li>
-        
-        </ul>
-        <ul class="events itemMembers">
-        
-        </ul>
-    </li>
-
     <li class="item" data-name="Toggled">
         <span class="title">
             <a href="Toggled.html">Toggled</a>
@@ -2084,15 +2049,6 @@
 * `submit_xhr_config`: 
 -->
 
-<h4>Templated:</h4><ul>
-<li><code>template</code> - <code>string</code>: A raw template string to be used as the template for the instance. Do not use this option for putting a template string in your js source code! Only as an endpoint for hooking with loaded templates.</li>
-<li><code>template_name</code> - <code>string</code>: If <code>template</code> is not set, this option will be used as the filename of the template to load. Defaults to <code>this.id&gt;</code>. Used together with <code>uijet.options.templates_path</code> as prefix and <code>uijet.options.templates_extension</code> as suffix to create the path to the template.</li>
-<li><code>partials</code> - <code>Object</code>: A map of partial names to their corresponding filename (or path). If the template and its partials are already fetched use the partials as values instead of paths.</li>
-<li><code>partials_dir</code> - <code>string</code>: A common directory for looking up partials. This will be used together with <code>partials</code> to create the paths.</li>
-<li><code>dont_auto_fetch_template</code> - <code>boolean</code>: When <code>true</code> templates will not be fetched automatically on <code>init()</code>.</li>
-<li><code>insert_before</code> - <code>HTMLElement|string</code>: An element or a query selector to insert the rendered content before. By default content is appended to the end <code>this.$element</code>'s contents.</li>
-<li><code>defer_images</code> - <code>boolean</code>: When <code>true</code> <code>this.$element</code> will be searched for images to preload and defer waking the instance after loading.</li>
-</ul>
 <h4>Dialog:</h4><ul>
 <li><code>buttons</code> - <code>Object[]</code>: List of component declarations that will be created as children of this instance.</li>
 </ul>
@@ -2247,26 +2203,6 @@
 </ul>
 </li>
 </ul>
-<h4>Templated</h4><ul>
-<li><code>pre_render</code>: At the beginning of <code>.render()</code>, <em>AFTER</em> the new HTML content is generated.<ul>
-<li><em>arguments</em>: <code>html</code> - the new HTML string that will be appended to the <code>$element</code>.</li>
-<li><em>return</em>: Ignored.</li>
-<li><em>once</em>: Yes.</li>
-</ul>
-</li>
-<li><code>pre_html_insert</code>: Inside <code>.render()</code> <em>AFTER</em> the new HTML content is generated and old contents has been removed from the DOM.<ul>
-<li><em>arguments</em>: <code>html</code> - the new HTML string that will be appended to the <code>$element</code>.</li>
-<li><em>return</em>: If <code>false</code> then the new content will not be add to the <code>$element</code>. Useful when custom insertion is done inside the handler itself.</li>
-<li><em>once</em>: Yes.</li>
-</ul>
-</li>
-<li><code>post_render</code>: At the end of <code>.render()</code>.<ul>
-<li><em>arguments</em>: None.</li>
-<li><em>return</em>: Ignored.</li>
-<li><em>once</em>: Yes.</li>
-</ul>
-</li>
-</ul>
 <h4>Transitioned</h4><ul>
 <li><code>post_transit</code>: At the end of <code>.transit()</code>, <em>AFTER</em> the transition animation is done.<ul>
 <li><em>arguments</em>: <code>direction</code> - a string representing the direction of the transition, either <code>'in'</code> or <code>'out'</code>.</li>
@@ -2339,7 +2275,7 @@
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Feb 19 2016 21:50:09 GMT+0200 (IST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Feb 19 2016 21:59:24 GMT+0200 (IST)
         </footer>
     </div>
 </div>

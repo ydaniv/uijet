@@ -1123,8 +1123,6 @@
         
             <li class="" data-name="BaseWidget#disappear"><a href="BaseWidget.html#disappear">disappear</a></li>
         
-            <li class="" data-name="BaseWidget#generate"><a href="BaseWidget.html#generate">generate</a></li>
-        
             <li class="" data-name="BaseWidget#getContext"><a href="BaseWidget.html#getContext">getContext</a></li>
         
             <li class="" data-name="BaseWidget#init"><a href="BaseWidget.html#init">init</a></li>
@@ -1813,39 +1811,6 @@
         </ul>
     </li>
 
-    <li class="item" data-name="Templated">
-        <span class="title">
-            <a href="Templated.html">Templated</a>
-            
-        </span>
-        <ul class="members itemMembers">
-        
-        </ul>
-        <ul class="typedefs itemMembers">
-        
-        </ul>
-        <ul class="methods itemMembers">
-        
-        <span class="subtitle">Methods</span>
-        
-            <li class="private" data-name="Templated#_clearRendered"><a href="Templated.html#_clearRendered">_clearRendered</a></li>
-        
-            <li class="" data-name="Templated#_fetchTemplate"><a href="Templated.html#_fetchTemplate">_fetchTemplate</a></li>
-        
-            <li class="private" data-name="Templated#_saveOriginal"><a href="Templated.html#_saveOriginal">_saveOriginal</a></li>
-        
-            <li class="" data-name="Templated#deferLoadables"><a href="Templated.html#deferLoadables">deferLoadables</a></li>
-        
-            <li class="" data-name="Templated#init"><a href="Templated.html#init">init</a></li>
-        
-            <li class="" data-name="Templated#render"><a href="Templated.html#render">render</a></li>
-        
-        </ul>
-        <ul class="events itemMembers">
-        
-        </ul>
-    </li>
-
     <li class="item" data-name="Toggled">
         <span class="title">
             <a href="Toggled.html">Toggled</a>
@@ -1998,7 +1963,7 @@
     
         
         <div class="tag-source">
-            composites/Datepicker.js, line 315
+            composites/Datepicker.js, line 329
         </div>
         
     </div>
@@ -2081,7 +2046,7 @@ of integers representing the possible dates of current month.</li>
     
         
         <div class="tag-source">
-            composites/Select.js, line 139
+            composites/Select.js, line 149
         </div>
         
     </div>
@@ -2280,7 +2245,7 @@ Adds the <code>current</code> class to the top container element, while calling
     
         
         <div class="tag-source">
-            composites/Datepicker.js, line 156
+            composites/Datepicker.js, line 170
         </div>
         
     </div>
@@ -2295,6 +2260,98 @@ Adds the <code>current</code> class to the top container element, while calling
 <h4>Related options:</h4><ul>
 <li><code>max_date</code>: max possible date for selection. Usually set by the container Datepicker.</li>
 <li><code>min_date</code>: min possible date for selection. Usually set by the container Datepicker.</li>
+</ul>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="">
+    <div class="nameContainer">
+        <h4 class="name" id="initContained">
+            
+            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Datepicker.html">Datepicker</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            composites/Datepicker.js, line 67
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Translate the <code>datelist</code>, <code>next</code> and <code>prev</code> option into a part of the <code>components</code> option.</p>
+<h4>App events:</h4><ul>
+<li><code>&lt;id&gt;_datelist._update_current_date</code>: this widget registers to this event to update the
+<code>current_date</code> element's content with current selected date.</li>
+</ul>
+<h4>Related options:</h4><ul>
+<li><code>datelist</code>: config objects for the DateList component to create.</li>
+<li><code>datelist_type</code>: the menu component's Widget type. Defaults to <code>'DateList'</code>.</li>
+<li><code>next</code>: config objects for the next Button component to create.</li>
+<li><code>next_type</code>: the next arrow Button component's Widget type. Defaults to <code>'Button'</code>.</li>
+<li><code>prev</code>: config objects for the prev Button component to create.</li>
+<li><code>prev_type</code>: the prev arrow Button component's Widget type. Defaults to <code>'Button'</code>.</li>
+<li><code>current_date</code>: element or selector for the element which will serve as the heading
+that contains current date.</li>
+<li><code>max_date</code>: max possible date for selection.</li>
+<li><code>min_date</code>: min possible date for selection.</li>
 </ul>
     </div>
     
@@ -2377,88 +2434,6 @@ Adds the <code>current</code> class to the top container element, while calling
 <li><code>menu_type</code>: the menu component's Widget type. Defaults to <code>'SelectMenu'</code>.</li>
 <li><code>content</code>: an element or a selector for an element to be used as element
 containing the selected item's content.</li>
-</ul>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="initContained">
-            
-            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Modal.html">Modal</a>}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            composites/Modal.js, line 41
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Creates an {@see Overlay} instance for the underlay.
-Also translates the <code>buttons</code> option into a part of the <code>components</code> option.</p>
-<h4>Related options:</h4><ul>
-<li><code>underlay</code>: config object for the Overlay used as the modal's underlay.</li>
-<li><code>underlay_type</code>: the modal's underlay Overlay component's Widget type. Defaults to <code>'Overlay'</code>.</li>
-<li><code>buttons</code>: array of config objects for Button components to create.</li>
 </ul>
     </div>
     
@@ -2680,12 +2655,12 @@ Can also be set to <code>true</code> and the default arrow button component will
     <div class="nameContainer">
         <h4 class="name" id="initContained">
             
-            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Datepicker.html">Datepicker</a>}</span>
+            initContained<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Modal.html">Modal</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            composites/Datepicker.js, line 57
+            composites/Modal.js, line 41
         </div>
         
     </div>
@@ -2696,22 +2671,12 @@ Can also be set to <code>true</code> and the default arrow button component will
     
     
     <div class="description">
-        <p>Translate the <code>datelist</code>, <code>next</code> and <code>prev</code> option into a part of the <code>components</code> option.</p>
-<h4>App events:</h4><ul>
-<li><code>&lt;id&gt;_datelist._update_current_date</code>: this widget registers to this event to update the
-<code>current_date</code> element's content with current selected date.</li>
-</ul>
+        <p>Creates an {@see Overlay} instance for the underlay.
+Also translates the <code>buttons</code> option into a part of the <code>components</code> option.</p>
 <h4>Related options:</h4><ul>
-<li><code>datelist</code>: config objects for the DateList component to create.</li>
-<li><code>datelist_type</code>: the menu component's Widget type. Defaults to <code>'DateList'</code>.</li>
-<li><code>next</code>: config objects for the next Button component to create.</li>
-<li><code>next_type</code>: the next arrow Button component's Widget type. Defaults to <code>'Button'</code>.</li>
-<li><code>prev</code>: config objects for the prev Button component to create.</li>
-<li><code>prev_type</code>: the prev arrow Button component's Widget type. Defaults to <code>'Button'</code>.</li>
-<li><code>current_date</code>: element or selector for the element which will serve as the heading
-that contains current date.</li>
-<li><code>max_date</code>: max possible date for selection.</li>
-<li><code>min_date</code>: min possible date for selection.</li>
+<li><code>underlay</code>: config object for the Overlay used as the modal's underlay.</li>
+<li><code>underlay_type</code>: the modal's underlay Overlay component's Widget type. Defaults to <code>'Overlay'</code>.</li>
+<li><code>buttons</code>: array of config objects for Button components to create.</li>
 </ul>
     </div>
     
@@ -2777,7 +2742,7 @@ that contains current date.</li>
     
         
         <div class="tag-source">
-            composites/Datepicker.js, line 267
+            composites/Datepicker.js, line 281
         </div>
         
     </div>
@@ -2853,7 +2818,7 @@ that contains current date.</li>
     
         
         <div class="tag-source">
-            composites/Datepicker.js, line 293
+            composites/Datepicker.js, line 307
         </div>
         
     </div>
@@ -3141,7 +3106,7 @@ Adds the <code>layered</code> class to the top container element.</p>
     
         
         <div class="tag-source">
-            composites/Datepicker.js, line 280
+            composites/Datepicker.js, line 294
         </div>
         
     </div>
@@ -3217,7 +3182,7 @@ Adds the <code>layered</code> class to the top container element.</p>
     
         
         <div class="tag-source">
-            composites/Datepicker.js, line 303
+            composites/Datepicker.js, line 317
         </div>
         
     </div>
@@ -3229,82 +3194,6 @@ Adds the <code>layered</code> class to the top container element.</p>
     
     <div class="description">
         <p>Changes state to previous month.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="register">
-            
-            register<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Layered.html">Layered</a>}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            mixins/Layered.js, line 31
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Registers the widget as a Layered widget under its container widget.</p>
     </div>
     
 
@@ -3381,6 +3270,82 @@ Adds the <code>layered</code> class to the top container element.</p>
     
     <div class="description">
         <p>Registers the widget as a Positioned widget under its container widget.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
+        
+            
+<dt class="">
+    <div class="nameContainer">
+        <h4 class="name" id="register">
+            
+            register<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Layered.html">Layered</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            mixins/Layered.js, line 31
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Registers the widget as a Layered widget under its container widget.</p>
     </div>
     
 
@@ -3524,7 +3489,7 @@ Adds the <code>layered</code> class to the top container element.</p>
     
         
         <div class="tag-source">
-            composites/Datepicker.js, line 217
+            composites/Datepicker.js, line 231
         </div>
         
     </div>
@@ -3733,7 +3698,7 @@ Adds the <code>layered</code> class to the top container element.</p>
     
         
         <div class="tag-source">
-            composites/Select.js, line 182
+            composites/Select.js, line 192
         </div>
         
     </div>
@@ -3941,141 +3906,6 @@ this instance awakes.</li>
     <div class="nameContainer">
         <h4 class="name" id="setSelected">
             
-            setSelected<span class="signature">(<span class="optional">toggle</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
-        </h4>
-    
-        
-        <div class="tag-source">
-            composites/Select.js, line 153
-        </div>
-        
-    </div>
-
-    
-</dt>
-<dd>
-    
-    
-    <div class="description">
-        <p>Triggers selection in the menu component and in turn
-updates the text in the content element.</p>
-    </div>
-    
-
-    
-    
-    
-    
-    
-        
-
-<table class="params">
-    <thead>
-	<tr>
-		
-		<th>Name</th>
-		
-		
-		<th>Type</th>
-		
-		
-		
-		<th class="last">Description</th>
-	</tr>
-	</thead>
-	
-	<tbody>
-	
-	
-        <tr>
-            
-                <td class="name"><code>toggle</code></td>
-            
-            
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-|
-
-<span class="param-type">HTMLElement</span>
-|
-
-<span class="param-type">Array.&lt;HTMLElement></span>
-
-
-            
-            </td>
-            
-            
-            
-            <td class="description last">
-                
-                    
-                        <span class="optional">optional</span>
-                    
-                    
-                        
-                    
-                
-                <p>a new item element to set as the selected one, or <code>true</code> to toggle it if already cached.</p></td>
-        </tr>
-	
-	
-	</tbody>
-</table>
-    
-    
-    
-<dl class="details">
-    
-        
-    
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-</dl>
-
-    
-    
-
-    
-
-    
-    
-    
-    
-    
-    
-    
-
-
-    
-    
-    
-</dd>
-
-        
-            
-<dt class="">
-    <div class="nameContainer">
-        <h4 class="name" id="setSelected">
-            
             setSelected<span class="signature">(<span class="optional">toggle</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="SelectMenu.html">SelectMenu</a>}</span>
         </h4>
     
@@ -4216,14 +4046,14 @@ for the selection promise.</p></td>
             
 <dt class="">
     <div class="nameContainer">
-        <h4 class="name" id="sleep">
+        <h4 class="name" id="setSelected">
             
-            sleep<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Layered.html">Layered</a>}</span>
+            setSelected<span class="signature">(<span class="optional">toggle</span>)</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{Promise}</span>
         </h4>
     
         
         <div class="tag-source">
-            mixins/Layered.js, line 65
+            composites/Select.js, line 163
         </div>
         
     </div>
@@ -4234,8 +4064,8 @@ for the selection promise.</p></td>
     
     
     <div class="description">
-        <p>Moves this layer to the background.
-Removes the <code>current</code> class from the top container element.</p>
+        <p>Triggers selection in the menu component and in turn
+updates the text in the content element.</p>
     </div>
     
 
@@ -4243,6 +4073,64 @@ Removes the <code>current</code> class from the top container element.</p>
     
     
     
+    
+        
+
+<table class="params">
+    <thead>
+	<tr>
+		
+		<th>Name</th>
+		
+		
+		<th>Type</th>
+		
+		
+		
+		<th class="last">Description</th>
+	</tr>
+	</thead>
+	
+	<tbody>
+	
+	
+        <tr>
+            
+                <td class="name"><code>toggle</code></td>
+            
+            
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">HTMLElement</span>
+|
+
+<span class="param-type">Array.&lt;HTMLElement></span>
+
+
+            
+            </td>
+            
+            
+            
+            <td class="description last">
+                
+                    
+                        <span class="optional">optional</span>
+                    
+                    
+                        
+                    
+                
+                <p>a new item element to set as the selected one, or <code>true</code> to toggle it if already cached.</p></td>
+        </tr>
+	
+	
+	</tbody>
+</table>
     
     
     
@@ -4293,14 +4181,14 @@ Removes the <code>current</code> class from the top container element.</p>
             
 <dt class="">
     <div class="nameContainer">
-        <h4 class="name" id="unregister">
+        <h4 class="name" id="sleep">
             
-            unregister<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Layered.html">Layered</a>}</span>
+            sleep<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Layered.html">Layered</a>}</span>
         </h4>
     
         
         <div class="tag-source">
-            mixins/Layered.js, line 76
+            mixins/Layered.js, line 65
         </div>
         
     </div>
@@ -4311,7 +4199,8 @@ Removes the <code>current</code> class from the top container element.</p>
     
     
     <div class="description">
-        <p>Removes this instance from the layered widgets registry.</p>
+        <p>Moves this layer to the background.
+Removes the <code>current</code> class from the top container element.</p>
     </div>
     
 
@@ -4441,6 +4330,82 @@ Removes the <code>current</code> class from the top container element.</p>
     
 </dd>
 
+        
+            
+<dt class="">
+    <div class="nameContainer">
+        <h4 class="name" id="unregister">
+            
+            unregister<span class="signature">()</span><span class="glyphicon glyphicon-circle-arrow-right"></span><span class="type-signature returnType">{<a href="Layered.html">Layered</a>}</span>
+        </h4>
+    
+        
+        <div class="tag-source">
+            mixins/Layered.js, line 76
+        </div>
+        
+    </div>
+
+    
+</dt>
+<dd>
+    
+    
+    <div class="description">
+        <p>Removes this instance from the layered widgets registry.</p>
+    </div>
+    
+
+    
+    
+    
+    
+    
+    
+    
+<dl class="details">
+    
+        
+    
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+</dl>
+
+    
+    
+
+    
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+    
+    
+</dd>
+
         </dl>
     
     
@@ -4458,7 +4423,7 @@ Removes the <code>current</code> class from the top container element.</p>
         
 
         <footer>
-            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Feb 19 2016 21:50:09 GMT+0200 (IST)
+            Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a> on Fri Feb 19 2016 21:59:24 GMT+0200 (IST)
         </footer>
     </div>
 </div>
