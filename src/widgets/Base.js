@@ -111,7 +111,7 @@
          * @memberOf BaseWidget
          * @instance
          * @param {Object} options - config object for the widget.
-         * @returns {Promise[]|undefined}
+         * @returns {Promise}
          */
         init            : function (options) {
             // ready...
@@ -144,8 +144,8 @@
         },
         /**
          * Initializes contained widget instances.
-         * Returns a Promise or `undefined` if the
-         * `components` option is not set.
+         * Returns a Promise that resolves once all
+         * contained `components` finish initializing.
          *
          * If the `container` option of the contained widgets is not
          * set, it will be automatically set to the `id` of this widget.
@@ -156,7 +156,7 @@
          *
          * @memberOf BaseWidget
          * @instance
-         * @returns {Promise|undefined}
+         * @returns {Promise}
          */
         initContained   : function () {
             var container_id = this.id,
@@ -169,6 +169,7 @@
                 });
                 return uijet.start(contained);
             }
+            return uijet.when(this);
         },
         /**
          * Gets the `context` object of the instance or the value
