@@ -34,13 +34,13 @@
             obj.on('change:' + keypath, callback);
         },
         unobserve: function (obj, keypath, callback) {
-            obj.off('change:' + keypath, callback)
+            obj.off('change:' + keypath, callback);
         },
         get      : function (obj, keypath) {
-            return obj.get(keypath)
+            return obj.get(keypath);
         },
         set      : function (obj, keypath, value) {
-            obj.set(keypath, value)
+            obj.set(keypath, value);
         }
     };
 
@@ -158,7 +158,9 @@
                 }
 
                 // bind and hold on to the bound view
-                this.rv_view = rivets.bind(this.$wrapper || this.$element, observables, this.options.bind_options);
+                this.rv_view = rivets.bind((this.$wrapper || this.$element)[0],
+                                           observables,
+                                           this.options.bind_options);
             }
 
             this.bindDataEvents();
