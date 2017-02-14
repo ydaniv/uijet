@@ -1580,12 +1580,11 @@
          *
          * @memberOf uijet
          * @param {Object} widget - a widget declaration.
-         * @returns {Promise[]|Promise} - a Promise object or an array of Promises.
+         * @returns {Promise} - a Promise object.
          * @private
          */
         __start              : function (widget) {
             var _factory = widget.factory,
-                _config = widget.config,
                 _w, l, _c, _adapters;
             // if this is a  cached factory declaration
             if ( _factory && widget_factories[_factory] ) {
@@ -1593,11 +1592,11 @@
                 widget = widget_factories[_factory](_config);
             }
             // generate (or get from cache) the mixed-in class
-            _c = this.__generate(widget.type, _config.mixins);
+            _c = this.__generate(widget.type, widget.config.mixins);
             // create a new Widget instance from that class
             _w = new _c();
             // if we have adapters to use
-            if ( _adapters = toArray(_config.adapters) ) {
+            if ( _adapters = toArray(widget.config.adapters) ) {
                 l = _adapters.length;
                 // extend this instance with these adapters
                 while ( l -- ) {
@@ -1610,7 +1609,7 @@
                 extendProto(_w, adapters[TOP_ADAPTER_NAME]);
             }
             // init the instance
-            return _w.init(_config);
+            return _w.init(widget.config);
         },
         /**
          * Registers a widget into the uijet sandbox.
