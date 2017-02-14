@@ -14,7 +14,6 @@
         /**
          * Builds a context object from the returned arguments of a route.
          * Named parameters in `route` are indexed in the context object by name.
-         * Unnamed parameters are indexed by position in `args_array`.
          *
          * Also supports splat params using the prefix `'*'`.
          *
@@ -28,12 +27,12 @@
             var context = {},
             // matches anything that contains ':' followed by a name
                 named_arg_re = /.*:([-\w]+)/,
-                parts = route.split('/'),
+                parts = route.replace(/\(|\)/g, '').split('/'),
                 i = 0, n = 0,
                 part, match, splat_parts;
 
             // make sure `args_array` is an `Array`
-            args_array = toArray(args_array) || [];
+            args_array = uijet.utils.toArray(args_array) || [];
 
             // make sure we don't stop looping because of leading '/'
             while ( part = parts[i++], typeof part == 'string' ) {
@@ -41,11 +40,6 @@
                 if ( match = part.match(named_arg_re) ) {
                     // then add it to the context by name
                     context[match[1]] = args_array.shift();
-                    n += 1;
-                }
-                else if ( ~part.indexOf('(') ) {
-                    // if it's unnamed then add it by its index in `args_array`
-                    context[n] = args_array.shift();
                     n += 1;
                 }
                 else if ( part[0] == '*' ) {

@@ -1,6 +1,6 @@
 /*!
  * uijet UI Framework
- * @version 0.0.74
+ * @version 0.0.75
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
@@ -1104,7 +1104,7 @@
             else if ( isArr(declarations) ) {
                 declared_widgets.push.apply(declared_widgets, declarations);
             }
-            return this;
+            return uijet.when(this);
         }
     }
 
@@ -1782,7 +1782,7 @@
          *
          * @memberOf uijet
          * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
-         * @returns {uijet|Promise} uijet|promise - uijet if it's not initialized yet, otherwise a promise that resolves when all started instances are initialized.
+         * @returns {Promise} promise - a promise that resolves when all started instances are initialized.
          * @throws {Error} - if `declarations` is neither an `Array` nor an `Object`.
          */
         declare              : uijet_declare_or_start,
@@ -1791,7 +1791,7 @@
          *
          * @memberOf uijet
          * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
-         * @returns {uijet|Promise} uijet|promise - uijet if it's not initialized yet, otherwise a promise that resolves when all started instances are initialized.
+         * @returns {Promise} promise - a promise that resolves when all started instances are initialized.
          * @throws {Error} - if `declarations` is neither an `Array` nor an `Object`.
          */
         start                : uijet_declare_or_start,

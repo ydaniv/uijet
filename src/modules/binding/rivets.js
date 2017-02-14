@@ -123,7 +123,9 @@
                 }
 
                 // bind and hold on to the bound view
-                this.rv_view = rivets.bind(this.$wrapper || this.$element, observables, this.options.bind_options);
+                this.rv_view = rivets.bind((this.$wrapper || this.$element)[0],
+                                           observables,
+                                           this.options.bind_options);
             }
             return this;
         }
