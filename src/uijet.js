@@ -80,27 +80,6 @@
             }
             return null;
         },
-        /**
-         * Polyfill for requestAnimationFrame
-         */
-        requestAnimFrame = (function () {
-            return _window.requestAnimationFrame ||
-                   getPrefixed('RequestAnimationFrame', _window) ||
-                   function (callback) {
-                       return _window.setTimeout(callback, 1000 / 60);
-                   };
-        }()),
-        /**
-         * Polyfill for cancelAnimationFrame
-         */
-        cancelAnimFrame = (function () {
-            return _window.cancelAnimationFrame ||
-                   getPrefixed('CancelRequestAnimationFrame', _window) ||
-                   getPrefixed('CancelAnimationFrame', _window) ||
-                   function (requestId) {
-                       return _window.clearTimeout(requestId);
-                   };
-        }()),
         // check for touch support
         has_touch = ! ! (('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
         /**
@@ -2008,13 +1987,6 @@
                 array.splice(position, 0, name);
             }
             return array;
-        },
-        // wrap these objects since they point to native objects which is forbidden
-        requestAnimFrame: function (f) {
-            return requestAnimFrame(f);
-        },
-        cancelAnimFrame : function (id) {
-            return cancelAnimFrame(id);
         }
     };
 

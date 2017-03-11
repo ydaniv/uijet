@@ -4,12 +4,12 @@
             'uijet_dir/uijet',
             'uijet_dir/mixins/Transitioned'
         ], function (uijet) {
-            return factory(uijet);
+            return factory(root, uijet);
         });
     } else {
-        factory(uijet);
+        factory(root, uijet);
     }
-}(this, function (uijet) {
+}(this, function (root, uijet) {
 
     /**
      * uijet-transit animation module.
@@ -19,8 +19,7 @@
      * @sub-category Animation
      * @extends uijet
      */
-    var requestAnimFrame = uijet.utils.requestAnimFrame,
-        getStyle = uijet.utils.getStyle,
+    var getStyle = uijet.utils.getStyle,
         // get the Transitioned mixin
         transitioned = uijet.Mixin('Transitioned'),
         duration_re = /([\.\d]+)(ms|s)/,
@@ -214,7 +213,7 @@
             if ( transit_type in this.special_animations ) {
                 var end = this.special_animations[transit_type].call(this, widget, is_direction_in);
                 // if transitionend event is not supported assuming there's no transition
-                (end === false || ! trans_end_event) && requestAnimFrame(transitionendHandler);
+                (end === false || ! trans_end_event) && root.requestAnimationFrame(transitionendHandler);
             }
             else {
                 has_class_name = $el.hasClass(class_name);
@@ -226,7 +225,7 @@
                 }
                 // otherwise do the animation
                 else {
-                    this['animation_id_' + widget.id] = requestAnimFrame(function () {
+                    this['animation_id_' + widget.id] = root.requestAnimationFrame(function () {
                         $el.addClass(transitioned_class).toggleClass(class_name, is_direction_in);
                     });
                 }
@@ -248,7 +247,7 @@
                 handles = [];
             $el.addClass('transitioned');
             have_callback && trans_end_event && $el.one(trans_end_event, callback);
-            handles.push(requestAnimFrame(function () {
+            handles.push(root.requestAnimationFrame(function () {
                 var style = $el[0].style, p, duration, delay;
                 if ( typeof props == 'string' )
                     style.cssText = props;
