@@ -51,7 +51,7 @@
             // append this as content element of the overlay
             overlay.appendChild((this.$wrapper || this.$element)[0]);
             // insert the overlay to the app's element's as its first child
-            uijet.$element[0].insertBefore(overlay, uijet.$element[0].firstChild);
+            uijet.$element[0].insertBefore(overlay, uijet.$element[0].firstElementChild);
 
             // create the overlay widget
             components.unshift({ type: 'Overlay', config: uijet.utils.extend(true, {

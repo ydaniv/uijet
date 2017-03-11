@@ -1,12 +1,12 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['uijet_dir/uijet', 'jquery'], function (uijet, $) {
-            return factory(uijet, $);
+        define(['jquery'], function ($) {
+            return factory($);
         });
     } else {
-        factory(uijet, root.jQuery);
+        factory(root.jQuery);
     }
-}(this, function (uijet, $) {
+}(this, function ($) {
     /**
      * jQuery dom module.
      * 
@@ -15,17 +15,18 @@
      * @sub-category DOM
      * @extends uijet
      * @see {@link http://api.jquery.com/}
-     * @exports jQuery
      */
-    uijet.use({
-        /**
-         * Reference to jQuery.
-         * 
-         * @see {@link http://api.jquery.com/}
-         * @method module:dom/jquery#$
-         */
-        $   : $
-    }, uijet);
+    return function (uijet) {
+        uijet.use({
+            /**
+             * Reference to jQuery.
+             *
+             * @see {@link http://api.jquery.com/}
+             * @method module:dom/jquery#$
+             */
+            $   : $
+        }, uijet);
 
-    return $;
+        return $;
+    };
 }));

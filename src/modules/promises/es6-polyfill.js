@@ -1,13 +1,13 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(['require', 'uijet_dir/uijet', 'es6-promise', './es6'], function (require, uijet, polyfill) {
-            return factory(root, uijet, polyfill, require);
+        define(['es6-promise', 'uijet_dir/modules/promises/es6'], function (polyfill, es6) {
+            return factory(root, polyfill, es6);
         });
     }
     else {
-        factory(root, root.uijet, root.ES6Promise);
+        factory(root, root.ES6Promise);
     }
-}(this, function (root, uijet, polyfill, require) {
+}(this, function (root, polyfill, es6) {
 
     /**
      * ES6-Promise polyfill promises module.
@@ -20,10 +20,9 @@
      * @extends uijet
      * @see {@link https://github.com/jakearchibald/es6-promise/blob/master/README.md}
      */
+    return function (uijet) {
+        polyfill.polyfill();
 
-    polyfill.polyfill();
-
-    if ( require ) {
-        require('./es6');
-    }
+        return es6(uijet);
+    };
 }));

@@ -149,6 +149,6 @@
             return this._super.apply(this, arguments);
         }
     }, {
-        widgets: ['Button']
+        widget: 'Button'
     });
 }));

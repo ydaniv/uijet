@@ -49,6 +49,8 @@
                 this.$element.unmousewheel().mousewheel(function (e, delta, dx, dy) {
                     // prevent the default scrolling and keep it inside the widget
                     e.preventDefault();
+                    // if nested, this prevents scrolling of outer scrollers
+                    e.stopPropagation();
                     //TODO: consider for optimization using cache based offset instead of using offsetLeft/Top which cause reflow
                     that.scrollTo(is_horizontal ? (- el.offsetLeft - 37 * dx) : (- el.offsetTop - 37 * dy));
                 });

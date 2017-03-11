@@ -1,29 +1,31 @@
 /*!
  * uijet UI Framework
- * @version 0.0.71
+ * @version 0.0.76
  * @license BSD License (c) copyright Yehonatan Daniv
  * https://raw.github.com/ydaniv/uijet/master/LICENSE
  */
 ;
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define(function () {
-            return factory(root);
+        define(['pubsub', 'promises', 'dom'], function (pubsub, promises, dom) {
+            return factory(root, pubsub, promises, dom);
         });
     }
     else {
         root.uijet = factory(root);
     }
-}(this, function (_window) {
+}(this, function (_window, pubsub, promises, dom) {
     /*
      * uijet's globals and some local caching of stuff from global namespace
      */
     var Function = _window.Function,
         Object = _window.Object,
         Array = _window.Array,
-        BROWSER_PREFIX = { style: ['webkit', 'Moz', 'O', 'ms'], prop: [
-            'WebKit', 'webkit', 'moz', 'o', 'ms'
-        ], matches              : {} },
+        BROWSER_PREFIX = {
+            style     : ['webkit', 'Moz', 'O', 'ms'], prop: [
+                'WebKit', 'webkit', 'moz', 'o', 'ms'
+            ], matches: {}
+        },
         // regexp for simple string format
         SUBSTITUTE_RE = /\{([^\s\}]+)\}/g,
         // native utilities caching
@@ -35,14 +37,14 @@
         declared_widgets = [],
         widgets = { __app__: { contained: [], id: '__app__' } },
         resources = {},
-        // caching pre-built predefined widgets' classes
+        // caching pre-built predefined widget classes
         // `{ proto : widget_prototype, deps : dependencies }`
         widget_definitions = {},
-        // caching built pre-defined widgets' classes
+        // caching built widget classes - NOT mixed-in
         widget_classes = {},
-        // caching built and mixed-in widgets' classes
+        // caching built and mixed-in widget classes
         widget_mixedin_classes = {},
-        // caching widgets declarations factories
+        // caching widget declaration factories
         widget_factories = {},
         // constants
         TOP_ADAPTER_NAME = 'TopAdapter',
@@ -60,34 +62,6 @@
                 function (f) {
                     _window.setTimeout(f, 0);
                 },
-        /*
-         * TODO: document this
-         */
-        consoleOrRethrow = (function () {
-            function rethrow (e) {
-                throw e.stack || e;
-            }
-            if ( console ) {
-                return function (e) {
-                    if ( uijet.debug ) {
-                        console.error(e.stack || e);
-                    }
-                    else {
-                        rethrow(e);
-                    }
-                };
-            }
-            else {
-                return function (e) {
-                    if ( uijet.debug ) {
-                        async(rethrow);
-                    }
-                    else {
-                        rethrow(e);
-                    }
-                };
-            }
-        }()),
         /**
          * Searches for a prefixed name of `name` inside `obj`.
          *
@@ -99,7 +73,7 @@
         getPrefixed = function (name, obj) {
             var cases = BROWSER_PREFIX.prop,
                 len = cases.length, prop;
-            while ( len-- ) {
+            while ( len -- ) {
                 if ( prop = obj[cases[len] + name] ) {
                     return prop;
                 }
@@ -128,7 +102,7 @@
                    };
         }()),
         // check for touch support
-        has_touch = !!(('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
+        has_touch = ! ! (('ontouchstart' in _window) || _window.DocumentTouch && document instanceof DocumentTouch),
         /**
          * Checks if given argument is an `Array`.
          * Uses {@see Array.isArray} by default if it exists.
@@ -140,8 +114,8 @@
          */
         isArr = (function () {
             return Array.isArray || function (obj) {
-                return objToString.call(obj) == '[object Array]';
-            };
+                    return objToString.call(obj) == '[object Array]';
+                };
         }()),
         // the sandbox
         uijet;
@@ -236,7 +210,7 @@
         var use_keys = isObj(data),
             n = 0;
         return template.replace(SUBSTITUTE_RE, function (match, key) {
-            return use_keys ? data[key] : data[n++];
+            return use_keys ? data[key] : data[n ++];
         });
     }
 
@@ -260,7 +234,7 @@
         if ( prop ) {
             if ( isArr(prop) ) {
                 res = {};
-                for ( var i = 0; p = prop[i++]; ) {
+                for ( var i = 0; p = prop[i ++]; ) {
                     res[p] = style.getPropertyValue(p);
                 }
                 return res;
@@ -569,8 +543,8 @@
          * @method uijet.Base#register
          * @returns {uijet.Base}
          */
-        register        : function () {
-            if ( !this.registered ) {
+        register     : function () {
+            if ( ! this.registered ) {
                 uijet._register(this);
                 this.registered = true;
 
@@ -584,7 +558,7 @@
          * @method uijet.Base#unregister
          * @returns {uijet.Base}
          */
-        unregister      : function () {
+        unregister   : function () {
             uijet._unregister(this);
             this.registered = false;
             return this;
@@ -612,7 +586,7 @@
          * @returns {uijet.Base}
          */
         unlisten     : function (topic) {
-            if ( !topic ) {
+            if ( ! topic ) {
                 for ( topic in this.signals_cache ) {
                     this.unlisten(topic);
                 }
@@ -726,7 +700,7 @@
          * @returns {uijet.Base}
          */
         unsubscribe  : function (topic, handler) {
-            if ( !handler && this.app_events ) {
+            if ( ! handler && this.app_events ) {
                 handler = this.app_events[topic];
                 delete this.app_events[topic];
             }
@@ -815,7 +789,7 @@
                 if ( handler[handler.length - 1] == '+' ) {
                     // use `apply` and pass arguments on invocation
                     apply_args = true;
-                    handler = handler.slice(0, -1);
+                    handler = handler.slice(0, - 1);
                 }
                 // if starts with a '-'
                 if ( handler[0] == '-' ) {
@@ -852,34 +826,38 @@
     };
     /**
      * Normalizes a name of a dependency or an array names of dependencies into a standard dependencies object
-     * with `mixins` and `widgets` keys containing `Array`s of names of mixins and widgets.
+     * with a `mixins` key mapped to an `Array` of names of Mixins and `widget` key mapped to a Widget's name.
      *
      * According to the `deps` argument it behaves as follows:
      *
-     * * `string` it's assumed to be a name of a mixin.
+     * * `string` it's assumed to be a name of a widget.
      * * `Array` it's assumed to be a list of mixin names.
-     * * `Object` it's assumed to be a standard dependencies object and its `mixins` and `widgets` keys are normalized to `Array`s.
+     * * `Object` it's assumed to be a standard dependencies object with a `mixins` key normalized to an `Array` and a `widget`.
      * * Falsy arguments yield `undefined`
      *
      * @param {*} deps - the dependencies to normalize into an `Object`.
      * @returns {Object|undefined} - a standard dependencies object.
      */
     function normalizeDeps (deps) {
-        if ( !deps ) {
+        if ( ! deps ) {
             return;
         }
-        var deps_as_obj = isObj(deps),
-            _deps = {};
+        var _deps = {};
         // if `deps` is an `Object`
-        if ( deps_as_obj ) {
-            // convert the dependecies inside it to `Array`s
+        if ( isObj(deps) ) {
+            // convert the Mixin dependecies inside it to an `Array`
             _deps.mixins = toArray(deps.mixins) || [];
-            _deps.widgets = toArray(deps.widgets) || [];
+            _deps.widget = deps.widget || void 0;
+        }
+        else if ( isArr(deps) ) {
+            // if it's an `Array` it's a list of Mixin names, just copy it
+            _deps.mixins = toArray(deps);
+            _deps.widget = void 0;
         }
         else {
-            // otherwise, it's just a list of mixins name, just copy it
-            _deps.mixins = toArray(deps);
-            _deps.widgets = [];
+            // otherwise it's a name of a Widget to inherit
+            _deps.mixins = [];
+            _deps.widget = deps;
         }
         return _deps;
     }
@@ -891,19 +869,17 @@
      * If any dependency is missing returns `true`, otherwise `false`.
      *
      * @param {Object} deps - normalized dependencies declaration.
-     * @returns {boolean} missing - whether there's a dependency that's not defined yet.
+     * @returns {string|boolean} missing - the name of the missing dependency that's not defined yet or `false`.
      */
     function missingDependency (deps) {
         var m, len;
-        for ( len = deps.mixins.length; m = deps.mixins[--len]; ) {
-            if ( !(m in mixins) ) {
-                return true;
+        for ( len = deps.mixins.length; m = deps.mixins[-- len]; ) {
+            if ( ! (m in mixins) ) {
+                return m;
             }
         }
-        for ( len = deps.widgets.length; m = deps.widgets[--len]; ) {
-            if ( !(m in widget_classes) ) {
-                return true;
-            }
+        if ( deps.widget && ! (deps.widget in widget_classes) ) {
+            return deps.widget;
         }
         return false;
     }
@@ -971,7 +947,7 @@
             // try cached prefix
             if ( prefix = BROWSER_PREFIX.prefix ) {
                 if ( (prefix + camelized) in style ) {
-                    if ( as_css_text) {
+                    if ( as_css_text ) {
                         return '-' + prefix.toLowerCase() + '-' + prop;
                     }
                     else {
@@ -983,11 +959,11 @@
             }
 
             // try all prefixes
-            while ( prefix = cases[i++] ) {
+            while ( prefix = cases[i ++] ) {
                 if ( (prefix + camelized) in style ) {
                     // cache the prefix that worked
                     BROWSER_PREFIX.prefix = prefix;
-                    if ( as_css_text) {
+                    if ( as_css_text ) {
                         return '-' + prefix.toLowerCase() + '-' + prop;
                     }
                     else {
@@ -1011,8 +987,8 @@
      */
     function contains (a, b) {
         return b && (a.contains ?
-                     a != b && a.contains(b) :
-                     !!( a.compareDocumentPosition(b) & 16 ));
+                    a != b && a.contains(b) :
+                    ! ! ( a.compareDocumentPosition(b) & 16 ));
     }
 
     /**
@@ -1027,7 +1003,7 @@
      */
     function getOffsetOf (child, parent) {
         var result = { x: 0, y: 0 };
-        if ( !child || !parent || child === parent || !contains(parent, child) ) {
+        if ( ! child || ! parent || child === parent || ! contains(parent, child) ) {
             return result;
         }
         // loop up the DOM tree until offsetParent is `null`
@@ -1043,6 +1019,95 @@
         return result;
     }
 
+    /*
+     * Returns a unique set from a given list of items.
+     * Used in `uijet.__generate()` for getting a unique list of Mixins.
+     *
+     * @param {Array} list - list of items to filter.
+     * @returns {Array} - the incoming list filtered to contain only unique items.
+     */
+    function _unique (list) {
+        return list.filter(function (m, i, arr) {
+            return arr.indexOf(m) === i;
+        });
+    }
+
+    /*
+     * Returns a concatenated list of all Mixin dependencies for a given normalized dependencies object.
+     *
+     * @param {{mixins: string[], widget: string}} deps - a normalized dependencies object.
+     * @returns {string[]}
+     */
+    function _mergeMixinDeps (deps) {
+        if ( ! deps || ! deps.mixins || ! deps.mixins.length ) {
+            return [];
+        }
+        if ( deps.widget ) {
+            return deps.mixins.concat(_mergeMixinDeps(widget_definitions[deps.widget]));
+        }
+        return deps.mixins;
+    }
+
+    /*
+     * Returns a constructor for a given Widget type.
+     *
+     * @param {string} type - a name of a cached widget definition.
+     * @returns {function} - the fully created widget class constructor.
+     */
+    function _generateWidgetClass (type) {
+        var definition = widget_definitions[type],
+            parent;
+
+        // if the class is cached return it
+        if ( type in widget_classes ) {
+            return widget_classes[type];
+        }
+
+        // if there's a parent class to inherit
+        if ( parent = (definition && definition.deps && definition.deps.widget) ) {
+            // get/generate the parent class, inherit it, cache and return
+            return (widget_classes[type] = Create(definition.proto, _generateWidgetClass(parent)));
+        }
+
+        // no cache and no parent, just create on top of BaseWidget, cache and return
+        return (widget_classes[type] = Create(definition.proto, uijet.BaseWidget));
+    }
+
+    function uijet_declare_or_start (declarations) {
+        if ( this.initialized || this.initializing ) {
+            var i, dfrd_starts, _c;
+            // if `declarations` is an `Object`
+            if ( isObj(declarations) ) {
+                // do the starting
+                return uijet.when(this.__start(declarations));
+            }
+            // if it's an `Array`
+            else if ( isArr(declarations) ) {
+                i = 0;
+                dfrd_starts = [];
+                // loop over the widget declarations in it
+                while ( _c = declarations[i] ) {
+                    // and start every one of them
+                    dfrd_starts[i] = this.__start(_c);
+                    i += 1;
+                }
+                // return a promise of all `declarations` started
+                return this.whenAll(dfrd_starts);
+            }
+            throw new Error('`widgets` must be either an Object or an Array. Instead got: ' +
+                            objToString.call(declarations));
+        }
+        else {
+            if ( isObj(declarations) ) {
+                declared_widgets.push(declarations);
+            }
+            else if ( isArr(declarations) ) {
+                declared_widgets.push.apply(declared_widgets, declarations);
+            }
+            return uijet.when(this);
+        }
+    }
+
     /**
      * The sandbox module.
      *
@@ -1050,6 +1115,8 @@
      */
     uijet = {
         debug                : true,
+        initializing         : false,
+        initialized          : false,
         route_prefix         : '',
         route_suffix         : '',
         init_queue           : [],
@@ -1093,19 +1160,19 @@
              *
              * @member {string} uijet.support.transform
              */
-            transform    : !!getStyleProperty('transform'),
+            transform    : ! ! getStyleProperty('transform'),
             /**
              * Whether this platform supports transitions.
              *
              * @member {string} uijet.support.transition
              */
-            transition   : !!getStyleProperty('transition'),
+            transition   : ! ! getStyleProperty('transition'),
             /**
              * Whether this platform supports 3D transforms.
              *
              * @member {boolean} uijet.support.3d
              */
-            '3d'         : !!getStyleProperty('perspective'),
+            '3d'         : ! ! getStyleProperty('perspective'),
             /**
              * Holds the name of the `trasitionend` event in this platform.
              *
@@ -1158,41 +1225,20 @@
          * @returns {uijet}
          */
         Widget               : function (type, props, deps) {
-            var _deps = normalizeDeps(deps);
+            var _deps = normalizeDeps(deps),
+                missing;
             // Cache the widget's definition for JIT creation
             this.__define(type, props, _deps);
             // create and cache the class
             // if we have dependencies
-            if ( _deps && !this.initialized ) {
-                if ( missingDependency(_deps) ) {
-                    if ( isFunc(this.importModules) ) {
-                        // defer the widget class definition till we have promises module loaded
-                        // plus its dependencies are loaded
-                        this.init_queue.push(function (resolve) {
-                            // make sure they're all loaded
-                            this.importModules(_deps,
-                                function () {
-                                    widget_classes[type] = this.__generate(props, _deps.mixins, _deps.widgets);
-                                    resolve();
-                                }.bind(this)
-                            );
-                        });
-                        // setting a placeholder for this widget definition so that uijet
-                        // will not get confused and try to load it from elsewhere, e.g. in `__extractDependencies()`
-                        widget_classes[type] = true;
-                    }
-                    else {
-                        throw new Error('There is no loader module used' +
-                                        ' and following dependencies are missing: ' + JSON.stringify(deps));
-                    }
-                }
-                else {
-                    widget_classes[type] = this.__generate(props, _deps.mixins, _deps.widgets);
+            if ( _deps && ! this.initialized ) {
+                if ( missing = missingDependency(_deps) ) {
+                    throw new Error('The dependency '  + missing + ' is missing for Widget ' + type);
                 }
             }
-            else {
-                widget_classes[type] = this.__generate(props);
-            }
+
+            this.__generate(type);
+
             return this;
         },
         /**
@@ -1243,33 +1289,41 @@
          *
          * It's possible to nest factories by using a `factory` in the `declaration` instead of `type`.
          *
+         * It's also possible to define a dynamic lazy factory as a `function` which
+         * will take the `config` object as an argument and will return a qualified declaration object.
+         *
          * @memberOf uijet
          * @param {string} name - identifier for this widget factory.
-         * @param {Object} declaration - a viable object for {@see uijet.declare()}.
+         * @param {Object|function} declaration - a viable object for {@see uijet.declare()} or a function that returns one.
          * @returns {uijet}
          */
         Factory              : function (name, declaration) {
-            widget_factories[name] = function (config) {
-                // create a copy of the original declaration
-                // make sure the original `config` object is copied
-                var declaration_copy;
-                if ( declaration.type ) {
-                    declaration_copy = {
-                        type  : declaration.type,
-                        config: copy(true, declaration.config)
-                    };
-                }
-                else {
-                    var copy_of_dec_factory = widget_factories[declaration.factory](declaration.config);
-                    declaration_copy = {
-                        type  : copy_of_dec_factory.type,
-                        config: copy(true, copy_of_dec_factory.config)
-                    };
-                }
-                // mix in additional configurations
-                config && extend(true, declaration_copy.config, config);
-                return declaration_copy;
-            };
+            if ( isFunc(declaration) ) {
+                widget_factories[name] = declaration;
+            }
+            else {
+                widget_factories[name] = function (config) {
+                    // create a copy of the original declaration
+                    // make sure the original `config` object is copied
+                    var declaration_copy;
+                    if ( declaration.type ) {
+                        declaration_copy = {
+                            type  : declaration.type,
+                            config: copy(true, declaration.config)
+                        };
+                    }
+                    else {
+                        var copy_of_dec_factory = widget_factories[declaration.factory](declaration.config);
+                        declaration_copy = {
+                            type  : copy_of_dec_factory.type,
+                            config: copy(true, copy_of_dec_factory.config)
+                        };
+                    }
+                    // mix in additional configurations
+                    config && extend(true, declaration_copy.config, config);
+                    return declaration_copy;
+                };
+            }
             return this;
         },
         /**
@@ -1334,112 +1388,99 @@
          * set `uijet.$element[0].style.visibility` to `visible`.
          */
         init                 : function (options) {
-            // wrap the actual initialization function
-            var _init = function (_options) {
-                var task, q, _resources, _app_events;
-                this.options = _options || {};
-                // set top container
-                this.$element = this.$(this.options.element || 'body');
-                this.$element.addClass('uijet_app');
+            var task, q, _resources, _app_events, res, args, e;
+                options = options || {};
 
-                // unless requested by the user
-                if ( !this.options.dont_cover ) {
-                    // make the app container cover the entire viewport
-                    this.$element.addClass('cover');
-                }
-                if ( _options ) {
-                    if ( _options.debug ) {
-                        uijet.debug = _options.debug;
-                    }
-                    if ( _options.route_prefix ) {
-                        this.route_prefix = _options.route_prefix;
-                    }
-                    if ( _options.route_suffix ) {
-                        this.route_suffix = _options.route_suffix;
-                    }
-
-                    // check if the app is using a router
-                    this.options.routed = isFunc(this.setRoute);
-
-                    // set default animation type
-                    this.options.transition = _options.transition || 'fade';
-
-                    // check the init queue for deferred tasks
-                    if ( q = this.init_queue.length ) {
-                        while ( q-- ) {
-                            task = this.init_queue[q];
-                            // each task should be a `function` that takes a resolve and reject functions
-                            if ( isFunc(task) ) {
-                                // tasks' context is bound to uijet
-                                // all tasks in queue are replaced by corresponding promises
-                                this.init_queue[q] = uijet.Promise(task.bind(this));
-                            }
-                        }
-                    }
-                    // no tasks in queue
-                    else {
-                        this.init_queue = [
-                            {}
-                        ];
-                    }
-
-                    // register all resources
-                    if ( _resources = _options.resources ) {
-                        var res, args;
-                        // `resources` option is a map of resource registry name to its class
-                        for ( res in _resources ) {
-                            args = _resources[res];
-                            // a value in the `resources` option can also be an tuple of the class and initial state
-                            if ( isArr(args) ) {
-                                args.unshift(res);
-                                this.Resource.apply(this, args);
-                            }
-                            else {
-                                this.Resource(res, args);
-                            }
-                        }
-                    }
-
-                    // subscribe to all events
-                    if ( _app_events = _options.app_events ) {
-                        var e;
-                        for ( e in _app_events ) {
-                            this.subscribe(e, _app_events[e]);
-                        }
-                    }
-
-                    // after all tasks resolve
-                    return this.whenAll(this.init_queue)
-                        .then(function () {
-                            // build and init declared widgets
-                            // notice that here all modules are already loaded so this will run through
-                            return this.start(declared_widgets, true);
-                        }.bind(this), consoleOrRethrow)
-                        .then(function () {
-                            //when all declared widgets are initialized, set `uijet.initialized` to `true`
-                            this.initialized = true;
-                            // kick-start the GUI - unless ordered not to
-                            return _options.dont_start || this.startup();
-                        }.bind(this), consoleOrRethrow);
-                }
-                // no options given
-                else {
-                    this.initialized = true;
-                    // kick-start
-                    return this.startup();
-                }
-            };
             // if we have widgets defined
-            if ( options && isArr(options.widgets) ) {
+            if ( isArr(options.widgets) ) {
                 // add these to the declared ones
                 this.declare(options.widgets);
             }
-            // if using a loader module then import all the modules we need (Mixins, Widgets, Adapters, 3rd party...)
-            // and initialization will start when done
-            // otherwise start uijet
-            return isFunc(this.importModules) ?
-                   this.importModules(this.__extractDependencies(declared_widgets), _init.bind(this, options)) :
-                   _init.call(this, options);
+
+            this.options = options;
+
+            // set top container
+            this.$element = this.$(this.options.element || 'body');
+            this.$element.addClass('uijet_app');
+
+            // unless requested by the user
+            if ( ! this.options.dont_cover ) {
+                // make the app container cover the entire viewport
+                this.$element.addClass('cover');
+            }
+
+            uijet.debug = !! options.debug;
+
+            if ( options.route_prefix ) {
+                this.route_prefix = options.route_prefix;
+            }
+            if ( options.route_suffix ) {
+                this.route_suffix = options.route_suffix;
+            }
+
+            // check if the app is using a router
+            this.options.routed = isFunc(this.setRoute);
+
+            // set default animation type
+            this.options.transition = options.transition || 'fade';
+
+            // check the init queue for deferred tasks
+            if ( q = this.init_queue.length ) {
+                while ( q -- ) {
+                    task = this.init_queue[q];
+                    // each task should be a `function` that takes a resolve and reject functions
+                    if ( isFunc(task) ) {
+                        // tasks' context is bound to uijet
+                        // all tasks in queue are replaced by corresponding promises
+                        this.init_queue[q] = uijet.Promise(task.bind(this));
+                    }
+                }
+            }
+            // no tasks in queue
+            else {
+                this.init_queue = [
+                    {}
+                ];
+            }
+
+            if ( _resources = options.resources ) {
+                // register all resources
+                // `resources` option is a map of resource registry name to its class
+                for ( res in _resources ) {
+                    args = _resources[res];
+                    // a value in the `resources` option can also be an tuple of the class and initial state
+                    if ( isArr(args) ) {
+                        args.unshift(res);
+                        this.Resource.apply(this, args);
+                    }
+                    else {
+                        this.Resource(res, args);
+                    }
+                }
+            }
+
+            if ( _app_events = options.app_events ) {
+                // subscribe to all events
+                for ( e in _app_events ) {
+                    this.subscribe(e, _app_events[e]);
+                }
+            }
+
+            // after all tasks resolve
+            return this.whenAll(this.init_queue)
+                .then(function () {
+                    // switch from declaring components to starting them
+                    this.initializing = true;
+                    // build and init declared widgets
+                    // notice that here all modules are already loaded so this will run through
+                    return this.start(declared_widgets);
+                }.bind(this))
+                .then(function () {
+                    //when all declared widgets are initialized, set `uijet.initialized` to `true`
+                    this.initialized = true;
+                    // kick-start the GUI - unless ordered not to
+                    return options.dont_start || this.startup();
+                }.bind(this));
         },
         /**
          * Caches a definition of a widget in uijet.
@@ -1447,84 +1488,91 @@
          * @memberOf uijet
          * @param {string} _name - identifier for the widget.
          * @param {Object} _props - the widget's prototype.
-         * @param {Object} [_deps] - dependencies for this widget (widgets and mixins).
+         * @param {Object} [_deps] - dependencies for this widget (widget and mixins).
          * @returns {uijet}
          * @private
          */
         __define             : function (_name, _props, _deps) {
             widget_definitions[_name] = {
-                proto: Create(_props),
-                deps : _deps
+                proto      : Create(_props),
+                deps       : _deps,
+                deps_merged: ! _deps
             };
             return this;
         },
         /**
          * Generates a widget class on top of {@see BaseWidget}.
-         * Assumes all given dependencies (mixins and widgets) are already loaded
+         * Assumes all given dependencies (mixins and widget) are already loaded
          * and registered with `uijet`.
          *
          * @memberOf uijet
-         * @param {Object} _props - this widget's prototype.
-         * @param {string|string[]} [_mixins] - mixin dependencies.
-         * @param {string|string[]} [_widgets] - widget dependencies.
+         * @param {string} type - this widget's type.
+         * @param {string[]} [extra_mixins] - extra mixins to mix into the generated widget class.
          * @returns {function} class - the generated widget class.
          * @throws {Error} - missing widget/mixin dependency.
          * @private
          */
-        __generate           : function (_props, _mixins, _widgets) {
+        __generate           : function (type, extra_mixins) {
             // create the base class
             var _class = this.BaseWidget,
-                _mixins_copy = toArray(_mixins),
-                _mixins_to_use = [],
-                _mixin, _widget, _widgets_copy, def, m;
-            // if we have widgets to build on then mix'em
-            if ( _widgets && _widgets.length ) {
-                // copy widgets dependencies
-                _widgets_copy = toArray(_widgets);
-                // loop over them
-                while ( _widget = _widgets_copy.shift() ) {
-                    // if they're defined
-                    if ( def = widget_definitions[_widget] ) {
-                        // add them to the chain
-                        // just like stacking turtles
-                        _class = Create(def.proto, _class);
-                        // check if they have dependencies
-                        if ( def.deps && def.deps.mixins ) {
-                            _mixins_to_use = toArray(def.deps.mixins);
-                        }
-                    }
-                    else {
-                        throw new Error('Missing widget dependency: ' + _widget);
-                    }
-                }
+                // get the cached definition
+                def = widget_definitions[type],
+                mixins_to_use = [],
+                _mixin, m, complete_class_cache_key;
+
+            if ( ! def ) {
+                throw new Error('No definition found for: ' + type);
             }
-            // now we add this widget to the stack
-            _class = Create(_props, _class);
-            // if we have mixins to mix then mix'em
-            if ( _mixins_copy ) {
-                // if a widget in dependencies had mixins in its dependencies
-                if ( m = _mixins_to_use.length ) {
-                    for ( ; _mixin = _mixins_to_use[--m]; ) {
-                        // add every mixin form the parents' mixins that's not in the list to its beginning
-                        if ( !~_mixins_copy.indexOf(_mixin) ) {
-                            _mixins_copy.unshift(_mixin);
-                        }
-                    }
-                }
-                // copy mixins dependencies
-                _mixins_to_use = _mixins_copy;
-            }
-            while ( m = _mixins_to_use.shift() ) {
-                // if they're defined
-                if ( _mixin = mixins[m] ) {
-                    // add them to the chain
-                    // stack those madafakas
-                    _class = Create(_mixin, _class);
+
+            // see if the cached definition contains a merged list of dependency Mixins
+            if ( def.deps ) {
+                if ( def.deps.deps_merged ) {
+                    mixins_to_use = def.deps.mixins;
                 }
                 else {
-                    throw new Error('Missing mixin dependency: ' + m);
+                    // merge Mixin dependencies
+                    def.deps.mixins = mixins_to_use = _unique(_mergeMixinDeps(def.deps));
+                    // mark it as merged
+                    def.deps.deps_merged = true;
                 }
             }
+            else {
+                mixins_to_use = [];
+            }
+
+            // check if we have ad-hoc mixins to add
+            if ( extra_mixins && extra_mixins.length ) {
+                mixins_to_use = _unique(mixins_to_use.concat(extra_mixins));
+            }
+
+            // create a cache key to store the complete prototype chain of Widgets and Mixins
+            complete_class_cache_key = type + mixins_to_use.join('');
+
+            // see if we already have a cached class with all Mixins mixed in
+            if ( complete_class_cache_key in widget_mixedin_classes ) {
+                _class = widget_mixedin_classes[complete_class_cache_key];
+            }
+            else {
+                // otherwise
+                // get the fully built Widget class for this type
+                _class = _generateWidgetClass(type);
+
+                // loop over all mixins needed to be mixed-in
+                while ( m = mixins_to_use.shift() ) {
+                    // if they're defined
+                    if ( _mixin = mixins[m] ) {
+                        // add them to the chain
+                        // stack these madafakas
+                        _class = Create(_mixin, _class);
+                    }
+                    else {
+                        throw new Error('Missing mixin dependency: ' + m);
+                    }
+                }
+                // cache the mixed-in class
+                widget_mixedin_classes[complete_class_cache_key] = _class;
+            }
+
             return _class;
         },
         /**
@@ -1532,89 +1580,36 @@
          *
          * @memberOf uijet
          * @param {Object} widget - a widget declaration.
-         * @param {boolean} [skip_import] - whether to skip module import. Defaults to falsy.
-         * @returns {Promise[]|Promise} - a Promise object or an array of Promises.
+         * @returns {Promise} - a Promise object.
          * @private
          */
-        __start              : function (widget, skip_import) {
-            var that = this,
-                _factory = widget.factory,
-                _config = widget.config,
-                _type, mixedin_type, _w, l, _d, _c, _mixins, _adapters, _widgets;
+        __start              : function (widget) {
+            var _factory = widget.factory,
+                _w, l, _c, _adapters;
             // if this is a  cached factory declaration
             if ( _factory && widget_factories[_factory] ) {
                 // use it to generate an instance's declaration
                 widget = widget_factories[_factory](_config);
             }
-            _type = widget.type;
-            _config = widget.config;
-            // if falsy then import dependencies first and then do the starting
-            if ( isFunc(this.importModules) && !skip_import ) {
-                return this.Promise(function (resolve, reject) {
-                    // do import
-                    this.importModules(
-                        this.__extractDependencies([widget]),
-                        // the import's callback
-                        function () {
-                            that.__start(widget, true);
-                            return resolve();
-                        }
-                    );
-                }.bind(this));
+            // generate (or get from cache) the mixed-in class
+            _c = this.__generate(widget.type, widget.config.mixins);
+            // create a new Widget instance from that class
+            _w = new _c();
+            // if we have adapters to use
+            if ( _adapters = toArray(widget.config.adapters) ) {
+                l = _adapters.length;
+                // extend this instance with these adapters
+                while ( l -- ) {
+                    extendProto(_w, adapters[_adapters[l]]);
+                }
             }
-            // skip import
-            else {
-                // do start
-                // if we have mixins configured to mix
-                if ( _mixins = toArray(_config.mixins) ) {
-                    // get the stored widget class
-                    _d = widget_definitions[_type];
-                    // concatenate the list of mixins to use
-                    if ( _d.deps ) {
-                        if ( isObj(_d.deps) ) {
-                            _widgets = _d.deps.widgets;
-                            _d.deps.mixins && (_mixins = _d.deps.mixins.concat(_mixins));
-                        }
-                        else {
-                            _mixins = _d.deps.concat(_mixins);
-                        }
-                    }
-                    // generate a cache key from this recipe
-                    mixedin_type = _type + (_widgets ? _widgets.join('') : '') + _mixins.join('');
-                    // check if it exists in cache
-                    if ( mixedin_type in widget_mixedin_classes ) {
-                        // if we have a cached dish then serve it
-                        _c = widget_mixedin_classes[mixedin_type];
-                    }
-                    else {
-                        // create a new class from the joined definitions
-                        _c = this.__generate(_d.proto, _mixins, _widgets);
-                        // and cache it
-                        widget_mixedin_classes[mixedin_type] = _c;
-                    }
-                }
-                else {
-                    // just get the stored widget class definition
-                    _c = widget_classes[_type];
-                }
-                // create a new widget instance from that class
-                _w = new _c();
-                // if we have adapters to use
-                if ( _adapters = toArray(_config.adapters) ) {
-                    l = _adapters.length;
-                    // extend this instance with these adapters
-                    while ( l-- ) {
-                        extendProto(_w, adapters[_adapters[l]]);
-                    }
-                }
-                // check for a top-adapter
-                if ( adapters[TOP_ADAPTER_NAME] ) {
-                    // extend this instance with the top-adapter
-                    extendProto(_w, adapters[TOP_ADAPTER_NAME]);
-                }
-                // init the instance
-                return _w.init(_config);
+            // check for a top-adapter
+            if ( adapters[TOP_ADAPTER_NAME] ) {
+                // extend this instance with the top-adapter
+                extendProto(_w, adapters[TOP_ADAPTER_NAME]);
             }
+            // init the instance
+            return _w.init(widget.config);
         },
         /**
          * Registers a widget into the uijet sandbox.
@@ -1701,7 +1696,7 @@
             // walk the DOM tree upwards until we hit `body`
             while ( _parent && _parent !== _body ) {
                 // if we hit a `uijet_widget`
-                if ( ~_parent.className.indexOf('uijet_widget') ) {
+                if ( ~ _parent.className.indexOf('uijet_widget') ) {
                     // get its `id`.
                     // important to get the attribute and not do `element.id`, since it might break
                     // when the element is a `<form>` and has an `<input name=id>`.
@@ -1726,7 +1721,7 @@
                 _parent = _parent.parentNode;
             }
             // no container set or found
-            if ( !_current.container ) {
+            if ( ! _current.container ) {
                 // register this widget as a top level widget
                 widgets.__app__.contained.push(_id);
                 _container = '__app__';
@@ -1760,13 +1755,16 @@
         },
         /**
          * Caches widget declarations before uijet is initialized,
-         * for lazy starting them at the end of its initialization.
+         * for lazy starting them at the end of its initialization,
+         * or if uijet IS initialized, ad-hoc constructs and initializes
+         * widget instance(s) from a given widget declaration(s).
+         *
+         * Returns a {@see Promise} that is resolved once all declared/started
+         * instances finished initializing, or gets rejected if something fails.
          *
          * It's best to declare widgets in the order of their appearance
          * in the widgets tree (usually maps one-to-one to the DOM tree), so that
          * a widget is always declared before its contained widgets are declared, and so on.
-         *
-         * In some cases it's a must to declare widgets in a specific order ( see {@see uijet._position()} ).
          *
          * A declaration object usually contains `type` and `config` properties.
          * It may also contain a `factory` property, instead of the `type` one, if
@@ -1778,96 +1776,24 @@
          *
          * **note**: For valid instance options see related module.
          *
-         * @memberOf uijet
-         * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
-         * @returns {uijet}
-         */
-        declare              : function (declarations) {
-            if ( isObj(declarations) ) {
-                declared_widgets.push(declarations);
-            }
-            else if ( isArr(declarations) ) {
-                declared_widgets.push.apply(declared_widgets, declarations);
-            }
-            return this;
-        },
-        /**
-         * Ad-hoc constructs and initializes widget instance(s) from a given widget declaration(s).
-         * For explanations on widget declarations see {@see uijet.declare()}.
-         * Returns a {@see Promise} that is resolved once all declared instances finished initializing,
-         * or gets rejected if something fails.
-         *
-         * `skip_import` is used to forcibly skip modules importing, so this method
-         * will complete synchronously, otherwise it will check for missing modules to import.
-         * Usually you should _not_ have to specify it at all, unless you know what you're doing
-         * and want to optimize this call a bit.
+         * **note**: If using the {@see Positioned} Mixin it's a must to
+         * declare widgets in a specific order ( see {@see uijet._position()} ).
          *
          * @memberOf uijet
          * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
-         * @param {boolean} [skip_import] - whether to skip module import. Defaults to falsy.
-         * @returns {Promise|Object} promise|this - a promise object if not skipping import, otherwise `this`.
+         * @returns {Promise} promise - a promise that resolves when all started instances are initialized.
          * @throws {Error} - if `declarations` is neither an `Array` nor an `Object`.
          */
-        start                : function (declarations, skip_import) {
-            var i, dfrd_starts, _c;
-            // if `declarations` is an `Object`
-            if ( isObj(declarations) ) {
-                // do the starting
-                return this.__start(declarations, skip_import);
-            }
-            // if it's an `Array`
-            else if ( isArr(declarations) ) {
-                i = 0;
-                dfrd_starts = [];
-                // loop over the widget declarations in it
-                while ( _c = declarations[i] ) {
-                    // and start every one of them
-                    dfrd_starts[i] = this.__start(_c, skip_import);
-                    i += 1;
-                }
-                // return a promise of all `declarations` started
-                return this.whenAll(dfrd_starts);
-            }
-            throw new Error('`widgets` must be either an Object or an Array. Instead got: ' +
-                            objToString.call(declarations));
-        },
+        declare              : uijet_declare_or_start,
         /**
-         * Extracts widgets' dependency modules to be imported from a list of
-         * standard widget instance declarations ( see {@see uijet.declare()} ).
+         * An alias of {@see uijet.declare}.
          *
          * @memberOf uijet
-         * @param {Object[]} declarations - list of widget declarations to extract dependencies from.
-         * @returns {{widgets: string[], mixins: string[], adapters: string[]}}
-         * @private
+         * @param {Object|Object[]} declarations - a single declaration or a list of declaration objects.
+         * @returns {Promise} promise - a promise that resolves when all started instances are initialized.
+         * @throws {Error} - if `declarations` is neither an `Array` nor an `Object`.
          */
-        __extractDependencies: function (declarations) {
-            var deps = {
-                    widgets : [],
-                    mixins  : [],
-                    adapters: []
-                },
-                _w, _m, _m_type, _m_list;
-            for ( var i = 0; _w = declarations[i]; i++ ) {
-                if ( _m_type = _w.type ) {
-                    // if this widget type wasn't loaded and isn't in the dependencies list then add it
-                    (widget_classes[_m_type] || ~deps.widgets.indexOf(_m_type)) || deps.widgets.push(_m_type);
-                }
-                // check for adapters option
-                if ( _m_list = toArray(_w.config.adapters) ) {
-                    for ( var n = 0; _m = _m_list[n++]; ) {
-                        // grab each one and add it if it wasn't loaded before and not already in the list
-                        (adapters[_m] || ~deps.adapters.indexOf(_m)) || deps.adapters.push(_m);
-                    }
-                }
-                // check for mixins option and give it the same treatment like we did with adapters
-                if ( _m_list = toArray(_w.config.mixins) ) {
-                    for ( n = 0; _m = _m_list[n++]; ) {
-                        (mixins[_m] || ~deps.mixins.indexOf(_m)) || deps.mixins.push(_m);
-                    }
-                }
-            }
-            return deps;
-        },
+        start                : uijet_declare_or_start,
         /**
          * Starts up uijet.
          * Publishes the `startup` event and wakes all widgets at the root of the widgets tree.
@@ -1891,7 +1817,7 @@
             this.$element[0].style.visibility = 'visible';
             this.publish('startup');
 
-            if ( !this.options.dont_wake ) {
+            if ( ! this.options.dont_wake ) {
                 // ☼ good morning sunshine ☼
                 return uijet.whenAll(this._wakeContained(widgets.__app__));
             }
@@ -1915,8 +1841,8 @@
             return this.Promise(function (resolve, reject) {
                 uijet.publish(topic, {
                     resolve: resolve,
-                    reject: reject,
-                    data: data
+                    reject : reject,
+                    data   : data
                 });
             });
         },
@@ -1936,9 +1862,9 @@
                 promises = [],
                 _widget,
                 l = _contained.length;
-            while ( l-- ) {
+            while ( l -- ) {
                 _widget = widgets[_contained[l]].self;
-                if ( _widget && !returnOf(_widget.options.dont_wake, _widget, context) ) {
+                if ( _widget && ! returnOf(_widget.options.dont_wake, _widget, context) ) {
                     promises.unshift(_widget.wake(context));
                 }
             }
@@ -1955,7 +1881,7 @@
         _sleepContained      : function (widget) {
             var _contained = widgets[widget.id].contained,
                 l = _contained.length;
-            while ( l-- ) {
+            while ( l -- ) {
                 widgets[_contained[l]].self.sleep(true);
             }
             return this;
@@ -1976,7 +1902,7 @@
                 // get the ids of its contained child widgets
                 _contained = widgets[widget.id].contained;
                 l = _contained.length;
-                while ( l-- ) {
+                while ( l -- ) {
                     // seek
                     if ( _contained[l] in widgets ) {
                         // and destroy
@@ -2003,7 +1929,7 @@
                 _contained = widgets[widget.id].contained,
                 l = _contained.length,
                 _w;
-            while ( l-- ) {
+            while ( l -- ) {
                 _w = widgets[_contained[l]].self;
                 _w.setContext(ctx)
                   .trickle(ctx);
@@ -2020,7 +1946,6 @@
      */
     uijet.utils = {
         async           : async,
-        consoleOrRethrow: consoleOrRethrow,
         extend          : extend,
         copy            : copy,
         extendProto     : extendProto,
@@ -2056,11 +1981,11 @@
          */
         putMixin        : function putMixin (array, name, position) {
             var index;
-            if ( !array ) {
+            if ( ! array ) {
                 // no mixins, so just return `name`
                 return [name];
             }
-            else if ( !isArr(array) ) {
+            else if ( ! isArr(array) ) {
                 // `array` is probably a `string` so wrap in an `array` and do it again
                 return putMixin([array], name, position);
             }
@@ -2069,7 +1994,7 @@
                 position = typeof position == 'number' ? position : array.length;
 
                 index = array.indexOf(name);
-                if ( ~index ) {
+                if ( ~ index ) {
                     // if `name` is found in `array`
                     if ( index === position )
                     // if it's in the right position bail out
@@ -2095,6 +2020,13 @@
 
     // expose `Base`
     uijet.Base = Base;
+
+    /*
+     * Inject Pub/Sub, Promises, and DOM modules to uijet.
+     */
+    pubsub(uijet);
+    promises(uijet);
+    dom(uijet);
 
     return uijet;
 }));

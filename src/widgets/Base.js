@@ -91,7 +91,7 @@
     Widget.prototype = {
         constructor     : Widget,
         /**
-         * Initializes a widget instance.
+         * Initializes a widget instance and returns a list
          *
          * A *lifecycle method*, does all the possible lifting that can be done
          * before awaking/rendering.
@@ -111,7 +111,7 @@
          * @memberOf BaseWidget
          * @instance
          * @param {Object} options - config object for the widget.
-         * @returns {Promise[]|Widget}
+         * @returns {Promise}
          */
         init            : function (options) {
             // ready...
@@ -140,12 +140,12 @@
 
             this.notify(true, 'post_init');
 
-            return contained_starts || this;
+            return contained_starts;
         },
         /**
          * Initializes contained widget instances.
-         * Returns an array of Promises or `undefined` if the
-         * `components` option is not set.
+         * Returns a Promise that resolves once all
+         * contained `components` finish initializing.
          *
          * If the `container` option of the contained widgets is not
          * set, it will be automatically set to the `id` of this widget.
@@ -156,7 +156,7 @@
          *
          * @memberOf BaseWidget
          * @instance
-         * @returns {Promise[]|undefined}
+         * @returns {Promise}
          */
         initContained   : function () {
             var container_id = this.id,
@@ -169,6 +169,7 @@
                 });
                 return uijet.start(contained);
             }
+            return uijet.when(this);
         },
         /**
          * Gets the `context` object of the instance or the value
@@ -818,7 +819,7 @@
             var id = utils.toArray(this.options.type_class)
                          .splice(-1, 1).toString()
                          .replace('uijet_', '') + '_' + (++widget_id_index);
-            this.$element.attr('id', id);
+            this.$element[0].setAttribute('id', id);
             return id;
         },
         /**

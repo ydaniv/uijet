@@ -1,6 +1,6 @@
 (function (root, factory) {
     if ( typeof define === 'function' && define.amd ) {
-        define([], function () {
+        define(['bluebird'], function () {
             return factory(root);
         });
     }
@@ -8,21 +8,23 @@
         factory(root);
     }
 }(this, function (root) {
+    'use strict';
+
     /**
-     * ES6-Promise promises module.
+     * Bluebird promises module.
      *
-     * @module promises/es6
+     * @module promises/bluebird
      * @category Module
      * @sub-category Promises
      * @extends uijet
-     * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise}
+     * @see {@link https://github.com/petkaantonov/bluebird/blob/master/API.md}
      */
     return function (uijet) {
         uijet.use({
             /**
              * Constructs a promise object.
              *
-             * @method module:promises/es6#Promise
+             * @method module:promises/bluebird#Promise
              * @see {@link https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise}
              * @returns {Promise} - a Promise object.
              */
@@ -38,7 +40,7 @@
              * * `reject`: rejects the contained Promise.
              * * `promise`: returns the contained Promise object of this deferred.
              *
-             * @method module:promises/es6#defer
+             * @method module:promises/bluebird#defer
              * @returns {Object} - a deferred object.
              */
             defer    : function () {
@@ -58,7 +60,7 @@
              * Promises in the `promises` list are resolved,
              * or rejected if one of those is rejected.
              *
-             * @method module:promises/es6#whenAll
+             * @method module:promises/bluebird#whenAll
              * @param {Array} promises - array of Promises and/or values.
              * @returns {Promise}
              */
@@ -69,7 +71,7 @@
              * Converts any given argument into a Promise.
              * If that argument is a Promise it returns it.
              *
-             * @method module:promises/es6#when
+             * @method module:promises/bluebird#when
              * @param {*} value - value or promise to convert into a thenable.
              * @returns {Promise}
              */
@@ -79,7 +81,7 @@
             /**
              * Returns a Promise object that is rejected with the given reason.
              *
-             * @method module:promises/es6#reject
+             * @method module:promises/bluebird#reject
              * @param {Error} reason - the reason for rejecting the Promise.
              * @returns {Promise}
              */
@@ -91,7 +93,7 @@
              * as soon as one of the promises in the iterable
              * resolves or rejects, with the value or reason from that promise.
              *
-             * @method module:promises/es6#race
+             * @method module:promises/bluebird#race
              * @param {Promise[]} promises - array of Promises.
              * @returns {Promise}
              */
@@ -101,7 +103,7 @@
             /**
              * Whether the given `obj` argument is a Promise like object (thenable).
              *
-             * @method module:promises/es6#isPromise
+             * @method module:promises/bluebird#isPromise
              * @param {*} obj - argument to check.
              * @returns {boolean}
              */
